@@ -1,0 +1,56 @@
+{
+  "name": "theater-of-the-mind",
+  "version": "1.0.0",
+  "description": "A FoundryVTT module for DMs",
+  "main": "index.js",
+  "author": {
+    "name": "Eddie Dover",
+    "email": "ed@eddiedover.dev"
+  },
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "maintainers": [
+    {
+      "name": "Eddie Dover",
+      "email": "ed@eddiedover.dev"
+    }
+  ],
+  "scripts": {
+    "build-deploy": "cross-env TARGET=build-deploy rollup --config",
+    "build-deploy-compress": "cross-env TARGET=build-deploy-compress rollup --config",
+    "build-dev": "cross-env TARGET=build-dev rollup --config",
+    "build-dev-compress": "cross-env TARGET=build-dev-compress rollup --config",
+    "eslint": "eslint ."
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.4",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.2.1",
+    "@rollup/plugin-replace": "^5.0.2",
+    "@typhonjs-fvtt/eslint-config-foundry.js": "^0.8.0",
+    "autoprefixer": "^10.4.15",
+    "cross-env": "^7.0.3",
+    "dotenv-safe": "^8.2.0",
+    "eslint": "^8.49.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-prettier": "^0.0.0-empty",
+    "postcss": "^8.4.29",
+    "postcss-preset-env": "^9.1.3",
+    "prettier": "^3.0.3",
+    "rollup": "^3.29.2",
+    "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-node-globals": "^1.4.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-sourcemaps": "^0.6.3",
+    "rollup-plugin-string": "^3.0.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "sass": "^1.67.0",
+    "typhonjs-config-eslint": "^0.6.0"
+  },
+  "dependencies": {}
+}
