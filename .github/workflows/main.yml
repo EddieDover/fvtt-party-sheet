@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     strategy:
       matrix:
@@ -58,6 +60,5 @@ jobs:
             ${{ steps.Changelog.outputs.changelog }}
           draft: false
           prerelease: false
-          token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: './deploy/module.json,./deploy/module.zip'
           tag: ${{ steps.get-version.outputs.version }}
