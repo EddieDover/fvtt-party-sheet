@@ -38,8 +38,7 @@ jobs:
       - name: Get Version
         shell: bash
         id: get-version
-        run: |
-          echo "VERSION::$(node ./.github/workflows/get-version.js)" >> "$GITHUB_ENV"
+        run: echo "version=$(node ./.github/workflows/get-version.js)" >> "$GITHUB_OUTPUT"
 
       # Generate changelog for release body
       - name: Changelog
@@ -61,4 +60,4 @@ jobs:
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: './deploy/module.json,./deploy/module.zip'
-          tag: "$VERSION"
+          tag: ${{ steps.get-version.outputs.version }}
