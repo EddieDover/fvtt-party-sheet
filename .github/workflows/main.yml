@@ -38,9 +38,7 @@ jobs:
       - name: Get Version
         shell: bash
         id: get-version
-        run: |
-          VERSION = $(node ./.github/workflows/get-version.js)
-          echo "::set-env name=VERSION::$VERSION"
+        run: echo "::set-env name=VERSION::$(node ./.github/workflows/get-version.js)"
 
       # Generate changelog for release body
       - name: Changelog
