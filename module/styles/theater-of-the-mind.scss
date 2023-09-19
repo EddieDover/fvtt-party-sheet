@@ -1,10 +1,46 @@
-#totm-cv-table {
-    width: 100%;
-    height: 100%a;
-    text-align: center;
-};
+#totm-ps-table {
+    text-align:center;
 
-tr.finrow {
-    border-bottom: 1px solid black;
-    margin-bottom: 5px;
+    .namerace {
+        padding-left:10px;
+        display:flex;
+        flex-direction:row;
+        flex-wrap:nowrap;
+        justify-content: space-around;
+    }
+
+    td {
+        border: 1px solid darkgray;
+    }
+
+    .totm-ps-name-bar {
+        width:100%;
+        display:flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        text-align:left;
+
+        .totm-ps-name-bar-namerace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto 1fr;
+            margin-left: 1rem;
+            width: 100%;
+            text-decoration: underline;
+
+            .entry {
+                overflow-x:hidden;
+            }
+
+            .fullentry {
+                grid-column: 1 / span 2;
+            }
+        }
+    }
+
+    .totm-ps-finrow {
+        border-bottom: 1px solid black;
+        margin-bottom: 5px;
+    }
 }
