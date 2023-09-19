@@ -26,7 +26,8 @@ const getPlayerData = () => {
     return game.users
       .map((user) => {
         if (user.active && user.character) {
-          const userSys = user.character.system;
+          const userChar = user.character;
+          const userSys = userChar.system;
           const stats = userSys.abilities;
           const ac = userSys.attributes.ac.value;
 
@@ -36,8 +37,49 @@ const getPlayerData = () => {
             ins: userSys.skills.ins.passive,
           };
 
+          const classNamesAndLevels = Object.values(userChar.classes).map(
+            (c) => `${c.name} ${c.system.levels}`
+          );
+
+          const charToken = userChar.prototypeToken;
+
+          const charSenses = [];
+          if (userSys.attributes.senses.darkvision) {
+            charSenses.push(
+              `Darkvision ${userSys.attributes.senses.darkvision} ${userSys.attributes.senses.units}`
+            );
+          }
+          if (userSys.attributes.senses.blindsight) {
+            charSenses.push(
+              `Blindsight ${userSys.attributes.senses.blindsight} ${userSys.attributes.senses.units}`
+            );
+          }
+          if (userSys.attributes.senses.tremorsense) {
+            charSenses.push(
+              `Tremorsense ${userSys.attributes.senses.tremorsense} ${userSys.attributes.senses.units}`
+            );
+          }
+          if (userSys.attributes.senses.truesight) {
+            charSenses.push(
+              `Truesight ${userSys.attributes.senses.truesight} ${userSys.attributes.senses.units}`
+            );
+          }
+          if (userSys.attributes.senses.special) {
+            charSenses.push(userSys.attributes.senses.special);
+          }
+
           return {
-            name: user.name,
+            name: userChar.name,
+            race: userChar.system.details.race,
+            img: `<img class="token-image" src="${
+              charToken.texture.src
+            }" title="${
+              charToken.name
+            }" width="36" height="36" style="transform: rotate(${
+              charToken.rotation ?? 0
+            }deg);"></img>`,
+            senses: charSenses.join(", "),
+            classNames: classNamesAndLevels.join(" - ") || "",
             stats,
             ac,
             passives,
@@ -58,28 +100,37 @@ const convertPlayerDataToTable = () => {
       return "No players connected";
     }
 
-    console.log(players);
-    let table = `<table id='totm-cv-table'>`;
-    table += `<tr><th>Name</th>`;
+    let table = `<table id='totm-ps-table'>`;
+
+    table += `<tr><th class="namerace"><div>Name</div><div>Race</div></th>`;
     for (const stat in players[0].stats) {
-      table += `<th style="padding:5px">${stat.toUpperCase()}</th>`;
+      table += `<th class="p-1">${stat.toUpperCase()}</th>`;
     }
-    table += `<th>AC</th><th>Inv</th></tr>`;
-    table += `<tr><th></th>`;
+    table += `<th>AC</th><th>Inv</th><th>Senses</th></tr>`;
+
+    table += `<tr><th>Classes</th>`;
     for (let i = 0; i < 6; i++) {
       table += `<th></th>`;
     }
-    table += ` <th style="padding:5px">Per</th><th style="padding:5px">Ins</th></tr>`;
+    table += ` <th class="p-1">Per</th><th class="p-1">Ins</th><th></th></tr>`;
+
     players.forEach((player) => {
-      table += `<tr><td rowspan='2'>${player.name}</td>`;
+      table += `<tr><td rowspan="2"><div class="totm-ps-name-bar">${player.img}`;
+      table += `<div class='totm-ps-name-bar-namerace'>
+          <div class='entry'>${player.name}</div>
+          <div class='entry'>${player.race}</div>
+          <div class='fullentry'>${player.classNames}</div>
+      </div>`;
+      table += `</div></td>`;
       for (const stat in player.stats) {
         table += `<td>${player.stats[stat].value}</td>`;
       }
       table += `<td>${player.ac}</td>`;
       table += `<td>${player.passives.inv}</td>`;
+      table += `<td rowspan="2" style="white-space: nowrap;">${player.senses}</td>`;
       table += `</tr>`;
 
-      table += `<tr class="finrow">`;
+      table += `<tr class="totm-ps-finrow">`;
       for (const stat in player.stats) {
         table += `<td>${player.stats[stat].mod >= 0 ? "+" : ""}${
           player.stats[stat].mod
@@ -97,30 +148,30 @@ const convertPlayerDataToTable = () => {
   }
 };
 
-const CombinedViewDialog = new Dialog({
-  title: "Combined View",
+const PartySheetDialog = new Dialog({
+  title: "Party Sheet",
   content: convertPlayerDataToTable(),
   buttons: {
     close: {
       icon: '<i class="fas fa-times"></i>',
       label: "Close",
-      callback: () => CombinedViewDialog.close(),
+      callback: () => PartySheetDialog.close(),
     },
   },
   render: () => {
-    CombinedViewDialog.setPosition({
+    PartySheetDialog.setPosition({
       height: "auto",
       width: "auto",
     });
   },
 });
 
-function toggleCombinedView() {
-  if (CombinedViewDialog.rendered) {
-    CombinedViewDialog.close();
+function togglePartySheet() {
+  if (PartySheetDialog.rendered) {
+    PartySheetDialog.close();
   } else {
-    CombinedViewDialog.data.content = convertPlayerDataToTable();
-    CombinedViewDialog.render(true);
+    PartySheetDialog.data.content = convertPlayerDataToTable();
+    PartySheetDialog.render(true);
   }
 }
 
@@ -190,7 +241,7 @@ Hooks.on("preCreateChatMessage", (_chatLog, message, _chatData) => {
 });
 
 Hooks.on("init", () => {
-  log("Initializing Theater of the Mind");
+  log("Initializing");
 });
 
 Hooks.on("ready", async () => {
@@ -216,9 +267,9 @@ Hooks.on("renderPlayerList", () => {
   if (!game.user.isGM) {
     return;
   }
-  if (CombinedViewDialog.rendered) {
-    CombinedViewDialog.data.content = convertPlayerDataToTable();
-    CombinedViewDialog.render(true);
+  if (PartySheetDialog.rendered) {
+    PartySheetDialog.data.content = convertPlayerDataToTable();
+    PartySheetDialog.render(true);
   }
 });
 
@@ -227,13 +278,13 @@ Hooks.on("renderSceneControls", () => {
     return;
   }
   const button = $(`<li class="control-tool "
-            data-tool="combinedview"
-            aria-label="Show Combined View"
+            data-tool="PartySheet"
+            aria-label="Show Party Sheet"
             role="button"
-            data-tooltip="Combined View">
-            <i class="fas fa-theater-masks"></i>
+            data-tooltip="Party Sheet">
+            <i class="fas fa-users"></i>
         </li>`);
-  button.click(() => toggleCombinedView());
+  button.click(() => togglePartySheet());
   const controls = $("#tools-panel-token");
   controls.append(button);
 });
