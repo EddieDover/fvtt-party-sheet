@@ -1,14 +1,6 @@
-const FEATURE_SYRIN = false;
+const FEATURE_SYRIN = true;
 
-const THEATER_SOUNDS = {
-  "attack roll": {
-    rapier: {
-      miss: "2717034",
-      hit: "2717035",
-      crit: "2717036",
-    },
-  },
-};
+import { THEATER_SOUNDS } from "./sounds.js";
 
 import "./styles/theater-of-the-mind.scss";
 
@@ -189,13 +181,36 @@ async function playSound(message, type, hitmisscrit) {
 
   if (matchResult) {
     const weapon = matchResult[1];
+    log(
+      `Playing sound for ${weapon.toLowerCase()} ${type.toLowerCase()} ${hitmisscrit.toLowerCase()}`
+    );
     // Get the sound from the THEATER_SOUNDS object
-    const sound =
-      THEATER_SOUNDS[type.toLowerCase()][weapon.toLowerCase()][
-        hitmisscrit.toLowerCase()
-      ];
+    const soundtype = THEATER_SOUNDS[type.toLowerCase()];
+    if (!soundtype) {
+      log("No sound type found.");
+      return;
+    }
+    const soundweapon = soundtype[weapon.toLowerCase()];
+    if (!soundweapon) {
+      log("No soundtype weapon found.");
+      return;
+    }
+    let soundhitmisscrit = soundweapon[hitmisscrit.toLowerCase()];
+    if (!soundhitmisscrit) {
+      soundhitmisscrit = soundweapon["any"];
+      if (!soundhitmisscrit) {
+        log("No soundtype hitmisscrit found.");
+        return;
+      }
+    }
+    const sound = soundhitmisscrit;
+    // THEATER_SOUNDS[type.toLowerCase()][weapon.toLowerCase()][
+    //   hitmisscrit.toLowerCase()
+    // ];
     if (sound) {
       game.syrinscape.playElement(sound);
+    } else {
+      log("No sound found.");
     }
   }
 }
@@ -255,9 +270,10 @@ Hooks.on("ready", async () => {
 
     // Check if Attack Roll Check is installed
     isAttackRollCheckInstalled =
-      game.modules.get("foundryvtt-attack-roll-check-5e")?.active || false;
-    log(`Attack Roll Check is installed: ${isSyrinscapeInstalled}`);
+      game.modules.get("attack-roll-check-5e")?.active || false;
+    log(`Attack Roll Check is installed: ${isAttackRollCheckInstalled}`);
     enableSounds = isSyrinscapeInstalled && isAttackRollCheckInstalled;
+    log(`Sounds enabled: ${enableSounds}`);
   }
 });
 
