@@ -1,6 +1,6 @@
 {
     "id": "theater-of-the-mind",
-    "title": "The Theater of the Mind - DM Tool",
+    "title": "Theater of the Mind - DM Tool",
     "description": "A module to assist DMs who run theater of the mind adventures.",
     "url": "https://github.com/EddieDover/theater-of-the-mind",
     "bugs": "https://github.com/EddieDover/theater-of-the-mind/issues",
@@ -12,6 +12,18 @@
     "flags": {
       "allowBugReporter": true
     },
+    "languages": [
+      {
+        "lang": "en",
+        "name": "English",
+        "path": "lang/en.json"
+      },
+      {
+        "lang": "es",
+        "name": "Spanish",
+        "path": "lang/es.json"
+      }
+    ],
   "media": [
       {
           "type": "cover",
@@ -25,7 +37,7 @@
         "url": "https://github.com/eddiedover/"
       }
     ],
-    "version": "1.0.6",
+    "version": "1.1.0",
     "compatibility": {
       "minimum": "11",
       "verified": "11"
