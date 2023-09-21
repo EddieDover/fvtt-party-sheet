@@ -6,3 +6,4 @@ github/
 dist/
 deploy/
 tools/
+copydist.bat
