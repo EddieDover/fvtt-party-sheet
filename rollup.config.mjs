@@ -48,7 +48,7 @@ export default () => {
   // Sanity check to make sure parent directory of FVTTDEV_DEPLOY_PATH exists.
   if (!fs.existsSync(path.dirname(process.env.FVTTDEV_DEPLOY_PATH))) {
     throw Error(
-      `FVTTDEV_DEPLOY_PATH does not exist: ${process.env.FVTTDEV_DEPLOY_PATH}`
+      `FVTTDEV_DEPLOY_PATH does not exist: ${process.env.FVTTDEV_DEPLOY_PATH}`,
     );
   }
 
@@ -91,7 +91,10 @@ export default () => {
         json(), // Allows import of JSON; used in dialog Handlebars content.
         string({ include: ["**/*.css", "**/*.html"] }), // Allows loading strings as ES6 modules; HTML and CSS.
         copy({
-          targets: [{ src: "module/module.json", dest: DIR }],
+          targets: [
+            { src: "module/module.json", dest: DIR },
+            { src: "module/lang", dest: DIR },
+          ],
         }),
       ],
     },

@@ -1,0 +1,20 @@
+{
+    "theater-of-the-mind": {
+        "party-sheet": {
+            "name": "Nombre",
+            "race": "Raza",
+            "senses": "Sentidos",
+            "classes": "Clases"
+        },
+        "settings": {
+            "enable-sounds": {
+                "name": "Habilitar Sonidos de Syrinscape",
+                "hint": "Esta opción requiere los módulos de Integración de Syrinscape (fvtt-syrin-control) y Comprobación de Tirada de Ataque (foundryvtt-attack-roll-check-5e)."
+            },
+            "enable-party-sheet": {
+                "name": "Habilitar Hoja de Grupo",
+                "hint": "Habilita la hoja de grupo."
+            }
+        }
+    }
+}
