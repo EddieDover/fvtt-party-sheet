@@ -55,10 +55,10 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true # set this to false if you want to prevent updating existing releases
-          name: ${{ steps.get-version.outputs.version }}
+          name: v${{ steps.get-version.outputs.version }}
           body: |
             ${{ steps.Changelog.outputs.changelog }}
           draft: false
           prerelease: false
           artifacts: './deploy/module.json,./deploy/module.zip'
-          tag: ${{ steps.get-version.outputs.version }}
+          tag: v${{ steps.get-version.outputs.version }}
