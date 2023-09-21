@@ -157,7 +157,7 @@ const PartySheetDialog = new Dialog({
   render: () => {
     PartySheetDialog.setPosition({
       height: "auto",
-      width: "auto",
+      width: 600,
     });
   },
 });
