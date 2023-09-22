@@ -172,7 +172,6 @@ function togglePartySheet() {
 }
 
 async function playSound(message, type, hitmisscrit) {
-  // If we're not using the fvtt-syrin-control (Syrinscape) module, return
   // TODO: Use our own implementation of Syrinscape? Maybe we can use the API to search instead of hard coding sounds.
 
   if (!game.settings.get("theater-of-the-mind", "enableSounds")) {
@@ -181,27 +180,26 @@ async function playSound(message, type, hitmisscrit) {
 
   // Get the attack weapon from the message
   const regexPattern = new RegExp(`(.*) - ${type}`, "i");
+  const matchResult = message?.flavor.match(regexPattern);
+  const backup = message?.flavor ?? "";
+  const primary = matchResult ? matchResult[1] : backup;
 
-  const matchResult = message.flavor.match(regexPattern);
+  // Get the sound from the THEATER_SOUNDS object
+  const primarysound = THEATER_SOUNDS[primary.toLowerCase()];
+  if (!primarysound) {
+    log(`No sound key found [${primary.toLowerCase()}].`);
+    return;
+  }
 
-  if (matchResult) {
-    const weapon = matchResult[1];
+  const subsound = hitmisscrit.toLowerCase() || "any";
+  const soundid = primarysound[subsound];
 
-    // Get the sound from the THEATER_SOUNDS object
-    const soundweapon = THEATER_SOUNDS[weapon.toLowerCase()];
-    if (!soundweapon) {
-      log(`No weapon found [${weapon.toLowerCase()}].`);
-      return;
-    }
-    const soundid =
-      soundweapon[hitmisscrit.toLowerCase()] || soundweapon["any"];
-
-    if (!soundid) {
-      log(`No weapon sub-type found [${weapon.toLowerCase()}].`);
-      return;
-    } else {
-      game.syrinscape.playElement(soundid);
-    }
+  if (!soundid) {
+    log(
+      `Key found: [${primary.toLowerCase()}], No sound sub-type found [${subsound}].`,
+    );
+  } else {
+    game.syrinscape.playElement(soundid);
   }
 }
 
@@ -209,32 +207,37 @@ async function parseMessagesForSounds(message) {
   if (!game.settings.get("theater-of-the-mind", "enableSounds")) {
     return;
   }
-  const flavor = message?.flavor || "";
-
-  if (flavor.toLowerCase().includes("attack roll")) {
-    pendingMessages.push(message);
-  }
 
   if (message.flags?.["attack-roll-check-5e"]?.isResultCard) {
     const roll = message.content.match(
       /<div class="roll-display">(.*)<\/div>/,
     )[1];
+
     const applicableMessages =
-      pendingMessages.filter(
+      game.messages.filter(
         (imessage) =>
           imessage.flavor.toLowerCase().includes("attack roll") &&
-          imessage.content === roll,
+          imessage.content.includes(roll),
       ) || [];
+
     if (applicableMessages.length > 0) {
-      const applicableMessage = applicableMessages[0];
+      const applicableMessage =
+        applicableMessages[applicableMessages.length - 1];
       pendingMessages = pendingMessages.filter(
         (imessage) => imessage !== applicableMessage,
       );
       const hitmisscrit = message.content.match(
         /<div class="status-chip ([a-z]*)">/,
       )[1];
+
       playSound(applicableMessage, "Attack Roll", hitmisscrit);
     }
+  } else if (
+    !message.rolls?.some((rolltext) => rolltext.includes("DamageRoll")) &&
+    message.flags?.["dnd5e"]?.use?.type !== "weapon"
+  ) {
+    log(message);
+    playSound(message, "", "any");
   }
 }
 
