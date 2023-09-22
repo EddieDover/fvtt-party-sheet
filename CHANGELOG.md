@@ -1,3 +1,14 @@
+### 1.2.0 (2023-09-22)
+
+##### Chores
+
+*  cleaned up sounds (5c59228d)
+
+##### New Features
+
+*  added spell sounds (6489e4c6)
+*  added weapon sounds (c237bfbc)
+
 # [v1.1.0](https://github.com/EddieDover/Theater-of-the-Mind/compare/1.0.6...1.1.0) (2023-09-21)
 
 
