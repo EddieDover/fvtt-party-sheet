@@ -21,7 +21,7 @@ const getPlayerData = () => {
           const ac = userSys.attributes.ac.value;
 
           const passives = {
-            per: userSys.skills.per.passive,
+            prc: userSys.skills.prc.passive,
             inv: userSys.skills.inv.passive,
             ins: userSys.skills.ins.passive,
           };
@@ -132,7 +132,7 @@ const convertPlayerDataToTable = () => {
           player.stats[stat].mod
         }</td>`;
       }
-      table += `<td>${player.passives.per}</td>`;
+      table += `<td>${player.passives.prc}</td>`;
       table += `<td>${player.passives.ins}</td>`;
       table += `</tr>`;
     });
