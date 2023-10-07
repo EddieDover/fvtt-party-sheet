@@ -1,3 +1,9 @@
+#### 1.2.1 (2023-10-07)
+
+##### Bug Fixes
+
+*  corrected issue where perception was showing persuasion instead (ad5e0e3b)
+
 ### 1.2.0 (2023-09-22)
 
 ##### Chores
