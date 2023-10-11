@@ -139,6 +139,7 @@ const convertPlayerDataToTable = () => {
 const PartySheetDialog = new Dialog({
   title: "Party Sheet",
   content: convertPlayerDataToTable(),
+  classNames: ["totm-ps-dialog"],
   buttons: {
     close: {
       icon: '<i class="fas fa-times"></i>',
@@ -146,7 +147,11 @@ const PartySheetDialog = new Dialog({
       callback: () => PartySheetDialog.close(),
     },
   },
-  render: () => {
+  render: (html) => {
+    if (game.settings.get("theater-of-the-mind", "enableDarkMode")) {
+      var parentElement = html[0].parentElement;
+      parentElement.id = "totm-dialog-darkmode";
+    }
     PartySheetDialog.setPosition({
       height: "auto",
       width: 600,
@@ -168,15 +173,15 @@ function togglePartySheet() {
 Hooks.on("init", () => {
   log("Initializing");
 
-  game.settings.register("theater-of-the-mind", "enablePartySheet", {
-    "name": "theater-of-the-mind.settings.enable-party-sheet.name",
-    "hint": "theater-of-the-mind.settings.enable-party-sheet.hint",
+  game.settings.register("theater-of-the-mind", "enableDarkMode", {
+    "name": "theater-of-the-mind.settings.enable-dark-mode.name",
+    "hint": "theater-of-the-mind.settings.enable-dark-mode.hint",
     "scope": "world",
     "config": true,
     "default": true,
     "type": Boolean,
     "onChange": () => {
-      Hooks.call("renderSceneControls");
+      // Hooks.call("renderSceneControls");
     },
   });
 });
@@ -188,10 +193,7 @@ Hooks.on("ready", async () => {
 // When a player connects or disconnects, refresh the combined view
 Hooks.on("renderPlayerList", () => {
   // Check if user is GM
-  if (
-    !game.user.isGM ||
-    !game.settings.get("theater-of-the-mind", "enablePartySheet")
-  ) {
+  if (!game.user.isGM) {
     return;
   }
   if (PartySheetDialog.rendered) {
@@ -201,9 +203,7 @@ Hooks.on("renderPlayerList", () => {
 });
 
 Hooks.on("renderSceneControls", () => {
-  const showButton =
-    game.user.isGM &&
-    game.settings.get("theater-of-the-mind", "enablePartySheet");
+  const showButton = game.user.isGM
 
   const button = $(`<li class="control-tool "
             data-tool="PartySheet"

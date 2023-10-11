@@ -7,9 +7,9 @@
             "classes": "Clases"
         },
         "settings": {
-            "enable-party-sheet": {
-                "name": "Habilitar Hoja de Grupo",
-                "hint": "Habilita la hoja de grupo."
+            "enable-dark-mode": {
+                "name": "Habilitar el modo oscuro",
+                "hint": ""
             }
         }
     }

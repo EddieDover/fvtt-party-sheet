@@ -7,9 +7,9 @@
             "classes": "Classes"
         },
         "settings": {
-            "enable-party-sheet": {
-                "name": "Enable Party Sheet",
-                "hint": "Enable the party sheet."
+            "enable-dark-mode": {
+                "name": "Enable Dark Mode",
+                "hint": "Habilitar la hoja de fiesta en modo oscuro."
             }
         }
     }
