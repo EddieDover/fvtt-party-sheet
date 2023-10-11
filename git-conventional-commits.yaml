@@ -21,7 +21,7 @@ changelog:
   - fix
   - perf
   - merge
-  includeInvalidCommits: false
+  includeInvalidCommits: true
   commitIgnoreRegexPattern: "^WIP "
   headlines:
     feat: Features

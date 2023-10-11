@@ -9,21 +9,23 @@
     // ESLint configs are prone to particular choices, so if the first config below doesn't work for you then replace
     // with one that you do prefer. The second config defines globals defined in `foundry.js` for use w/ `no-shadow`.
     "extends": [
-      "./node_modules/typhonjs-config-eslint/3.0/basic/es8/server/node/.eslintrc",
-      "@typhonjs-fvtt/eslint-config-foundry.js"
+      "eslint:recommended",
+      "@typhonjs-fvtt/eslint-config-foundry.js/0.8.0",
+      "plugin:jest/recommended",
+      "plugin:prettier/recommended"
     ],
-
+    "plugins": ["jest"],
     "parserOptions": {
-      "ecmaVersion": 2020
+      "ecmaVersion": 2020,
+      "extraFileExtensions": [".cjs", ".mjs"],
+      "sourceType": "module"
     },
-  
+
     // Defines / overrides a few more environment parameters not provided in the configs above.
     "env": {
-      "jquery": true,
-      "es2020": true,
       "browser": true
     },
-  
+
     // Prevents overwriting any built in globals particularly from `@typhonjs-fvtt/eslint-config-foundry.js`, but also
     // node & browser environments. `event / window.event` shadowing is allowed due to being a common variable name and
     // an uncommonly used browser feature.
@@ -33,5 +35,20 @@
       "no-shadow": ["error", { "builtinGlobals": true, "hoist": "all", "allow": ["event"] }],
       "brace-style": ["error", "1tbs"],
       "require-jsdoc": "off"
-    }
+    },
+
+    "overrides": [
+      {
+        "files": ["./*.js", "./*.cjs", "./*.mjs"],
+        "env": {
+          "node": true
+        }
+      },
+      {
+        "files": ["./test/**/*.js"],
+        "env": {
+          "jest/globals": true
+        }
+      }
+    ]
   }

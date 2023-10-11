@@ -1,10 +1,8 @@
 import { THEATER_SOUNDS } from "./sounds.js";
 
-import "./styles/theater-of-the-mind.scss";
-
 let pendingMessages = [];
 let isSyrinscapeInstalled = false;
-let isAttackRollCheckInstalled = false;
+let isMidiQoLInstalled = false;
 
 function log(...message) {
   console.log("Theater of the Mind | ", message);
@@ -280,11 +278,12 @@ Hooks.on("ready", async () => {
     game.modules.get("fvtt-syrin-control")?.active || false;
   log(`Syrinscape is installed: ${isSyrinscapeInstalled}`);
 
-  // Check if Attack Roll Check is installed
-  isAttackRollCheckInstalled =
-    game.modules.get("attack-roll-check-5e")?.active || false;
-  log(`Attack Roll Check is installed: ${isAttackRollCheckInstalled}`);
-  const soundsReady = isSyrinscapeInstalled && isAttackRollCheckInstalled;
+  // Check if MidiQoL is installed
+  log(game.modules);
+  isMidiQoLInstalled =
+    game.modules.get("midi-qol")?.active || false;
+  log(`MidiQoL is installed: ${isMidiQoLInstalled}`);
+  const soundsReady = isSyrinscapeInstalled && isMidiQoLInstalled;
   log(`Sounds enabled: ${soundsReady}`);
 });
 
