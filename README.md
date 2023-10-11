@@ -8,9 +8,3 @@ The original intent of this module was to provide a 'party view' feature that I 
 ![Party Sheet Icon](images/psi.png)
 
 ![Preview of Plugin Party Sheet](images/preview1.png)
-
-## ALPHA Features
-- Sound effects by Weapon Type on Attack Rolls.
-    - This feature will be optional and off by default, until it's deemed solid and stable.
-    - To enable this feature you must install both the [SyrinControl](https://foundryvtt.com/packages/fvtt-syrin-control) and the [Attack Roll Check D&D5e](https://foundryvtt.com/packages/attack-roll-check-5e) modules.
-    - When enabled, this module will scan for Attack Roll GM messages and play a sound with a matching weapon title (including hit, miss, and crit sounds if possible) through the SyrinControl module.

@@ -7,10 +7,6 @@
             "classes": "Classes"
         },
         "settings": {
-            "enable-sounds": {
-                "name": "Enable Syrinscape Sounds",
-                "hint": "This option requires the Syrinscape Integration (fvtt-synrin-control) and the Attack Roll Check (foundryvtt-attack-roll-check-5e) modules."
-            },
             "enable-party-sheet": {
                 "name": "Enable Party Sheet",
                 "hint": "Enable the party sheet."
