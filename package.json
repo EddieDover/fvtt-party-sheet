@@ -20,7 +20,7 @@
       "email": "ed@eddiedover.dev"
     }
   ],
-  "type":"module",
+  "type": "module",
   "scripts": {
     "build": "gulp build",
     "build:watch": "gulp watch",
@@ -34,7 +34,7 @@
     "test:watch": "jest --watch",
     "test:ci": "jest --ci --reporters=default --reporters=jest-junit",
     "postinstall": "husky install",
-    "changelog": "git-conventional-commits changelog > CHANGELOG.md"
+    "changelog2": "generate-changelog -u 'https://github.com/EddieDover/theater-of-the-mind'"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.2.1",
@@ -55,6 +55,7 @@
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
     "rollup": "^2.79.1",
+    "rollup-plugin-copy": "^3.5.0",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
     "yargs": "^17.7.2"
