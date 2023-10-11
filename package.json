@@ -30,6 +30,7 @@
     "release:major": "npm version major && changelog -M",
     "release:minor": "npm version minor && changelog -m",
     "release:patch": "npm version patch && changelog -p",
+    "changelog": "git-conventional-commits changelog > CHANGELOG.md",
     "eslint": "eslint ."
   },
   "devDependencies": {
