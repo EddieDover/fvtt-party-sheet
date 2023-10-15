@@ -37,19 +37,19 @@
         "url": "https://github.com/eddiedover/"
       }
     ],
-    "version": "1.2.1",
+    "version": "1.3.0",
     "compatibility": {
       "minimum": "11",
       "verified": "11"
     },
     "esmodules": [
-      "theater-of-the-mind.js"
+      "module/theater-of-the-mind.js"
     ],
-    "styles": ["theater-of-the-mind.css"],
+    "styles": ["styles/theater-of-the-mind.css"],
     "relationships": {
       "optional": [
         {
-          "id": "foundryvtt-attack-roll-check-5e", "type": "module"
+          "id": "midi-qol", "type": "module"
         },
         {
           "id": "fvtt-syrin-control", "type":"module"

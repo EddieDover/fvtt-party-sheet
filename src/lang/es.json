@@ -1,0 +1,20 @@
+{
+    "theater-of-the-mind": {
+        "party-sheet": {
+            "name": "Nombre",
+            "race": "Raza",
+            "senses": "Sentidos",
+            "classes": "Clases"
+        },
+        "settings": {
+          "enable-sounds": {
+            "name": "Habilitar Sonidos de Syrinscape",
+            "hint": "El soporte de sonido requiere los módulos Syrinscape Integration (fvtt-synrin-control) y Midi QOL (midi-qol)."
+            },
+            "enable-dark-mode": {
+                "name": "Habilitar el modo oscuro",
+                "hint": "Habilitar la hoja de fiesta en modo oscuro."
+            }
+        }
+    }
+}

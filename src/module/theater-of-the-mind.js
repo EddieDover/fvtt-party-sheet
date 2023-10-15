@@ -1,10 +1,7 @@
 import { THEATER_SOUNDS } from "./sounds.js";
 
-import "./styles/theater-of-the-mind.scss";
-
-let pendingMessages = [];
 let isSyrinscapeInstalled = false;
-let isAttackRollCheckInstalled = false;
+let isMidiQoLInstalled = false;
 
 function log(...message) {
   console.log("Theater of the Mind | ", message);
@@ -147,6 +144,7 @@ const convertPlayerDataToTable = () => {
 const PartySheetDialog = new Dialog({
   title: "Party Sheet",
   content: convertPlayerDataToTable(),
+  classNames: ["totm-ps-dialog"],
   buttons: {
     close: {
       icon: '<i class="fas fa-times"></i>',
@@ -154,7 +152,11 @@ const PartySheetDialog = new Dialog({
       callback: () => PartySheetDialog.close(),
     },
   },
-  render: () => {
+  render: (html) => {
+    if (game.settings.get("theater-of-the-mind", "enableDarkMode")) {
+      var parentElement = html[0].parentElement;
+      parentElement.id = "totm-dialog-darkmode";
+    }
     PartySheetDialog.setPosition({
       height: "auto",
       width: 600,
@@ -171,85 +173,52 @@ function togglePartySheet() {
   }
 }
 
-async function playSound(message, type, hitmisscrit) {
-  // TODO: Use our own implementation of Syrinscape? Maybe we can use the API to search instead of hard coding sounds.
+async function playSound(weapon, crit, hitmiss, override = null) {
+
+  if (!isSyrinscapeInstalled || !isMidiQoLInstalled) { return ;}
+
+  const hitmisscrit = override ? "any" : (crit ? "critical" : hitmiss ? "hit" : "miss");
 
   if (!game.settings.get("theater-of-the-mind", "enableSounds")) {
     return;
   }
 
-  // Get the attack weapon from the message
-  const regexPattern = new RegExp(`(.*) - ${type}`, "i");
-  const matchResult = message?.flavor.match(regexPattern);
-  const backup = message?.flavor ?? "";
-  const primary = matchResult ? matchResult[1] : backup;
-
   // Get the sound from the THEATER_SOUNDS object
-  const primarysound = THEATER_SOUNDS[primary.toLowerCase()];
-  if (!primarysound) {
-    log(`No sound key found [${primary.toLowerCase()}].`);
+  const weaponsound = THEATER_SOUNDS[weapon.toLowerCase()];
+
+  if (!weaponsound) {
+    log(`No sound key found [${weapon.toLowerCase()}].`);
     return;
   }
 
   const subsound = hitmisscrit.toLowerCase() || "any";
-  const soundid = primarysound[subsound];
+  const soundid = weaponsound[subsound];
 
   if (!soundid) {
     log(
-      `Key found: [${primary.toLowerCase()}], No sound sub-type found [${subsound}].`,
+      `Key found: [${weapon.toLowerCase()}], No sound sub-type found [${subsound}].`,
     );
   } else {
     game.syrinscape.playElement(soundid);
   }
 }
-
-async function parseMessagesForSounds(message) {
-  if (!game.settings.get("theater-of-the-mind", "enableSounds")) {
-    return;
-  }
-
-  if (message.flags?.["attack-roll-check-5e"]?.isResultCard) {
-    const roll = message.content.match(
-      /<div class="roll-display">(.*)<\/div>/,
-    )[1];
-
-    const applicableMessages =
-      game.messages.filter(
-        (imessage) =>
-          imessage.flavor.toLowerCase().includes("attack roll") &&
-          imessage.content.includes(roll),
-      ) || [];
-
-    if (applicableMessages.length > 0) {
-      const applicableMessage =
-        applicableMessages[applicableMessages.length - 1];
-      pendingMessages = pendingMessages.filter(
-        (imessage) => imessage !== applicableMessage,
-      );
-      const hitmisscrit = message.content.match(
-        /<div class="status-chip ([a-z]*)">/,
-      )[1];
-
-      playSound(applicableMessage, "Attack Roll", hitmisscrit);
-    }
-  } else if (
-    !message.rolls?.some((rolltext) => rolltext.includes("DamageRoll")) &&
-    message.flags?.["dnd5e"]?.use?.type !== "weapon"
-  ) {
-    log(message);
-    playSound(message, "", "any");
-  }
-}
-
 /* Hooks */
-
-// eslint-disable-next-line no-unused-vars
-Hooks.on("preCreateChatMessage", (_chatLog, message, _chatData) => {
-  parseMessagesForSounds(message);
-});
 
 Hooks.on("init", () => {
   log("Initializing");
+
+  game.settings.register("theater-of-the-mind", "enableDarkMode", {
+    "name": "theater-of-the-mind.settings.enable-dark-mode.name",
+    "hint": "theater-of-the-mind.settings.enable-dark-mode.hint",
+    "scope": "world",
+    "config": true,
+    "default": false,
+    "type": Boolean,
+    "onChange": () => {
+      // Hooks.call("renderSceneControls");
+    },
+  });
+
   game.settings.register("theater-of-the-mind", "enableSounds", {
     "name": "theater-of-the-mind.settings.enable-sounds.name",
     "hint": "theater-of-the-mind.settings.enable-sounds.hint",
@@ -257,44 +226,52 @@ Hooks.on("init", () => {
     "config": true,
     "default": false,
     "type": Boolean,
-  });
-
-  game.settings.register("theater-of-the-mind", "enablePartySheet", {
-    "name": "theater-of-the-mind.settings.enable-party-sheet.name",
-    "hint": "theater-of-the-mind.settings.enable-party-sheet.hint",
-    "scope": "world",
-    "config": true,
-    "default": true,
-    "type": Boolean,
     "onChange": () => {
-      Hooks.call("renderSceneControls");
     },
   });
 });
 
+//
+Hooks.on('midi-qol.AttackRollComplete', async (roll) => {
+  const weapon = roll.item.name;
+  const roll_results = roll.attackTotal;
+  const target = roll?.targets?.values().next().value || null;
+  const target_actor = target?.document?.actors?.values().next().value || null;
+  const ac = target_actor?.system?.attributes?.ac?.value || null;
+
+  if (ac) {
+    playSound(weapon, roll_results === 20, roll_results >= ac);
+  }
+
+});
+
+Hooks.on('midi-qol.preambleComplete', async (roll) => {
+
+  if (roll?.item?.type != "spell") {
+    return;
+  }
+  playSound(roll.item.name, false, false, "any");
+
+})
+
 Hooks.on("ready", async () => {
   log("Ready");
 
-  // Check if Syrinscape plugin is installed
-  isSyrinscapeInstalled =
-    game.modules.get("fvtt-syrin-control")?.active || false;
+  isSyrinscapeInstalled = game.modules.get("fvtt-syrin-control")?.active || false;
   log(`Syrinscape is installed: ${isSyrinscapeInstalled}`);
 
-  // Check if Attack Roll Check is installed
-  isAttackRollCheckInstalled =
-    game.modules.get("attack-roll-check-5e")?.active || false;
-  log(`Attack Roll Check is installed: ${isAttackRollCheckInstalled}`);
-  const soundsReady = isSyrinscapeInstalled && isAttackRollCheckInstalled;
+  isMidiQoLInstalled =
+  game.modules.get("midi-qol")?.active || false;
+  log(`Midi-QoL is installed: ${isMidiQoLInstalled}`);
+
+  const soundsReady = isSyrinscapeInstalled && isMidiQoLInstalled;
   log(`Sounds enabled: ${soundsReady}`);
 });
 
 // When a player connects or disconnects, refresh the combined view
 Hooks.on("renderPlayerList", () => {
   // Check if user is GM
-  if (
-    !game.user.isGM ||
-    !game.settings.get("theater-of-the-mind", "enablePartySheet")
-  ) {
+  if (!game.user.isGM) {
     return;
   }
   if (PartySheetDialog.rendered) {
@@ -304,9 +281,7 @@ Hooks.on("renderPlayerList", () => {
 });
 
 Hooks.on("renderSceneControls", () => {
-  const showButton =
-    game.user.isGM &&
-    game.settings.get("theater-of-the-mind", "enablePartySheet");
+  const showButton = game.user.isGM
 
   const button = $(`<li class="control-tool "
             data-tool="PartySheet"
