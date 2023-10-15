@@ -9,7 +9,7 @@
         "settings": {
             "enable-dark-mode": {
                 "name": "Habilitar el modo oscuro",
-                "hint": ""
+                "hint": "Habilitar la hoja de fiesta en modo oscuro."
             }
         }
     }
