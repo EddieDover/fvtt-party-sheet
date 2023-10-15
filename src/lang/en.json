@@ -9,7 +9,7 @@
         "settings": {
             "enable-sounds": {
               "name": "Enable Syrinscape Sounds",
-              "hint": "This option requires the Syrinscape Integration (fvtt-synrin-control) and the Attack Roll Check (foundryvtt-attack-roll-check-5e) modules."
+              "hint": "Sound support requires the Syrinscape Integration (fvtt-synrin-control) and Midi QOL (midi-qol) modules."
           },
             "enable-dark-mode": {
                 "name": "Enable Dark Mode",

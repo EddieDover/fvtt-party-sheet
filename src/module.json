@@ -49,7 +49,7 @@
     "relationships": {
       "optional": [
         {
-          "id": "foundryvtt-attack-roll-check-5e", "type": "module"
+          "id": "midi-qol", "type": "module"
         },
         {
           "id": "fvtt-syrin-control", "type":"module"

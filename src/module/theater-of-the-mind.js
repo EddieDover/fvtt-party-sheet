@@ -1,5 +1,8 @@
 import { THEATER_SOUNDS } from "./sounds.js";
 
+let isSyrinscapeInstalled = false;
+let isMidiQoLInstalled = false;
+
 function log(...message) {
   console.log("Theater of the Mind | ", message);
 }
@@ -171,6 +174,9 @@ function togglePartySheet() {
 }
 
 async function playSound(weapon, crit, hitmiss, override = null) {
+
+  if (!isSyrinscapeInstalled || !isMidiQoLInstalled) { return ;}
+
   const hitmisscrit = override ? "any" : (crit ? "critical" : hitmiss ? "hit" : "miss");
 
   if (!game.settings.get("theater-of-the-mind", "enableSounds")) {
@@ -250,6 +256,16 @@ Hooks.on('midi-qol.preambleComplete', async (roll) => {
 
 Hooks.on("ready", async () => {
   log("Ready");
+
+  isSyrinscapeInstalled = game.modules.get("fvtt-syrin-control")?.active || false;
+  log(`Syrinscape is installed: ${isSyrinscapeInstalled}`);
+
+  isMidiQoLInstalled =
+  game.modules.get("midi-qol")?.active || false;
+  log(`Midi-QoL is installed: ${isMidiQoLInstalled}`);
+
+  const soundsReady = isSyrinscapeInstalled && isMidiQoLInstalled;
+  log(`Sounds enabled: ${soundsReady}`);
 });
 
 // When a player connects or disconnects, refresh the combined view

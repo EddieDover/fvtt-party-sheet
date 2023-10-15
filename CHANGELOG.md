@@ -1,18 +1,18 @@
-### 1.3.0 (2023-10-11)
+## 1.3.0 (2023-10-15)
 
 ##### New Features
 
-*  Added Dark Mode option toggle. ([91175ad4](https://github.com/EddieDover/theater-of-the-mind/commit/91175ad4a088c01ab937ded8be1cf61a5427e00a))
-*  added better changelog system ([2b104a68](https://github.com/EddieDover/theater-of-the-mind/commit/2b104a68e4d2687fe3a4b0b25d7edb5166226ca9))
-*  removed **sounds** support
+*  changed **sounds** dependency from attack-roll-check-5e with midi-qol ([3ef24300]('https://github.com/EddieDover/theater-of-the-mind'/commit/3ef24300229b2365823791936000c11b28dd4561))
+*  Added Dark Mode option toggle. ([91175ad4]('https://github.com/EddieDover/theater-of-the-mind'/commit/91175ad4a088c01ab937ded8be1cf61a5427e00a))
+*  added better changelog system ([2b104a68]('https://github.com/EddieDover/theater-of-the-mind'/commit/2b104a68e4d2687fe3a4b0b25d7edb5166226ca9))
 
-### 1.2.1 (2023-10-07)
+## 1.2.1 (2023-10-07)
 
 ##### Bug Fixes
 
 *  corrected issue where perception was showing persuasion instead ([ad5e0e3b](https://github.com/EddieDover/theater-of-the-mind/commit/ad5e0e3b))
 
-### 1.2.0 (2023-09-22)
+## 1.2.0 (2023-09-22)
 
 ##### Chores
 
@@ -23,7 +23,7 @@
 *  added spell sounds ([6489e4c6](https://github.com/EddieDover/theater-of-the-mind/commit/6489e4c6))
 *  added weapon sounds ([c237bfbc](https://github.com/EddieDover/theater-of-the-mind/commit/c237bfbc))
 
-### 1.1.0 (2023-09-21)
+## 1.1.0 (2023-09-21)
 
 
 ##### New Features
