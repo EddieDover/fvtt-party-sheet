@@ -29,11 +29,11 @@ jobs:
 
       # run the build action; choose `build-deploy` if not minifying your output bundle.
       - name: Build deploy directory
-        run: npm run build-deploy-compress
+        run: npm run build
 
       # create a zip file with all files required by the module to add to the release
       - name: Zip Files
-        working-directory: ./deploy
+        working-directory: ./dist
         run: zip -r ./module.zip ./*
 
       # Get the version from 'module.json'
@@ -60,5 +60,5 @@ jobs:
             ${{ steps.Changelog.outputs.changelog }}
           draft: false
           prerelease: false
-          artifacts: './deploy/module.json,./deploy/module.zip'
+          artifacts: './dist/module.json,./dist/module.zip'
           tag: v${{ steps.get-version.outputs.version }}
