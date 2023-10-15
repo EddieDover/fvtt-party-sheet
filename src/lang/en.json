@@ -7,6 +7,10 @@
             "classes": "Classes"
         },
         "settings": {
+            "enable-sounds": {
+              "name": "Enable Syrinscape Sounds",
+              "hint": "This option requires the Syrinscape Integration (fvtt-synrin-control) and the Attack Roll Check (foundryvtt-attack-roll-check-5e) modules."
+          },
             "enable-dark-mode": {
                 "name": "Enable Dark Mode",
                 "hint": "Enable dark mode for the party sheet."

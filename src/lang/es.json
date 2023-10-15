@@ -7,6 +7,10 @@
             "classes": "Clases"
         },
         "settings": {
+          "enable-sounds": {
+            "name": "Habilitar Sonidos de Syrinscape",
+            "hint": "Esta opción requiere los módulos de Integración de Syrinscape (fvtt-syrin-control) y Comprobación de Tirada de Ataque (foundryvtt-attack-roll-check-5e)."
+            },
             "enable-dark-mode": {
                 "name": "Habilitar el modo oscuro",
                 "hint": "Habilitar la hoja de fiesta en modo oscuro."

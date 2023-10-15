@@ -1,3 +1,5 @@
+import { THEATER_SOUNDS } from "./sounds.js";
+
 function log(...message) {
   console.log("Theater of the Mind | ", message);
 }
@@ -168,6 +170,32 @@ function togglePartySheet() {
   }
 }
 
+async function playSound(weapon, crit, hitmiss, override = null) {
+  const hitmisscrit = override ? "any" : (crit ? "critical" : hitmiss ? "hit" : "miss");
+
+  if (!game.settings.get("theater-of-the-mind", "enableSounds")) {
+    return;
+  }
+
+  // Get the sound from the THEATER_SOUNDS object
+  const weaponsound = THEATER_SOUNDS[weapon.toLowerCase()];
+
+  if (!weaponsound) {
+    log(`No sound key found [${weapon.toLowerCase()}].`);
+    return;
+  }
+
+  const subsound = hitmisscrit.toLowerCase() || "any";
+  const soundid = weaponsound[subsound];
+
+  if (!soundid) {
+    log(
+      `Key found: [${weapon.toLowerCase()}], No sound sub-type found [${subsound}].`,
+    );
+  } else {
+    game.syrinscape.playElement(soundid);
+  }
+}
 /* Hooks */
 
 Hooks.on("init", () => {
@@ -178,13 +206,47 @@ Hooks.on("init", () => {
     "hint": "theater-of-the-mind.settings.enable-dark-mode.hint",
     "scope": "world",
     "config": true,
-    "default": true,
+    "default": false,
     "type": Boolean,
     "onChange": () => {
       // Hooks.call("renderSceneControls");
     },
   });
+
+  game.settings.register("theater-of-the-mind", "enableSounds", {
+    "name": "theater-of-the-mind.settings.enable-sounds.name",
+    "hint": "theater-of-the-mind.settings.enable-sounds.hint",
+    "scope": "world",
+    "config": true,
+    "default": false,
+    "type": Boolean,
+    "onChange": () => {
+    },
+  });
 });
+
+//
+Hooks.on('midi-qol.AttackRollComplete', async (roll) => {
+  const weapon = roll.item.name;
+  const roll_results = roll.attackTotal;
+  const target = roll?.targets?.values().next().value || null;
+  const target_actor = target?.document?.actors?.values().next().value || null;
+  const ac = target_actor?.system?.attributes?.ac?.value || null;
+
+  if (ac) {
+    playSound(weapon, roll_results === 20, roll_results >= ac);
+  }
+
+});
+
+Hooks.on('midi-qol.preambleComplete', async (roll) => {
+
+  if (roll?.item?.type != "spell") {
+    return;
+  }
+  playSound(roll.item.name, false, false, "any");
+
+})
 
 Hooks.on("ready", async () => {
   log("Ready");
