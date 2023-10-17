@@ -8,6 +8,32 @@
   }
 }
 
+.totm-hc-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+
+  .totm-hc-section {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+
+    .totm-hc-item {
+      display: flex;
+      align-items: center;
+      width: fit-content;
+      border-radius: 5px;
+      padding: 2px;
+      margin: 2px;
+      border: 1px solid rgba(1,1,1,0.25);
+    }
+  }
+}
+
 #totm-ps-table {
     text-align:center;
 

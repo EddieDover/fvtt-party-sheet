@@ -1,0 +1,13 @@
+<form autocomplete="off" class="totm-hc-form">
+  <section class="totm-hc-section">
+    {{#each characters}}
+    <div class="totm-hc-item">
+      <input type="checkbox" name="character-{{this}}" value="{{this}}" class="hidden-character" id="hidden-character-{{this}}" {{#hccontains this hiddenCharacters}}checked{{/hccontains}}>
+      <label for="hidden-character-{{this}}">{{this}}</label>
+    </div>
+    {{/each}}
+  </section>
+  <button type="button" name="submit">
+    <i class="fas fa-save"></i> Save
+  </button>
+</form>
