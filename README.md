@@ -8,11 +8,17 @@
 The original intent of this module was to provide a 'party view' feature that I found missing when I first started using [FoundryVTT](https://www.foundryvtt.com) instead of [Fantasy Grounds](https://www.fantasygrounds.com). It will be updated with features that I personally want or need, or are requested of me by some poor soul.
 
 ## Features
-- Adds a 'Party Sheet' similar to that provided by Fantasy Grounds. Just click the Party Sheet icon  on the Tokens Controls sub-menu.
+- Adds a 'Party Sheet' similar to that provided by Fantasy Grounds. Just click the Party Sheet icon on the Tokens Controls sub-menu.
+
+  - The Party Sheet can be configured via the options to either display only currently connected players, or all non-npc characters. When using the all-characters display, there is a separate dialog to allow hiding of any characters the DM doesn't need to worry about.
 
 - Sound effects support if you have Syrinscape ([fvtt-syrin-control](https://github.com/frondeus/fvtt-syrin-control)) and Midi QOL ([midi-qol](https://gitlab.com/tposney/midi-qol/)) installed.
 
 ![Party Sheet Icon](images/psi.png)
 
-![Preview of Plugin Party Sheet](images/preview1.png)
+Only Connected Players:
+![Preview of Plugin Party Sheet - Only Connected Players](images/preview1.png)
+
+Specific Characters
+![Preview of Plugin Party Sheet - Specific Actors](images/preview2.png)
 
