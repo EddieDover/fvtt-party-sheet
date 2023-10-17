@@ -4,9 +4,19 @@
             "name": "Nombre",
             "race": "Raza",
             "senses": "Sentidos",
-            "classes": "Clases"
+            "classes": "Clases",
+            "no-players": "Ningún jugador ha iniciado sesión actualmente."
+        },
+        "hide-sheet":{
+          "button": "Configurar personajes ocultos",
+          "hint": "Edite qué caracteres se muestran si no se muestran caracteres en línea.",
+          "tooltip":"Seleccionar personajes para ocultar"
         },
         "settings": {
+          "enable-only-online": {
+            "name": "Mostrar solo personajes en línea",
+            "hint": "Solo muestra personajes asignados a jugadores conectados. Desactivar esta opción mostrará todos los personajes que no sean NPC, pero te permitirá 'ocultar' los que no te interesan."
+          },
           "enable-sounds": {
             "name": "Habilitar Sonidos de Syrinscape",
             "hint": "El soporte de sonido requiere los módulos Syrinscape Integration (fvtt-synrin-control) y Midi QOL (midi-qol)."

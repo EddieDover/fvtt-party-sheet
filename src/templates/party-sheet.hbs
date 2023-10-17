@@ -1,0 +1,70 @@
+<form autocomplete="off" class="totm-hc-psform">
+  {{#unless enableOnlyOnline}}
+  <button class="totm-options" name="totm-options"><i class="fas fa-cog"></i>{{localize "theater-of-the-mind.hide-sheet.button" }}</button>
+  {{/unless}}
+
+  {{#if players}}
+  <table id='totm-ps-table'>
+    <tr>
+      <th class="namerace"><div>{{ localize "theater-of-the-mind.party-sheet.name" }}</div><div>{{ localize "theater-of-the-mind.party-sheet.race"}}</div></th>
+      <th class="p-1">STR</th>
+      <th class="p-1">DEX</th>
+      <th class="p-1">CON</th>
+      <th class="p-1">INT</th>
+      <th class="p-1">WIS</th>
+      <th class="p-1">CHA</th>
+      <th>AC</th>
+      <th>Inv</th>
+      <th>{{localize "theater-of-the-mind.party-sheet.senses"}}</th>
+    </tr>
+
+    <tr>
+      <th>{{localize "theater-of-the-mind.party-sheet.classes"}}</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th class="p-1">Per</th>
+      <th class="p-1">Ins</th>
+      <th></th>
+    </tr>
+
+    {{#each players as |player|}}
+      <tr>
+        <td rowspan="2" style="max-width:250px;">
+          <div class="totm-ps-name-bar">
+            {{{player.img}}}
+            <div class='totm-ps-name-bar-namerace'>
+              <div class='entry' title='{{player.name}}'>{{player.name}}</div>
+              <div class='entry' title='{{player.race}}'>{{player.race}}</div>
+              <div class='fullentry' title='{{player.classNames}}'>{{player.classNames}}</div>
+            </div>
+          </div>
+        </td>
+        {{#each player.stats as |stat|}}
+          <td>{{stat.value}}</td>
+        {{/each}}
+        <td>{{player.ac}}</td>
+        <td>{{player.passives.inv}}</td>
+        <td rowspan="2" class="totm-senses" title='{{player.senses}}'>{{player.senses}}</td>
+      </tr>
+      <tr class="totm-ps-finrow">
+        {{#each player.stats as |stat|}}
+          {{#hcifgte stat.mod 0}}
+            <td>+{{stat.mod}}</td>
+          {{else}}
+            <td>{{stat.mod}}</td>
+          {{/hcifgte}}
+        {{/each}}
+        <td>{{player.passives.prc}}</td>
+        <td>{{player.passives.ins}}</td>
+      </tr>
+    {{/each}}
+  </table>
+  {{else}}
+    <div class="totm-ps-no-players">{{ localize "theater-of-the-mind.party-sheet.no-players" }}</div>
+  {{/if}}
+  <button name="totm-close" class="totm-close"><i class="fas fa-times"></i>Close</button>
+</form>

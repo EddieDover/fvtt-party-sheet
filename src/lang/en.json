@@ -4,7 +4,13 @@
             "name": "Name",
             "race": "Race",
             "senses": "Senses",
-            "classes": "Classes"
+            "classes": "Classes",
+            "no-players": "No players are currently logged in."
+        },
+        "hide-sheet": {
+          "button": "Configure Hidden Characters",
+          "hint": "Edit which characters are displayed if not showing online characters.",
+          "tooltip": "Select Characters To Hide"
         },
         "settings": {
           "enable-only-online": {
