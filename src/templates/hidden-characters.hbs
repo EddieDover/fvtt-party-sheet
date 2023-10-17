@@ -1,0 +1,14 @@
+<form autocomplete="off" class="totm-hc-form">
+  <p>{{localize "theater-of-the-mind.hide-sheet.tooltip"}}</p>
+  <section class="totm-hc-section">
+    {{#each characters}}
+    <div class="totm-hc-item">
+      <input type="checkbox" name="character-{{this.uuid}}" value="{{this.uuid}}" class="hidden-character" id="hidden-character-{{this.uuid}}" {{#hccontains this.uuid hiddenCharacters}}checked{{/hccontains}}>
+      <label for="hidden-character-{{this.uuid}}">{{this.name}}</label>
+    </div>
+    {{/each}}
+  </section>
+  <button type="button" name="submit">
+    <i class="fas fa-save"></i> Save
+  </button>
+</form>

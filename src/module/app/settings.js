@@ -1,11 +1,11 @@
 import { HiddenCharactersSettings } from "./hidden-characters-settings";
 
 export const registerSettings = () => {
-  game.settings.register('theater-of-the-mind', 'hiddenCharacters', {
-    "scope":"world",
+  game.settings.register("theater-of-the-mind", "hiddenCharacters", {
+    "scope": "world",
     "config": false,
     "default": [],
-    "type": Array
+    "type": Array,
   });
 
   game.settings.register("theater-of-the-mind", "enableOnlyOnline", {
@@ -14,16 +14,16 @@ export const registerSettings = () => {
     "scope": "world",
     "config": true,
     "default": true,
-    "type": Boolean
+    "type": Boolean,
   });
 
   game.settings.registerMenu("theater-of-the-mind", "configureHiddenCharacters", {
     "name": "",
-    "label": "Edit Displayed Characters",
-    "hint": "Edit which characters are displayed if not showing online characters.",
-    "icon": "fas fa-user",
+    "label": "theater-of-the-mind.hide-sheet.button",
+    "hint": "theater-of-the-mind.hide-sheet.hint",
+    "icon": "fas fa-cog",
     "restricted": true,
-    "type": HiddenCharactersSettings
+    "type": HiddenCharactersSettings,
   });
 
   game.settings.register("theater-of-the-mind", "enableDarkMode", {
@@ -44,6 +44,6 @@ export const registerSettings = () => {
     "scope": "world",
     "config": true,
     "default": false,
-    "type": Boolean
+    "type": Boolean,
   });
-}
+};

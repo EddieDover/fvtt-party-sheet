@@ -1,3 +1,16 @@
+## 1.4.5 (2023-10-17)
+
+##### Chores
+
+* rewrote template system ([60dbaad3]('https://github.com/EddieDover/theater-of-the-mind'/commit/60dbaad30482cfc1c1006bb28d360d15d796a29f))
+* rewrote actor show/hide functionality ([60dbaad3]('https://github.com/EddieDover/theater-of-the-mind'/commit/60dbaad30482cfc1c1006bb28d360d15d796a29f))
+* restyled dialogs ([60dbaad3]('https://github.com/EddieDover/theater-of-the-mind'/commit/60dbaad30482cfc1c1006bb28d360d15d796a29f))
+
+
+##### New Features
+
+*  added ability to click on characters and open sheet ([60dbaad3]('https://github.com/EddieDover/theater-of-the-mind'/commit/60dbaad30482cfc1c1006bb28d360d15d796a29f))
+
 ## 1.4.0 (2023-10-17)
 
 ##### New Features

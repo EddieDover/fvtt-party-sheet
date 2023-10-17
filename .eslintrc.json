@@ -34,7 +34,8 @@
     "rules": {
       "no-shadow": ["error", { "builtinGlobals": true, "hoist": "all", "allow": ["event"] }],
       "brace-style": ["error", "1tbs"],
-      "require-jsdoc": "off"
+      "require-jsdoc": "off",
+      "quotes": ["error", "double", { "avoidEscape": true }]
     },
 
     "overrides": [

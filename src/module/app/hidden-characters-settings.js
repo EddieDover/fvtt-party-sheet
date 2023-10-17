@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 export class HiddenCharactersSettings extends FormApplication {
   constructor(overrides) {
     super();
@@ -5,7 +6,11 @@ export class HiddenCharactersSettings extends FormApplication {
   }
 
   getData(options) {
-    this.characterList = game.actors.filter(actor => actor.type !== "npc").map(actor => actor.name);
+    this.characterList = game.actors
+      .filter((actor) => actor.type !== "npc")
+      .map((actor) => {
+        return { "uuid": actor.uuid, "name": actor.name };
+      });
     const hiddenCharacters = game.settings.get("theater-of-the-mind", "hiddenCharacters");
     const enableOnlyOnline = game.settings.get("theater-of-the-mind", "enableOnlyOnline");
 
@@ -13,27 +18,27 @@ export class HiddenCharactersSettings extends FormApplication {
       characters: this.characterList,
       hiddenCharacters,
       enableOnlyOnline,
-      overrides: this.overrides
+      overrides: this.overrides,
     });
   }
 
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-        id: "totm-hidden-characters-settings",
-        classes: ["form"],
-        title: "Configure Hidden Characters",
-        template: "modules/theater-of-the-mind/templates/hidden-characters.html",
-        width: 'auto',
-        height: 300,
+      id: "totm-hidden-characters-settings",
+      classes: ["form"],
+      title: "Configure Hidden Characters",
+      template: "modules/theater-of-the-mind/templates/hidden-characters.hbs",
+      width: "auto",
+      height: 300,
     });
   }
 
-  saveHiddenCharacters(event) {
+  saveHiddenCharacters() {
     const hiddenCharacters = [];
     for (const character of this.characterList) {
-      const checkbox = document.getElementById(`hidden-character-${character}`);
+      const checkbox = document.getElementById(`hidden-character-${character.uuid}`);
       if (checkbox.checked) {
-        hiddenCharacters.push(character);
+        hiddenCharacters.push(character.uuid);
       }
     }
     game.settings.set("theater-of-the-mind", "hiddenCharacters", hiddenCharacters);

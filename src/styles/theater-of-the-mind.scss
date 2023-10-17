@@ -49,6 +49,15 @@
         border: 1px solid darkgray;
     }
 
+    .totm-senses {
+      text-overflow:ellipsis;
+      overflow-x: hidden;
+      max-width: 100px;
+      white-space: nowrap;
+      padding-left:5px;
+      padding-right:5px;
+    }
+
     .totm-ps-name-bar {
         width:100%;
         display:flex;
@@ -61,16 +70,23 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: auto 1fr;
-            margin-left: 1rem;
+            margin-left: 2px;
             width: 100%;
             text-decoration: underline;
 
             .entry {
-                overflow-x:hidden;
+                text-overflow:ellipsis;
+                overflow-x: hidden;
+                max-width: 100px;
+                white-space: nowrap;
+                padding-left:5px;
+                padding-right:5px;
             }
 
             .fullentry {
                 grid-column: 1 / span 2;
+                padding-left:5px;
+                padding-right:5px;
             }
         }
     }
