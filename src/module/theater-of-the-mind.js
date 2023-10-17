@@ -12,7 +12,6 @@ function log(...message) {
 Handlebars.registerHelper('hccontains', function(needle, haystack, options) {
   needle = Handlebars.escapeExpression(needle);
   haystack = game.settings.get('theater-of-the-mind', 'hiddenCharacters') ?? [];
-  log(needle, haystack,haystack.includes(needle), haystack.indexOf(needle))
   return (haystack.indexOf(needle) > -1) ? options.fn(this) : options.inverse(this);
 });
 
@@ -95,7 +94,7 @@ const convertPlayerDataToTable = () => {
   const currentlyHiddenCharacters = game.settings.get('theater-of-the-mind', 'hiddenCharacters') ?? [];
   try {
     const players = getPlayerData();
-    console.log(players);
+
     if (players.length === 0) {
       return "No players connected";
     }
@@ -186,8 +185,6 @@ const PartySheetDialog = new Dialog({
       }
       const hcs = new HiddenCharactersSettings(overrides);
       hcs.render(true);
-      console.log(hcs);
-
     });
     if (game.settings.get("theater-of-the-mind", "enableDarkMode")) {
       var parentElement = html[0].parentElement;
