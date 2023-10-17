@@ -8,11 +8,15 @@ function log(...message) {
 }
 
 const getPlayerData = () => {
+
+  const showOnlyOnlineUsers = game.settings.get("theater-of-the-mind", "enableOnlyOnline");
+  const actorList = showOnlyOnlineUsers ? game.users.filter( (user) => user.active && user.character).map(user => user.character) : game.actors.filter(actor => actor.type !== "npc");
+  //const actorList = game.users.filter( (user) => user.active && user.character).map(user => user.character);
+
   try {
-    return game.users
-      .map((user) => {
-        if (user.active && user.character) {
-          const userChar = user.character;
+    return actorList
+      .map((character) => {
+          const userChar = character;
           const userSys = userChar.system;
           const stats = userSys.abilities;
           const ac = userSys.attributes.ac.value;
@@ -70,7 +74,7 @@ const getPlayerData = () => {
             ac,
             passives,
           };
-        }
+
       })
       .filter((player) => player);
   } catch (ex) {
@@ -79,14 +83,18 @@ const getPlayerData = () => {
   return [];
 };
 
+export function hidePlayer(name) {
+  console.log("theater", "Hiding Player: " + name);
+}
+
 const convertPlayerDataToTable = () => {
+  const showOnlyOnlineUsers = game.settings.get("theater-of-the-mind", "enableOnlyOnline") ?? true;
+  const currentlyHiddenCharacters = game.settings.get('theater-of-the-mind', 'hiddenCharacters') ?? [];
   try {
     const players = getPlayerData();
     if (players.length === 0) {
       return "No players connected";
     }
-
-    let table = `<table id='totm-ps-table'>`;
 
     const localize = {
       name: game.i18n.localize("theater-of-the-mind.party-sheet.name"),
@@ -94,47 +102,119 @@ const convertPlayerDataToTable = () => {
       senses: game.i18n.localize("theater-of-the-mind.party-sheet.senses"),
       classes: game.i18n.localize("theater-of-the-mind.party-sheet.classes"),
     };
-
-    table += `<tr><th class="namerace"><div>${localize.name}</div><div>${localize.race}</div></th>`;
+    let table = `<table id='totm-ps-table'>`;
+    let thead = `<tr><th class="namerace"><div>${localize.name}</div><div>${localize.race}</div></th>`;
     for (const stat in players[0].stats) {
-      table += `<th class="p-1">${stat.toUpperCase()}</th>`;
+      thead += `<th class="p-1">${stat.toUpperCase()}</th>`;
     }
-    table += `<th>AC</th><th>Inv</th><th>${localize.senses}</th></tr>`;
+    thead += `<th>AC</th><th>Inv</th><th>${localize.senses}</th>`;
+    if (!showOnlyOnlineUsers) {
+      // Add a column for the 'hide' selection.
+      thead += `<th>Hide</th>`;
+    }
+    thead += `</tr>`;
 
-    table += `<tr><th>${localize.classes}</th>`;
+    thead += `<tr><th>${localize.classes}</th>`;
     for (let i = 0; i < 6; i++) {
-      table += `<th></th>`;
+      thead += `<th></th>`;
     }
-    table += ` <th class="p-1">Per</th><th class="p-1">Ins</th><th></th></tr>`;
+    thead += ` <th class="p-1">Per</th><th class="p-1">Ins</th><th></th></tr>`;
 
-    players.forEach((player) => {
-      table += `<tr><td rowspan="2"><div class="totm-ps-name-bar">${player.img}`;
-      table += `<div class='totm-ps-name-bar-namerace'>
+    table += thead;
+    let tbody = "";
+    players.filter(player => !currentlyHiddenCharacters.includes(player.name)).forEach((player) => {
+      let pbody = `<tr><td rowspan="2"><div class="totm-ps-name-bar">${player.img}`;
+      pbody += `<div class='totm-ps-name-bar-namerace'>
           <div class='entry'>${player.name}</div>
           <div class='entry'>${player.race}</div>
           <div class='fullentry'>${player.classNames}</div>
       </div>`;
-      table += `</div></td>`;
+      pbody += `</div></td>`;
       for (const stat in player.stats) {
-        table += `<td>${player.stats[stat].value}</td>`;
+        pbody += `<td>${player.stats[stat].value}</td>`;
       }
-      table += `<td>${player.ac}</td>`;
-      table += `<td>${player.passives.inv}</td>`;
-      table += `<td rowspan="2" style="white-space: nowrap;">${player.senses}</td>`;
-      table += `</tr>`;
+      pbody += `<td>${player.ac}</td>`;
+      pbody += `<td>${player.passives.inv}</td>`;
+      pbody += `<td rowspan="2" style="white-space: nowrap;">${player.senses}</td>`;
+      if (!showOnlyOnlineUsers) {
+        pbody += `<td rowspan='2'>`;
+        pbody += `<button type="button" class="hideplayer" data-playername='${player.name}'>Hide</button>`;
+        pbody += `</td>`;
+      }
+      pbody += `</tr>`;
 
-      table += `<tr class="totm-ps-finrow">`;
+      pbody += `<tr class="totm-ps-finrow">`;
       for (const stat in player.stats) {
-        table += `<td>${player.stats[stat].mod >= 0 ? "+" : ""}${
+        pbody += `<td>${player.stats[stat].mod >= 0 ? "+" : ""}${
           player.stats[stat].mod
         }</td>`;
       }
-      table += `<td>${player.passives.prc}</td>`;
-      table += `<td>${player.passives.ins}</td>`;
-      table += `</tr>`;
+      pbody += `<td>${player.passives.prc}</td>`;
+      pbody += `<td>${player.passives.ins}</td>`;
+      pbody += `</tr>`;
+      tbody += pbody;
     });
-    table += `</table>`;
-    return table;
+    table += tbody + `</table>`;
+    let hiddenstuff = `<details><summary>Hidden Characters</summary>`;
+
+    let hiddentable = `<table id='totm-ps-table'>`;
+    let hiddenthead = `<tr><th class="namerace"><div>${localize.name}</div><div>${localize.race}</div></th>`;
+    for (const stat in players[0].stats) {
+      hiddenthead += `<th class="p-1">${stat.toUpperCase()}</th>`;
+    }
+    hiddenthead += `<th>AC</th><th>Inv</th><th>${localize.senses}</th>`;
+    if (!showOnlyOnlineUsers) {
+      // Add a column for the 'hide' selection.
+      hiddenthead += `<th>Hide</th>`;
+    }
+    hiddenthead += `</tr>`;
+
+    hiddenthead += `<tr><th>${localize.classes}</th>`;
+    for (let i = 0; i < 6; i++) {
+      hiddenthead += `<th></th>`;
+    }
+    hiddenthead += ` <th class="p-1">Per</th><th class="p-1">Ins</th><th></th></tr>`;
+
+    hiddentable += hiddenthead;
+    let hiddentbody = "";
+
+    players.filter(player => currentlyHiddenCharacters.includes(player.name)).forEach((player) => {
+      let pbody = `<tr><td rowspan="2"><div class="totm-ps-name-bar">${player.img}`;
+      pbody += `<div class='totm-ps-name-bar-namerace'>
+          <div class='entry'>${player.name}</div>
+          <div class='entry'>${player.race}</div>
+          <div class='fullentry'>${player.classNames}</div>
+      </div>`;
+      pbody += `</div></td>`;
+      for (const stat in player.stats) {
+        pbody += `<td>${player.stats[stat].value}</td>`;
+      }
+      pbody += `<td>${player.ac}</td>`;
+      pbody += `<td>${player.passives.inv}</td>`;
+      pbody += `<td rowspan="2" style="white-space: nowrap;">${player.senses}</td>`;
+      if (!showOnlyOnlineUsers) {
+        pbody += `<td rowspan='2'>`;
+        pbody += `<button type="button" class="showplayer" data-playername='${player.name}'>Show</button>`;
+        pbody += `</td>`;
+      }
+      pbody += `</tr>`;
+
+      pbody += `<tr class="totm-ps-finrow">`;
+      for (const stat in player.stats) {
+        pbody += `<td>${player.stats[stat].mod >= 0 ? "+" : ""}${
+          player.stats[stat].mod
+        }</td>`;
+      }
+      pbody += `<td>${player.passives.prc}</td>`;
+      pbody += `<td>${player.passives.ins}</td>`;
+      pbody += `</tr>`;
+      hiddentbody += pbody;
+    });
+    hiddentable += hiddentbody + `</table>`;
+
+    hiddenstuff += hiddentable + `</details>`
+    const html = showOnlyOnlineUsers ? table : table + hiddenstuff;
+    return html;
   } catch (ex) {
     log(ex);
     return ex.message;
@@ -143,7 +223,7 @@ const convertPlayerDataToTable = () => {
 
 const PartySheetDialog = new Dialog({
   title: "Party Sheet",
-  content: convertPlayerDataToTable(),
+  content: null, //convertPlayerDataToTable(),
   classNames: ["totm-ps-dialog"],
   buttons: {
     close: {
@@ -153,6 +233,34 @@ const PartySheetDialog = new Dialog({
     },
   },
   render: (html) => {
+    html.on('click', 'button.hideplayer', (event) => {
+      // Get the data-playername attribute from the button
+      const name = event.currentTarget.dataset.playername ?? '';
+      if (name) {
+        let currentlyHiddenCharacters = game.settings.get('theater-of-the-mind', 'hiddenCharacters') ?? [];
+        if (!currentlyHiddenCharacters.includes(name)) {
+          currentlyHiddenCharacters.push(name);
+          game.settings.set('theater-of-the-mind', 'hiddenCharacters', currentlyHiddenCharacters);
+          setTimeout(() => {
+            PartySheetDialog.data.content = convertPlayerDataToTable();
+            PartySheetDialog.render(true);
+          }, 250);
+        }
+      }
+    });
+    html.on('click', 'button.showplayer', (event) => {
+      // Get the data-playername attribute from the button
+      const name = event.currentTarget.dataset.playername ?? '';
+      if (name) {
+        let currentlyHiddenCharacters = game.settings.get('theater-of-the-mind', 'hiddenCharacters') ?? [];
+        currentlyHiddenCharacters = currentlyHiddenCharacters.filter(player => player !== name);
+        game.settings.set('theater-of-the-mind', 'hiddenCharacters', currentlyHiddenCharacters);
+        setTimeout(() => {
+          PartySheetDialog.data.content = convertPlayerDataToTable();
+          PartySheetDialog.render(true);
+        }, 250);
+      }
+    });
     if (game.settings.get("theater-of-the-mind", "enableDarkMode")) {
       var parentElement = html[0].parentElement;
       parentElement.id = "totm-dialog-darkmode";
@@ -207,6 +315,22 @@ async function playSound(weapon, crit, hitmiss, override = null) {
 Hooks.on("init", () => {
   log("Initializing");
 
+  game.settings.register('theater-of-the-mind', 'hiddenCharacters', {
+    "scope":"world",
+    "config": false,
+    "default": [],
+    "type": Array
+  });
+
+  game.settings.register("theater-of-the-mind", "enableOnlyOnline", {
+    "name": "theater-of-the-mind.settings.enable-only-online.name",
+    "hint": "theater-of-the-mind.settings.enable-only-online.hint",
+    "scope": "world",
+    "config": true,
+    "default": true,
+    "type": Boolean
+  });
+
   game.settings.register("theater-of-the-mind", "enableDarkMode", {
     "name": "theater-of-the-mind.settings.enable-dark-mode.name",
     "hint": "theater-of-the-mind.settings.enable-dark-mode.hint",
@@ -225,9 +349,7 @@ Hooks.on("init", () => {
     "scope": "world",
     "config": true,
     "default": false,
-    "type": Boolean,
-    "onChange": () => {
-    },
+    "type": Boolean
   });
 });
 
