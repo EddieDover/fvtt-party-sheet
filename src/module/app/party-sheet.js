@@ -18,6 +18,7 @@ export class PartySheetForm extends FormApplication {
           const userChar = character;
           const userSys = userChar.system;
           const stats = userSys.abilities;
+
           const ac = userSys.attributes.ac.value;
 
           const passives = {

@@ -23,6 +23,18 @@ Handlebars.registerHelper("hcifgte", function (v1, v2, options) {
   return options.inverse(this);
 });
 
+Handlebars.registerHelper("eachInMap", function (map, block) {
+  var out = "";
+  Object.keys(map).map(function (prop) {
+    out += block.fn({ key: prop, value: map[prop] });
+  });
+  return out;
+});
+
+Handlebars.registerHelper("toUpperCase", function (str) {
+  return str.toUpperCase();
+});
+
 let currentPartySheet = null;
 
 function togglePartySheet() {

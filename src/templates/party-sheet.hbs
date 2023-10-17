@@ -7,27 +7,21 @@
   <table id='totm-ps-table'>
     <tr>
       <th class="namerace"><div>{{ localize "theater-of-the-mind.party-sheet.name" }}</div><div>{{ localize "theater-of-the-mind.party-sheet.race"}}</div></th>
-      <th class="p-1">STR</th>
-      <th class="p-1">DEX</th>
-      <th class="p-1">CON</th>
-      <th class="p-1">INT</th>
-      <th class="p-1">WIS</th>
-      <th class="p-1">CHA</th>
-      <th>AC</th>
-      <th>Inv</th>
+      {{#each players.1.stats}}
+      <th class="p-1">{{toUpperCase @key}}</th>
+      {{/each}}
+      <th class="p-1">AC</th>
+      <th class="p-1" title="Passive Investigation">Inv</th>
       <th>{{localize "theater-of-the-mind.party-sheet.senses"}}</th>
     </tr>
 
     <tr>
       <th>{{localize "theater-of-the-mind.party-sheet.classes"}}</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th class="p-1">Per</th>
-      <th class="p-1">Ins</th>
+      {{#each players.1.stats}}
+      <th class="p-1"></th>
+      {{/each}}
+      <th class="p-1" title="Passive Perception">Per</th>
+      <th class="p-1" title="Passive Insight">Ins</th>
       <th></th>
     </tr>
 
