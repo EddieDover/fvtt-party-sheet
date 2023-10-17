@@ -143,6 +143,7 @@ export class PartySheetForm extends FormApplication {
   }
 
   openActorSheet(event) {
+    event.preventDefault();
     const actorId = event.currentTarget.dataset.actorid;
     const actor = game.actors.get(actorId.replace("Actor.", ""));
     actor.sheet.render(true);
