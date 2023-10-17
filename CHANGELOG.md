@@ -1,3 +1,9 @@
+## 1.4.6 (2023-10-17)
+
+##### Bug Fixes
+
+*  prevent party sheet closing when opening character sheet ([1f0df29c]('https://github.com/EddieDover/theater-of-the-mind'/commit/1f0df29ce5de6471333b3c50fc21a72a8aae82eb))
+
 ## 1.4.5 (2023-10-17)
 
 ##### Chores
