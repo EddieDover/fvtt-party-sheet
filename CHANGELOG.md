@@ -1,3 +1,9 @@
+## 1.4.0 (2023-10-17)
+
+##### New Features
+
+*  added ability to show either online characters or a curated list of any non-npc ([5e209a14]('https://github.com/EddieDover/theater-of-the-mind'/commit/5e209a140e2919710f7e1119dbfc3a0d7f82631e))
+
 ## 1.3.0 (2023-10-15)
 
 ##### New Features

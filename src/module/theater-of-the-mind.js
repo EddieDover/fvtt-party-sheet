@@ -1,4 +1,6 @@
 import { THEATER_SOUNDS } from "./sounds.js";
+import { registerSettings } from "./app/settings.js";
+import { HiddenCharactersSettings } from "./app/hidden-characters-settings.js";
 
 let isSyrinscapeInstalled = false;
 let isMidiQoLInstalled = false;
@@ -7,12 +9,21 @@ function log(...message) {
   console.log("Theater of the Mind | ", message);
 }
 
+Handlebars.registerHelper('hccontains', function(needle, haystack, options) {
+  needle = Handlebars.escapeExpression(needle);
+  haystack = game.settings.get('theater-of-the-mind', 'hiddenCharacters') ?? [];
+  return (haystack.indexOf(needle) > -1) ? options.fn(this) : options.inverse(this);
+});
+
 const getPlayerData = () => {
+
+  const showOnlyOnlineUsers = game.settings.get("theater-of-the-mind", "enableOnlyOnline");
+  const actorList = showOnlyOnlineUsers ? game.users.filter( (user) => user.active && user.character).map(user => user.character) : game.actors.filter(actor => actor.type !== "npc");
+
   try {
-    return game.users
-      .map((user) => {
-        if (user.active && user.character) {
-          const userChar = user.character;
+    return actorList
+      .map((character) => {
+          const userChar = character;
           const userSys = userChar.system;
           const stats = userSys.abilities;
           const ac = userSys.attributes.ac.value;
@@ -70,7 +81,7 @@ const getPlayerData = () => {
             ac,
             passives,
           };
-        }
+
       })
       .filter((player) => player);
   } catch (ex) {
@@ -80,13 +91,13 @@ const getPlayerData = () => {
 };
 
 const convertPlayerDataToTable = () => {
+  const currentlyHiddenCharacters = game.settings.get('theater-of-the-mind', 'hiddenCharacters') ?? [];
   try {
     const players = getPlayerData();
+
     if (players.length === 0) {
       return "No players connected";
     }
-
-    let table = `<table id='totm-ps-table'>`;
 
     const localize = {
       name: game.i18n.localize("theater-of-the-mind.party-sheet.name"),
@@ -94,47 +105,53 @@ const convertPlayerDataToTable = () => {
       senses: game.i18n.localize("theater-of-the-mind.party-sheet.senses"),
       classes: game.i18n.localize("theater-of-the-mind.party-sheet.classes"),
     };
-
-    table += `<tr><th class="namerace"><div>${localize.name}</div><div>${localize.race}</div></th>`;
+    const showOnlyOnlineUsers = game.settings.get("theater-of-the-mind", "enableOnlyOnline");
+    const optionsButton = `<button class="totm-options"><i class="fas fa-cog"></i>Configure Shown Characters</button>`;
+    let table = `<table id='totm-ps-table'>`;
+    let thead = `<tr><th class="namerace"><div>${localize.name}</div><div>${localize.race}</div></th>`;
     for (const stat in players[0].stats) {
-      table += `<th class="p-1">${stat.toUpperCase()}</th>`;
+      thead += `<th class="p-1">${stat.toUpperCase()}</th>`;
     }
-    table += `<th>AC</th><th>Inv</th><th>${localize.senses}</th></tr>`;
+    thead += `<th>AC</th><th>Inv</th><th>${localize.senses}</th>`;
+    thead += `</tr>`;
 
-    table += `<tr><th>${localize.classes}</th>`;
+    thead += `<tr><th>${localize.classes}</th>`;
     for (let i = 0; i < 6; i++) {
-      table += `<th></th>`;
+      thead += `<th></th>`;
     }
-    table += ` <th class="p-1">Per</th><th class="p-1">Ins</th><th></th></tr>`;
+    thead += ` <th class="p-1">Per</th><th class="p-1">Ins</th><th></th></tr>`;
 
-    players.forEach((player) => {
-      table += `<tr><td rowspan="2"><div class="totm-ps-name-bar">${player.img}`;
-      table += `<div class='totm-ps-name-bar-namerace'>
+    table += thead;
+    let tbody = "";
+    players.filter(player => !currentlyHiddenCharacters.includes(player.name)).forEach((player) => {
+      let pbody = `<tr><td rowspan="2"><div class="totm-ps-name-bar">${player.img}`;
+      pbody += `<div class='totm-ps-name-bar-namerace'>
           <div class='entry'>${player.name}</div>
           <div class='entry'>${player.race}</div>
           <div class='fullentry'>${player.classNames}</div>
       </div>`;
-      table += `</div></td>`;
+      pbody += `</div></td>`;
       for (const stat in player.stats) {
-        table += `<td>${player.stats[stat].value}</td>`;
+        pbody += `<td>${player.stats[stat].value}</td>`;
       }
-      table += `<td>${player.ac}</td>`;
-      table += `<td>${player.passives.inv}</td>`;
-      table += `<td rowspan="2" style="white-space: nowrap;">${player.senses}</td>`;
-      table += `</tr>`;
+      pbody += `<td>${player.ac}</td>`;
+      pbody += `<td>${player.passives.inv}</td>`;
+      pbody += `<td rowspan="2" style="white-space: nowrap;">${player.senses}</td>`;
+      pbody += `</tr>`;
 
-      table += `<tr class="totm-ps-finrow">`;
+      pbody += `<tr class="totm-ps-finrow">`;
       for (const stat in player.stats) {
-        table += `<td>${player.stats[stat].mod >= 0 ? "+" : ""}${
+        pbody += `<td>${player.stats[stat].mod >= 0 ? "+" : ""}${
           player.stats[stat].mod
         }</td>`;
       }
-      table += `<td>${player.passives.prc}</td>`;
-      table += `<td>${player.passives.ins}</td>`;
-      table += `</tr>`;
+      pbody += `<td>${player.passives.prc}</td>`;
+      pbody += `<td>${player.passives.ins}</td>`;
+      pbody += `</tr>`;
+      tbody += pbody;
     });
-    table += `</table>`;
-    return table;
+    table += tbody + `</table>`;
+    return showOnlyOnlineUsers ? table : optionsButton + table;
   } catch (ex) {
     log(ex);
     return ex.message;
@@ -143,7 +160,7 @@ const convertPlayerDataToTable = () => {
 
 const PartySheetDialog = new Dialog({
   title: "Party Sheet",
-  content: convertPlayerDataToTable(),
+  content: null, //convertPlayerDataToTable(),
   classNames: ["totm-ps-dialog"],
   buttons: {
     close: {
@@ -153,6 +170,22 @@ const PartySheetDialog = new Dialog({
     },
   },
   render: (html) => {
+    // html.on('action', 'element', (event) => {
+    // });
+    html.on('click', 'button.totm-options', (event) => {
+      event.preventDefault();
+      const overrides = {
+        onexit: () => {
+          PartySheetDialog.close();
+          setTimeout( () => {
+            PartySheetDialog.data.content = convertPlayerDataToTable();
+            PartySheetDialog.render(true);
+          }, 350);
+        }
+      }
+      const hcs = new HiddenCharactersSettings(overrides);
+      hcs.render(true);
+    });
     if (game.settings.get("theater-of-the-mind", "enableDarkMode")) {
       var parentElement = html[0].parentElement;
       parentElement.id = "totm-dialog-darkmode";
@@ -207,28 +240,7 @@ async function playSound(weapon, crit, hitmiss, override = null) {
 Hooks.on("init", () => {
   log("Initializing");
 
-  game.settings.register("theater-of-the-mind", "enableDarkMode", {
-    "name": "theater-of-the-mind.settings.enable-dark-mode.name",
-    "hint": "theater-of-the-mind.settings.enable-dark-mode.hint",
-    "scope": "world",
-    "config": true,
-    "default": false,
-    "type": Boolean,
-    "onChange": () => {
-      // Hooks.call("renderSceneControls");
-    },
-  });
-
-  game.settings.register("theater-of-the-mind", "enableSounds", {
-    "name": "theater-of-the-mind.settings.enable-sounds.name",
-    "hint": "theater-of-the-mind.settings.enable-sounds.hint",
-    "scope": "world",
-    "config": true,
-    "default": false,
-    "type": Boolean,
-    "onChange": () => {
-    },
-  });
+  registerSettings();
 });
 
 //

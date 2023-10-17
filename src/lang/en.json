@@ -7,6 +7,10 @@
             "classes": "Classes"
         },
         "settings": {
+          "enable-only-online": {
+            "name": "Show only online characters",
+            "hint": "Only show characters assigned to logged in players. Turning this off will show all non-NPC characters but allow you to 'hide' the ones you don't care about."
+          },
             "enable-sounds": {
               "name": "Enable Syrinscape Sounds",
               "hint": "Sound support requires the Syrinscape Integration (fvtt-synrin-control) and Midi QOL (midi-qol) modules."
