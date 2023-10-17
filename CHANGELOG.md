@@ -1,3 +1,9 @@
+## 1.4.7 (2023-10-17)
+
+##### Bug Fixes
+
+*  now displays variant stats properly ([6e1c94b5]('https://github.com/EddieDover/theater-of-the-mind'/commit/6e1c94b549a1019d43b195759536f686f822e11c))
+
 ## 1.4.6 (2023-10-17)
 
 ##### Bug Fixes
