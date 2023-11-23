@@ -15,6 +15,16 @@ The original intent of this module was to provide a 'party view' feature that I 
 
 - Sound effects support if you have Syrinscape ([fvtt-syrin-control](https://github.com/frondeus/fvtt-syrin-control)) and Midi QOL ([midi-qol](https://gitlab.com/tposney/midi-qol/)) installed.
 
+# Support
+
+Feel free to file a Bug Report / Feature Request under the Issues tab of Github.
+
+Or you can join my **Discord** server here: https://discord.gg/XuGx7zNMKZ
+
+# Screenshots
+
+Primary Icon:
+
 ![Party Sheet Icon](images/psi.png)
 
 Only Connected Players:
