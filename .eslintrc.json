@@ -12,9 +12,11 @@
       "eslint:recommended",
       "@typhonjs-fvtt/eslint-config-foundry.js/0.8.0",
       "plugin:jest/recommended",
-      "plugin:prettier/recommended"
+      "plugin:prettier/recommended",
+      "plugin:jsdoc/recommended",
+      "plugin:jsdoc/recommended-typescript-flavor"
     ],
-    "plugins": ["jest"],
+    "plugins": ["jest", "jsdoc"],
     "parserOptions": {
       "ecmaVersion": 2020,
       "extraFileExtensions": [".cjs", ".mjs"],
@@ -23,7 +25,8 @@
 
     // Defines / overrides a few more environment parameters not provided in the configs above.
     "env": {
-      "browser": true
+      "browser": true,
+      "es6": true
     },
 
     // Prevents overwriting any built in globals particularly from `@typhonjs-fvtt/eslint-config-foundry.js`, but also

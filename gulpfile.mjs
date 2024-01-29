@@ -5,6 +5,7 @@
 
 import fs from "fs-extra";
 import gulp from "gulp";
+import { deleteAsync } from "del";
 import sass from "gulp-dart-sass";
 import sourcemaps from "gulp-sourcemaps";
 import path from "node:path";
@@ -16,10 +17,11 @@ import { hideBin } from "yargs/helpers";
 import rollupStream from "@rollup/stream";
 
 import rollupConfig from "./rollup.config.mjs";
+import zip from "gulp-zip";
 
-/** ******************/
+/********************/
 /*  CONFIGURATION   */
-/** ******************/
+/********************/
 
 const packageId = "theater-of-the-mind";
 const sourceDirectory = "./src";
@@ -27,24 +29,17 @@ const distDirectory = "./dist";
 const stylesDirectory = `${sourceDirectory}/styles`;
 const stylesExtension = "scss";
 const sourceFileExtension = "js";
-const staticFiles = [
-  "assets",
-  "fonts",
-  "lang",
-  "packs",
-  "templates",
-  "module.json",
-];
+const staticFiles = ["assets", "fonts", "lang", "packs", "templates", "module.json"];
 
-/** ******************/
+//*******************/
 /*      BUILD       */
-/** ******************/
+//*******************/
 
 let cache;
 
 /**
  * Build the distributable JavaScript code
- * @returns {NodeJS.ReadWriteStream}
+ * @returns {NodeJS.ReadWriteStream} The built JavaScript code
  */
 function buildCode() {
   return rollupStream({ ...rollupConfig(), cache })
@@ -60,7 +55,7 @@ function buildCode() {
 
 /**
  * Build style sheets
- * @returns {NodeJS.ReadWriteStream}
+ * @returns {NodeJS.ReadWriteStream} The build style sheets
  */
 function buildStyles() {
   return gulp
@@ -81,19 +76,39 @@ async function copyFiles() {
 }
 
 /**
+ * Cleans the dist folder
+ * @returns {NodeJS.ReadWriteStream} The cleaned files
+ */
+async function cleanDist() {
+  return await deleteAsync([`${distDirectory}/**/*`, `${distDirectory}`]);
+}
+
+/**
+ * Copies the files ot the dist folder in prep for packaging
+ * @returns {NodeJS.ReadWriteStream} The copied files
+ */
+function copyDist() {
+  // Take everything inside the dist folder and zip it into a subfolder named totm.zip
+  return gulp.src(`${distDirectory}/**/*`).pipe(gulp.dest(`${distDirectory}/theater-of-the-mind`));
+}
+
+/**
+ * Packages the dist subfolderfolder into a zip file
+ * @returns {NodeJS.ReadWriteStream} The zipped files
+ */
+function zipDist() {
+  return gulp
+    .src(`${distDirectory}/theater-of-the-mind/**/*`, { base: `${distDirectory}` })
+    .pipe(zip(`${packageId}.zip`))
+    .pipe(gulp.dest(`${distDirectory}`));
+}
+
+/**
  * Watch for changes for each build step
  */
 export function watch() {
-  gulp.watch(
-    `${sourceDirectory}/**/*.${sourceFileExtension}`,
-    { ignoreInitial: false },
-    buildCode,
-  );
-  gulp.watch(
-    `${stylesDirectory}/**/*.${stylesExtension}`,
-    { ignoreInitial: false },
-    buildStyles,
-  );
+  gulp.watch(`${sourceDirectory}/**/*.${sourceFileExtension}`, { ignoreInitial: false }, buildCode);
+  gulp.watch(`${stylesDirectory}/**/*.${stylesExtension}`, { ignoreInitial: false }, buildStyles);
   gulp.watch(
     staticFiles.map((file) => `${sourceDirectory}/${file}`),
     { ignoreInitial: false },
@@ -101,14 +116,17 @@ export function watch() {
   );
 }
 
-export const build = gulp.series(
-  clean,
-  gulp.parallel(buildCode, buildStyles, copyFiles),
-);
+export const build = gulp.series(clean, buildCode, buildStyles, copyFiles); //gulp.parallel(buildCode, buildStyles, copyFiles));
 
-/** ******************/
+/********************/
+/*    DEV EXPORT    */
+/********************/
+
+export const devexport = gulp.series(cleanDist, build, copyDist, zipDist);
+
+/********************/
 /*      CLEAN       */
-/** ******************/
+/********************/
 
 /**
  * Remove built files from `dist` folder while ignoring source files
@@ -128,13 +146,13 @@ export async function clean() {
   }
 }
 
-/** ******************/
+/********************/
 /*       LINK       */
-/** ******************/
+/********************/
 
 /**
  * Get the data paths of Foundry VTT based on what is configured in `foundryconfig.json`
- * @returns {string[]}
+ * @returns {string[]} The Foundry VTT data path
  */
 function getDataPaths() {
   const config = fs.readJSONSync("foundryconfig.json");
@@ -150,9 +168,7 @@ function getDataPaths() {
         );
       }
       if (!fs.existsSync(path.resolve(dataPath))) {
-        throw new Error(
-          `The dataPath ${dataPath} does not exist on the file system`,
-        );
+        throw new Error(`The dataPath ${dataPath} does not exist on the file system`);
       }
       return path.resolve(dataPath);
     });

@@ -1,11 +1,21 @@
-#totm-dialog-darkmode {
-  background:none;
-  background-color:transparent;
-  color:white;
+#totm-system-select {
+  display: flex;
+  margin-top: 0.25rem;
+  width: 100%;
+}
 
-  .dialog-button {
-    color:white;
-  }
+.totm-toprow {
+  display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
+}
+
+.totm-options {
+  max-width: 400px;
+}
+
+.totm-ps-no-systems {
+  padding: 1rem;
 }
 
 .totm-hc-form {
@@ -37,6 +47,27 @@
 #totm-ps-table {
     text-align:center;
 
+    th {
+      padding: 0.3em;
+      word-break: break-word;
+    }
+
+    tr {
+      background-color: none;
+    }
+
+    tr.dark {
+      background-color: rgba(0,0,0,0.25);
+    }
+
+    tr.light {
+      background-color: rgba(0,0,0,0.1);
+    }
+
+    .flex-tc {
+      display: inline-flex;
+    }
+
     .namerace {
         padding-left:10px;
         display:flex;
@@ -46,7 +77,13 @@
     }
 
     td {
-        border: 1px solid darkgray;
+      border: 1px solid darkgray;
+    }
+
+    tbody {
+      td {
+          padding: .25em;
+      }
     }
 
     .totm-senses {
@@ -56,6 +93,11 @@
       white-space: nowrap;
       padding-left:5px;
       padding-right:5px;
+    }
+
+    .totm-dc {
+      overflow-wrap: break-word;
+      word-break: normal;
     }
 
     .totm-ps-name-bar {

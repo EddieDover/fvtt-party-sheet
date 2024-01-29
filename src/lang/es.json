@@ -5,7 +5,11 @@
             "race": "Raza",
             "senses": "Sentidos",
             "classes": "Clases",
-            "no-players": "Ningún jugador ha iniciado sesión actualmente."
+            "no-players": "Ningún jugador ha iniciado sesión actualmente.",
+            "no-systems": "La carpeta data/totm no contiene archivos JSON para este sistema. Necesitas agregar algunos para activar esta funcionalidad.",
+            "bugreport": "Dar retroalimentación",
+            "feedback": "Reportar un fallo",
+            "discord": "Discord"
         },
         "hide-sheet":{
           "button": "Configurar personajes ocultos",
@@ -20,11 +24,15 @@
           "enable-sounds": {
             "name": "Habilitar Sonidos de Syrinscape",
             "hint": "El soporte de sonido requiere los módulos Syrinscape Integration (fvtt-synrin-control) y Midi QOL (midi-qol)."
-            },
-            "enable-dark-mode": {
-                "name": "Habilitar el modo oscuro",
-                "hint": "Habilitar la hoja de fiesta en modo oscuro."
-            }
+          },
+          "enable-dark-mode": {
+              "name": "Habilitar el modo oscuro",
+              "hint": "Habilitar la hoja de fiesta en modo oscuro."
+          },
+          "show-debug-info": {
+            "name":"Mostrar información de depuración",
+            "hint": "Actívelo para mostrar información de depuración en la consola para todos los personajes analizados cuando se abre la hoja de grupo. Esperemos que esto le permita rastrear propiedades específicas que está intentando analizar."
+          }
         }
     }
 }

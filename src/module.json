@@ -1,68 +1,63 @@
 {
-    "id": "theater-of-the-mind",
-    "title": "Theater of the Mind - DM Tool",
-    "description": "A module to assist DMs who run theater of the mind adventures.",
-    "url": "https://github.com/EddieDover/theater-of-the-mind",
-    "bugs": "https://github.com/EddieDover/theater-of-the-mind/issues",
-    "changelog": "https://github.com/EddieDover/theater-of-the-mind/releases",
-    "manifest": "https://github.com/EddieDover/theater-of-the-mind/releases/latest/download/module.json",
-    "download": "https://github.com/EddieDover/theater-of-the-mind/releases/latest/download/module.zip",
-    "license": "https://github.com/EddieDover/theater-of-the-mind/raw/main/LICENSE.md",
-    "readme": "https://github.com/EddieDover/theater-of-the-mind/raw/main/README.md",
-    "flags": {
-      "allowBugReporter": true
+  "id": "theater-of-the-mind",
+  "title": "Theater of the Mind - DM Tool",
+  "description": "This system agnostic module will provide a GM with a 'party view' feature similar to that of Fantasy Grounds, online characters only, or all characters, configurable in settings, in order to quickly see important stats, traits, abilites, etc. It's a great tool for GMs running token/map games or Theater of the Mind style games.",
+  "url": "https://github.com/EddieDover/theater-of-the-mind",
+  "bugs": "https://github.com/EddieDover/theater-of-the-mind/issues",
+  "changelog": "https://github.com/EddieDover/theater-of-the-mind/releases",
+  "manifest": "https://github.com/EddieDover/theater-of-the-mind/releases/latest/download/module.json",
+  "download": "https://github.com/EddieDover/theater-of-the-mind/releases/latest/download/module.zip",
+  "license": "https://github.com/EddieDover/theater-of-the-mind/raw/main/LICENSE.md",
+  "readme": "https://github.com/EddieDover/theater-of-the-mind/raw/main/README.md",
+  "flags": {
+    "allowBugReporter": true
+  },
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
     },
-    "languages": [
+    {
+      "lang": "es",
+      "name": "Spanish",
+      "path": "lang/es.json"
+    }
+  ],
+  "media": [
+    {
+      "type": "cover",
+      "url": ""
+    }
+  ],
+  "authors": [
+    {
+      "name": "Eddie Dover",
+      "email": "ed@eddiedover.dev",
+      "url": "https://github.com/eddiedover/"
+    }
+  ],
+  "version": "2.0.0",
+  "compatibility": {
+    "minimum": "11",
+    "verified": "11"
+  },
+  "esmodules": [
+    "module/theater-of-the-mind.js"
+  ],
+  "styles": [
+    "styles/theater-of-the-mind.css"
+  ],
+  "relationships": {
+    "optional": [
       {
-        "lang": "en",
-        "name": "English",
-        "path": "lang/en.json"
+        "id": "midi-qol",
+        "type": "module"
       },
       {
-        "lang": "es",
-        "name": "Spanish",
-        "path": "lang/es.json"
+        "id": "fvtt-syrin-control",
+        "type": "module"
       }
-    ],
-  "media": [
-      {
-          "type": "cover",
-          "url": ""
-      }
-  ],
-    "authors": [
-      {
-        "name": "Eddie Dover",
-        "email": "ed@eddiedover.dev",
-        "url": "https://github.com/eddiedover/"
-      }
-    ],
-    "version": "1.4.7",
-    "compatibility": {
-      "minimum": "11",
-      "verified": "11"
-    },
-    "esmodules": [
-      "module/theater-of-the-mind.js"
-    ],
-    "styles": ["styles/theater-of-the-mind.css"],
-    "relationships": {
-      "optional": [
-        {
-          "id": "midi-qol", "type": "module"
-        },
-        {
-          "id": "fvtt-syrin-control", "type":"module"
-        }
-      ],
-      "systems": [
-        {
-          "id": "dnd5e",
-          "type": "system",
-          "compatibility": {
-            "minimum": "2.0.0"
-          }
-        }
-      ]
-    }
+    ]
   }
+}

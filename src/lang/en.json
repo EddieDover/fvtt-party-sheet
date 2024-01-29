@@ -5,7 +5,11 @@
             "race": "Race",
             "senses": "Senses",
             "classes": "Classes",
-            "no-players": "No players are currently logged in."
+            "no-players": "No players are currently logged in.",
+            "no-systems": "You do not have any json files for this sytem in your data/totm folder. Please add some to enable this feature.",
+            "bugreport": "File a Bug Report",
+            "feedback": "Send Feedback",
+            "discord": "Discord"
         },
         "hide-sheet": {
           "button": "Configure Hidden Characters",
@@ -17,14 +21,18 @@
             "name": "Show only online characters",
             "hint": "Only show characters assigned to logged in players. Turning this off will show all non-NPC characters but allow you to 'hide' the ones you don't care about."
           },
-            "enable-sounds": {
+          "enable-sounds": {
               "name": "Enable Syrinscape Sounds",
               "hint": "Sound support requires the Syrinscape Integration (fvtt-synrin-control) and Midi QOL (midi-qol) modules."
           },
-            "enable-dark-mode": {
+          "enable-dark-mode": {
                 "name": "Enable Dark Mode",
                 "hint": "Enable dark mode for the party sheet."
-            }
+          },
+          "show-debug-info": {
+            "name": "Show Debug Information",
+            "hint": "Enable this to show debug information in the console for all parsed characters when the party sheet is opened. Hopefully this will allow you to track down specific properties that you are trying to parse."
+          }
         }
     }
 }

@@ -1,6 +1,6 @@
 {
   "name": "theater-of-the-mind",
-  "version": "1.4.7",
+  "version": "2.0.0",
   "description": "A FoundryVTT module for DMs",
   "main": "index.js",
   "author": {
@@ -24,22 +24,25 @@
   "scripts": {
     "build": "gulp build",
     "build:watch": "gulp watch",
+    "devexport": "gulp devexport",
     "link-project": "gulp link",
     "clean": "gulp clean",
     "clean:link": "gulp link --clean",
     "lint": "eslint --ext .js,.cjs,.mjs .",
     "lint:fix": "eslint --ext .js,.cjs,.mjs --fix .",
     "format": "prettier --write \"./**/*.(js|cjs|mjs|json|yml|scss)\"",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:ci": "jest --ci --reporters=default --reporters=jest-junit",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:ci": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --ci --reporters=default --reporters=jest-junit",
     "postinstall": "husky install",
-    "changelog2": "generate-changelog -u 'https://github.com/EddieDover/theater-of-the-mind'"
+    "changelog2": "generate-changelog -u https://github.com/EddieDover/theater-of-the-mind"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.2.1",
     "@rollup/stream": "^3.0.0",
     "@typhonjs-fvtt/eslint-config-foundry.js": "^0.8.0",
+    "cross-env": "^7.0.3",
+    "del": "^7.1.0",
     "eslint": "^8.49.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-jest": "^27.4.2",
@@ -48,6 +51,7 @@
     "gulp": "^4.0.2",
     "gulp-dart-sass": "^1.1.0",
     "gulp-sourcemaps": "^3.0.0",
+    "gulp-zip": "^6.0.0",
     "husky": "^8.0.3",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
@@ -63,5 +67,9 @@
   "lint-staged": {
     "*.(js|cjs|mjs)": "eslint --fix",
     "*.(json|yml|scss)": "prettier --write"
+  },
+  "dependencies": {
+    "eslint-plugin-jsdoc": "^46.9.1",
+    "typescript": "^5.3.3"
   }
 }
