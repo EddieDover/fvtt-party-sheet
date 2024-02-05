@@ -1092,6 +1092,15 @@
         ]
       },
       {
+        "name": "Statuses",
+        "type": "array-string-builder",
+        "align": "left",
+        "valign": "top",
+        "maxwidth": 70,
+        "header": "show",
+        "text": "statuses => value, "
+      },
+      {
         "name": "Chin",
         "type": "direct",
         "align": "center",

@@ -336,8 +336,11 @@ Hooks.on("ready", async () => {
   const soundsReady = isSyrinscapeInstalled && isMidiQoLInstalled;
   log(`Sounds enabled: ${soundsReady}`);
 
-  log("Loading templates");
-  await loadSystemTemplates();
+  // @ts-ignore
+  if (game.user.isGM) {
+    log("Loading templates");
+    await loadSystemTemplates();
+  }
 });
 
 // @ts-ignore

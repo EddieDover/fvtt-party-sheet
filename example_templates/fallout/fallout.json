@@ -1,0 +1,246 @@
+{
+    "name": "Fallout 2d20",
+    "system": "fallout",
+    "author": "Michael Card (Emo Cthulhu)",
+    "offline_excludes": [
+        "npc",
+        "base"
+    ],
+    "rows": [
+        [
+            {
+                "name": "Character Sheet",
+                "type": "charactersheet",
+                "align": "center",
+                "header": "hide",
+                "text": ""
+            },
+            {
+                "name": "Name",
+                "type": "direct",
+                "align": "left",
+                "valign": "top",
+                "minwidth": 110,
+                "maxwidth": 150,
+                "header": "show",
+                "text": "name {newline} Level: system.level"
+            },
+            {
+                "name": "Health",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "minwidth": 60,
+                "header": "show",
+                "text": "system.health.value / system.health.max"
+            },
+            {
+                "name": "S",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "minwidth": 60,
+                "header": "show",
+                "text": "system.attributes.str"
+            },
+            {
+                "name": "P",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "minwidth": 40,
+                "header": "show",
+                "text": "system.attributes.per"
+            },
+            {
+                "name": "E",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "minwidth": 40,
+                "header": "show",
+                "text": "system.attributes.end"
+            },
+            {
+                "name": "C",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "minwidth": 40,
+                "header": "show",
+                "text": "system.attributes.cha"
+            },
+            {
+                "name": "I",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "minwidth": 40,
+                "header": "show",
+                "text": "system.attributes.int"
+            },
+            {
+                "name": "A",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "minwidth": 40,
+                "header": "show",
+                "text": "system.attributes.agi"
+            },
+            {
+                "name": "L",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "minwidth": 40,
+                "header": "show",
+                "text": "system.attributes.luc"
+            },
+            {
+                "name": "Init",
+                "type": "direct",
+                "minwidth": 60,
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.initiative"
+            },
+            {
+                "name": "Move",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.unofficalSpeed"
+            },
+            {
+                "name": "Wealth",
+                "type": "direct",
+                "align": "left",
+                "valign": "top",
+                "header": "show",
+                "text": "Caps: system.currency.caps"
+            },
+            {
+                "name": "Status(es)",
+                "type": "direct",
+                "header": "show",
+                "text": ""
+            }
+        ],
+        [
+            {
+                "name": "blank1",
+                "type": "direct",
+                "header": "hide",
+                "text": ""
+            },
+            {
+                "name": "Details",
+                "type": "direct",
+                "align": "left",
+                "valign": "top",
+                "minwidth": 110,
+                "maxwidth": 150,
+                "header": "show",
+                "text": "Origin: system.origin {newline} Type: type"
+            },
+            {
+                "name": "Rads",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.radiation"
+            },
+            {
+                "name": "blank2",
+                "type": "direct",
+                "header": "hide",
+                "text": ""
+            },
+            {
+                "name": "Head",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.body_parts.head.injuries"
+            },
+            {
+                "name": "ArmL/Arm1",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.body_parts.armL.injuries"
+            },
+            {
+                "name": "ArmR/Arm2",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.body_parts.armR.injuries"
+            },
+            {
+                "name": "Torso",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.body_parts.torso.injuries"
+            },
+            {
+                "name": "LegL/Arm3",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.body_parts.legL.injuries"
+            },
+            {
+                "name": "LegR/Arm4",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.body_parts.legR.injuries"
+            },
+            {
+                "name": "Luck",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.luckPoints"
+            },
+            {
+                "name": "XP",
+                "type": "direct",
+                "align": "left",
+                "valign": "top",
+                "header": "show",
+                "text": "Curr: system.level.currentXP {newline} Next: system.level.nextLevelXP"
+            },
+            {
+                "name": "Wealth2",
+                "type": "direct",
+                "align": "left",
+                "valign": "top",
+                "header": "hide",
+                "text": "Other: system.currency.other"
+            },
+            {
+                "name": "Status",
+                "type": "array-string-builder",
+                "align": "left",
+                "valign": "top",
+                "maxwidth": 125,
+                "header": "hide",
+                "text": "statuses => value, "
+            }
+        ]
+    ]
+}

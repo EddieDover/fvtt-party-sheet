@@ -98,6 +98,15 @@
           "valign": "top",
           "header": "show",
           "text": "EMP: system.attributes.emp {newline} {newline} Lead: system.skills.leadership / system.skills.leadership {+} system.attributes.emp {newline} Man: system.skills.manipulation / system.skills.manipulation {+} system.attributes.emp {newline} Med: system.skills.medicine / system.skills.medicine {+} system.attributes.emp"
+        },
+        {
+          "name": "Statuses",
+          "type": "array-string-builder",
+          "align": "left",
+          "valign": "top",
+          "maxwidth": 70,
+          "header": "show",
+          "text": "statuses => value, "
         }
       ]
     ]

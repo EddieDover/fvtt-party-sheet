@@ -1,5 +1,5 @@
 {
-  "name": "Dragonbane - No Name",
+  "name": "Dragonbane - With Name",
   "system": "dragonbane",
   "author": "Michael Card (Emo Cthulhu)",
   "offline_excludes": [
@@ -15,6 +15,14 @@
         "type": "charactersheet",
         "header": "hide",
         "text": ""
+      },
+      {
+        "name": "Name",
+        "align": "left",
+        "maxwidth": 100,
+        "type": "direct",
+        "header": "show",
+        "text": "name"
       },
       {
         "name": "Age & Kin",
@@ -126,13 +134,28 @@
             "else": "system.attributes.cha {newline} {newline}"
           }
         ]
+      },
+      {
+        "name": "Statuses",
+        "type": "direct",
+        "maxwidth": 70,
+        "header": "show",
+        "text": ""
       }
     ],
     [
       {
-        "name": "",
+        "name": ".",
+        "align": "center",
         "type": "direct",
         "header": "hide",
+        "text": ""
+      },
+      {
+        "name": "",
+        "align": "center",
+        "type": "direct",
+        "header": "show",
         "text": ""
       },
       {
@@ -198,6 +221,15 @@
         "type": "direct",
         "header": "show",
         "text": "system.currency.gc"
+      },
+      {
+        "name": "Status",
+        "type": "array-string-builder",
+        "align": "left",
+        "valign": "top",
+        "maxwidth": 70,
+        "header": "hide",
+        "text": "statuses => value, "
       }
     ]
   ]

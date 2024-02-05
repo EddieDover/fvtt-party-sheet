@@ -68,6 +68,15 @@
         "text": "EMP: d system.attributes.emp {newline} {newline} Con: d system.skills.connections / d system.skills.connections.value + d system.attributes.emp.value {newline} Ins: d system.skills.insight / d system.skills.insight + d system.attributes.emp {newline} Man: d system.skills.manipulation / d system.skills.manipulation + d system.attributes.emp"
       },
       {
+        "name": "Statuses",
+        "type": "array-string-builder",
+        "align": "left",
+        "valign": "top",
+        "maxwidth": 70,
+        "header": "show",
+        "text": "statuses => value, "
+      },
+      {
         "name": "Chin",
         "type": "direct",
         "align": "center",

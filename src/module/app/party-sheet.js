@@ -184,6 +184,16 @@ export class PartySheetForm extends FormApplication {
   }
 
   /**
+   * Remove trailing commas from a string.
+   * @param {string} str - The string to remove trailing commas from
+   * @returns {string} The string without trailing commas
+   * @memberof PartySheetForm
+   */
+  removeTrailingComma(str) {
+    return str.replace(/,\s*$/, "");
+  }
+
+  /**
    * Parse a direct string.
    * @param {*} character - The character to parse
    * @param {*} value - The value to parse
@@ -335,7 +345,7 @@ export class PartySheetForm extends FormApplication {
 
         objData = extractPropertyByString(character, objName);
 
-        if (!Array.isArray(objData)) {
+        if (!Array.isArray(objData) && objData instanceof Set === false) {
           objData = Object.keys(objData).map((key) => {
             return objData[key];
           });
@@ -345,20 +355,25 @@ export class PartySheetForm extends FormApplication {
         var reg = new RegExp(regValue);
         var allmatches = Array.from(outstr.matchAll(reg), (match) => match[0]);
 
-        for (const objSubData of objData) {
-          for (const m of allmatches) {
-            if (m === "value") {
-              finalstr += outstr.replace(m, objSubData);
-              continue;
+        if (objData.size ?? objData.length !== 0) {
+          for (const objSubData of objData) {
+            for (const m of allmatches) {
+              if (m === "value") {
+                finalstr += outstr.replace(m, objSubData);
+                continue;
+              }
+              outstr = outstr.replace(m, extractPropertyByString(objSubData, m));
             }
-            outstr = outstr.replace(m, extractPropertyByString(objSubData, m));
           }
+        } else {
+          return "";
         }
         if (finalstr === "") {
           finalstr = outstr;
         }
         finalstr = finalstr.trim();
         finalstr = this.cleanString(finalstr);
+        finalstr = this.removeTrailingComma(finalstr);
         return finalstr === value ? "" : finalstr;
       case "string":
         return value;

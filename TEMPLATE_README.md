@@ -282,6 +282,20 @@ In this example, the system will contain a column named Career, but the column n
 
 ## Examples
 
+### Example of array-string-builder:
+
+Code:
+```json
+{
+  "name": "Statuses",
+  "type": "array-string-builder",
+  "header": "show",
+  "text": "statuses => value, "
+}, // No comma if last item in the row
+```
+
+This example is used to display Active Status Effects on a character, such as burning, bleeding, prone, etc. They are stored by Foundry under the actor as `.statuses`, and the value is an array of strings. To display an array of values with no definite end or number of values or even empty sometimes, array-string-builder is your weapon of choice.
+
 ### Extremely Basic File Example
 Code:
 ```json
@@ -327,7 +341,8 @@ Result:
 
   * Module Conflicts:
     - Arius Planeswalker's Stylish Journal for Monk's Enhanced Journal - changes the CSS so dramatically that tables will not render correctly.
-    - Possible issues with Token Attacher tokens - in testing some MAD Cartographer maps caused the tokens that come with the map modules would show up in the Party Sheet, despite having proper excludes in the header of the .json. It is not an issue with MAD Cartographer maps or their dependencies, it seems to be another module that causes these Actors not to import properly. As soon as the offending module is found it will be listed here.
+    - An issue with MAD Cartographer map modules. Due to sloppy data on the part of those at The MAD Cartographer, some of their modules have the `type` set to character for map actor tokens. These will show up in your player sheet, and you have to manually hide them. It varies from module to module. Deserts is one, luckily you only have to hide 4 actors by using the [Configure Hidden Actors] button, or doing it in settings.
+    - dnd5e system v3.0.0: sounds are unavaible currently due to the massive system overhaul breaking Dynamic Active Efects and thus MidiQoL. TotM will not render a table properly in v3.0.0 if Dynamic Active Effects is active. The author has recently made them unavailable in v3.0.0, but has not mentioned any timeline for making these modules compatible with 3.0.0.
   * CSS:
     - Some system developers are bound and determined to change everything about default Foundry css just because they can (I'm looking at you, Free League Publishing), so while every effort has been made to make the tables look the same between systems, you may see some that are quite different (I'm looking at you, Vaesen).
     - That said, the module can only accommodate some minimal alignment and visual improvements. To try and override every system out there would be impossible. There is no intention to allow more than minwidth/maxwidth, align and valign.

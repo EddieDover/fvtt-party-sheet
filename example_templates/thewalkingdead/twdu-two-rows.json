@@ -64,6 +64,13 @@
               "text": "NPC: {newline} system.npcAnchor"
             }
           ]
+        },
+        {
+          "name": "Statuses",
+          "type": "direct",
+          "maxwidth": 70,
+          "header": "show",
+          "text": ""
         }
       ],
       [
@@ -104,6 +111,15 @@
           "valign": "top",
           "header": "show",
           "text": "EMPATHY: system.attributes.emp {newline} {newline} Leadership: system.skills.leadership / system.skills.leadership {+} system.attributes.emp {newline} Manipulation: system.skills.manipulation / system.skills.manipulation {+} system.attributes.emp {newline} Medicine: system.skills.medicine / system.skills.medicine {+} system.attributes.emp"
+        },
+        {
+          "name": "Status",
+          "type": "array-string-builder",
+          "align": "left",
+          "valign": "top",
+          "maxwidth": 70,
+          "header": "hide",
+          "text": "statuses => value, "
         }
       ]
     ]

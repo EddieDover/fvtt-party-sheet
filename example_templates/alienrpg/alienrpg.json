@@ -190,6 +190,15 @@
         "valign": "top",
         "header": "show",
         "text": "WIT: system.attributes.wit {newline} {newline} Obs: system.skills.observation / system.skills.observation {+} system.attributes.wit {newline} Sur: system.skills.survival / system.skills.survival {+} system.attributes.wit {newline} CT: system.skills.comtech / system.skills.comtech {+} system.attributes.wit"
+      },
+      {
+        "name": "Statuses",
+        "type": "array-string-builder",
+        "align": "left",
+        "valign": "top",
+        "maxwidth": 125,
+        "header": "show",
+        "text": "statuses => value, "
       }
     ]
   ]

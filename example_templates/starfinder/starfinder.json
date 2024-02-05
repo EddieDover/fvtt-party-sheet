@@ -133,6 +133,137 @@
         "text": "system.attributes.will.bonus"
       },
       {
+        "name": "Align",
+        "type": "direct-complex",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "",
+            "text": "--"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "LG",
+            "text": "LG"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Lawful Good",
+            "text": "LG"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "LN",
+            "text": "LN"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Lawful Neutral",
+            "text": "LN"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "LE",
+            "text": "LE"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Lawful Evil",
+            "text": "LE"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "NG",
+            "text": "NG"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Neutral Good",
+            "text": "NG"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "N",
+            "text": "N"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Neutral",
+            "text": "N"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "NE",
+            "text": "NE"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Neutral Evil",
+            "text": "NE"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "CG",
+            "text": "CG"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Chaotic Good",
+            "text": "CG"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "CN",
+            "text": "CN"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Chaotic Neutral",
+            "text": "CN"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "CE",
+            "text": "CE"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Chaotic Evil",
+            "text": "CE"
+          }
+        ]
+      },
+      {
+        "name": "Wealth",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "Credits: system.currency.credit"
+      },
+      {
         "name": "Senses",
         "type": "direct",
         "maxwidth": 125,
@@ -395,6 +526,22 @@
         "valign": "top",
         "header": "show",
         "text": "system.attributes.arms"
+      },
+      {
+        "name": "Deity",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.details.biography.deity"
+      },
+      {
+        "name": "CurrencyUPB",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "hide",
+        "text": "UPBs: system.currency.upb"
       },
       {
         "name": "Languages",
