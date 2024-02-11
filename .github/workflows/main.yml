@@ -40,7 +40,7 @@ jobs:
       - name: Get Version
         shell: bash
         id: get-version
-        run: echo "version=$(node ./.github/workflows/get-version.js)" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(node ./.github/workflows/get-version.cjs)" >> "$GITHUB_OUTPUT"
 
       # Generate changelog for release body
       - name: Changelog
