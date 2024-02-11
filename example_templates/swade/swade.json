@@ -1,0 +1,91 @@
+{
+  "name": "Savage Worlds",
+  "system": "swade",
+  "author": "Mestre Digital",
+  "offline_excludes": [
+    "npc",
+    "vehicle"
+  ],
+  "rows": [
+    [
+      {
+        "name": "Character Sheet",
+        "type": "charactersheet",
+        "align": "center",
+        "header": "hide",
+        "text": ""
+      },
+      {
+        "name": "Name",
+        "type": "direct",
+        "align": "center",
+        "header": "show",
+        "text": "name - system.advances.rank"
+      },
+      {
+        "name": "Wounds",
+        "type": "direct",
+        "align": "center",
+        "header": "show",
+        "text": "system.wounds.value / system.wounds.max"
+      },
+      {
+        "name": "Fatigue",
+        "type": "direct",
+        "align": "center",
+        "header": "show",
+        "text": "system.fatigue.value / system.fatigue.max"
+      },
+      {
+        "name": "Bennies",
+        "type": "direct",
+        "align": "center",
+        "header": "show",
+        "text": "system.bennies.value / system.bennies.max"
+      },
+      {
+        "name": "Pace",
+        "type": "direct",
+        "align": "center",
+        "header": "show",
+        "text": "system.stats.speed.runningDie + system.stats.speed.runningMod"
+      },
+      {
+        "name": "Parry",
+        "type": "direct",
+        "align": "center",
+        "header": "show",
+        "text": "system.stats.parry.value"
+      },
+      {
+        "name": "Toughness",
+        "type": "direct",
+        "align": "center",
+        "header": "show",
+        "text": "system.stats.toughness.value - Armor: system.stats.toughness.armor"
+      },
+      {
+        "name": "PP",
+        "type": "direct",
+        "align": "center",
+        "header": "show",
+        "text": "system.powerPoints.general.value / system.powerPoints.general.max"
+      },
+      {
+        "name": "Attributes",
+        "type": "direct",
+        "align": "center",
+        "header": "show",
+        "text": "Agility: system.attributes.agility.die.sides {newline} Smarts: system.attributes.smarts.die.sides {newline} Spirit: system.attributes.spirit.die.sides {newline} Strength: system.attributes.strength.die.sides {newline} Vigor: system.attributes.vigor.die.sides"
+      },
+      {
+        "name": "Status",
+        "type": "array-string-builder",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "statuses => value, "
+      }
+    ]
+  ]
+}

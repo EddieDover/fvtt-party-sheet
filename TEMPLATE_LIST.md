@@ -74,6 +74,14 @@ alienrpg.json - Michael Card (Emo Cthulhu)<br/>_Note: any changes needed for Bui
 
 <summary>starfinder.json - Michael Card (Emo Cthulhu)</summary></details>
 
+## Savage Worlds "swade"
+
+<details>
+
+![](./example_templates/swade/swade.jpg)
+
+<summary>swade.json - Mestre Digital</summary></details>
+
 ## The Walking Dead Universe RPG "twdu"
 
 <details>

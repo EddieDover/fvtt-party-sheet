@@ -10,6 +10,16 @@ export const registerSettings = () => {
   });
 
   // @ts-ignore
+  game.settings.register("theater-of-the-mind", "enableMinimalView", {
+    "name": "theater-of-the-mind.settings.enable-minimal-view.name",
+    "hint": "theater-of-the-mind.settings.enable-minimal-view.hint",
+    "scope": "world",
+    "config": true,
+    "default": false,
+    "type": Boolean,
+  });
+
+  // @ts-ignore
   game.settings.register("theater-of-the-mind", "enableOnlyOnline", {
     "name": "theater-of-the-mind.settings.enable-only-online.name",
     "hint": "theater-of-the-mind.settings.enable-only-online.hint",

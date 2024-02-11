@@ -389,6 +389,8 @@ export class PartySheetForm extends FormApplication {
 
   getData(options) {
     // @ts-ignore
+    const minimalView = game.settings.get("theater-of-the-mind", "enableMinimalView");
+    // @ts-ignore
     const hiddenCharacters = game.settings.get("theater-of-the-mind", "hiddenCharacters");
     // @ts-ignore
     const enableOnlyOnline = game.settings.get("theater-of-the-mind", "enableOnlyOnline");
@@ -410,6 +412,7 @@ export class PartySheetForm extends FormApplication {
     let { name: sysName, author: sysAuthor, players, rowcount } = this.getCustomPlayerData(selectedSystem);
     // @ts-ignore
     return mergeObject(super.getData(options), {
+      minimalView,
       hiddenCharacters,
       enableOnlyOnline,
       rowcount,

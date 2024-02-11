@@ -86,7 +86,7 @@ Inside the row array, the plugin expects items in the following format:
   "name": "<COLUMN_NAME>",
   "type": "<DATA_TYPE>",
   "header": "<COLUMN_TYPE>",
-  "value": "<DATA_VALUE>"
+  "text": "<DATA_VALUE>"
 }
 ```
 
@@ -205,7 +205,7 @@ A direct complex object has three properties:
   "name": "Senses",
   "type": "direct-complex",
   "header": "hide",
-  "value": [
+  "text": [
     {
       "type": "exists",
       "value": "system.attributes.senses.darkvision",

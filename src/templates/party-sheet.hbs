@@ -3,6 +3,7 @@
     {{#unless enableOnlyOnline}}
     <button class="totm-options" name="totm-options"><i class="fas fa-cog"></i>{{localize "theater-of-the-mind.hide-sheet.button" }}</button>
     {{/unless}}
+    {{#unless minimalView}}
     <div style="flex-grow:1"></div>
     <button type="button" class="btn btn--primary" style="max-width:50px" name="feedback" title="{{localize "theater-of-the-mind.party-sheet.feedback"}}">
       <i class="fas fa-comment"></i>
@@ -13,13 +14,16 @@
     <button type="button" class="btn btn--primary" style="max-width:50px" name="discord" title="{{localize "theater-of-the-mind.party-sheet.discord"}}">
       <i class="fab fa-discord"></i>
     </button>
+    {{/unless}}
   </div>
   {{#if applicableSystems.length}}
+    {{#hcifgte applicableSystems.length 2}}
     <select name="totm-system" id="totm-system-select">
       {{#each applicableSystems as |system|}}
       <option value="{{system.name}}___{{system.author}}" {{#ifCond system.name '==' ../selectedName}} {{#ifCond system.author '==' ../selectedAuthor }}selected{{/ifCond}}{{/ifCond}}>{{system.name}} - {{system.author}}</option>
       {{/each}}
     </select>
+    {{/hcifgte}}
     {{#if players}}
     <table id='totm-ps-table'>
       <thead>
