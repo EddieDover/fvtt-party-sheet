@@ -1,3 +1,17 @@
+## 2.0.3 (2024-02-17)
+
+##### New Features
+
+added templates for coriolis "yzecoriolis" by Michael Card (Emo Cthulhu)
+
+##### Bug Fixes
+
+updated links in README
+
+##### Chores
+
+updated alienrpg, blade-runner, fallout, starfinder, the walking dead, vaesen  templates by Michael Card (Emo Cthulhu)
+
 ## 2.0.1 (2024-02-11)
 
 ##### New Features
