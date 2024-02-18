@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Discuss adding a new Feature
+    url: https://github.com/EddieDover/Theater-of-the-Mind/discussions
+    about: Please use this link to discuss adding a new feature.
