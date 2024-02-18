@@ -1,0 +1,129 @@
+{
+    "name": "Coriolis - Compact",
+    "system": "yzecoriolis",
+    "author": "Michael Card (Emo Cthulhu)",
+    "offline_excludes": [
+        "npc",
+        "base",
+        "ship"
+    ],
+    "rows": [
+        [
+            {
+                "name": "Character Sheet",
+                "type": "charactersheet",
+                "align": "center",
+                "valign": "top",
+                "header": "hide",
+                "text": ""
+            },
+            {
+                "name": "Name",
+                "type": "direct",
+                "align": "left",
+                "valign": "top",
+                "minwidth": 110,
+                "maxwidth": 150,
+                "header": "show",
+                "text": "name"
+            },
+            {
+                "name": "HP",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.hitPoints / system.hitPoints.max"
+            },
+            {
+                "name": "MP",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.mindPoints / system.mindPoints.max"
+            },
+            {
+                "name": "Rad",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.radiation"
+            },
+            {
+                "name": "Move",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.movementRate"
+            },
+            {
+                "name": "STR Group",
+                "type": "direct",
+                "align": "left",
+                "valign": "top",
+                "header": "show",
+                "text": "STR: system.attributes.strength {newline} Gen: {newline} For: system.skills.force / system.skills.force {+} system.attributes.strength {newline} MC: system.skills.meleecombat / system.skills.meleecombat {+} system.attributes.strength"
+            },
+            {
+                "name": "AGL Group",
+                "type": "direct",
+                "align": "left",
+                "valign": "top",
+                "header": "show",
+                "text": "AGL: system.attributes.agility {newline} Gen: {newline} Dex: system.skills.dexterity / system.skills.dexterity {+} system.attributes.agility {newline} Inf: system.skills.infiltration / system.skills.infiltration {+} system.attributes.agility {newline} RC: system.skills.rangedcombat / system.skills.rangedcombat {+} system.attributes.agility {newline} Adv: {newline} Pilot: system.skills.pilot / system.skills.pilot {+} system.attributes.agility"
+            },
+            {
+                "name": "WITS Group",
+                "type": "direct",
+                "align": "left",
+                "valign": "top",
+                "header": "show",
+                "text": "WITS: system.attributes.wits {newline} Gen: {newline} Obs: system.skills.observation / system.skills.observation {+} system.attributes.wits {newline} Surv: system.skills.survival / system.skills.survival {+} system.attributes.wits {newline} Adv: {newline} DataDJ: system.skills.datadjinn / system.skills.datadjinn {+} system.attributes.wits {newline} Medic: system.skills.medicurgy / system.skills.medicurgy {+} system.attributes.wits {newline} Sci: system.skills.science / system.skills.science {+} system.attributes.wits {newline} Tec: system.skills.technology / system.skills.technology {+} system.attributes.wits"
+            },
+            {
+                "name": "EMP Group",
+                "type": "direct",
+                "align": "left",
+                "valign": "top",
+                "header": "show",
+                "text": "EMP: system.attributes.empathy {newline} Gen: {newline} Man: system.skills.manipulation / system.skills.manipulation {+} system.attributes.empathy {newline} Adv: {newline} Comm: system.skills.command / system.skills.command {+} system.attributes.empathy {newline} Cult: system.skills.culture / system.skills.culture {+} system.attributes.empathy {newline} MysPow: system.skills.mysticpowers / system.skills.mysticpowers {+} system.attributes.empathy"
+            },
+            {
+                "name": "Rep",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.reputation"
+            },
+            {
+                "name": "XP",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.experience"
+            },
+            {
+                "name": "Birr",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.birr"
+            },
+            {
+                "name": "Statuses",
+                "type": "array-string-builder",
+                "align": "left",
+                "valign": "top",
+                "maxwidth": 90,
+                "header": "show",
+                "text": "statuses => value, "
+            }
+        ]
+    ]
+}

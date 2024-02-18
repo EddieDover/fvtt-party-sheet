@@ -27,7 +27,15 @@ Please unfold any entry to see a screenshot.
 ![](./example_templates/alienrpg/alienrpg.jpg)
 
 <summary>
-alienrpg.json - Michael Card (Emo Cthulhu)<br/>_Note: any changes needed for Building Better Worlds will be available in next update._</summary>
+alienrpg.json - Michael Card (Emo Cthulhu)</summary>
+</details>
+
+<details>
+
+![](./example_templates/alienrpg/alienrpg-no-name.jpg)
+
+<summary>
+alienrpg-no-name.json - Michael Card (Emo Cthulhu)</summary>
 </details>
 
 ## Blade Runner RPG "blade-runner"
@@ -40,9 +48,47 @@ alienrpg.json - Michael Card (Emo Cthulhu)<br/>_Note: any changes needed for Bui
 
 <details>
 
+![](./example_templates/blade-runner/blade-runner-basic-no-name.jpg)
+
+<summary>blade-runner-basic-no-name.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
+
 ![](./example_templates/blade-runner/blade-runner-expanded.jpg)
 
 <summary>blade-runner-expanded.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
+
+![](./example_templates/blade-runner/blade-runner-expanded-no-name.jpg)
+
+<summary>blade-runner-expanded-no-name.json - Michael Card (Emo Cthulhu)</summary></details>
+
+## Coriolis "yzecoriolis"
+
+<details>
+
+![](./example_templates/coriolis/coriolis.jpg)
+
+<summary>coriolis.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
+
+![](./example_templates/coriolis/coriolis-no-name.jpg)
+
+<summary>coriolis-no-name.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
+
+![](./example_templates/coriolis/coriolis-compact.jpg)
+
+<summary>coriolis-compact.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
+
+![](./example_templates/coriolis/coriolis-compact-no-name.jpg)
+
+<summary>coriolis-compact-no-name.json - Michael Card (Emo Cthulhu)</summary></details>
 
 ## Dragonbane "dragonbane"
 
@@ -64,7 +110,25 @@ alienrpg.json - Michael Card (Emo Cthulhu)<br/>_Note: any changes needed for Bui
 
 ![](./example_templates/fallout/fallout.jpg)
 
-<summary>fallout.json - Michael Card (Emo Cthulhu)</summary></details>
+<summary>fallout.json - Michael Card (Emo Cthulhu)</br>Notes: fallout.json and fallout-trimmed.json do not have Movement Speeds. This is because the versions with movement speeds require you to configure the actor templates in the fallout system files to include a key called "unofficialspeed". They won't show anything on basic vanilla Fallout. The trimmed templates were requested by a GM currently running a massive Fallout campaign, so I've included them as it seems likely many GMs will not need all the info in the base versions.</summary></details>
+
+<details>
+
+![](./example_templates/fallout/fallout-move.jpg)
+
+<summary>fallout-move.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
+
+![](./example_templates/fallout/fallout-trimmed.jpg)
+
+<summary>fallout-trimmed.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
+
+![](./example_templates/fallout/fallout-trimmed-move.jpg)
+
+<summary>fallout-trimmed-move.json - Michael Card (Emo Cthulhu)</summary></details>
 
 ## Starfinder "sfrpg"
 
@@ -73,6 +137,12 @@ alienrpg.json - Michael Card (Emo Cthulhu)<br/>_Note: any changes needed for Bui
 ![](./example_templates/starfinder/starfinder.jpg)
 
 <summary>starfinder.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
+
+![](./example_templates/starfinder/starfinder-statuses.jpg)
+
+<summary>starfinder-statuses.json - Michael Card (Emo Cthulhu)</summary></details>
 
 ## Savage Worlds "swade"
 
@@ -92,15 +162,33 @@ alienrpg.json - Michael Card (Emo Cthulhu)<br/>_Note: any changes needed for Bui
 
 <details>
 
+![](./example_templates/thewalkingdead/twdu-anchors-no-name.jpg)
+
+<summary>twdu-anchors-no-name.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
+
 ![](./example_templates/thewalkingdead/twdu-no-anchors.jpg)
 
 <summary>twdu-no-anchors.json - Michael Card (Emo Cthulhu)</summary></details>
 
 <details>
 
+![](./example_templates/thewalkingdead/twdu-no-anchors-no-name.jpg)
+
+<summary>twdu-no-anchors-no-name.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
+
 ![](./example_templates/thewalkingdead/twdu-two-rows.jpg)
 
 <summary>twdu-two-rows.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
+
+![](./example_templates/thewalkingdead/twdu-two-rows-no-name.jpg)
+
+<summary>twdu-two-rows-no-name.json - Michael Card (Emo Cthulhu)</summary></details>
 
 ## Vaesen "vaesen"
 
@@ -109,3 +197,9 @@ alienrpg.json - Michael Card (Emo Cthulhu)<br/>_Note: any changes needed for Bui
 ![](./example_templates/vaesen/vaesen.jpg)
 
 <summary>vaesen.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
+
+![](./example_templates/vaesen/vaesen-no-name.jpg)
+
+<summary>vaesen-no-name.json - Michael Card (Emo Cthulhu)</summary></details>

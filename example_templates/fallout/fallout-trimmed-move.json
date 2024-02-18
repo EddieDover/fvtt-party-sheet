@@ -1,0 +1,123 @@
+{
+    "name": "Fallout 2d20 - Trimmed - With Movement",
+    "system": "fallout",
+    "author": "Michael Card (Emo Cthulhu)",
+    "offline_excludes": [
+        "npc",
+        "base"
+    ],
+    "rows": [
+        [
+            {
+                "name": "Character",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "maxwidth": 100,
+                "header": "show",
+                "text": "{charactersheet} {newline} Origin: system.origin"
+            },
+            {
+                "name": "Health/Rads",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "minwidth": 60,
+                "header": "show",
+                "text": "system.health.value / system.health.max {newline} system.radiation"
+            },
+            {
+                "name": "Head",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.body_parts.head.injuries"
+            },
+            {
+                "name": "ArmL/Arm1",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.body_parts.armL.injuries"
+            },
+            {
+                "name": "ArmR/Arm2",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.body_parts.armR.injuries"
+            },
+            {
+                "name": "Torso",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.body_parts.torso.injuries"
+            },
+            {
+                "name": "LegL/Arm3",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.body_parts.legL.injuries"
+            },
+            {
+                "name": "LegR/Arm4",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.body_parts.legR.injuries"
+            },
+            {
+                "name": "Luck",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "minwidth": 40,
+                "header": "show",
+                "text": "system.attributes.luc"
+            },
+            {
+                "name": "Init",
+                "type": "direct",
+                "minwidth": 60,
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.initiative"
+            },
+            {
+                "name": "Move",
+                "type": "direct",
+                "minwidth": 60,
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.unofficalSpeed"
+            },
+            {
+                "name": "Wealth",
+                "type": "direct",
+                "align": "left",
+                "valign": "top",
+                "header": "show",
+                "text": "Caps: system.currency.caps {newline} Other: system.currency.other"
+            },
+            {
+                "name": "Statuses",
+                "type": "array-string-builder",
+                "align": "left",
+                "valign": "top",
+                "maxwidth": 125,
+                "header": "show",
+                "text": "statuses => value, "
+            }
+        ]
+    ]
+}

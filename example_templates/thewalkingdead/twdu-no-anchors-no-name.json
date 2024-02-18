@@ -1,0 +1,78 @@
+  {
+    "name": "The Walking Dead Universe RPG - No Anchors/No Names",
+    "system": "twdu",
+    "author": "Michael Card (Emo Cthulhu)",
+    "offline_excludes": [
+      "npc",
+      "base",
+      "vehicle",
+      "haven",
+      "animal"
+    ],
+    "rows": [
+      [
+        {
+          "name": "Name",
+          "type": "direct",
+          "align": "center",
+          "valign": "top",
+          "header": "hide",
+          "text": "{charactersheet} {newline} system.archetype"
+        },
+        {
+          "name": "Health/Stress",
+          "minwidth": 50,
+          "type": "direct",
+          "align": "center",
+          "valign": "top",
+          "header": "show",
+          "text": "HP: system.health / 3 {newline} SP: system.stress"
+        },
+        {
+          "name": "STR Group",
+          "minwidth": 50,
+          "type": "direct",
+          "align": "left",
+          "valign": "top",
+          "header": "show",
+          "text": "STR: system.attributes.str {newline} {newline} CC: system.skills.closeCombat / system.skills.closeCombat {+} system.attributes.str {newline} End: system.skills.endure / system.skills.endure {+} system.attributes.str {newline} For: system.skills.force / system.skills.force {+} system.attributes.str"
+        },
+        {
+          "name": "AGL Group",
+          "minwidth": 50,
+          "type": "direct",
+          "align": "left",
+          "valign": "top",
+          "header": "show",
+          "text": "AGL: system.attributes.agl {newline} {newline} Mob: system.skills.mobility / system.skills.mobility {+} system.attributes.agl {newline} RC: system.skills.rangedCombat / system.skills.rangedCombat {+} system.attributes.agl {newline} St: system.skills.stealth / system.skills.stealth {+} system.attributes.agl"
+        },
+        {
+          "name": "WIT Group",
+          "minwidth": 50,
+          "type": "direct",
+          "align": "left",
+          "valign": "top",
+          "header": "show",
+          "text": "WIT: system.attributes.wit {newline} {newline} Sco: system.skills.scout / system.skills.scout {+} system.attributes.wit {newline} Sur: system.skills.survival / system.skills.survival {+} system.attributes.wit {newline} Tech: system.skills.tech / system.skills.tech {+} system.attributes.wit"
+        },
+        {
+          "name": "EMP Group",
+          "minwidth": 50,
+          "type": "direct",
+          "align": "left",
+          "valign": "top",
+          "header": "show",
+          "text": "EMP: system.attributes.emp {newline} {newline} Lead: system.skills.leadership / system.skills.leadership {+} system.attributes.emp {newline} Man: system.skills.manipulation / system.skills.manipulation {+} system.attributes.emp {newline} Med: system.skills.medicine / system.skills.medicine {+} system.attributes.emp"
+        },
+        {
+          "name": "Statuses",
+          "type": "array-string-builder",
+          "align": "left",
+          "valign": "top",
+          "maxwidth": 70,
+          "header": "show",
+          "text": "statuses => value, "
+        }
+      ]
+    ]
+  }

@@ -1,0 +1,783 @@
+{
+  "name": "Starfinder - With Statuses",
+  "system": "sfrpg",
+  "author": "Michael Card (Emo Cthulhu)",
+  "offline_excludes": [
+    "npc",
+    "npc2",
+    "base",
+    "creature",
+    "drone",
+    "hazard",
+    "vehicle",
+    "starship"
+  ],
+  "rows": [
+    [
+      {
+        "name": "x",
+        "type": "charactersheet",
+        "align": "left",
+        "header": "hide",
+        "text": ""
+      },
+      {
+        "name": "Details",
+        "type": "direct",
+        "align": "left",
+        "header": "show",
+        "text": "name {newline} Theme: system.details.theme {newline} Race: system.details.race {newline} Size: system.traits.size"
+      },
+      {
+        "name": "STR",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.abilities.str {newline} system.abilities.str.mod"
+      },
+      {
+        "name": "DEX",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.abilities.dex {newline} system.abilities.dex.mod"
+      },
+      {
+        "name": "CON",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.abilities.con {newline} system.abilities.con.mod"
+      },
+      {
+        "name": "INT",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.abilities.int {newline} system.abilities.int.mod"
+      },
+      {
+        "name": "WIS",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.abilities.wis {newline} system.abilities.wis.mod"
+      },
+      {
+        "name": "CHA",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.abilities.cha {newline} system.abilities.cha.mod"
+      },
+      {
+        "name": "HP/SP",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "HP: system.attributes.hp.value / system.attributes.hp.max {newline} SP: system.attributes.sp.value / system.attributes.sp.max"
+      },
+      {
+        "name": "EAC",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.attributes.eac"
+      },
+      {
+        "name": "BAB",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.attributes.baseAttackBonus"
+      },
+      {
+        "name": "Main Move",
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "Type: system.attributes.speed.mainMovement"
+      },
+      {
+        "name": "Fort",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.attributes.fort.bonus"
+      },
+      {
+        "name": "Reflex",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.attributes.reflex.bonus"
+      },
+      {
+        "name": "Will",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.attributes.will.bonus"
+      },
+      {
+        "name": "Align",
+        "type": "direct-complex",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "",
+            "text": "--"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "LG",
+            "text": "LG"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Lawful Good",
+            "text": "LG"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "LN",
+            "text": "LN"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Lawful Neutral",
+            "text": "LN"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "LE",
+            "text": "LE"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Lawful Evil",
+            "text": "LE"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "NG",
+            "text": "NG"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Neutral Good",
+            "text": "NG"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "N",
+            "text": "N"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Neutral",
+            "text": "N"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "NE",
+            "text": "NE"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Neutral Evil",
+            "text": "NE"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "CG",
+            "text": "CG"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Chaotic Good",
+            "text": "CG"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "CN",
+            "text": "CN"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Chaotic Neutral",
+            "text": "CN"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "CE",
+            "text": "CE"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.details.alignment",
+            "matches": "Chaotic Evil",
+            "text": "CE"
+          }
+        ]
+      },
+      {
+        "name": "Wealth",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "Credits: system.currency.credit"
+      },
+      {
+        "name": "Senses",
+        "type": "direct",
+        "maxwidth": 125,
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "system.traits.senses"
+      },
+      {
+        "name": "Statuses",
+        "type": "direct",
+        "align": "left",
+        "header": "show",
+        "text": ""
+      }
+    ],
+    [
+      {
+        "name": "blank1",
+        "align": "left",
+        "type": "direct",
+        "header": "hide",
+        "text": ""
+      },
+      {
+        "name": "Class(es)/Levels",
+        "type": "direct-complex",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": [
+          {
+            "type": "exists",
+            "value": "system.details.level",
+            "text": "Level: system.details.level {newline}"
+          },
+          {
+            "type": "exists",
+            "value": "system.classes.solarian.levels",
+            "text": "Solarian system.classes.solarian.levels {newline}"
+          },
+          {
+            "type": "exists",
+            "value": "system.classes.soldier.levels",
+            "text": "Soldier system.classes.soldier.levels {newline}"
+          },
+          {
+            "type": "exists",
+            "value": "system.classes.operative.levels",
+            "text": "Operative system.classes.operative.levels {newline}"
+          },
+          {
+            "type": "exists",
+            "value": "system.classes.mechanic.levels",
+            "text": "Mechanic system.classes.mechanic.levels {newline}"
+          },
+          {
+            "type": "exists",
+            "value": "system.classes.mystic.levels",
+            "text": "Mystic system.classes.mystic.levels {newline}"
+          },
+          {
+            "type": "exists",
+            "value": "system.classes.technomancer.levels",
+            "text": "Technomancer system.classes.technomancer.levels {newline}"
+          },
+          {
+            "type": "exists",
+            "value": "system.classes.envoy.levels",
+            "text": "Envoy system.classes.envoy.levels {newline}"
+          },
+          {
+            "type": "exists",
+            "value": "system.classes.witchwarper.levels",
+            "text": "Witchwarper system.classes.witchwarper.levels {newline}"
+          },
+          {
+            "type": "exists",
+            "value": "system.classes.vanguard.levels",
+            "text": "Vanguard system.classes.vanguard.levels {newline}"
+          },
+          {
+            "type": "exists",
+            "value": "system.classes.biohacker.levels",
+            "text": "Biohacker system.classes.biohacker.levels"
+          }
+        ]
+      },
+      {
+        "name": "STRKEY?",
+        "type": "direct-complex",
+        "align": "center",
+        "valign": "top",
+        "header": "hide",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.attributes.keyability",
+            "matches": "str",
+            "text": "KEY"
+          }
+        ]
+      },
+      {
+        "name": "DEXKEY?",
+        "type": "direct-complex",
+        "align": "center",
+        "valign": "top",
+        "header": "hide",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.attributes.keyability",
+            "matches": "dex",
+            "text": "KEY"
+          }
+        ]
+      },
+      {
+        "name": "CONKEY?",
+        "type": "direct-complex",
+        "align": "center",
+        "valign": "top",
+        "header": "hide",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.attributes.keyability",
+            "matches": "con",
+            "text": "KEY"
+          }
+        ]
+      },
+      {
+        "name": "INTKEY?",
+        "type": "direct-complex",
+        "align": "center",
+        "valign": "top",
+        "header": "hide",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.attributes.keyability",
+            "matches": "int",
+            "text": "KEY"
+          }
+        ]
+      },
+      {
+        "name": "WISKEY?",
+        "type": "direct-complex",
+        "align": "center",
+        "valign": "top",
+        "header": "hide",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.attributes.keyability",
+            "matches": "wis",
+            "text": "KEY"
+          }
+        ]
+      },
+      {
+        "name": "CHAKEY?",
+        "type": "direct-complex",
+        "align": "center",
+        "valign": "top",
+        "header": "hide",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.attributes.keyability",
+            "matches": "cha",
+            "text": "KEY"
+          }
+        ]
+      },
+      {
+        "name": "Resolve",
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "RP: system.attributes.rp.value / system.attributes.rp.max"
+      },
+      {
+        "name": "KAC/CMD",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.attributes.kac {newline} system.attributes.cmd"
+      },
+      {
+        "name": "Init",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.attributes.init.total"
+      },
+      {
+        "name": "Movement",
+        "type": "direct-complex",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.attributes.speed.climbing.base",
+            "matches": 0,
+            "text": "",
+            "else": "Climbing: system.attributes.speed.climbing.value {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.attributes.speed.flying.base",
+            "matches": 0,
+            "text": "",
+            "else": "Flying: system.attributes.speed.flying.value {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.attributes.speed.burrowing.base",
+            "matches": 0,
+            "text": "",
+            "else": "Burrow: system.attributes.speed.burrowing.value {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.attributes.speed.swimming.base",
+            "matches": 0,
+            "text": "",
+            "else": "Swimming: system.attributes.speed.swimming.value {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.attributes.speed.land",
+            "matches": 0,
+            "text": "",
+            "else": "Land: system.attributes.speed.land.value"
+          }
+        ]
+      },
+      {
+        "name": "Reach",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.attributes.reach"
+      },
+      {
+        "name": "Space",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.attributes.space"
+      },
+      {
+        "name": "Arms",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.attributes.arms"
+      },
+      {
+        "name": "Deity",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.details.biography.deity"
+      },
+      {
+        "name": "CurrencyUPB",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "hide",
+        "text": "UPBs: system.currency.upb"
+      },
+      {
+        "name": "Languages",
+        "type": "array-string-builder",
+        "align": "left",
+        "valign": "top",
+        "maxwidth": 125,
+        "header": "show",
+        "text": "system.traits.languages => value, "
+      },
+      {
+        "name": "Status",
+        "type": "direct-complex",
+        "align": "left",
+        "valign": "top",
+        "header": "hide",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.conditions.asleep",
+            "matches": true,
+            "text": "Asleep {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.bleeding",
+            "matches": true,
+            "text": "Bleeding {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.blinded",
+            "matches": true,
+            "text": "Blinded {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.burning",
+            "matches": true,
+            "text": "Burning {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.confused",
+            "matches": true,
+            "text": "Confused {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.cowering",
+            "matches": true,
+            "text": "Cowering {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.dazed",
+            "matches": true,
+            "text": "Dazed {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.dazzled",
+            "matches": true,
+            "text": "Dazzled {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.dead",
+            "matches": true,
+            "text": "Dead {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.deafened",
+            "matches": true,
+            "text": "Deafened {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.dying",
+            "matches": true,
+            "text": "Dying {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.encumbered",
+            "matches": true,
+            "text": "Encumbered {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.entangled",
+            "matches": true,
+            "text": "Entangled {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.exhausted",
+            "matches": true,
+            "text": "Exhausted {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.fascinated",
+            "matches": true,
+            "text": "Fascinated {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.fatigued",
+            "matches": true,
+            "text": "Fatigued {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.flat-footed",
+            "matches": true,
+            "text": "Flat Footed {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.frightened",
+            "matches": true,
+            "text": "Frightened {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.grappled",
+            "matches": true,
+            "text": "Grappled {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.helpless",
+            "matches": true,
+            "text": "Helpless {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.invisible",
+            "matches": true,
+            "text": "Invisible {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.nauseated",
+            "matches": true,
+            "text": "Nauseated {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.off-kilter",
+            "matches": true,
+            "text": "Off Kilter {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.off-target",
+            "matches": true,
+            "text": "Off Target {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.overburdened",
+            "matches": true,
+            "text": "Over Burdened {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.panicked",
+            "matches": true,
+            "text": "Panicked {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.paralyzed",
+            "matches": true,
+            "text": "Paralyzed {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.pinned",
+            "matches": true,
+            "text": "Pinned {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.prone",
+            "matches": true,
+            "text": "Prone {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.shaken",
+            "matches": true,
+            "text": "Shaken {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.sickened",
+            "matches": true,
+            "text": "Sickened {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.stable",
+            "matches": true,
+            "text": "Stable {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.staggered",
+            "matches": true,
+            "text": "Staggered {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.stunned",
+            "matches": true,
+            "text": "Stunned {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.unconscious",
+            "matches": true,
+            "text": "Unconscious {newline}"
+          }
+        ]
+      }
+    ]
+  ]
+}

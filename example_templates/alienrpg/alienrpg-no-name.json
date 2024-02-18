@@ -1,0 +1,209 @@
+{
+  "name": "Alien: The Roleplaying Game - No Names",
+  "system": "alienrpg",
+  "author": "Michael Card (Emo Cthulhu)",
+  "offline_includes_property": "system.header.npc",
+  "offline_includes": [
+    false
+  ],
+  "rows": [
+    [
+      {
+        "Name": "Character",
+        "type": "charactersheet",
+        "header": "hide",
+        "text": ""
+      },
+      {
+        "name": "Career",
+        "align": "left",
+        "type": "direct-complex",
+        "header": "show",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.general.career",
+            "matches": "1",
+            "text": "Career: Colonial Marine"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.general.career",
+            "matches": "2",
+            "text": "Career: Colonial Marshall"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.general.career",
+            "matches": "3",
+            "text": "Career: Company Agent"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.general.career",
+            "matches": "4",
+            "text": "Career: Kid"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.general.career",
+            "matches": "5",
+            "text": "Career: Medic"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.general.career",
+            "matches": "6",
+            "text": "Career: Mercenary"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.general.career",
+            "matches": "7",
+            "text": "Career: Officer"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.general.career",
+            "matches": "8",
+            "text": "Career: Pilot"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.general.career",
+            "matches": "9",
+            "text": "Career: Roughneck"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.general.career",
+            "matches": "10",
+            "text": "Career: Scientist"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.general.career",
+            "matches": "11",
+            "text": "Synthetic"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.general.career",
+            "matches": "12",
+            "text": "Homebrew"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.general.career",
+            "matches": "13",
+            "text": "Career: Wildcatter"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.general.career",
+            "matches": "14",
+            "text": "Career: Entertainer"
+          }
+        ]
+      },
+      {
+        "name": "Health",
+        "minwidth": 50,
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.header.health / system.header.health.max"
+      },
+      {
+        "name": "Stress",
+        "minwidth": 50,
+        "type": "direct-complex",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "type",
+            "matches": "synthetic",
+            "text": "N/A"
+          },
+          {
+            "type": "match",
+            "ifdata": "type",
+            "matches": "character",
+            "text": "system.header.stress"
+          }
+        ]
+      },
+      {
+        "name": "Panic",
+        "minwidth": 50,
+        "type": "direct-complex",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "type",
+            "matches": "synthetic",
+            "text": "N/A"
+          },
+          {
+            "type": "match",
+            "ifdata": "type",
+            "matches": "character",
+            "text": "system.general.panic.lastRoll"
+          }
+        ]
+      },
+      {
+        "name": "Strength Group",
+        "maxwidth": 70,
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "STR: system.attributes.str {newline} {newline} CC: system.skills.closeCbt / system.skills.closeCbt {+} system.attributes.str {newline} HM: system.skills.heavyMach / system.skills.heavyMach {+} system.attributes.str {newline} Sta: system.skills.stamina / system.skills.stamina {+} system.attributes.str"
+      },
+      {
+        "name": "Agility Group",
+        "maxwidth": 70,
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "AGL: system.attributes.agl {newline} {newline} RC: system.skills.rangedCbt / system.skills.rangedCbt {+} system.attributes.agl {newline} Mob: system.skills.mobility / system.skills.mobility {+} system.attributes.agl {newline} Pilot: system.skills.piloting / system.skills.piloting {+} system.attributes.agl"
+      },
+      {
+        "name": "Empathy Group",
+        "maxwidth": 70,
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "EMP: system.attributes.emp {newline} {newline} Com: system.skills.command / system.skills.command {+} system.attributes.emp {newline} Man: system.skills.manipulation / system.skills.manipulation {+} system.attributes.emp {newline} Med: system.skills.medicalAid / system.skills.medicalAid {+} system.attributes.emp"
+      },
+      {
+        "name": "Wits Group",
+        "maxwidth": 70,
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "WIT: system.attributes.wit {newline} {newline} Obs: system.skills.observation / system.skills.observation {+} system.attributes.wit {newline} Sur: system.skills.survival / system.skills.survival {+} system.attributes.wit {newline} CT: system.skills.comtech / system.skills.comtech {+} system.attributes.wit"
+      },
+      {
+        "name": "Statuses",
+        "type": "array-string-builder",
+        "align": "left",
+        "valign": "top",
+        "maxwidth": 90,
+        "header": "show",
+        "text": "statuses => value, "
+      }
+    ]
+  ]
+}

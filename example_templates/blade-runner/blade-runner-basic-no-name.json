@@ -1,0 +1,100 @@
+{
+  "name": "Blade Runner: The Roleplaying Game - Basic - No Names",
+  "system": "blade-runner",
+  "author": "Michael Card (Emo Cthulhu)",
+  "offline_includes_property": "system.subtype",
+  "offline_includes": [
+    "pc"
+  ],
+  "rows": [
+    [
+      {
+        "name": "Archetype/Nature",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "maxwidth": 100,
+        "header": "show",
+        "text": "{charactersheet} {newline} Archetype: system.archetype {newline} Nature: system.nature"
+      },
+      {
+        "name": "Health & Resolve",
+        "maxwidth": 70,
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "H: system.health.value / system.health.max {newline} R: system.resolve.value / system.resolve.max"
+      },
+      {
+        "name": "STR Group",
+        "minwidth": 115,
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "STR: d system.attributes.str {newline} {newline} HtH: d system.skills.closeCombat / d system.skills.closeCombat + d system.attributes.str {newline} For: d system.skills.force / d system.skills.force + d system.attributes.str {newline} Stam: d system.skills.stamina / d system.skills.stamina + d system.attributes.str"
+      },
+      {
+        "name": "AGL Group",
+        "minwidth": 115,
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "AGL: d system.attributes.agi {newline} {newline} Fire: d system.skills.firearms / d system.skills.firearms.value + d system.attributes.agi {newline} Mob: d system.skills.mobility / d system.skills.mobility + d system.attributes.agi {newline} Stea: d system.skills.stealth / d system.skills.stealth + d system.attributes.agi"
+      },
+      {
+        "name": "INT Group",
+        "minwidth": 115,
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "INT: d system.attributes.int {newline} {newline} Med: d system.skills.medicalAid / d system.skills.medicalAid.value + d system.attributes.int {newline} Obs: d system.skills.observation / d system.skills.observation + d system.attributes.int {newline} Tech: d system.skills.tech / d system.skills.tech + d system.attributes.int {newline} {newline} Driving*: d system.skills.driving"
+      },
+      {
+        "name": "EMP Group",
+        "minwidth": 115,
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "EMP: d system.attributes.emp {newline} {newline} Con: d system.skills.connections / d system.skills.connections.value + d system.attributes.emp.value {newline} Ins: d system.skills.insight / d system.skills.insight + d system.attributes.emp {newline} Man: d system.skills.manipulation / d system.skills.manipulation + d system.attributes.emp"
+      },
+      {
+        "name": "Statuses",
+        "type": "array-string-builder",
+        "align": "left",
+        "valign": "top",
+        "maxwidth": 70,
+        "header": "show",
+        "text": "statuses => value, "
+      },
+      {
+        "name": "Chin",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.metaCurrencies.chinyen"
+      },
+      {
+        "name": "Hum",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.metaCurrencies.humanity"
+      },
+      {
+        "name": "Promo",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.metaCurrencies.promotion"
+      }
+    ]
+  ]
+}

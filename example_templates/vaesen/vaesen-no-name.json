@@ -1,0 +1,139 @@
+{
+  "name": "Vaesen - No Names",
+  "system": "vaesen",
+  "author": "Michael Card (Emo Cthulhu)",
+  "offline_excludes": [
+    "npc",
+    "base",
+    "vaesen",
+    "headquarter"
+  ],
+  "rows": [
+    [
+
+      {
+        "name": "Archetype",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "maxwidth": 100,
+        "header": "show",
+        "text": "{charactersheet} {newline} system.bio.archetype"
+      },
+      {
+        "name": "Physical",
+        "type": "direct-complex",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.condition.physical.states.exhausted.isChecked",
+            "matches": true,
+            "text": "EXHAUSTED {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.condition.physical.states.battered.isChecked",
+            "matches": true,
+            "text": "BATTERED {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.condition.physical.states.wounded.isChecked",
+            "matches": true,
+            "text": "WOUNDED {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.condition.physical.isBroken",
+            "matches": true,
+            "text": "BROKEN"
+          }
+        ]
+      },
+      {
+        "name": "Mental",
+        "type": "direct-complex",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.condition.mental.states.angry.isChecked",
+            "matches": true,
+            "text": "ANGRY {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.condition.mental.states.frightened.isChecked",
+            "matches": true,
+            "text": "FRIGHTENED {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.condition.mental.states.hopeless.isChecked",
+            "matches": true,
+            "text": "HOPELESS {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.condition.mental.isBroken",
+            "matches": true,
+            "text": "BROKEN"
+          }
+        ]
+      },
+      {
+        "name": "Physique",
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "PHY: system.attribute.physique {newline} {newline} Agility: system.skill.agility / system.skill.agility {+} system.attribute.physique {newline} ClsCom: system.skill.closeCombat / system.skill.closeCombat {+} system.attribute.physique {newline} Force: system.skill.force / system.skill.force {+} system.attribute.physique"
+      },
+      {
+        "name": "Precision",
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "PRE: system.attribute.precision {newline} {newline} Medic: system.skill.medicine / system.skill.medicine {+} system.attribute.precision {newline} RgCom: system.skill.rangedCombat / system.skill.rangedCombat {+} system.attribute.precision {newline} Stealth: system.skill.stealth / system.skill.stealth {+} system.attribute.precision"
+      },
+      {
+        "name": "Logic",
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "LOG: system.attribute.logic {newline} {newline} Invest: system.skill.investigation / system.skill.investigation {+} system.attribute.logic {newline} Learn: system.skill.learning / system.skill.learning {+} system.attribute.logic {newline} Vigil: system.skill.vigilance / system.skill.vigilance {+} system.attribute.logic"
+      },
+      {
+        "name": "Empathy",
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "EMP: system.attribute.empathy {newline} {newline} Inspir: system.skill.inspiration / system.skill.inspiration {+} system.attribute.empathy {newline} Manip: system.skill.manipulation / system.skill.manipulation {+} system.attribute.empathy {newline} Observ: system.skill.observation / system.skill.observation {+} system.attribute.empathy"
+      },
+      {
+        "name": "Resources",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.resources"
+      },
+      {
+        "name": "Capital",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "system.capital"
+      }
+    ]
+  ]
+}

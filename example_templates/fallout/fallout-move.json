@@ -1,5 +1,5 @@
 {
-    "name": "Fallout 2d20 - No Movement",
+    "name": "Fallout 2d20 - With Movement",
     "system": "fallout",
     "author": "Michael Card (Emo Cthulhu)",
     "offline_excludes": [
@@ -23,7 +23,7 @@
                 "minwidth": 110,
                 "maxwidth": 150,
                 "header": "show",
-                "text": "name"
+                "text": "name {newline} Level: system.level"
             },
             {
                 "name": "Health",
@@ -98,12 +98,12 @@
                 "text": "system.attributes.luc"
             },
             {
-                "name": "Level",
+                "name": "Move",
                 "type": "direct",
                 "align": "center",
                 "valign": "top",
                 "header": "show",
-                "text": "system.level"
+                "text": "system.unofficalSpeed"
             },
             {
                 "name": "Wealth",
