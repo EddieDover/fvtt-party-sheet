@@ -1,0 +1,150 @@
+{
+    "name": "Star Trek Adventures - v1",
+    "system": "sta",
+    "author": "Michael Card (Emo Cthulhu)",
+    "offline_excludes": [
+        "npc",
+        "base",
+        "starship",
+        "extendedtask",
+        "smallcraft"
+    ],
+    "rows": [
+        [
+            {
+                "name": "Character Sheet",
+                "type": "charactersheet",
+                "align": "center",
+                "header": "hide",
+                "text": ""
+            },
+            {
+                "name": "Details",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "name {newline} Species: system.species {newline} Assignment: system.assignment {newline} Rank: system.rank"
+            },
+            {
+                "name": "Determination",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.determination.value / system.determination.max"
+            },
+            {
+                "name": "Stress",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "minwidth": 60,
+                "header": "show",
+                "text": "system.stress.value / system.stress.max"
+            },
+            {
+                "name": "Attributes",
+                "type": "direct-complex",
+                "align": "left",
+                "valign": "top",
+                "header": "show",
+                "text": [
+                    {
+                        "type": "match",
+                        "ifdata": "system.attributes.control.selected",
+                        "matches": true,
+                        "text": "Control: system.attributes.control.value * {newline}",
+                        "else": "Control: system.attributes.control.value {newline}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.attributes.daring.selected",
+                        "matches": true,
+                        "text": "Daring: system.attributes.daring.value * {newline}",
+                        "else": "Daring: system.attributes.daring.value {newline}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.attributes.fitness.selected",
+                        "matches": true,
+                        "text": "Fitness: system.attributes.fitness.value * {newline}",
+                        "else": "Fitness: system.attributes.fitness.value {newline}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.attributes.insight.selected",
+                        "matches": true,
+                        "text": "Insight: system.attributes.insight.value * {newline}",
+                        "else": "Insight: system.attributes.insight.value {newline}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.attributes.presence.selected",
+                        "matches": true,
+                        "text": "Presence: system.attributes.presence.value * {newline}",
+                        "else": "Presence: system.attributes.presence.value {newline}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.attributes.reason.selected",
+                        "matches": true,
+                        "text": "Reason: system.attributes.reason.value *",
+                        "else": "Reason: system.attributes.reason.value"
+                    }
+                ]
+            },
+            {
+                "name": "Disciplines",
+                "type": "direct-complex",
+                "align": "left",
+                "valign": "top",
+                "header": "show",
+                "text": [
+                    {
+                        "type": "match",
+                        "ifdata": "system.disciplines.command.selected",
+                        "matches": true,
+                        "text": "Command: system.disciplines.command.value * {newline}",
+                        "else": "Command: system.disciplines.command.value {newline}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.disciplines.conn.selected",
+                        "matches": true,
+                        "text": "Conn: system.disciplines.conn.value * {newline}",
+                        "else": "Conn: system.disciplines.conn.value {newline}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.disciplines.engineering.selected",
+                        "matches": true,
+                        "text": "Engineering: system.disciplines.engineering.value * {newline}",
+                        "else": "Engineering: system.disciplines.engineering.value {newline}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.disciplines.medicine.selected",
+                        "matches": true,
+                        "text": "Medicine: system.disciplines.medicine.value * {newline}",
+                        "else": "Medicine: system.disciplines.medicine.value {newline}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.disciplines.science.selected",
+                        "matches": true,
+                        "text": "Science: system.disciplines.science.value * {newline}",
+                        "else": "Science: system.disciplines.science.value {newline}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.disciplines.security.selected",
+                        "matches": true,
+                        "text": "Security: system.disciplines.security.value *",
+                        "else": "Security: system.disciplines.security.value"
+                    }
+                ]
+            }
+        ]
+    ]
+}

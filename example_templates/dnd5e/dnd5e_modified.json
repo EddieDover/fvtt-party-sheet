@@ -72,17 +72,37 @@
       },
       {
         "name": "Vision",
-        "type": "string",
-        "header": "show",
-        "text": ""
-      },
-      {
-        "name": "Statuses",
-        "type": "direct",
+        "type": "direct-complex",
         "align": "left",
-        "valign": "top",
+        "maxwidth": 110,
         "header": "show",
-        "text": ""
+        "text": [
+          {
+            "type": "exists",
+            "value": "system.attributes.senses.darkvision",
+            "text": "Darkvision: system.attributes.senses.darkvision"
+          },
+          {
+            "type": "exists",
+            "value": "system.attributes.senses.blindsight",
+            "text": "Blindsight: system.attributes.senses.blindsight"
+          },
+          {
+            "type": "exists",
+            "value": "system.attributes.senses.tremorsense",
+            "text": "Tremorsense: system.attributes.senses.tremorsense"
+          },
+          {
+            "type": "exists",
+            "value": "system.attributes.senses.truesight",
+            "text": "Truesight: system.attributes.senses.truesight"
+          },
+          {
+            "type": "exists",
+            "value": "system.attributes.senses.special",
+            "text": "Special: system.attributes.senses.special"
+          }
+        ]
       }
     ],
     [
@@ -147,43 +167,11 @@
         "text": "system.skills.ins.passive"
       },
       {
-        "name": "Senses",
-        "type": "direct-complex",
-        "header": "hide",
-        "text": [
-          {
-            "type": "exists",
-            "value": "system.attributes.senses.darkvision",
-            "text": "Darkvision: system.attributes.senses.darkvision"
-          },
-          {
-            "type": "exists",
-            "value": "system.attributes.senses.blindsight",
-            "text": "Blindsight: system.attributes.senses.blindsight"
-          },
-          {
-            "type": "exists",
-            "value": "system.attributes.senses.tremorsense",
-            "text": "Tremorsense: system.attributes.senses.tremorsense"
-          },
-          {
-            "type": "exists",
-            "value": "system.attributes.senses.truesight",
-            "text": "Truesight: system.attributes.senses.truesight"
-          },
-          {
-            "type": "exists",
-            "value": "system.attributes.senses.special",
-            "text": "Special: system.attributes.senses.special"
-          }
-        ]
-      },
-      {
-        "name": "Status",
+        "name": "Statuses",
         "type": "array-string-builder",
         "align": "left",
-        "valign": "top",
-        "header": "hide",
+        "maxwidth": 110,
+        "header": "show",
         "text": "statuses => value, "
       }
     ]
