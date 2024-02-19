@@ -236,6 +236,18 @@ export class PartySheetForm extends FormApplication {
 
     value = parsePluses(value);
 
+    // Detect if any text is surrounded with "{i} and {/i}" and replace with <i> tags
+    if (value.indexOf("{i}") > -1 || value.indexOf("{/i}") > -1) {
+      isSafeStringNeeded = true;
+      value = value.replaceAll("{i}", "<i>").replaceAll("{/i}", "</i>");
+    }
+
+    // Detect if any text is surrounded with "{b} and {/b}" and replace with <b> tags
+    if (value.indexOf("{b}") > -1 || value.indexOf("{/b}") > -1) {
+      isSafeStringNeeded = true;
+      value = value.replaceAll("{b}", "<b>").replaceAll("{/b}", "</b>");
+    }
+
     return [isSafeStringNeeded, value];
   }
 

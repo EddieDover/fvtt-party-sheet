@@ -179,6 +179,8 @@ There are a few special keywords that must be surrounded by { } marks, to allow 
   * {newline} - Adds a line break to the text rendered.
   * {charactersheet} - Inserts a clickable image of the character that will open their character sheet.
   * {+} - Adds the values of two objects and outputs the result, i.e. `system.attributes.str {+} system.attributes.wis` will output the character's str and wis added together.
+  * {i} & {/i} - Anything between these tags will be displayed in _italics_
+  * {b} & {/b} - Anything between these tags will be displayed in **bold**
 
 ### Direct-Complex Object
 
