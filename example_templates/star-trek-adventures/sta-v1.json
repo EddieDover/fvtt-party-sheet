@@ -24,7 +24,7 @@
                 "align": "center",
                 "valign": "top",
                 "header": "show",
-                "text": "Name: {b} name {/b} {newline} Species: {i} system.species {/i} {newline} Assignment: system.assignment {newline} Rank: system.rank"
+                "text": "{b} name {/b} {newline} Species: {i} system.species {/i} {newline} system.assignment {newline} system.rank"
             },
             {
                 "name": "Determination",
