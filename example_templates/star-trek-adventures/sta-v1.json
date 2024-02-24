@@ -24,7 +24,7 @@
                 "align": "center",
                 "valign": "top",
                 "header": "show",
-                "text": "name {newline} Species: system.species {newline} Assignment: system.assignment {newline} Rank: system.rank"
+                "text": "{b} name {/b} {newline} Species: {i} system.species {/i} {newline} system.assignment {newline} system.rank"
             },
             {
                 "name": "Determination",
@@ -54,42 +54,42 @@
                         "type": "match",
                         "ifdata": "system.attributes.control.selected",
                         "matches": true,
-                        "text": "Control: system.attributes.control.value * {newline}",
+                        "text": "{b} Control: system.attributes.control.value {/b} {newline}",
                         "else": "Control: system.attributes.control.value {newline}"
                     },
                     {
                         "type": "match",
                         "ifdata": "system.attributes.daring.selected",
                         "matches": true,
-                        "text": "Daring: system.attributes.daring.value * {newline}",
+                        "text": "{b} Daring: system.attributes.daring.value {/b} {newline}",
                         "else": "Daring: system.attributes.daring.value {newline}"
                     },
                     {
                         "type": "match",
                         "ifdata": "system.attributes.fitness.selected",
                         "matches": true,
-                        "text": "Fitness: system.attributes.fitness.value * {newline}",
+                        "text": "{b} Fitness: system.attributes.fitness.value {/b} {newline}",
                         "else": "Fitness: system.attributes.fitness.value {newline}"
                     },
                     {
                         "type": "match",
                         "ifdata": "system.attributes.insight.selected",
                         "matches": true,
-                        "text": "Insight: system.attributes.insight.value * {newline}",
+                        "text": "{b} Insight: system.attributes.insight.value {/b} {newline}",
                         "else": "Insight: system.attributes.insight.value {newline}"
                     },
                     {
                         "type": "match",
                         "ifdata": "system.attributes.presence.selected",
                         "matches": true,
-                        "text": "Presence: system.attributes.presence.value * {newline}",
+                        "text": "{b} Presence: system.attributes.presence.value {/b} {newline}",
                         "else": "Presence: system.attributes.presence.value {newline}"
                     },
                     {
                         "type": "match",
                         "ifdata": "system.attributes.reason.selected",
                         "matches": true,
-                        "text": "Reason: system.attributes.reason.value *",
+                        "text": "{b} Reason: system.attributes.reason.value {/b}",
                         "else": "Reason: system.attributes.reason.value"
                     }
                 ]
@@ -105,45 +105,54 @@
                         "type": "match",
                         "ifdata": "system.disciplines.command.selected",
                         "matches": true,
-                        "text": "Command: system.disciplines.command.value * {newline}",
+                        "text": "{b} Command: system.disciplines.command.value {/b} {newline}",
                         "else": "Command: system.disciplines.command.value {newline}"
                     },
                     {
                         "type": "match",
                         "ifdata": "system.disciplines.conn.selected",
                         "matches": true,
-                        "text": "Conn: system.disciplines.conn.value * {newline}",
+                        "text": "{b} Conn: system.disciplines.conn.value {/b} {newline}",
                         "else": "Conn: system.disciplines.conn.value {newline}"
                     },
                     {
                         "type": "match",
                         "ifdata": "system.disciplines.engineering.selected",
                         "matches": true,
-                        "text": "Engineering: system.disciplines.engineering.value * {newline}",
+                        "text": "{b} Engineering: system.disciplines.engineering.value {/b} {newline}",
                         "else": "Engineering: system.disciplines.engineering.value {newline}"
                     },
                     {
                         "type": "match",
                         "ifdata": "system.disciplines.medicine.selected",
                         "matches": true,
-                        "text": "Medicine: system.disciplines.medicine.value * {newline}",
+                        "text": "{b} Medicine: system.disciplines.medicine.value {/b} {newline}",
                         "else": "Medicine: system.disciplines.medicine.value {newline}"
                     },
                     {
                         "type": "match",
                         "ifdata": "system.disciplines.science.selected",
                         "matches": true,
-                        "text": "Science: system.disciplines.science.value * {newline}",
+                        "text": "{b} Science: system.disciplines.science.value {/b} {newline}",
                         "else": "Science: system.disciplines.science.value {newline}"
                     },
                     {
                         "type": "match",
                         "ifdata": "system.disciplines.security.selected",
                         "matches": true,
-                        "text": "Security: system.disciplines.security.value *",
+                        "text": "{b} Security: system.disciplines.security.value {/b}",
                         "else": "Security: system.disciplines.security.value"
                     }
                 ]
+            },
+            {
+                "name": "Traits",
+                "type": "direct",
+                "align": "left",
+                "valign": "top",
+                "maxwidth": 70,
+                "header": "show",
+                "text": "system.traits"
             }
         ]
     ]

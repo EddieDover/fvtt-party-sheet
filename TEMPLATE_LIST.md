@@ -90,6 +90,14 @@ alienrpg-no-name.json - Michael Card (Emo Cthulhu)</summary>
 
 <summary>coriolis-compact-no-name.json - Michael Card (Emo Cthulhu)</summary></details>
 
+## Cyberpunk RED "cyberpunk-red-core"
+
+<details>
+
+![](./example_templates/cyberpunk-RED/cyberpunk-RED-v1.jpg)
+
+<summary>cyberpunk-red-v1.json - Michael Card (Emo Cthulhu)</summary></details>
+
 ## Dragonbane "dragonbane"
 
 <details>
@@ -151,6 +159,14 @@ alienrpg-no-name.json - Michael Card (Emo Cthulhu)</summary>
 ![](./example_templates/swade/swade.jpg)
 
 <summary>swade.json - Mestre Digital</summary></details>
+
+## Star Treak Adventures "sta"
+
+<details>
+
+![](./example_templates/star-trek-adventures/sta-v1.jpg)
+
+<summary>sta-v1.json - Michael Card (Emo Cthulhu)</summary></details>
 
 ## The Walking Dead Universe RPG "twdu"
 
