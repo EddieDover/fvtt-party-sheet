@@ -20,7 +20,7 @@
         "type": "direct",
         "align": "left",
         "header": "show",
-        "text": "name {newline} Archetype: system.archetype {newline} Nature: system.nature"
+        "text": "{b} name {/b} {newline} Archetype: system.archetype {newline} Nature: {i} system.nature {/i}"
       },
       {
         "name": "Health & Resolve",
@@ -29,7 +29,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "H: system.health.value / system.health.max {newline} R: system.resolve.value / system.resolve.max"
+        "text": "H: {b} system.health.value {/b} / system.health.max {newline} R: {b} system.resolve.value {/b} / system.resolve.max"
       },
       {
         "name": "STR Group",
@@ -38,7 +38,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "STR: d system.attributes.str {newline} {newline} HtH: d system.skills.closeCombat / d system.skills.closeCombat + d system.attributes.str {newline} For: d system.skills.force / d system.skills.force + d system.attributes.str {newline} Stam: d system.skills.stamina / d system.skills.stamina + d system.attributes.str"
+        "text": "STR: {b} d system.attributes.str {/b} {newline} {newline} HtH: d system.skills.closeCombat / {b} d system.skills.closeCombat + d system.attributes.str {/b} {newline} For: d system.skills.force / {b} d system.skills.force + d system.attributes.str {/b} {newline} Stam: d system.skills.stamina / {b} d system.skills.stamina + d system.attributes.str {/b}"
       },
       {
         "name": "AGL Group",
@@ -47,7 +47,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "AGL: d system.attributes.agi {newline} {newline} Fire: d system.skills.firearms / d system.skills.firearms.value + d system.attributes.agi {newline} Mob: d system.skills.mobility / d system.skills.mobility + d system.attributes.agi {newline} Stea: d system.skills.stealth / d system.skills.stealth + d system.attributes.agi"
+        "text": "AGL: {b} d system.attributes.agi {/b} {newline} {newline} Fire: d system.skills.firearms / {b} d system.skills.firearms.value + d system.attributes.agi {/b} {newline} Mob: d system.skills.mobility / {b} d system.skills.mobility + d system.attributes.agi {/b} {newline} Stea: d system.skills.stealth / {b} d system.skills.stealth + d system.attributes.agi {/b}"
       },
       {
         "name": "INT Group",
@@ -56,7 +56,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "INT: d system.attributes.int {newline} {newline} Med: d system.skills.medicalAid / d system.skills.medicalAid.value + d system.attributes.int {newline} Obs: d system.skills.observation / d system.skills.observation + d system.attributes.int {newline} Tech: d system.skills.tech / d system.skills.tech + d system.attributes.int {newline} {newline} Driving*: d system.skills.driving"
+        "text": "INT: {b} d system.attributes.int {/b} {newline} {newline} Med: d system.skills.medicalAid / {b} d system.skills.medicalAid.value + d system.attributes.int {/b} {newline} Obs: d system.skills.observation / {b} d system.skills.observation + d system.attributes.int {/b} {newline} Tech: d system.skills.tech / {b} d system.skills.tech + d system.attributes.int {/b} {newline} {newline} Driving*: d system.skills.driving"
       },
       {
         "name": "EMP Group",
@@ -65,7 +65,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "EMP: d system.attributes.emp {newline} {newline} Con: d system.skills.connections / d system.skills.connections.value + d system.attributes.emp.value {newline} Ins: d system.skills.insight / d system.skills.insight + d system.attributes.emp {newline} Man: d system.skills.manipulation / d system.skills.manipulation + d system.attributes.emp"
+        "text": "EMP: {b} d system.attributes.emp {/b} {newline} {newline} Con: d system.skills.connections / {b} d system.skills.connections.value + d system.attributes.emp.value {/b} {newline} Ins: d system.skills.insight / {b} d system.skills.insight + d system.attributes.emp {/b} {newline} Man: d system.skills.manipulation / {b} d system.skills.manipulation + d system.attributes.emp {/b}"
       },
       {
         "name": "Statuses",
