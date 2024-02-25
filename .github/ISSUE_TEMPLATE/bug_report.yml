@@ -1,0 +1,46 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels: ["bug"]
+projects: []
+assignees:
+  - EddieDover
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we need more info?
+      placeholder: ex. email@example.com or discord_username
+    validations:
+      required: false
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen? Please note you can paste images into the text area below if necessary.
+      placeholder: Tell us what you see!
+      value: "A bug happened!"
+    validations:
+      required: true
+  - type: dropdown
+    id: foundryversion
+    attributes:
+      label: What type of foundry hosting were you using?
+      multiple: true
+      options:
+        - Local Instance
+        - Self Hosted
+        - 3rd-Party Hosted
+        - Forge Hosted
+        - I have no idea
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant console log output
+      description: If you have seen error messages in the console, please paste them here.
+      render: shell
