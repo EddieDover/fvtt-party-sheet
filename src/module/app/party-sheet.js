@@ -512,19 +512,19 @@ export class PartySheetForm extends FormApplication {
     $('button[name="discord"]', html).click(this.onDiscord.bind(this));
   }
 
-  async onFeedback(event) {
+  onFeedback(event) {
     event.preventDefault();
     const newWindow = window.open(FEEDBACK_URL, "_blank", "noopener,noreferrer");
     if (newWindow) newWindow.opener = undefined;
   }
 
-  async onBugReport(event) {
+  onBugReport(event) {
     event.preventDefault();
     const newWindow = window.open(BUGREPORT_URL, "_blank", "noopener,noreferrer");
     if (newWindow) newWindow.opener = undefined;
   }
 
-  async onDiscord(event) {
+  onDiscord(event) {
     event.preventDefault();
     const newWindow = window.open(DISCORD_URL, "_blank", "noopener,noreferrer");
     if (newWindow) newWindow.opener = undefined;

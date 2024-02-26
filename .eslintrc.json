@@ -38,7 +38,13 @@
       "no-shadow": ["error", { "builtinGlobals": true, "hoist": "all", "allow": ["event"] }],
       "brace-style": ["error", "1tbs"],
       "require-jsdoc": "off",
-      "quotes": ["error", "double", { "avoidEscape": true }]
+      "quotes": ["error", "double", { "avoidEscape": true }],
+      "linebreak-style": ["error", "unix"],
+      // "no-shadow": ["error", { "builtinGlobals": true, "hoist": "all", "allow": ["event"] }],
+      // "brace-style": ["error", "1tbs"],
+      "require-jsdoc": 2,
+      "require-await": "error",
+      "no-return-await": "error"
     },
 
     "overrides": [
