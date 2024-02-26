@@ -1,7 +1,7 @@
 {
   "name": "Alien: The Roleplaying Game - No Names",
   "system": "alienrpg",
-  "author": "Michael Card (Emo Cthulhu)",
+  "author": "Michael Card (EmoCthulhu)",
   "offline_includes_property": "system.header.npc",
   "offline_includes": [
     false
@@ -24,85 +24,85 @@
             "type": "match",
             "ifdata": "system.general.career",
             "matches": "1",
-            "text": "Career: Colonial Marine"
+            "text": "Career: {i} Colonial Marine {/i}"
           },
           {
             "type": "match",
             "ifdata": "system.general.career",
             "matches": "2",
-            "text": "Career: Colonial Marshall"
+            "text": "Career: {i} Colonial Marshall {/i}"
           },
           {
             "type": "match",
             "ifdata": "system.general.career",
             "matches": "3",
-            "text": "Career: Company Agent"
+            "text": "Career: {i} Company Agent {/i}"
           },
           {
             "type": "match",
             "ifdata": "system.general.career",
             "matches": "4",
-            "text": "Career: Kid"
+            "text": "Career: {i} Kid {/i}"
           },
           {
             "type": "match",
             "ifdata": "system.general.career",
             "matches": "5",
-            "text": "Career: Medic"
+            "text": "Career: {i} Medic {/i}"
           },
           {
             "type": "match",
             "ifdata": "system.general.career",
             "matches": "6",
-            "text": "Career: Mercenary"
+            "text": "Career: {i} Mercenary {/i}"
           },
           {
             "type": "match",
             "ifdata": "system.general.career",
             "matches": "7",
-            "text": "Career: Officer"
+            "text": "Career: {i} Officer {/i}"
           },
           {
             "type": "match",
             "ifdata": "system.general.career",
             "matches": "8",
-            "text": "Career: Pilot"
+            "text": "Career: {i} Pilot {/i}"
           },
           {
             "type": "match",
             "ifdata": "system.general.career",
             "matches": "9",
-            "text": "Career: Roughneck"
+            "text": "Career: {i} Roughneck {/i}"
           },
           {
             "type": "match",
             "ifdata": "system.general.career",
             "matches": "10",
-            "text": "Career: Scientist"
+            "text": "Career: {i} Scientist {/i}"
           },
           {
             "type": "match",
             "ifdata": "system.general.career",
             "matches": "11",
-            "text": "Synthetic"
+            "text": "{i} Synthetic {/i}"
           },
           {
             "type": "match",
             "ifdata": "system.general.career",
             "matches": "12",
-            "text": "Homebrew"
+            "text": "{i} Homebrew {/i}"
           },
           {
             "type": "match",
             "ifdata": "system.general.career",
             "matches": "13",
-            "text": "Career: Wildcatter"
+            "text": "Career: {i} Wildcatter {/i}"
           },
           {
             "type": "match",
             "ifdata": "system.general.career",
             "matches": "14",
-            "text": "Career: Entertainer"
+            "text": "Career: {i} Entertainer {/i}"
           }
         ]
       },
@@ -113,7 +113,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.header.health / system.header.health.max"
+        "text": "{b} system.header.health {/b} / system.header.health.max"
       },
       {
         "name": "Stress",
@@ -166,7 +166,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "STR: system.attributes.str {newline} {newline} CC: system.skills.closeCbt / system.skills.closeCbt {+} system.attributes.str {newline} HM: system.skills.heavyMach / system.skills.heavyMach {+} system.attributes.str {newline} Sta: system.skills.stamina / system.skills.stamina {+} system.attributes.str"
+        "text": "STR: {b} system.attributes.str {/b} {newline} {newline} CC: system.skills.closeCbt / {b} system.skills.closeCbt {+} system.attributes.str {/b} {newline} HM: system.skills.heavyMach / {b} system.skills.heavyMach {+} system.attributes.str {/b} {newline} Sta: system.skills.stamina / {b} system.skills.stamina {+} system.attributes.str {/b}"
       },
       {
         "name": "Agility Group",
@@ -175,7 +175,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "AGL: system.attributes.agl {newline} {newline} RC: system.skills.rangedCbt / system.skills.rangedCbt {+} system.attributes.agl {newline} Mob: system.skills.mobility / system.skills.mobility {+} system.attributes.agl {newline} Pilot: system.skills.piloting / system.skills.piloting {+} system.attributes.agl"
+        "text": "AGL: {b} system.attributes.agl {/b} {newline} {newline} RC: system.skills.rangedCbt / {b} system.skills.rangedCbt {+} system.attributes.agl {/b} {newline} Mob: system.skills.mobility / {b} system.skills.mobility {+} system.attributes.agl {/b} {newline} Pilot: system.skills.piloting / {b} system.skills.piloting {+} system.attributes.agl {/b}"
       },
       {
         "name": "Empathy Group",
@@ -184,7 +184,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "EMP: system.attributes.emp {newline} {newline} Com: system.skills.command / system.skills.command {+} system.attributes.emp {newline} Man: system.skills.manipulation / system.skills.manipulation {+} system.attributes.emp {newline} Med: system.skills.medicalAid / system.skills.medicalAid {+} system.attributes.emp"
+        "text": "EMP: {b} system.attributes.emp {/b} {newline} {newline} Com: system.skills.command / {b} system.skills.command {+} system.attributes.emp {/b} {newline} Man: system.skills.manipulation / {b} system.skills.manipulation {+} system.attributes.emp {/b} {newline} Med: system.skills.medicalAid / {b} system.skills.medicalAid {+} system.attributes.emp {/b}"
       },
       {
         "name": "Wits Group",
@@ -193,7 +193,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "WIT: system.attributes.wit {newline} {newline} Obs: system.skills.observation / system.skills.observation {+} system.attributes.wit {newline} Sur: system.skills.survival / system.skills.survival {+} system.attributes.wit {newline} CT: system.skills.comtech / system.skills.comtech {+} system.attributes.wit"
+        "text": "WIT: {b} system.attributes.wit {/b} {newline} {newline} Obs: system.skills.observation / {b} system.skills.observation {+} system.attributes.wit {/b} {newline} Sur: system.skills.survival / {b} system.skills.survival {+} system.attributes.wit {/b} {newline} CT: system.skills.comtech / {b} system.skills.comtech {+} system.attributes.wit {/b}"
       },
       {
         "name": "Statuses",
