@@ -160,7 +160,7 @@ alienrpg-no-name.json - Michael Card (Emo Cthulhu)</summary>
 
 <summary>swade.json - Mestre Digital</summary></details>
 
-## Star Treak Adventures "sta"
+## Star Trek Adventures "sta"
 
 <details>
 
