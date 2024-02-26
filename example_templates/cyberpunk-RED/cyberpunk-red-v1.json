@@ -1,7 +1,7 @@
 {
     "name": "Cyberpunk RED - Minimal",
     "system": "cyberpunk-red-core",
-    "author": "Michael Card (Emo Cthulhu)",
+    "author": "Michael Card (EmoCthulhu)",
     "offline_excludes": [
         "npc",
         "base",
