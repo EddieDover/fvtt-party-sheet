@@ -3,5 +3,12 @@
     "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
     "[json]": {
         "editor.defaultFormatter": "vscode.json-language-features"
-    }
+    },
+    "cSpell.words": [
+        "bugreport",
+        "fvtt",
+        "syrin",
+        "Syrinscape",
+        "totm"
+    ]
 }
