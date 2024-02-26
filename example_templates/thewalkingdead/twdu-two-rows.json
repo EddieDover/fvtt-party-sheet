@@ -1,7 +1,7 @@
   {
     "name": "The Walking Dead Universe RPG - Two Rows",
     "system": "twdu",
-    "author": "Michael Card (Emo Cthulhu)",
+    "author": "Michael Card (EmoCthulhu)",
     "offline_excludes": [
       "npc",
       "base",
@@ -24,7 +24,7 @@
           "minwidth": 130,
           "align": "left",
           "header": "show",
-          "text": "name {newline} Archetype: system.archetype"
+          "text": "{b} name {/b} {newline} Archetype: {i} system.archetype {/i}"
         },
         {
           "name": "HP/SP",
@@ -33,7 +33,7 @@
           "align": "left",
           "valign": "top",
           "header": "show",
-          "text": "HP: system.health / 3 {newline} SP: system.stress"
+          "text": "HP: {b} system.health {/b} / 3 {newline} SP: {b} system.stress {/b}"
         },
         {
           "name": "PC Anchor(s)",
@@ -46,7 +46,7 @@
             {
               "type": "exists",
               "value": "system.pcAnchor",
-              "text": "PC: {newline} system.pcAnchor"
+              "text": "{b} PC: {/b} {newline} system.pcAnchor"
             }
           ]
         },
@@ -61,7 +61,7 @@
             {
               "type": "exists",
               "value": "system.npcAnchor",
-              "text": "NPC: {newline} system.npcAnchor"
+              "text": "{b} NPC: {/b} {newline} system.npcAnchor"
             }
           ]
         },
@@ -86,7 +86,7 @@
           "align": "left",
           "valign": "top",
           "header": "show",
-          "text": "STRENGTH: system.attributes.str {newline} {newline} Close Combat: system.skills.closeCombat / system.skills.closeCombat {+} system.attributes.str {newline} Endure: system.skills.endure / system.skills.endure {+} system.attributes.str {newline} Force: system.skills.force / system.skills.force {+} system.attributes.str"
+          "text": "STRENGTH: {b} system.attributes.str {/b} {newline} {newline} Close Combat: system.skills.closeCombat / {b} system.skills.closeCombat {+} system.attributes.str {/b} {newline} Endure: system.skills.endure / {b} system.skills.endure {+} system.attributes.str {/b} {newline} Force: system.skills.force / {b} system.skills.force {+} system.attributes.str {/b}"
         },
         {
           "name": "AGL Group",
@@ -94,7 +94,7 @@
           "align": "left",
           "valign": "top",
           "header": "show",
-          "text": "AGILITY: system.attributes.agl {newline} {newline} Mobility: system.skills.mobility / system.skills.mobility {+} system.attributes.agl {newline} Ranged Combat: system.skills.rangedCombat / system.skills.rangedCombat {+} system.attributes.agl {newline} Stealth: system.skills.stealth / system.skills.stealth {+} system.attributes.agl"
+          "text": "AGILITY: {b} system.attributes.agl {/b} {newline} {newline} Mobility: system.skills.mobility / {b} system.skills.mobility {+} system.attributes.agl {/b} {newline} Ranged Combat: system.skills.rangedCombat / {b} system.skills.rangedCombat {+} system.attributes.agl {/b} {newline} Stealth: system.skills.stealth / {b} system.skills.stealth {+} system.attributes.agl {/b}"
         },
         {
           "name": "WIT Group",
@@ -102,7 +102,7 @@
           "align": "left",
           "valign": "top",
           "header": "show",
-          "text": "WITS: system.attributes.wit {newline} {newline} Scout: system.skills.scout / system.skills.scout {+} system.attributes.wit {newline} Survival: system.skills.survival / system.skills.survival {+} system.attributes.wit {newline} Tech: system.skills.tech / system.skills.tech {+} system.attributes.wit"
+          "text": "WITS: {b} system.attributes.wit {/b} {newline} {newline} Scout: system.skills.scout / {b} system.skills.scout {+} system.attributes.wit {/b} {newline} Survival: system.skills.survival / {b} system.skills.survival {+} system.attributes.wit {/b} {newline} Tech: system.skills.tech / {b} system.skills.tech {+} system.attributes.wit {/b}"
         },
         {
           "name": "EMP Group",
@@ -110,7 +110,7 @@
           "align": "left",
           "valign": "top",
           "header": "show",
-          "text": "EMPATHY: system.attributes.emp {newline} {newline} Leadership: system.skills.leadership / system.skills.leadership {+} system.attributes.emp {newline} Manipulation: system.skills.manipulation / system.skills.manipulation {+} system.attributes.emp {newline} Medicine: system.skills.medicine / system.skills.medicine {+} system.attributes.emp"
+          "text": "EMPATHY: {b} system.attributes.emp {/b} {newline} {newline} Leadership: system.skills.leadership / {b} system.skills.leadership {+} system.attributes.emp {/b} {newline} Manipulation: system.skills.manipulation / {b} system.skills.manipulation {+} system.attributes.emp {/b} {newline} Medicine: system.skills.medicine / {b} system.skills.medicine {+} system.attributes.emp {/b}"
         },
         {
           "name": "Status",
