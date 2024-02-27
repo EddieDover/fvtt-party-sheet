@@ -150,6 +150,7 @@ Note that even empty columns need unique names. Feel free to be as descriptive a
   * **array-string-builder** - This will accept a **text** property in the following format: **<array_object> => <sub_property_string>** See examples below for more information
   * **largest-from-array** - This will accept a **text** property of an array and return the largest numeric item from it. See examples below for more information
   * **smallest-from-array** - This will accept a **text** property of an array and return the largest numeric item from it. See examples below for more information
+  * **object-loop** - This will accept a **text** property in the following format: **<object_with_subobjects> => <sub_property_string>**. See examples below for more information
   * **charactersheet** - This will display the character sheet in the column, ignoring anything in the **text** property.
 
 **header** - This property controls if the column text is displayed as a header in the generated table. It accepts either 'show' or 'skip'.
@@ -183,6 +184,7 @@ There are a few special keywords that must be surrounded by { } marks, to allow 
   * {+} - Adds the values of two objects and outputs the result, i.e. `system.attributes.str {+} system.attributes.wis` will output the character's str and wis added together.
   * {i} & {/i} - Anything between these tags will be displayed in _italics_
   * {b} & {/b} - Anything between these tags will be displayed in **bold**
+  * {u} & {/u} - Anything between these tags will be displayed as <u>underlined</u>
 
 ### Direct-Complex Object
 
@@ -299,6 +301,41 @@ Code:
 ```
 
 This example is used to display Active Status Effects on a character, such as burning, bleeding, prone, etc. They are stored by Foundry under the actor as `.statuses`, and the value is an array of strings. To display an array of values with no definite end or number of values or even empty sometimes, array-string-builder is your weapon of choice.
+
+### Example of object-loop:
+
+Code:
+```json
+{
+  "name": "Classes",
+  "type": "object-loop",
+  "header":"show",
+  "text": "classes => {i} name {/i} {b} level {/b} {newline}"
+}
+```
+
+This example is used to display Classes for a character in Pathfinder 1E. It wil loop through the classes object, that looks like this:
+```json
+{
+  "classes": {
+    "cleric": {
+      "name": "Cleric",
+      "level": 1
+    },
+    "rogue": {
+      "name": "Rogue",
+      "level": 1
+    }
+  }
+}
+```
+
+and produce:
+
+> *Cleric* - **1**
+>
+> *Rogue* - **1**
+
 
 ### Example of largest-from-array and smallest-from-array:
 

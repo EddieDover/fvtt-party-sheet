@@ -3,6 +3,7 @@ import {
   extractPropertyByString,
   getCustomSystems,
   getSelectedSystem,
+  parseExtras,
   parsePluses,
   trimIfString,
   updateSelectedSystem,
@@ -13,7 +14,6 @@ const FEEDBACK_URL = "https://github.com/eddiedover/theater-of-the-mind/issues/n
 const BUGREPORT_URL = "https://github.com/eddiedover/theater-of-the-mind/issues/new?template=bug_report.md";
 const DISCORD_URL = "https://discord.gg/XuGx7zNMKZ";
 
-const NEWLINE_ELEMENTS = ["{newline}", "{nl}", ";"];
 const DEFAULT_EXCLUDES = ["npc"];
 // @ts-ignore
 export class PartySheetForm extends FormApplication {
@@ -212,14 +212,6 @@ export class PartySheetForm extends FormApplication {
       }
     }
 
-    //Parse out newline elements
-    for (const item of NEWLINE_ELEMENTS) {
-      if (value.indexOf(item) > -1) {
-        isSafeStringNeeded = true;
-        value = value.replaceAll(item, "<br/>");
-      }
-    }
-
     //Parse out complex elements (that might contain newline elements we don't want to convert, like ; marks)
     if (value.indexOf("{charactersheet}") > -1) {
       isSafeStringNeeded = true;
@@ -235,18 +227,7 @@ export class PartySheetForm extends FormApplication {
     }
 
     value = parsePluses(value);
-
-    // Detect if any text is surrounded with "{i} and {/i}" and replace with <i> tags
-    if (value.indexOf("{i}") > -1 || value.indexOf("{/i}") > -1) {
-      isSafeStringNeeded = true;
-      value = value.replaceAll("{i}", "<i>").replaceAll("{/i}", "</i>");
-    }
-
-    // Detect if any text is surrounded with "{b} and {/b}" and replace with <b> tags
-    if (value.indexOf("{b}") > -1 || value.indexOf("{/b}") > -1) {
-      isSafeStringNeeded = true;
-      value = value.replaceAll("{b}", "<b>").replaceAll("{/b}", "</b>");
-    }
+    [isSafeStringNeeded, value] = parseExtras(value, isSafeStringNeeded);
 
     return [isSafeStringNeeded, value];
   }
@@ -389,6 +370,37 @@ export class PartySheetForm extends FormApplication {
         return finalstr === value ? "" : finalstr;
       case "string":
         return value;
+      case "object-loop":
+        objName = value.split("=>")[0].trim();
+        value = value.split("=>")[1];
+        console.log(objName, value);
+        objData = extractPropertyByString(character, objName);
+        var loopData = Object.keys(objData).map((key) => {
+          return objData[key];
+        });
+        console.log(loopData);
+
+        var regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+\s(?!})/g;
+        var reg = new RegExp(regValue);
+
+        var allmatches = Array.from(value.matchAll(reg), (match) => match[0].trim());
+
+        if (loopData.length ?? loopData.length !== 0) {
+          for (const objSubData of loopData) {
+            var templine = value;
+            for (const m of allmatches) {
+              templine = templine.replace(m, extractPropertyByString(objSubData, m));
+            }
+            outstr += templine;
+          }
+        } else {
+          return "";
+        }
+        outstr = outstr.trim();
+        outstr = this.cleanString(outstr);
+        [isSafeStringNeeded, outputText] = parseExtras(outstr);
+        // @ts-ignore
+        return isSafeStringNeeded ? new Handlebars.SafeString(outputText) : outputText;
       case "largest-from-array":
         var larr = extractPropertyByString(character, value);
 
