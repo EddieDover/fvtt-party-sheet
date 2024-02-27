@@ -373,12 +373,28 @@ export class PartySheetForm extends FormApplication {
       case "object-loop":
         objName = value.split("=>")[0].trim();
         value = value.split("=>")[1];
-        console.log(objName, value);
         objData = extractPropertyByString(character, objName);
-        var loopData = Object.keys(objData).map((key) => {
-          return objData[key];
-        });
-        console.log(loopData);
+
+        var loopData = [];
+        var objKeys = Object.keys(objData);
+        if (
+          objKeys.length == 6 &&
+          objKeys[0] == "documentClass" &&
+          objKeys[1] == "name" &&
+          objKeys[2] == "model" &&
+          objKeys[3] == "_initialized" &&
+          objKeys[4] == "_source" &&
+          objKeys[5] == "invalidDocumentIds"
+        ) {
+          console.log("ARgh embedded document!");
+          loopData = Object.keys(objData._source).map((key) => {
+            return objData._source[key];
+          });
+        } else {
+          loopData = Object.keys(objData).map((key) => {
+            return objData[key];
+          });
+        }
 
         var regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+\s(?!})/g;
         var reg = new RegExp(regValue);
