@@ -389,6 +389,44 @@ export class PartySheetForm extends FormApplication {
         return finalstr === value ? "" : finalstr;
       case "string":
         return value;
+      case "largest-from-array":
+        var larr = extractPropertyByString(character, value);
+
+        if (!Array.isArray(larr) && larr instanceof Set === false) {
+          larr = Object.keys(larr).map((key) => {
+            if (typeof larr[key] !== "object") {
+              return larr[key];
+            } else if (larr[key].value) {
+              return larr[key].value;
+            } else return "";
+          });
+        } else return "";
+
+        if (larr.length ?? larr.length !== 0) {
+          var largest = larr.reduce((a, b) => (a > b ? a : b));
+          return largest;
+        } else {
+          return "";
+        }
+      case "smallest-from-array":
+        var sarr = extractPropertyByString(character, value);
+
+        if (!Array.isArray(sarr) && sarr instanceof Set === false) {
+          sarr = Object.keys(sarr).map((key) => {
+            if (typeof sarr[key] !== "object") {
+              return sarr[key];
+            } else if (sarr[key].value) {
+              return sarr[key].value;
+            } else return "";
+          });
+        } else return "";
+
+        if (sarr.length ?? sarr.length !== 0) {
+          var smallest = sarr.reduce((a, b) => (a < b ? a : b));
+          return smallest;
+        } else {
+          return "";
+        }
       default:
         return "";
     }

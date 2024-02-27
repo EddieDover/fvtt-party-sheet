@@ -144,11 +144,13 @@ Note that even empty columns need unique names. Feel free to be as descriptive a
 **name** - This can be any value you wish. If the header is "show" then it will be displayed as the column header.
 
 **type** - This is the type of data being displayed, possible choices are:
-  * **direct** - This will process the text in the **value** property and parse out any string sections to see if they are properties of the character.
-  * **direct-complex** - This will expect the **value** property to contain an array of complex types. See documentation below.
-  * **string** - This will simply display the text in the **value** property without modification.
-  * **array-string-builder** - This will accept a **value** property in the following format: **<array_object> => <sub_property_string>** See examples below for more information
-  * **charactersheet** - This will display the character sheet in the column, ignoring anything in the **value** property.
+  * **direct** - This will process the text in the **text** property and parse out any string sections to see if they are properties of the character.
+  * **direct-complex** - This will expect the **text** property to contain an array of complex types. See documentation below.
+  * **string** - This will simply display the text in the **text** property without modification.
+  * **array-string-builder** - This will accept a **text** property in the following format: **<array_object> => <sub_property_string>** See examples below for more information
+  * **largest-from-array** - This will accept a **text** property of an array and return the largest numeric item from it. See examples below for more information
+  * **smallest-from-array** - This will accept a **text** property of an array and return the largest numeric item from it. See examples below for more information
+  * **charactersheet** - This will display the character sheet in the column, ignoring anything in the **text** property.
 
 **header** - This property controls if the column text is displayed as a header in the generated table. It accepts either 'show' or 'skip'.
   * **show** - Show the column as a **header** column.
@@ -297,6 +299,32 @@ Code:
 ```
 
 This example is used to display Active Status Effects on a character, such as burning, bleeding, prone, etc. They are stored by Foundry under the actor as `.statuses`, and the value is an array of strings. To display an array of values with no definite end or number of values or even empty sometimes, array-string-builder is your weapon of choice.
+
+### Example of largest-from-array and smallest-from-array:
+
+Code:
+```json
+	  {
+      "name": "Largest",
+      "type": "largest-from-array",
+      "header": "show",
+      "text" : "system.abilities"
+	  },
+	  {
+      "name": "Smallest",
+      "type": "smallest-from-array",
+      "header": "show",
+      "text" : "system.abilities"
+	  }
+```
+
+Given the following abilities (from Pathfinder 1E):
+
+![Pathfinder 1E Stats](doc_images/pf1e_stats.png)
+
+the result would be
+
+![Largest and Smallest Results](doc_images/ls_results.png)
 
 ### Extremely Basic File Example
 Code:
