@@ -105,10 +105,10 @@ export class PartySheetForm extends FormApplication {
             console.log(actor);
           }
           if (data.offline_includes_property && data.offline_includes) {
-            var propval = extractPropertyByString(actor, data.offline_includes_property);
+            const propval = extractPropertyByString(actor, data.offline_includes_property);
             return data.offline_includes.includes(propval);
           } else if (excludeTypes) {
-            var incpropval = actor.type;
+            let incpropval = actor.type;
             if (data.offline_excludes_property) {
               incpropval = extractPropertyByString(actor, data.offline_excludes_property);
             }
@@ -129,7 +129,7 @@ export class PartySheetForm extends FormApplication {
         console.log("======= TOTM DEBUG CHARACTER LIST ======= ");
         console.log("These are all the actors your party sheet will display.");
       }
-      var finalActorList = actorList
+      const finalActorList = actorList
         .map((character) => {
           const userChar = character;
 
@@ -138,13 +138,13 @@ export class PartySheetForm extends FormApplication {
             console.log(userChar);
           }
 
-          var row_data = [];
+          let row_data = [];
 
           data.rows.map((row_obj) => {
-            var customData = {};
+            let customData = {};
 
             row_obj.forEach((colobj) => {
-              var colname = colobj.name;
+              const colname = colobj.name;
               customData[colname] = {
                 text: this.getCustomData(userChar, colobj.type, colobj.text),
                 options: {
@@ -200,19 +200,18 @@ export class PartySheetForm extends FormApplication {
    * @returns {[boolean, string]} Whether a safe string is needed and the value
    */
   parseDirect(character, value) {
-    var isSafeStringNeeded = false;
+    let isSafeStringNeeded = false;
 
     value = this.cleanString(value);
 
     //Parse out normal data
     for (const m of value.split(" ")) {
-      var fvalue = extractPropertyByString(character, m);
-      if (fvalue !== undefined) {
-        value = value.replace(m, fvalue);
+      const fValue = extractPropertyByString(character, m);
+      if (fValue !== undefined) {
+        value = value.replace(m, fValue);
       }
     }
 
-    //Parse out complex elements (that might contain newline elements we don't want to convert, like ; marks)
     if (value.indexOf("{charactersheet}") > -1) {
       isSafeStringNeeded = true;
       value = value.replaceAll(
@@ -223,13 +222,258 @@ export class PartySheetForm extends FormApplication {
           character.prototypeToken.rotation ?? 0
         }deg);"/>`,
       );
-      // value = "<div class='flex-tc'>" + value + "</div>";
     }
 
     value = parsePluses(value);
     [isSafeStringNeeded, value] = parseExtras(value, isSafeStringNeeded);
 
     return [isSafeStringNeeded, value];
+  }
+
+  /**
+   * Process a "direct" type
+   * @param {*} character - The character to process
+   * @param {*} type - The type of data to process
+   * @param {*} value - The value to process
+   * @returns {string} The text to render
+   */
+  processDirect(character, type, value) {
+    let isSafeStringNeeded = false;
+    [isSafeStringNeeded, value] = this.parseDirect(character, value);
+
+    //Finally detect if a safe string cast is needed.
+    if (isSafeStringNeeded) {
+      // @ts-ignore
+      return new Handlebars.SafeString(value);
+    }
+    return value;
+  }
+
+  /**
+   * Process a "direct-complex" type
+   * @param {*} character - The character to process
+   * @param {*} type - The type of data to process
+   * @param {*} value - The value to process
+   * @returns {string} The text to render
+   */
+  processDirectComplex(character, type, value) {
+    // Call .trim() on item.value but only if it's a string
+    let outputText = "";
+    for (let item of value) {
+      const trimmedItem = trimIfString(item);
+      if (trimmedItem.type === "exists") {
+        const eValue = extractPropertyByString(character, trimmedItem.value);
+        if (eValue) {
+          outputText += trimmedItem.text.replaceAll(trimmedItem.value, eValue);
+        } else {
+          if (trimmedItem.else) {
+            const nValue = extractPropertyByString(character, trimmedItem.else);
+            if (nValue) {
+              outputText += nValue;
+            } else {
+              outputText += trimmedItem.else;
+            }
+          }
+        }
+      } else if (trimmedItem.type === "match") {
+        const mValue = extractPropertyByString(character, trimmedItem.ifdata);
+        const match_value = extractPropertyByString(character, trimmedItem.matches) ?? trimmedItem.matches;
+        if (mValue === match_value) {
+          outputText += extractPropertyByString(character, trimmedItem.text) ?? trimmedItem.text;
+        } else {
+          if (trimmedItem.else) {
+            const mnValue = extractPropertyByString(character, trimmedItem.else);
+            if (mnValue) {
+              outputText += mnValue;
+            } else {
+              outputText += trimmedItem.else;
+            }
+          }
+        }
+      } else if (trimmedItem.type === "match-any") {
+        const maValues = (Array.isArray(trimmedItem.text) ? trimmedItem.text : [trimmedItem.text]).map((val) =>
+          extractPropertyByString(character, val),
+        );
+        const matchValue = extractPropertyByString(character, trimmedItem.match) ?? trimmedItem.match;
+
+        for (const maVal of maValues) {
+          if (maVal === matchValue) {
+            outputText += extractPropertyByString(character, trimmedItem.text) ?? trimmedItem.text;
+          } else {
+            if (trimmedItem.else) {
+              const manValue = extractPropertyByString(character, trimmedItem.else);
+              if (manValue) {
+                outputText += manValue;
+              } else {
+                outputText += trimmedItem.else;
+              }
+            }
+          }
+        }
+      }
+    }
+    let isSafeStringNeeded = false;
+    [isSafeStringNeeded, outputText] = this.parseDirect(character, outputText);
+    // @ts-ignore
+    return isSafeStringNeeded ? new Handlebars.SafeString(outputText) : outputText;
+  }
+
+  /**
+   * Process an "array-string-builder" type
+   * @param {*} character - The character to process
+   * @param {*} type - The type of data to process
+   * @param {*} value - The value to process
+   * @returns {string} The text to rendera
+   */
+  processArrayStringBuilder(character, type, value) {
+    const objName = value.split("=>")[0].trim();
+    let outStr = value.split("=>")[1];
+    let finalStr = "";
+
+    let objData = extractPropertyByString(character, objName);
+
+    if (!Array.isArray(objData) && objData instanceof Set === false) {
+      objData = Object.keys(objData).map((key) => {
+        return objData[key];
+      });
+    }
+
+    const regValue = /(?:\*\.|[\w.]+)+/g;
+    const reg = new RegExp(regValue);
+    const allMatches = Array.from(outStr.matchAll(reg), (match) => match[0]);
+
+    if (objData.size ?? objData.length !== 0) {
+      for (const objSubData of objData) {
+        for (const m of allMatches) {
+          if (m === "value") {
+            finalStr += outStr.replace(m, objSubData);
+            continue;
+          }
+          outStr = outStr.replace(m, extractPropertyByString(objSubData, m));
+        }
+      }
+    } else {
+      return "";
+    }
+    if (finalStr === "") {
+      finalStr = outStr;
+    }
+    finalStr = finalStr.trim();
+    finalStr = this.cleanString(finalStr);
+    finalStr = this.removeTrailingComma(finalStr);
+    return finalStr === value ? "" : finalStr;
+  }
+
+  /**
+   * Process an "object-loop" type
+   * @param {*} character - The character to process
+   * @param {*} type - The type of data to process
+   * @param {*} value - The value to process
+   * @returns {string} The text to render
+   */
+  processObjectLoop(character, type, value) {
+    const objName = value.split("=>")[0].trim();
+    const actualValue = value.split("=>")[1];
+    const objData = extractPropertyByString(character, objName);
+
+    let loopData = [];
+    const objKeys = Object.keys(objData);
+    let outStr = "";
+    let outputText = "";
+    if (
+      objKeys.length == 6 &&
+      objKeys[0] == "documentClass" &&
+      objKeys[1] == "name" &&
+      objKeys[2] == "model" &&
+      objKeys[3] == "_initialized" &&
+      objKeys[4] == "_source" &&
+      objKeys[5] == "invalidDocumentIds"
+    ) {
+      console.log("ARgh embedded document!");
+      loopData = Object.keys(objData._source).map((key) => {
+        return objData._source[key];
+      });
+    } else {
+      loopData = Object.keys(objData).map((key) => {
+        return objData[key];
+      });
+    }
+
+    const regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+\s(?!})/g;
+    const reg = new RegExp(regValue);
+    const allMatches = Array.from(actualValue.matchAll(reg), (match) => match[0].trim());
+
+    if (loopData.length ?? loopData.length !== 0) {
+      for (const objSubData of loopData) {
+        let tempLine = actualValue;
+        for (const m of allMatches) {
+          tempLine = tempLine.replace(m, extractPropertyByString(objSubData, m));
+        }
+        outStr += tempLine;
+      }
+    } else {
+      return "";
+    }
+    outStr = outStr.trim();
+    outStr = this.cleanString(outStr);
+    let isSafeStringNeeded = false;
+    [isSafeStringNeeded, outputText] = parseExtras(outStr);
+    // @ts-ignore
+    return isSafeStringNeeded ? new Handlebars.SafeString(outputText) : outputText;
+  }
+
+  /**
+   * Process the largest value from an array.
+   * @param {*} character - The character to process
+   * @param {*} type - The type of data to process
+   * @param {*} value - The value to process
+   * @returns {string} The text to render
+   */
+  processLargestFromArray(character, type, value) {
+    let lArr = extractPropertyByString(character, value);
+
+    if (!Array.isArray(lArr) && lArr instanceof Set === false) {
+      lArr = Object.keys(lArr).map((key) => {
+        if (typeof lArr[key] !== "object") {
+          return lArr[key];
+        } else if (lArr[key].value) {
+          return lArr[key].value;
+        } else return "";
+      });
+    } else return "";
+
+    if (lArr.length ?? lArr.length !== 0) {
+      return lArr.reduce((a, b) => (a > b ? a : b));
+    } else {
+      return "";
+    }
+  }
+
+  /**
+   * Process the smallest value from an array.
+   * @param {*} character - The character to process
+   * @param {*} type - The type of data to process
+   * @param {*} value - The value to process
+   * @returns {string} The text to render
+   */
+  processSmallestFromArray(character, type, value) {
+    let sArr = extractPropertyByString(character, value);
+
+    if (!Array.isArray(sArr) && sArr instanceof Set === false) {
+      sArr = Object.keys(sArr).map((key) => {
+        if (typeof sArr[key] !== "object") {
+          return sArr[key];
+        } else if (sArr[key].value) {
+          return sArr[key].value;
+        } else return "";
+      });
+    } else return "";
+
+    if (sArr.length ?? sArr.length !== 0) {
+      return sArr.reduce((a, b) => (a < b ? a : b));
+    } else {
+      return "";
+    }
   }
 
   /**
@@ -241,87 +485,11 @@ export class PartySheetForm extends FormApplication {
    * @memberof PartySheetForm
    */
   getCustomData(character, type, value) {
-    var objName = "";
-    var outstr = "";
-
-    /** @type {any} */
-    var objData = {};
-    var isSafeStringNeeded = false;
-
-    //Prevent html injections!
     switch (type) {
       case "direct":
-        [isSafeStringNeeded, value] = this.parseDirect(character, value);
-
-        //Finally detect if a safe string cast is needed.
-        if (isSafeStringNeeded) {
-          // @ts-ignore
-          return new Handlebars.SafeString(value);
-        }
-        return value;
+        return this.processDirect(character, type, value);
       case "direct-complex":
-        // Call .trim() on item.value but only if it's a string
-        var outputText = "";
-        for (var item of value) {
-          item = trimIfString(item);
-          if (item.type === "exists") {
-            var evalue = extractPropertyByString(character, item.value);
-            if (evalue) {
-              outputText += item.text.replaceAll(item.value, evalue);
-            } else {
-              if (item.else) {
-                var nvalue = extractPropertyByString(character, item.else);
-                if (nvalue) {
-                  outputText += nvalue;
-                } else {
-                  outputText += item.else;
-                }
-              }
-            }
-          } else if (item.type === "match") {
-            var mvalue = extractPropertyByString(character, item.ifdata);
-            var match_value = extractPropertyByString(character, item.matches) ?? item.matches;
-            if (mvalue === match_value) {
-              outputText += extractPropertyByString(character, item.text) ?? item.text;
-            } else {
-              if (item.else) {
-                var mnvalue = extractPropertyByString(character, item.else);
-                if (mnvalue) {
-                  outputText += mnvalue;
-                } else {
-                  outputText += item.else;
-                }
-              }
-            }
-          } else if (item.type === "match-any") {
-            var mavalues = (Array.isArray(item.text) ? item.text : [item.text]).map((val) =>
-              extractPropertyByString(character, val),
-            );
-            var maatch_value = extractPropertyByString(character, item.match) ?? item.match;
-
-            for (const maval of mavalues) {
-              if (maval === maatch_value) {
-                outputText += extractPropertyByString(character, item.text) ?? item.text;
-              } else {
-                if (item.else) {
-                  var manvalue = extractPropertyByString(character, item.else);
-                  if (manvalue) {
-                    outputText += manvalue;
-                  } else {
-                    outputText += item.else;
-                  }
-                }
-              }
-            }
-          }
-        }
-        // outputText = this.cleanString(outputText);
-        //return outputText;
-        [isSafeStringNeeded, outputText] = this.parseDirect(character, outputText);
-        // @ts-ignore
-        return isSafeStringNeeded ? new Handlebars.SafeString(outputText) : outputText;
-
-      //regex match properties as [a-z][A-Z].*?
+        return this.processDirectComplex(character, type, value);
       case "charactersheet":
         // @ts-ignore
         return new Handlebars.SafeString(
@@ -332,137 +500,18 @@ export class PartySheetForm extends FormApplication {
           }deg);"/>`,
         );
       case "array-string-builder":
-        objName = value.split("=>")[0].trim();
-        outstr = value.split("=>")[1];
-        var finalstr = "";
-
-        objData = extractPropertyByString(character, objName);
-
-        if (!Array.isArray(objData) && objData instanceof Set === false) {
-          objData = Object.keys(objData).map((key) => {
-            return objData[key];
-          });
-        }
-
-        var regValue = /(?:\*\.|[\w.]+)+/g;
-        var reg = new RegExp(regValue);
-        var allmatches = Array.from(outstr.matchAll(reg), (match) => match[0]);
-
-        if (objData.size ?? objData.length !== 0) {
-          for (const objSubData of objData) {
-            for (const m of allmatches) {
-              if (m === "value") {
-                finalstr += outstr.replace(m, objSubData);
-                continue;
-              }
-              outstr = outstr.replace(m, extractPropertyByString(objSubData, m));
-            }
-          }
-        } else {
-          return "";
-        }
-        if (finalstr === "") {
-          finalstr = outstr;
-        }
-        finalstr = finalstr.trim();
-        finalstr = this.cleanString(finalstr);
-        finalstr = this.removeTrailingComma(finalstr);
-        return finalstr === value ? "" : finalstr;
+        return this.processArrayStringBuilder(character, type, value);
       case "string":
         return value;
       case "object-loop":
-        objName = value.split("=>")[0].trim();
-        value = value.split("=>")[1];
-        objData = extractPropertyByString(character, objName);
-
-        var loopData = [];
-        var objKeys = Object.keys(objData);
-        if (
-          objKeys.length == 6 &&
-          objKeys[0] == "documentClass" &&
-          objKeys[1] == "name" &&
-          objKeys[2] == "model" &&
-          objKeys[3] == "_initialized" &&
-          objKeys[4] == "_source" &&
-          objKeys[5] == "invalidDocumentIds"
-        ) {
-          console.log("ARgh embedded document!");
-          loopData = Object.keys(objData._source).map((key) => {
-            return objData._source[key];
-          });
-        } else {
-          loopData = Object.keys(objData).map((key) => {
-            return objData[key];
-          });
-        }
-
-        var regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+\s(?!})/g;
-        var reg = new RegExp(regValue);
-
-        var allmatches = Array.from(value.matchAll(reg), (match) => match[0].trim());
-
-        if (loopData.length ?? loopData.length !== 0) {
-          for (const objSubData of loopData) {
-            var templine = value;
-            for (const m of allmatches) {
-              templine = templine.replace(m, extractPropertyByString(objSubData, m));
-            }
-            outstr += templine;
-          }
-        } else {
-          return "";
-        }
-        outstr = outstr.trim();
-        outstr = this.cleanString(outstr);
-        [isSafeStringNeeded, outputText] = parseExtras(outstr);
-        // @ts-ignore
-        return isSafeStringNeeded ? new Handlebars.SafeString(outputText) : outputText;
+        return this.processObjectLoop(character, type, value);
       case "largest-from-array":
-        var larr = extractPropertyByString(character, value);
-
-        if (!Array.isArray(larr) && larr instanceof Set === false) {
-          larr = Object.keys(larr).map((key) => {
-            if (typeof larr[key] !== "object") {
-              return larr[key];
-            } else if (larr[key].value) {
-              return larr[key].value;
-            } else return "";
-          });
-        } else return "";
-
-        if (larr.length ?? larr.length !== 0) {
-          var largest = larr.reduce((a, b) => (a > b ? a : b));
-          return largest;
-        } else {
-          return "";
-        }
+        return this.processLargestFromArray(character, type, value);
       case "smallest-from-array":
-        var sarr = extractPropertyByString(character, value);
-
-        if (!Array.isArray(sarr) && sarr instanceof Set === false) {
-          sarr = Object.keys(sarr).map((key) => {
-            if (typeof sarr[key] !== "object") {
-              return sarr[key];
-            } else if (sarr[key].value) {
-              return sarr[key].value;
-            } else return "";
-          });
-        } else return "";
-
-        if (sarr.length ?? sarr.length !== 0) {
-          var smallest = sarr.reduce((a, b) => (a < b ? a : b));
-          return smallest;
-        } else {
-          return "";
-        }
+        return this.processSmallestFromArray(character, type, value);
       default:
         return "";
     }
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  _updateObject(event, formData) {
-    // Update the currently loggged in players
   }
 
   getData(options) {
@@ -473,7 +522,7 @@ export class PartySheetForm extends FormApplication {
     // @ts-ignore
     const enableOnlyOnline = game.settings.get("theater-of-the-mind", "enableOnlyOnline");
     // @ts-ignore
-    var customSystems = getCustomSystems();
+    const customSystems = getCustomSystems();
 
     const applicableSystems = customSystems.filter((data) => {
       // @ts-ignore
@@ -481,12 +530,8 @@ export class PartySheetForm extends FormApplication {
     });
     let selectedIdx = getSelectedSystem() ? applicableSystems.findIndex((data) => data === getSelectedSystem()) : 0;
 
-    // if (applicableSystems.length === 1) {
-    //   selectedIdx = customSystems.findIndex((data) => data === applicableSystems[0]);
-    // }
-
     updateSelectedSystem(applicableSystems[selectedIdx]);
-    var selectedSystem = getSelectedSystem();
+    const selectedSystem = getSelectedSystem();
     let { name: sysName, author: sysAuthor, players, rowcount } = this.getCustomPlayerData(selectedSystem);
     // @ts-ignore
     return mergeObject(super.getData(options), {
@@ -521,7 +566,6 @@ export class PartySheetForm extends FormApplication {
     event.preventDefault();
     const overrides = {
       onexit: () => {
-        // this.close();
         setTimeout(() => {
           // @ts-ignore
           this.render(true);
@@ -547,9 +591,9 @@ export class PartySheetForm extends FormApplication {
   }
 
   changeSystem(event) {
-    var selectedSystemName = event.currentTarget.value.split("___")[0];
-    var selectedSystemAuthor = event.currentTarget.value.split("___")[1];
-    var selectedIndex =
+    const selectedSystemName = event.currentTarget.value.split("___")[0];
+    const selectedSystemAuthor = event.currentTarget.value.split("___")[1];
+    const selectedIndex =
       getCustomSystems().findIndex(
         (data) => data.name === selectedSystemName && data.author === selectedSystemAuthor,
       ) ?? -1;
