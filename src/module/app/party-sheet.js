@@ -389,7 +389,6 @@ export class PartySheetForm extends FormApplication {
       objKeys[4] == "_source" &&
       objKeys[5] == "invalidDocumentIds"
     ) {
-      console.log("ARgh embedded document!");
       loopData = Object.keys(objData._source).map((key) => {
         return objData._source[key];
       });
