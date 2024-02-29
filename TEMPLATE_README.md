@@ -182,6 +182,9 @@ There are a few special keywords that must be surrounded by { } marks, to allow 
   * {newline} - Adds a line break to the text rendered.
   * {charactersheet} - Inserts a clickable image of the character that will open their character sheet.
   * {+} - Adds the values of two objects and outputs the result, i.e. `system.attributes.str {+} system.attributes.wis` will output the character's str and wis added together.
+  * {s} adds a space
+  * {s#} adds multiple spaces where # is the amount of spaces desired.
+  * {s0} will remove all spaces between it's preceeding and succeeding elements. E.g. `D{s0} system.attributes.str` becomes `D8`
   * {i} & {/i} - Anything between these tags will be displayed in _italics_
   * {b} & {/b} - Anything between these tags will be displayed in **bold**
   * {u} & {/u} - Anything between these tags will be displayed as <u>underlined</u>

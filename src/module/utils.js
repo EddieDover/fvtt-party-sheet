@@ -2,7 +2,7 @@ import { DND5E } from "./systems/dnd5e";
 
 var customSystems = [DND5E];
 export var selectedSystem = null;
-const NEWLINE_ELEMENTS = ["{newline}", "{nl}", ";"];
+const NEWLINE_ELEMENTS = ["{newline}", "{nl}"];
 
 /**
  * Converts a string to proper case.
@@ -145,6 +145,29 @@ export function parseExtras(value, isSafeStringNeeded = false) {
   if (value.indexOf("{u}") > -1 || value.indexOf("{/u}") > -1) {
     isSafeStringNeeded = true;
     value = value.replaceAll("{u}", "<u>").replaceAll("{/u}", "</u>");
+  }
+
+  // Detect if any text is surrounded with "{u} and {/u}" and replace with <b> tags
+  if (value.indexOf("{s}") > -1) {
+    isSafeStringNeeded = true;
+    value = value.replaceAll("{s}", "&nbsp;");
+  }
+
+  // Detect if the value contains {sX} where x is a digit and insert that many &nbsp; marks
+  let match = value.match(/\{s(\d+)\}/g);
+  if (match) {
+    for (const item of match) {
+      isSafeStringNeeded = true;
+      let amount = Number.parseInt(item.substring(2, item.length - 1));
+      if (amount > 0) {
+        value = value.replace(item, "&nbsp;".repeat(amount));
+      } else {
+        //If the amount is 0, then we want to trim all spaces before and after the {s0} tag
+        let before = value.substring(0, value.indexOf(item));
+        let after = value.substring(value.indexOf(item) + item.length);
+        value = before.trim() + after.trim();
+      }
+    }
   }
 
   //Parse out newline elements
