@@ -1,9 +1,6 @@
 {
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
-    "[json]": {
-        "editor.defaultFormatter": "vscode.json-language-features"
-    },
     "[jsonc]": {
         "editor.defaultFormatter": "vscode.json-language-features"
     }

@@ -1,0 +1,39 @@
+name: Submit/Correct a Localization
+description: Submit or Correct a Localization
+title: "[Localization]: "
+labels: ["localization"]
+projects: []
+assignees:
+  - EddieDover
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this localization request!
+  - type: markdown
+    attributes:
+      value: |
+        If submitting a new localization file, please download and edit the English file <a href='https://www.google.com'>here</a>. 
+  - type: input
+    id: locale
+    attributes:
+      label: What locale is the new translation for?
+      description: Please refer to <a href='https://www.science.co.il/language/Locale-codes.php'>this list</a>. Please list the value under the `LCID String` column.
+      placeholder: ex. en-US, en-GB, fi, fr-fr
+    validations:
+      required: true
+  - type: textarea
+    id: localization-text
+    attributes:
+      label: Your localization code
+      description: Just copy and paste in your modified file.
+    validations:
+      required: true
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we need more info?
+      placeholder: ex. email@example.com or discord_username
+    validations:
+      required: false

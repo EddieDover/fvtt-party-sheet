@@ -1,0 +1,72 @@
+{
+  "name": "vtm5e",
+  "system": "vtm5e",
+  "author": "Arboreal",
+  "offline_excludes": ["npc"],
+  "rows": [
+    [
+      {
+        "name": "Ficha de Personagem",
+        "type": "charactersheet",
+        "align": "center",
+        "header": "hide",
+        "text": ""
+      },
+      {
+        "name": "Nome",
+        "type": "direct",
+        "align": "center",
+        "header": "show",
+        "text": "name"
+      },
+      {
+        "name": "Vitalidade",
+        "type": "direct",
+        "align": "center",
+        "header": "show",
+        "text": "system.health.value"
+      },
+      {
+        "name": "Força de Vontade",
+        "type": "direct",
+        "align": "center",
+        "header": "show",
+        "text": "system.willpower.value"
+      },
+      {
+        "name": "Fome / Fúria",
+        "type": "direct-complex",
+        "align": "center",
+        "header": "show",
+        "text": [
+          {
+            "type": "exists",
+            "value": "system.hunger.value",
+            "text": "Fome: system.hunger.value",
+            "else": " Fome: não possui"
+          },
+          {
+            "type": "exists",
+            "value": "system.rage.value",
+            "text": "{newline}Fúria: system.rage.value",
+            "else": "{newline} Fúria: não possui"
+          }
+        ]
+      },
+      {
+        "name": "Ambição",
+        "type": "direct",
+        "align": "center",
+        "header": "show",
+        "text": "system.headers.ambition"
+      },
+      {
+        "name": "Desejo",
+        "type": "direct",
+        "align": "center",
+        "header": "show",
+        "text": "system.headers.desire"
+      }
+    ]
+  ]
+}
