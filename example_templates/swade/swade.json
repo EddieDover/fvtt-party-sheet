@@ -20,13 +20,15 @@
         "type": "direct",
         "align": "center",
         "header": "show",
-        "text": "name - system.advances.rank"
+        "maxwidth": 200,
+        "text": "name {newline} system.advances.rank"
       },
       {
         "name": "Wounds",
         "type": "direct",
         "align": "center",
         "header": "show",
+        "minwidth": 60,
         "text": "system.wounds.value / system.wounds.max"
       },
       {
@@ -34,6 +36,7 @@
         "type": "direct",
         "align": "center",
         "header": "show",
+        "minwidth": 60,
         "text": "system.fatigue.value / system.fatigue.max"
       },
       {
@@ -41,6 +44,7 @@
         "type": "direct",
         "align": "center",
         "header": "show",
+        "minwidth": 60,
         "text": "system.bennies.value / system.bennies.max"
       },
       {
@@ -48,13 +52,15 @@
         "type": "direct",
         "align": "center",
         "header": "show",
-        "text": "system.stats.speed.runningDie + system.stats.speed.runningMod"
+        "minwidth": 75,
+        "text": "system.stats.speed.value | D system.stats.speed.runningDie ( system.stats.speed.runningMod )"
       },
       {
         "name": "Parry",
         "type": "direct",
         "align": "center",
         "header": "show",
+        "minwidth": 60,
         "text": "system.stats.parry.value"
       },
       {
@@ -62,13 +68,15 @@
         "type": "direct",
         "align": "center",
         "header": "show",
-        "text": "system.stats.toughness.value - Armor: system.stats.toughness.armor"
+        "minwidth": 70,
+        "text": "system.stats.toughness.value ( system.stats.toughness.armor )"
       },
       {
         "name": "PP",
         "type": "direct",
         "align": "center",
         "header": "show",
+        "minwidth": 60,
         "text": "system.powerPoints.general.value / system.powerPoints.general.max"
       },
       {
@@ -76,6 +84,7 @@
         "type": "direct",
         "align": "center",
         "header": "show",
+        "minwidth": 80,
         "text": "Agility: system.attributes.agility.die.sides {newline} Smarts: system.attributes.smarts.die.sides {newline} Spirit: system.attributes.spirit.die.sides {newline} Strength: system.attributes.strength.die.sides {newline} Vigor: system.attributes.vigor.die.sides"
       },
       {
@@ -84,6 +93,8 @@
         "align": "left",
         "valign": "top",
         "header": "show",
+        "minwidth": 80,
+        "maxwidth": 180,
         "text": "statuses => value, "
       }
     ]
