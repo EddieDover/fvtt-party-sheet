@@ -1,10 +1,11 @@
 {
     "name": "Fallout 2d20 - With Movement",
     "system": "fallout",
-    "author": "Michael Card (Emo Cthulhu)",
+    "author": "Michael Card (EmoCthulhu)",
     "offline_excludes": [
         "npc",
-        "base"
+        "base",
+        "creature"
     ],
     "rows": [
         [
@@ -23,7 +24,7 @@
                 "minwidth": 110,
                 "maxwidth": 150,
                 "header": "show",
-                "text": "name {newline} Level: system.level"
+                "text": "{b} name {/b} {newline} Level: system.level"
             },
             {
                 "name": "Health",
@@ -32,7 +33,7 @@
                 "valign": "top",
                 "minwidth": 60,
                 "header": "show",
-                "text": "system.health.value / system.health.max"
+                "text": "{b} system.health.value {/b} / system.health.max"
             },
             {
                 "name": "S",
@@ -41,7 +42,7 @@
                 "valign": "top",
                 "minwidth": 60,
                 "header": "show",
-                "text": "system.attributes.str"
+                "text": "{b} system.attributes.str {/b}"
             },
             {
                 "name": "P",
@@ -50,7 +51,7 @@
                 "valign": "top",
                 "minwidth": 40,
                 "header": "show",
-                "text": "system.attributes.per"
+                "text": "{b} system.attributes.per {/b}"
             },
             {
                 "name": "E",
@@ -59,7 +60,7 @@
                 "valign": "top",
                 "minwidth": 40,
                 "header": "show",
-                "text": "system.attributes.end"
+                "text": "{b} system.attributes.end {/b}"
             },
             {
                 "name": "C",
@@ -68,7 +69,7 @@
                 "valign": "top",
                 "minwidth": 40,
                 "header": "show",
-                "text": "system.attributes.cha"
+                "text": "{b} system.attributes.cha {/b}"
             },
             {
                 "name": "I",
@@ -77,7 +78,7 @@
                 "valign": "top",
                 "minwidth": 40,
                 "header": "show",
-                "text": "system.attributes.int"
+                "text": "{b} system.attributes.int {/b}"
             },
             {
                 "name": "A",
@@ -86,7 +87,7 @@
                 "valign": "top",
                 "minwidth": 40,
                 "header": "show",
-                "text": "system.attributes.agi"
+                "text": "{b} system.attributes.agi {/b}"
             },
             {
                 "name": "L",
@@ -95,7 +96,7 @@
                 "valign": "top",
                 "minwidth": 40,
                 "header": "show",
-                "text": "system.attributes.luc"
+                "text": "{b} system.attributes.luc {/b}"
             },
             {
                 "name": "Move",

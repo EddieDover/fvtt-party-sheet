@@ -1,7 +1,7 @@
 {
   "name": "Blade Runner: The Roleplaying Game - Expanded - No Names",
   "system": "blade-runner",
-  "author": "Michael Card (Emo Cthulhu)",
+  "author": "Michael Card (EmoCthulhu)",
   "offline_includes_property": "system.subtype",
   "offline_includes": [
     "pc"
@@ -15,7 +15,7 @@
         "valign": "top",
         "maxwidth": 100,
         "header": "show",
-        "text": "{charactersheet} {newline} Archetype: system.archetype {newline} Nature: system.nature"
+        "text": "{charactersheet} {nl} Archetype: system.archetype {nl} Nature: {i} system.nature {/i}"
       },
       {
         "name": "Health & Resolve",
@@ -24,7 +24,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "H: system.health.value / system.health.max {newline} R: system.resolve.value / system.resolve.max"
+        "text": "H: {b} system.health.value {/b} / system.health.max {nl} R: {b} system.resolve.value {/b} / system.resolve.max"
       },
       {
         "name": "STR Group",
@@ -38,181 +38,181 @@
             "type": "match",
             "ifdata": "system.attributes.str",
             "matches": 0,
-            "text": "STR: -- {newline} {newline}"
+            "text": "STR: {b} -- {/b} {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.str",
             "matches": "0",
-            "text": "STR: -- {newline} {newline}"
+            "text": "STR: {b} -- {/b} {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.str",
             "matches": 6,
-            "text": "STR: D (d6) {newline} {newline}"
+            "text": "STR: {b} D {/b} (d6) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.str",
             "matches": "6",
-            "text": "STR: D (d6) {newline} {newline}"
+            "text": "STR: {b} D {/b} (d6) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.str",
             "matches": 8,
-            "text": "STR: C (d8) {newline} {newline}"
+            "text": "STR: {b} C {/b} (d8) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.str",
             "matches": "8",
-            "text": "STR: C (d8) {newline} {newline}"
+            "text": "STR: {b} C {/b} (d8) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.str",
             "matches": 10,
-            "text": "STR: B (d10) {newline} {newline}"
+            "text": "STR: {b} B {/b} (d10) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.str",
             "matches": "10",
-            "text": "STR: B (d10) {newline} {newline}"
+            "text": "STR: {b} B {/b} (d10) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.str",
             "matches": 12,
-            "text": "STR: A (d12) {newline} {newline}"
+            "text": "STR: {b} A {/b} (d12) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.str",
             "matches": "12",
-            "text": "STR: A (d12) {newline} {newline}"
+            "text": "STR: {b} A {/b} (d12) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.closeCombat",
             "matches": "0",
-            "text": "H2H: -- {newline}"
+            "text": "H2H: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.closeCombat",
             "matches": 0,
-            "text": "H2H: -- {newline}"
+            "text": "H2H: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.closeCombat",
             "matches": 6,
-            "text": "H2H: D (d6) {newline}"
+            "text": "H2H: {b} D {/b} (d6) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.closeCombat",
             "matches": "6",
-            "text": "H2H: D (d6) {newline}"
+            "text": "H2H: {b} D {/b} (d6) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.closeCombat",
             "matches": 8,
-            "text": "H2H: C (d8) {newline}"
+            "text": "H2H: {b} C {/b} (d8) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.closeCombat",
             "matches": "8",
-            "text": "H2H: C (d8) {newline}"
+            "text": "H2H: {b} C {/b} (d8) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.closeCombat",
             "matches": 10,
-            "text": "H2H: B (d10) {newline}"
+            "text": "H2H: {b} B {/b} (d10) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.closeCombat",
             "matches": "10",
-            "text": "H2H: B (d10) {newline}"
+            "text": "H2H: {b} B {/b} (d10) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.closeCombat",
             "matches": 12,
-            "text": "H2H: A (d12) {newline}"
+            "text": "H2H: {b} A {/b} (d12) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.closeCombat",
             "matches": "12",
-            "text": "H2H: A (d12) {newline}"
+            "text": "H2H: {b} A {/b} (d12) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.force",
             "matches": "0",
-            "text": "Force: -- {newline}"
+            "text": "Force: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.force",
             "matches": 0,
-            "text": "Force: -- {newline}"
+            "text": "Force: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.force",
             "matches": 6,
-            "text": "Force: D (d6) {newline}"
+            "text": "Force: {b} D {/b} (d6) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.force",
             "matches": "6",
-            "text": "Force: D (d6) {newline}"
+            "text": "Force: {b} D {/b} (d6) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.force",
             "matches": 8,
-            "text": "Force: C (d8) {newline}"
+            "text": "Force: {b} C {/b} (d8) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.force",
             "matches": "8",
-            "text": "Force: C (d8) {newline}"
+            "text": "Force: {b} C {/b} (d8) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.force",
             "matches": 10,
-            "text": "Force: B (d10) {newline}"
+            "text": "Force: {b} B {/b} (d10) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.force",
             "matches": "10",
-            "text": "Force: B (d10) {newline}"
+            "text": "Force: {b} B {/b} (d10) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.force",
             "matches": 12,
-            "text": "Force: A (d12) {newline}"
+            "text": "Force: {b} A {/b} (d12) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.force",
             "matches": "12",
-            "text": "Force: A (d12) {newline}"
+            "text": "Force: {b} A {/b} (d12) {nl}"
           },
           {
             "type": "match",
@@ -230,49 +230,49 @@
             "type": "match",
             "ifdata": "system.skills.stamina",
             "matches": 6,
-            "text": "Stamina: D (d6)"
+            "text": "Stamina: {b} D {/b} (d6)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.stamina",
             "matches": "6",
-            "text": "Stamina: D (d6)"
+            "text": "Stamina: {b} D {/b} (d6)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.stamina",
             "matches": 8,
-            "text": "Stamina: C (d8)"
+            "text": "Stamina: {b} C {/b} (d8)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.stamina",
             "matches": "8",
-            "text": "Stamina: C (d8)"
+            "text": "Stamina: {b} C {/b} (d8)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.stamina",
             "matches": 10,
-            "text": "Stamina: B (d10)"
+            "text": "Stamina: {b} B {/b} (d10)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.stamina",
             "matches": "10",
-            "text": "Stamina: B (d10)"
+            "text": "Stamina: {b} B {/b} (d10)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.stamina",
             "matches": 12,
-            "text": "Stamina: A (d12)"
+            "text": "Stamina: {b} A {/b} (d12)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.stamina",
             "matches": "12",
-            "text": "Stamina : A (d12)"
+            "text": "Stamina : {b} A {/b} (d12)"
           }
         ]
       },
@@ -288,181 +288,181 @@
             "type": "match",
             "ifdata": "system.attributes.agi",
             "matches": 0,
-            "text": "AGI: -- {newline} {newline}"
+            "text": "AGI: {b} -- {/b} {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.agi",
             "matches": "0",
-            "text": "AGI: -- {newline} {newline}"
+            "text": "AGI: {b} -- {/b} {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.agi",
             "matches": 6,
-            "text": "AGI: D (d6) {newline} {newline}"
+            "text": "AGI: {b} D {/b} (d6) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.agi",
             "matches": "6",
-            "text": "AGI: D (d6) {newline} {newline}"
+            "text": "AGI: {b} D {/b} (d6) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.agi",
             "matches": 8,
-            "text": "AGI: C (d8) {newline} {newline}"
+            "text": "AGI: {b} C {/b} (d8) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.agi",
             "matches": "8",
-            "text": "AGI: C (d8) {newline} {newline}"
+            "text": "AGI: {b} C {/b} (d8) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.agi",
             "matches": 10,
-            "text": "AGI: B (d10) {newline} {newline}"
+            "text": "AGI: {b} B {/b} (d10) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.agi",
             "matches": "10",
-            "text": "AGI: B (d10) {newline} {newline}"
+            "text": "AGI: {b} B {/b} (d10) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.agi",
             "matches": 12,
-            "text": "AGI: A (d12) {newline} {newline}"
+            "text": "AGI: {b} A {/b} (d12) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.agi",
             "matches": "12",
-            "text": "AGI: A (d12) {newline} {newline}"
+            "text": "AGI: {b} A {/b} (d12) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.firearms",
             "matches": "0",
-            "text": "Firearms: -- {newline}"
+            "text": "Firearms: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.firearms",
             "matches": 0,
-            "text": "Firearms: -- {newline}"
+            "text": "Firearms: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.firearms",
             "matches": 6,
-            "text": "Firearms: D (d6) {newline}"
+            "text": "Firearms: {b} D {/b} (d6) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.firearms",
             "matches": "6",
-            "text": "Firearms: D (d6) {newline}"
+            "text": "Firearms: {b} D {/b} (d6) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.firearms",
             "matches": 8,
-            "text": "Firearms: C (d8) {newline}"
+            "text": "Firearms: {b} C {/b} (d8) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.firearms",
             "matches": "8",
-            "text": "Firearms: C (d8) {newline}"
+            "text": "Firearms: {b} C {/b} (d8) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.firearms",
             "matches": 10,
-            "text": "Firearms: B (d10) {newline}"
+            "text": "Firearms: {b} B {/b} (d10) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.firearms",
             "matches": "10",
-            "text": "Firearms: B (d10) {newline}"
+            "text": "Firearms: {b} B {/b} (d10) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.firearms",
             "matches": 12,
-            "text": "Firearms: A (d12) {newline}"
+            "text": "Firearms: {b} A {/b} (d12) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.firearms",
             "matches": "12",
-            "text": "Firearms: A (d12) {newline}"
+            "text": "Firearms: {b} A {/b} (d12) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.mobility",
             "matches": "0",
-            "text": "Mob: -- {newline}"
+            "text": "Mob: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.mobility",
             "matches": 0,
-            "text": "Mob: -- {newline}"
+            "text": "Mob: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.mobility",
             "matches": 6,
-            "text": "Force: D (d6) {newline}"
+            "text": "Force: {b} D {/b} (d6) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.mobility",
             "matches": "6",
-            "text": "Mob: D (d6) {newline}"
+            "text": "Mob: {b} D {/b} (d6) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.mobility",
             "matches": 8,
-            "text": "Mob: C (d8) {newline}"
+            "text": "Mob: {b} C {/b} (d8) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.mobility",
             "matches": "8",
-            "text": "Mob: -- {newline}"
+            "text": "Mob: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.mobility",
             "matches": 10,
-            "text": "Mob: B (d10) {newline}"
+            "text": "Mob: {b} B {/b} (d10) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.mobility",
             "matches": "10",
-            "text": "Mob: B (d10) {newline}"
+            "text": "Mob: {b} B {/b} (d10) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.mobility",
             "matches": 12,
-            "text": "Mob: A (d12) {newline}"
+            "text": "Mob: {b} A {/b} (d12) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.mobility",
             "matches": "12",
-            "text": "Mob: A (d12) {newline}"
+            "text": "Mob: {b} A {/b} (d12) {nl}"
           },
           {
             "type": "match",
@@ -480,49 +480,49 @@
             "type": "match",
             "ifdata": "system.skills.stealth",
             "matches": 6,
-            "text": "Stealth: D (d6)"
+            "text": "Stealth: {b} D {/b} (d6)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.stealth",
             "matches": "6",
-            "text": "Stealth: D (d6)"
+            "text": "Stealth: {b} D {/b} (d6)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.stealth",
             "matches": 8,
-            "text": "Stealth: C (d8)"
+            "text": "Stealth: {b} C {/b} (d8)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.stealth",
             "matches": "8",
-            "text": "Stealth: C (d8)"
+            "text": "Stealth: {b} C {/b} (d8)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.stealth",
             "matches": 10,
-            "text": "Stealth: B (d10)"
+            "text": "Stealth: {b} B {/b} (d10)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.stealth",
             "matches": "10",
-            "text": "Stealth: B (d10)"
+            "text": "Stealth: {b} B {/b} (d10)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.stealth",
             "matches": 12,
-            "text": "Stealth: A (d12)"
+            "text": "Stealth: {b} A {/b} (d12)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.stealth",
             "matches": "12",
-            "text": "Stealth : A (d12)"
+            "text": "Stealth : {b} A {/b} (d12)"
           }
         ]
       },
@@ -538,241 +538,241 @@
             "type": "match",
             "ifdata": "system.attributes.int",
             "matches": 0,
-            "text": "INT: -- {newline} {newline}"
+            "text": "INT: {b} -- {/b} {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.int",
             "matches": "0",
-            "text": "INT: -- {newline} {newline}"
+            "text": "INT: {b} -- {/b} {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.int",
             "matches": 6,
-            "text": "INT: D (d6) {newline} {newline}"
+            "text": "INT: {b} D {/b} (d6) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.int",
             "matches": "6",
-            "text": "INT: D (d6) {newline} {newline}"
+            "text": "INT: {b} D {/b} (d6) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.int",
             "matches": 8,
-            "text": "INT: C (d8) {newline} {newline}"
+            "text": "INT: {b} C {/b} (d8) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.int",
             "matches": "8",
-            "text": "INT: C (d8) {newline} {newline}"
+            "text": "INT: {b} C {/b} (d8) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.int",
             "matches": 10,
-            "text": "INT: B (d10) {newline} {newline}"
+            "text": "INT: {b} B {/b} (d10) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.int",
             "matches": "10",
-            "text": "INT: B (d10) {newline} {newline}"
+            "text": "INT: {b} B {/b} (d10) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.int",
             "matches": 12,
-            "text": "INT: A (d12) {newline} {newline}"
+            "text": "INT: {b} A {/b} (d12) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.int",
             "matches": "12",
-            "text": "INT: A (d12) {newline} {newline}"
+            "text": "INT: {b} A {/b} (d12) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.medicalAid",
             "matches": "0",
-            "text": "MedAid: -- {newline}"
+            "text": "MedAid: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.medicalAid",
             "matches": 0,
-            "text": "MedAid: -- {newline}"
+            "text": "MedAid: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.medicalAid",
             "matches": 6,
-            "text": "MedAid: D (d6) {newline}"
+            "text": "MedAid: {b} D {/b} (d6) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.medicalAid",
             "matches": "6",
-            "text": "MedAid: D (d6) {newline}"
+            "text": "MedAid: {b} D {/b} (d6) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.medicalAid",
             "matches": 8,
-            "text": "MedAid: C (d8) {newline}"
+            "text": "MedAid: {b} C {/b} (d8) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.medicalAid",
             "matches": "8",
-            "text": "MedAid: C (d8) {newline}"
+            "text": "MedAid: {b} C {/b} (d8) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.medicalAid",
             "matches": 10,
-            "text": "MedAid: B (d10) {newline}"
+            "text": "MedAid: {b} B {/b} (d10) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.medicalAid",
             "matches": "10",
-            "text": "MedAid: B (d10) {newline}"
+            "text": "MedAid: {b} B {/b} (d10) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.medicalAid",
             "matches": 12,
-            "text": "MedAid: A (d12) {newline}"
+            "text": "MedAid: {b} A {/b} (d12) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.medicalAid",
             "matches": "12",
-            "text": "MedAid: A (d12) {newline}"
+            "text": "MedAid: {b} A {/b} (d12) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.observation",
             "matches": "0",
-            "text": "Observ: -- {newline}"
+            "text": "Observ: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.observation",
             "matches": 0,
-            "text": "Observ: -- {newline}"
+            "text": "Observ: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.observation",
             "matches": 6,
-            "text": "Observ: D (d6) {newline}"
+            "text": "Observ: {b} D {/b} (d6) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.observation",
             "matches": "6",
-            "text": "Observ: D (d6) {newline}"
+            "text": "Observ: {b} D {/b} (d6) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.observation",
             "matches": 8,
-            "text": "Observ: C (d8) {newline}"
+            "text": "Observ: {b} C {/b} (d8) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.observation",
             "matches": "8",
-            "text": "Observ: C (d8) {newline}"
+            "text": "Observ: {b} C {/b} (d8) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.observation",
             "matches": 10,
-            "text": "Observ: B (d10) {newline}"
+            "text": "Observ: {b} B {/b} (d10) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.observation",
             "matches": "10",
-            "text": "Observ: B (d10) {newline}"
+            "text": "Observ: {b} B {/b} (d10) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.observation",
             "matches": 12,
-            "text": "Observ: A (d12) {newline}"
+            "text": "Observ: {b} A {/b} (d12) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.observation",
             "matches": "12",
-            "text": "Observ: A (d12) {newline}"
+            "text": "Observ: {b} A {/b} (d12) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.tech",
             "matches": "0",
-            "text": "Tech: -- {newline} {newline}"
+            "text": "Tech: {b} -- {/b} {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.tech",
             "matches": 0,
-            "text": "Tech: -- {newline} {newline}"
+            "text": "Tech: {b} -- {/b} {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.tech",
             "matches": 6,
-            "text": "Tech: D (d6) {newline} {newline}"
+            "text": "Tech: {b} D {/b} (d6) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.tech",
             "matches": "6",
-            "text": "Tech: D (d6) {newline} {newline}"
+            "text": "Tech: {b} D {/b} (d6) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.tech",
             "matches": 8,
-            "text": "Tech: C (d8) {newline} {newline}"
+            "text": "Tech: {b} C {/b} (d8) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.tech",
             "matches": "8",
-            "text": "Tech: C (d8) {newline} {newline}"
+            "text": "Tech: {b} C {/b} (d8) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.tech",
             "matches": 10,
-            "text": "Tech: B (d10) {newline} {newline}"
+            "text": "Tech: {b} B {/b} (d10) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.tech",
             "matches": "10",
-            "text": "Tech: B (d10) {newline} {newline}"
+            "text": "Tech: {b} B {/b} (d10) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.tech",
             "matches": 12,
-            "text": "Tech: A (d12) {newline} {newline}"
+            "text": "Tech: {b} A {/b} (d12) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.tech",
             "matches": "12",
-            "text": "Tech: A (d12) {newline} {newline}"
+            "text": "Tech: {b} A {/b} (d12) {nl} {nl}"
           },
           {
             "type": "match",
@@ -790,49 +790,49 @@
             "type": "match",
             "ifdata": "system.skills.driving",
             "matches": 6,
-            "text": "Driving*: D (d6)"
+            "text": "Driving*: {b} D {/b} (d6)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.driving",
             "matches": "6",
-            "text": "Driving*: D (d6)"
+            "text": "Driving*: {b} D {/b} (d6)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.driving",
             "matches": 8,
-            "text": "Driving*: C (d8)"
+            "text": "Driving*: {b} C {/b} (d8)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.driving",
             "matches": "8",
-            "text": "Driving*: C (d8)"
+            "text": "Driving*: {b} C {/b} (d8)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.driving",
             "matches": 10,
-            "text": "Driving*: B (d10)"
+            "text": "Driving*: {b} B {/b} (d10)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.driving",
             "matches": "10",
-            "text": "Driving*: B (d10)"
+            "text": "Driving*: {b} B {/b} (d10)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.driving",
             "matches": 12,
-            "text": "Driving*: A (d12)"
+            "text": "Driving*: {b} A {/b} (d12)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.driving",
             "matches": "12",
-            "text": "Driving*: A (d12)"
+            "text": "Driving*: {b} A {/b} (d12)"
           }
         ]
       },
@@ -848,187 +848,187 @@
             "type": "match",
             "ifdata": "system.attributes.emp",
             "matches": 0,
-            "text": "EMP: -- {newline} {newline}"
+            "text": "EMP: {b} -- {/b} {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.emp",
             "matches": "0",
-            "text": "EMP: -- {newline} {newline}"
+            "text": "EMP: {b} -- {/b} {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.emp",
             "matches": 6,
-            "text": "EMP: D (d6) {newline} {newline}"
+            "text": "EMP: {b} D {/b} (d6) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.emp",
             "matches": "6",
-            "text": "EMP: D (d6) {newline} {newline}"
+            "text": "EMP: {b} D {/b} (d6) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.emp",
             "matches": 8,
-            "text": "EMP: C (d8) {newline} {newline}"
+            "text": "EMP: {b} C {/b} (d8) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.emp",
             "matches": "8",
-            "text": "EMP: C (d8) {newline} {newline}"
+            "text": "EMP: {b} C {/b} (d8) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.emp",
             "matches": 10,
-            "text": "EMP: B (d10) {newline} {newline}"
+            "text": "EMP: {b} B {/b} (d10) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.emp",
             "matches": "10",
-            "text": "EMP: B (d10) {newline} {newline}"
+            "text": "EMP: {b} B {/b} (d10) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.emp",
             "matches": 12,
-            "text": "EMP: A (d12) {newline} {newline}"
+            "text": "EMP: {b} A {/b} (d12) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.emp",
             "matches": "12",
-            "text": "EMP: A (d12) {newline} {newline}"
+            "text": "EMP: {b} A {/b} (d12) {nl} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.connections",
             "matches": "0",
-            "text": "Conn: -- {newline}"
+            "text": "Conn: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.connections",
             "matches": 0,
-            "text": "Conn: -- {newline}"
+            "text": "Conn: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.connections",
             "matches": 6,
-            "text": "Conn: D (d6) {newline}"
+            "text": "Conn: {b} D {/b} (d6) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.connections",
             "matches": "6",
-            "text": "Conn: D (d6) {newline}"
+            "text": "Conn: {b} D {/b} (d6) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.connections",
             "matches": 8,
-            "text": "Conn: C (d8) {newline}"
+            "text": "Conn: {b} C {/b} (d8) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.connections",
             "matches": "8",
-            "text": "Conn: C (d8) {newline}"
+            "text": "Conn: {b} C {/b} (d8) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.connections",
             "matches": 10,
-            "text": "Conn: B (d10) {newline}"
+            "text": "Conn: {b} B {/b} (d10) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.connections",
             "matches": "10",
-            "text": "Conn: B (d10) {newline}"
+            "text": "Conn: {b} B {/b} (d10) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.connections",
             "matches": 12,
-            "text": "Conn: A (d12) {newline}"
+            "text": "Conn: {b} A {/b} (d12) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.connections",
             "matches": "12",
-            "text": "Conn: A (d12) {newline}"
+            "text": "Conn: {b} A {/b} (d12) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.insight",
             "matches": "0",
-            "text": "Insight: -- {newline}"
+            "text": "Insight: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.insight",
             "matches": 0,
-            "text": "Insight: -- {newline}"
+            "text": "Insight: {b} -- {/b} {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.insight",
             "matches": 6,
-            "text": "Insight: D (d6) {newline}"
+            "text": "Insight: {b} D {/b} (d6) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.insight",
             "matches": "6",
-            "text": "Insight: D (d6) {newline}"
+            "text": "Insight: {b} D {/b} (d6) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.insight",
             "matches": 8,
-            "text": "Insight: C (d8) {newline}"
+            "text": "Insight: {b} C {/b} (d8) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.insight",
             "matches": "8",
-            "text": "Insight: C (d8) {newline}"
+            "text": "Insight: {b} C {/b} (d8) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.insight",
             "matches": 10,
-            "text": "Insight: B (d10) {newline}"
+            "text": "Insight: {b} B {/b} (d10) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.insight",
             "matches": "10",
-            "text": "Insight: B (d10) {newline}"
+            "text": "Insight: {b} B {/b} (d10) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.insight",
             "matches": 12,
-            "text": "Insight: A (d12) {newline}"
+            "text": "Insight: {b} A {/b} (d12) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.insight",
             "matches": "12",
-            "text": "Insight: A (d12) {newline}"
+            "text": "Insight: {b} A {/b} (d12) {nl}"
           },
           {
             "type": "match",
             "ifdata": "system.skills.manipulation",
             "matches": "0",
-            "text": "Manip: -- {newline} {newline}"
+            "text": "Manip: {b} -- {/b} {nl} {nl}"
           },
           {
             "type": "match",
@@ -1040,49 +1040,49 @@
             "type": "match",
             "ifdata": "system.skills.manipulation",
             "matches": 6,
-            "text": "Manip: D (d6)"
+            "text": "Manip: {b} D {/b} (d6)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.manipulation",
             "matches": "6",
-            "text": "Manip: D (d6)"
+            "text": "Manip: {b} D {/b} (d6)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.manipulation",
             "matches": 8,
-            "text": "Manip: C (d8)"
+            "text": "Manip: {b} C {/b} (d8)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.manipulation",
             "matches": "8",
-            "text": "Manip: C (d8)"
+            "text": "Manip: {b} C {/b} (d8)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.manipulation",
             "matches": 10,
-            "text": "Manip: B (d10)"
+            "text": "Manip: {b} B {/b} (d10)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.manipulation",
             "matches": "10",
-            "text": "Manip: B (d10)"
+            "text": "Manip: {b} B {/b} (d10)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.manipulation",
             "matches": 12,
-            "text": "Manip: A (d12)"
+            "text": "Manip: {b} A {/b} (d12)"
           },
           {
             "type": "match",
             "ifdata": "system.skills.manipulation",
             "matches": "12",
-            "text": "Manip: A (d12)"
+            "text": "Manip: {b} A {/b} (d12)"
           }
         ]
       },

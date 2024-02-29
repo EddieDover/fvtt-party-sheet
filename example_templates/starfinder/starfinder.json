@@ -1,7 +1,7 @@
 {
   "name": "Starfinder",
   "system": "sfrpg",
-  "author": "Michael Card (Emo Cthulhu)",
+  "author": "Michael Card (EmoCthulhu)",
   "offline_excludes": [
     "npc",
     "npc2",
@@ -26,7 +26,7 @@
         "type": "direct",
         "align": "left",
         "header": "show",
-        "text": "name {newline} Theme: system.details.theme {newline} Race: system.details.race {newline} Size: system.traits.size"
+        "text": "{b} name {/b} {newline} Theme: system.details.theme {newline} Race: {i} system.details.race {/i} {newline} Size: system.traits.size"
       },
       {
         "name": "STR",
@@ -34,7 +34,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.abilities.str {newline} system.abilities.str.mod"
+        "text": "system.abilities.str {newline} {b} system.abilities.str.mod {/b}"
       },
       {
         "name": "DEX",
@@ -42,7 +42,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.abilities.dex {newline} system.abilities.dex.mod"
+        "text": "system.abilities.dex {newline} {b} system.abilities.dex.mod {/b}"
       },
       {
         "name": "CON",
@@ -50,7 +50,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.abilities.con {newline} system.abilities.con.mod"
+        "text": "system.abilities.con {newline} {b} system.abilities.con.mod {/b}"
       },
       {
         "name": "INT",
@@ -58,7 +58,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.abilities.int {newline} system.abilities.int.mod"
+        "text": "system.abilities.int {newline} {b} system.abilities.int.mod {/b}"
       },
       {
         "name": "WIS",
@@ -66,7 +66,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.abilities.wis {newline} system.abilities.wis.mod"
+        "text": "system.abilities.wis {newline} {b} system.abilities.wis.mod {/b}"
       },
       {
         "name": "CHA",
@@ -74,7 +74,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.abilities.cha {newline} system.abilities.cha.mod"
+        "text": "system.abilities.cha {newline} {b} system.abilities.cha.mod {/b}"
       },
       {
         "name": "HP/SP",
@@ -82,7 +82,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "HP: system.attributes.hp.value / system.attributes.hp.max {newline} SP: system.attributes.sp.value / system.attributes.sp.max"
+        "text": "HP: {b} system.attributes.hp.value {/b} / system.attributes.hp.max {newline} SP: {b} system.attributes.sp.value {/b} / system.attributes.sp.max"
       },
       {
         "name": "EAC",
@@ -356,7 +356,7 @@
             "type": "match",
             "ifdata": "system.attributes.keyability",
             "matches": "str",
-            "text": "KEY"
+            "text": "{b} KEY {/b}"
           }
         ]
       },
@@ -371,7 +371,7 @@
             "type": "match",
             "ifdata": "system.attributes.keyability",
             "matches": "dex",
-            "text": "KEY"
+            "text": "{b} KEY {/b}"
           }
         ]
       },
@@ -386,7 +386,7 @@
             "type": "match",
             "ifdata": "system.attributes.keyability",
             "matches": "con",
-            "text": "KEY"
+            "text": "{b} KEY {/b}"
           }
         ]
       },
@@ -401,7 +401,7 @@
             "type": "match",
             "ifdata": "system.attributes.keyability",
             "matches": "int",
-            "text": "KEY"
+            "text": "{b} KEY {/b}"
           }
         ]
       },
@@ -416,7 +416,7 @@
             "type": "match",
             "ifdata": "system.attributes.keyability",
             "matches": "wis",
-            "text": "KEY"
+            "text": "{b} KEY {/b}"
           }
         ]
       },
@@ -431,7 +431,7 @@
             "type": "match",
             "ifdata": "system.attributes.keyability",
             "matches": "cha",
-            "text": "KEY"
+            "text": "{b} KEY {/b}"
           }
         ]
       },
@@ -441,7 +441,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "RP: system.attributes.rp.value / system.attributes.rp.max"
+        "text": "RP: {b} system.attributes.rp.value {/b} / system.attributes.rp.max"
       },
       {
         "name": "KAC/CMD",

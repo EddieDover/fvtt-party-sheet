@@ -1,7 +1,7 @@
 {
   "name": "Blade Runner: The Roleplaying Game - Basic - No Names",
   "system": "blade-runner",
-  "author": "Michael Card (Emo Cthulhu)",
+  "author": "Michael Card (EmoCthulhu)",
   "offline_includes_property": "system.subtype",
   "offline_includes": [
     "pc"
@@ -15,7 +15,7 @@
         "valign": "top",
         "maxwidth": 100,
         "header": "show",
-        "text": "{charactersheet} {newline} Archetype: system.archetype {newline} Nature: system.nature"
+        "text": "{charactersheet} {nl} Archetype: system.archetype {nl} Nature: {i} system.nature {/i}"
       },
       {
         "name": "Health & Resolve",
@@ -24,7 +24,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "H: system.health.value / system.health.max {newline} R: system.resolve.value / system.resolve.max"
+        "text": "H: {b} system.health.value {/b} / system.health.max {nl} R: {b} system.resolve.value {/b} / system.resolve.max"
       },
       {
         "name": "STR Group",
@@ -33,7 +33,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "STR: d system.attributes.str {newline} {newline} HtH: d system.skills.closeCombat / d system.skills.closeCombat + d system.attributes.str {newline} For: d system.skills.force / d system.skills.force + d system.attributes.str {newline} Stam: d system.skills.stamina / d system.skills.stamina + d system.attributes.str"
+        "text": "STR: {b}d{s0} system.attributes.str {/b}{nl}{nl} HtH: d{s0} system.skills.closeCombat / {b}d{s0} system.skills.closeCombat + d{s0} system.attributes.str {/b}{nl} For: d{s0} system.skills.force / {b}d{s0} system.skills.force + d{s0} system.attributes.str {/b}{nl} Stam: d{s0} system.skills.stamina / {b}d{s0} system.skills.stamina + d{s0} system.attributes.str {/b}"
       },
       {
         "name": "AGL Group",
@@ -42,7 +42,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "AGL: d system.attributes.agi {newline} {newline} Fire: d system.skills.firearms / d system.skills.firearms.value + d system.attributes.agi {newline} Mob: d system.skills.mobility / d system.skills.mobility + d system.attributes.agi {newline} Stea: d system.skills.stealth / d system.skills.stealth + d system.attributes.agi"
+        "text": "AGL: {b}d{s0} system.attributes.agi {/b}{nl}{nl} Fire: d{s0} system.skills.firearms / {b}d{s0} system.skills.firearms.value + d{s0} system.attributes.agi {/b}{nl} Mob: d{s0} system.skills.mobility / {b}d{s0} system.skills.mobility + d{s0} system.attributes.agi {/b}{nl} Stea: d{s0} system.skills.stealth / {b}d{s0} system.skills.stealth + d{s0} system.attributes.agi {/b}"
       },
       {
         "name": "INT Group",
@@ -51,7 +51,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "INT: d system.attributes.int {newline} {newline} Med: d system.skills.medicalAid / d system.skills.medicalAid.value + d system.attributes.int {newline} Obs: d system.skills.observation / d system.skills.observation + d system.attributes.int {newline} Tech: d system.skills.tech / d system.skills.tech + d system.attributes.int {newline} {newline} Driving*: d system.skills.driving"
+        "text": "INT: {b}d{s0} system.attributes.int {/b}{nl}{nl} Med: d{s0} system.skills.medicalAid / {b}d{s0} system.skills.medicalAid.value + d{s0} system.attributes.int {/b}{nl} Obs: d{s0} system.skills.observation / {b}d{s0} system.skills.observation + d{s0} system.attributes.int {/b}{nl} Tech: d{s0} system.skills.tech / {b}d{s0} system.skills.tech + d system.attributes.int {/b}{nl}{nl} Driving*: {b}d{s0} system.skills.driving {/b}"
       },
       {
         "name": "EMP Group",
@@ -60,7 +60,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "EMP: d system.attributes.emp {newline} {newline} Con: d system.skills.connections / d system.skills.connections.value + d system.attributes.emp.value {newline} Ins: d system.skills.insight / d system.skills.insight + d system.attributes.emp {newline} Man: d system.skills.manipulation / d system.skills.manipulation + d system.attributes.emp"
+        "text": "EMP: {b}d{s0} system.attributes.emp {/b}{nl}{nl} Con: d{s0} system.skills.connections / {b}d{s0} system.skills.connections.value + d{s0} system.attributes.emp.value {/b}{nl} Ins: d{s0} system.skills.insight / {b}d{s0} system.skills.insight + d{s0} system.attributes.emp {/b}{nl} Man: d{s0} system.skills.manipulation / {b}d{s0} system.skills.manipulation + d{s0} system.attributes.emp {/b}"
       },
       {
         "name": "Statuses",

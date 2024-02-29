@@ -1,10 +1,11 @@
 {
     "name": "Fallout 2d20 - Trimmed - No Movement",
     "system": "fallout",
-    "author": "Michael Card (Emo Cthulhu)",
+    "author": "Michael Card (EmoCthulhu)",
     "offline_excludes": [
         "npc",
-        "base"
+        "base",
+        "creature"
     ],
     "rows": [
         [
@@ -15,7 +16,7 @@
                 "valign": "top",
                 "maxwidth": 100,
                 "header": "show",
-                "text": "{charactersheet} {newline} Origin: system.origin"
+                "text": "{charactersheet} {newline} {b} name {/b} {newline} Origin: system.origin"
             },
             {
                 "name": "Health/Rads",
@@ -24,7 +25,7 @@
                 "valign": "top",
                 "minwidth": 60,
                 "header": "show",
-                "text": "system.health.value / system.health.max {newline} system.radiation"
+                "text": "{b} system.health.value {/b} / system.health.max {newline} system.radiation"
             },
             {
                 "name": "Head",
@@ -81,7 +82,7 @@
                 "valign": "top",
                 "minwidth": 40,
                 "header": "show",
-                "text": "system.attributes.luc"
+                "text": "{b} system.attributes.luc {/b}"
             },
             {
                 "name": "Init",

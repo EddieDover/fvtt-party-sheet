@@ -1,7 +1,7 @@
 {
     "name": "Coriolis - Compact - No Names",
     "system": "yzecoriolis",
-    "author": "Michael Card (Emo Cthulhu)",
+    "author": "Michael Card (EmoCthulhu)",
     "offline_excludes": [
         "npc",
         "base",
@@ -23,7 +23,7 @@
                 "align": "center",
                 "valign": "top",
                 "header": "show",
-                "text": "system.hitPoints / system.hitPoints.max"
+                "text": "{b} system.hitPoints {/b} / system.hitPoints.max"
             },
             {
                 "name": "MP",
@@ -31,7 +31,7 @@
                 "align": "center",
                 "valign": "top",
                 "header": "show",
-                "text": "system.mindPoints / system.mindPoints.max"
+                "text": "{b} system.mindPoints {/b} / system.mindPoints.max"
             },
             {
                 "name": "Rad",
@@ -55,7 +55,7 @@
                 "align": "left",
                 "valign": "top",
                 "header": "show",
-                "text": "STR: system.attributes.strength {newline} Gen: {newline} For: system.skills.force / system.skills.force {+} system.attributes.strength {newline} MC: system.skills.meleecombat / system.skills.meleecombat {+} system.attributes.strength"
+                "text": "{u} STR {/u}{b} system.attributes.strength {/b}{nl}{nl}{u} Gen: {/u}{nl} For: system.skills.force / {b} system.skills.force {+} system.attributes.strength {/b}{nl} MC: system.skills.meleecombat / {b} system.skills.meleecombat {+} system.attributes.strength {/b}"
             },
             {
                 "name": "AGL Group",
@@ -63,7 +63,7 @@
                 "align": "left",
                 "valign": "top",
                 "header": "show",
-                "text": "AGL: system.attributes.agility {newline} Gen: {newline} Dex: system.skills.dexterity / system.skills.dexterity {+} system.attributes.agility {newline} Inf: system.skills.infiltration / system.skills.infiltration {+} system.attributes.agility {newline} RC: system.skills.rangedcombat / system.skills.rangedcombat {+} system.attributes.agility {newline} Adv: {newline} Pilot: system.skills.pilot / system.skills.pilot {+} system.attributes.agility"
+                "text": "{u} AGL: {/u}{b} system.attributes.agility {/b}{nl}{nl}{u} Gen: {/u}{nl} Dex: system.skills.dexterity / {b} system.skills.dexterity {+} system.attributes.agility {/b}{nl} Inf: system.skills.infiltration / {b} system.skills.infiltration {+} system.attributes.agility {/b}{nl} RC: system.skills.rangedcombat / {b} system.skills.rangedcombat {+} system.attributes.agility {/b}{nl}{u} Adv: {/u}{nl} Pilot: system.skills.pilot / {b} system.skills.pilot {+} system.attributes.agility {/b}"
             },
             {
                 "name": "WITS Group",
@@ -71,7 +71,7 @@
                 "align": "left",
                 "valign": "top",
                 "header": "show",
-                "text": "WITS: system.attributes.wits {newline} Gen: {newline} Obs: system.skills.observation / system.skills.observation {+} system.attributes.wits {newline} Surv: system.skills.survival / system.skills.survival {+} system.attributes.wits {newline} Adv: {newline} DataDJ: system.skills.datadjinn / system.skills.datadjinn {+} system.attributes.wits {newline} Medic: system.skills.medicurgy / system.skills.medicurgy {+} system.attributes.wits {newline} Sci: system.skills.science / system.skills.science {+} system.attributes.wits {newline} Tec: system.skills.technology / system.skills.technology {+} system.attributes.wits"
+                "text": "{u} WITS: {/u}{b} system.attributes.wits {/b}{nl}{nl}{u} Gen: {/u}{nl} Obs: system.skills.observation / {b} system.skills.observation {+} system.attributes.wits {/b}{nl} Surv: system.skills.survival / {b} system.skills.survival {+} system.attributes.wits {/b}{nl} {u} Adv: {/u}{nl} DataDJ: system.skills.datadjinn / {b} system.skills.datadjinn {+} system.attributes.wits {/b}{nl} Medic: system.skills.medicurgy / {b} system.skills.medicurgy {+} system.attributes.wits {/b}{nl} Sci: system.skills.science / {b} system.skills.science {+} system.attributes.wits {/b}{nl} Tec: system.skills.technology / {b} system.skills.technology {+} system.attributes.wits {/b}"
             },
             {
                 "name": "EMP Group",
@@ -79,7 +79,7 @@
                 "align": "left",
                 "valign": "top",
                 "header": "show",
-                "text": "EMP: system.attributes.empathy {newline} Gen: {newline} Man: system.skills.manipulation / system.skills.manipulation {+} system.attributes.empathy {newline} Adv: {newline} Comm: system.skills.command / system.skills.command {+} system.attributes.empathy {newline} Cult: system.skills.culture / system.skills.culture {+} system.attributes.empathy {newline} MysPow: system.skills.mysticpowers / system.skills.mysticpowers {+} system.attributes.empathy"
+                "text": "{u} EMP: {/u}{b} system.attributes.empathy {/b}{nl}{nl}{u} Gen: {/u}{nl} Man: system.skills.manipulation / {b} system.skills.manipulation {+} system.attributes.empathy {/b}{nl}{u} Adv: {/u}{nl} Comm: system.skills.command / {b} system.skills.command {+} system.attributes.empathy {/b}{nl} Cult: system.skills.culture / {b} system.skills.culture {+} system.attributes.empathy {/b}{nl} MysPow: system.skills.mysticpowers / {b} system.skills.mysticpowers {+} system.attributes.empathy {/b}"
             },
             {
                 "name": "Rep",
