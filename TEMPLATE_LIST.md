@@ -227,10 +227,12 @@ alienrpg-no-name.json - Michael Card (Emo Cthulhu)</summary>
 
 ![](./example_templates/vtm5e/vtm5e-ptbr.png)
 
-<summary>vtm5e-ptbr.json</summary></details>
+<summary>vtm5e-ptbr.json - pmenezesdev
+</summary></details>
 
 <details>
 
 ![](./example_templates/vtm5e/vtm5e-en.png)
 
-<summary>vtm5e-en.json</summary></details>
+<summary>vtm5e-en.json - pmenezesdev
+</summary></details>
