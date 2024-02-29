@@ -174,7 +174,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "STR: {b} system.attributes.str {/b} {newline} {newline} CC: system.skills.closeCbt / {b} system.skills.closeCbt {+} system.attributes.str {/b} {newline} HM: system.skills.heavyMach / {b} system.skills.heavyMach {+} system.attributes.str {/b} {newline} Sta: system.skills.stamina / {b} system.skills.stamina {+} system.attributes.str {/b}"
+        "text": "{u} STR {/u}{s}{b} system.attributes.str {/b}{nl}{nl} CC: system.skills.closeCbt / {b} system.skills.closeCbt {+} system.attributes.str {/b}{nl} HM: system.skills.heavyMach / {b} system.skills.heavyMach {+} system.attributes.str {/b}{nl} Sta: system.skills.stamina / {b} system.skills.stamina {+} system.attributes.str {/b}"
       },
       {
         "name": "Agility Group",
@@ -183,7 +183,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "AGL: {b} system.attributes.agl {/b} {newline} {newline} RC: system.skills.rangedCbt / {b} system.skills.rangedCbt {+} system.attributes.agl {/b} {newline} Mob: system.skills.mobility / {b} system.skills.mobility {+} system.attributes.agl {/b} {newline} Pilot: system.skills.piloting / {b} system.skills.piloting {+} system.attributes.agl {/b}"
+        "text": "{u} AGL {/u}{s}{b} system.attributes.agl {/b}{nl}{nl} RC: system.skills.rangedCbt / {b} system.skills.rangedCbt {+} system.attributes.agl {/b}{nl} Mob: system.skills.mobility / {b} system.skills.mobility {+} system.attributes.agl {/b}{nl} Pilot: system.skills.piloting / {b} system.skills.piloting {+} system.attributes.agl {/b}"
       },
       {
         "name": "Empathy Group",
@@ -192,7 +192,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "EMP: {b} system.attributes.emp {/b} {newline} {newline} Com: system.skills.command / {b} system.skills.command {+} system.attributes.emp {/b} {newline} Man: system.skills.manipulation / {b} system.skills.manipulation {+} system.attributes.emp {/b} {newline} Med: system.skills.medicalAid / {b} system.skills.medicalAid {+} system.attributes.emp {/b}"
+        "text": "{u} EMP {/u}{s}{b} system.attributes.emp {/b}{nl}{nl} Com: system.skills.command / {b} system.skills.command {+} system.attributes.emp {/b}{nl} Man: system.skills.manipulation / {b} system.skills.manipulation {+} system.attributes.emp {/b}{nl} Med: system.skills.medicalAid / {b} system.skills.medicalAid {+} system.attributes.emp {/b}"
       },
       {
         "name": "Wits Group",
@@ -201,7 +201,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "WIT: {b} system.attributes.wit {/b} {newline} {newline} Obs: system.skills.observation / {b} system.skills.observation {+} system.attributes.wit {/b} {newline} Sur: system.skills.survival / {b} system.skills.survival {+} system.attributes.wit {/b} {newline} CT: system.skills.comtech / {b} system.skills.comtech {+} system.attributes.wit {/b}"
+        "text": "{u} WIT {/u}{s}{b} system.attributes.wit {/b}{nl}{nl} Obs: system.skills.observation / {b} system.skills.observation {+} system.attributes.wit {/b}{nl} Sur: system.skills.survival / {b} system.skills.survival {+} system.attributes.wit {/b}{nl} CT: system.skills.comtech / {b} system.skills.comtech {+} system.attributes.wit {/b}"
       },
       {
         "name": "Statuses",
