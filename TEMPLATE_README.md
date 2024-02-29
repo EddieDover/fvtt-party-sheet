@@ -144,11 +144,14 @@ Note that even empty columns need unique names. Feel free to be as descriptive a
 **name** - This can be any value you wish. If the header is "show" then it will be displayed as the column header.
 
 **type** - This is the type of data being displayed, possible choices are:
-  * **direct** - This will process the text in the **value** property and parse out any string sections to see if they are properties of the character.
-  * **direct-complex** - This will expect the **value** property to contain an array of complex types. See documentation below.
-  * **string** - This will simply display the text in the **value** property without modification.
-  * **array-string-builder** - This will accept a **value** property in the following format: **<array_object> => <sub_property_string>** See examples below for more information
-  * **charactersheet** - This will display the character sheet in the column, ignoring anything in the **value** property.
+  * **direct** - This will process the text in the **text** property and parse out any string sections to see if they are properties of the character.
+  * **direct-complex** - This will expect the **text** property to contain an array of complex types. See documentation below.
+  * **string** - This will simply display the text in the **text** property without modification.
+  * **array-string-builder** - This will accept a **text** property in the following format: **<array_object> => <sub_property_string>** See examples below for more information
+  * **largest-from-array** - This will accept a **text** property of an array and return the largest numeric item from it. See examples below for more information
+  * **smallest-from-array** - This will accept a **text** property of an array and return the largest numeric item from it. See examples below for more information
+  * **object-loop** - This will accept a **text** property in the following format: **<object_with_subobjects> => <sub_property_string>**. See examples below for more information
+  * **charactersheet** - This will display the character sheet in the column, ignoring anything in the **text** property.
 
 **header** - This property controls if the column text is displayed as a header in the generated table. It accepts either 'show' or 'skip'.
   * **show** - Show the column as a **header** column.
@@ -179,8 +182,12 @@ There are a few special keywords that must be surrounded by { } marks, to allow 
   * {newline} - Adds a line break to the text rendered.
   * {charactersheet} - Inserts a clickable image of the character that will open their character sheet.
   * {+} - Adds the values of two objects and outputs the result, i.e. `system.attributes.str {+} system.attributes.wis` will output the character's str and wis added together.
+  * {s} adds a space
+  * {s#} adds multiple spaces where # is the amount of spaces desired.
+  * {s0} will remove all spaces between it's preceeding and succeeding elements. E.g. `D{s0} system.attributes.str` becomes `D8`
   * {i} & {/i} - Anything between these tags will be displayed in _italics_
   * {b} & {/b} - Anything between these tags will be displayed in **bold**
+  * {u} & {/u} - Anything between these tags will be displayed as <u>underlined</u>
 
 ### Direct-Complex Object
 
@@ -297,6 +304,67 @@ Code:
 ```
 
 This example is used to display Active Status Effects on a character, such as burning, bleeding, prone, etc. They are stored by Foundry under the actor as `.statuses`, and the value is an array of strings. To display an array of values with no definite end or number of values or even empty sometimes, array-string-builder is your weapon of choice.
+
+### Example of object-loop:
+
+Code:
+```json
+{
+  "name": "Classes",
+  "type": "object-loop",
+  "header":"show",
+  "text": "classes => {i} name {/i} {b} level {/b} {newline}"
+}
+```
+
+This example is used to display Classes for a character in Pathfinder 1E. It wil loop through the classes object, that looks like this:
+```json
+{
+  "classes": {
+    "cleric": {
+      "name": "Cleric",
+      "level": 1
+    },
+    "rogue": {
+      "name": "Rogue",
+      "level": 1
+    }
+  }
+}
+```
+
+and produce:
+
+> *Cleric* - **1**
+>
+> *Rogue* - **1**
+
+
+### Example of largest-from-array and smallest-from-array:
+
+Code:
+```json
+	  {
+      "name": "Largest",
+      "type": "largest-from-array",
+      "header": "show",
+      "text" : "system.abilities"
+	  },
+	  {
+      "name": "Smallest",
+      "type": "smallest-from-array",
+      "header": "show",
+      "text" : "system.abilities"
+	  }
+```
+
+Given the following abilities (from Pathfinder 1E):
+
+![Pathfinder 1E Stats](doc_images/pf1e_stats.png)
+
+the result would be
+
+![Largest and Smallest Results](doc_images/ls_results.png)
 
 ### Extremely Basic File Example
 Code:
