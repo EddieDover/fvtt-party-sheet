@@ -29,10 +29,10 @@ changelog:
     perf: Performance Improvements
     merge: Merges
     breakingChange: BREAKING CHANGES
-  commitUrl: https://github.com/EddieDover/theater-of-the-mind/commit/%commit%
-  commitRangeUrl: https://github.com/EddieDover/theater-of-the-mind/compare/%from%...%to%?diff=split
+  commitUrl: https://github.com/EddieDover/fvtt-party-sheet/commit/%commit%
+  commitRangeUrl: https://github.com/EddieDover/fvtt-party-sheet/compare/%from%...%to%?diff=split
   issueRegexPattern: "#[0-9]+"
-  issueUrl: https://github.com/EddieDover/theater-of-the-mind/issues/%issue%
+  issueUrl: https://github.com/EddieDover/fvtt-party-sheet/issues/%issue%
 
   ## GitHub
   # commitUrl: https://github.com/ACCOUNT/REPOSITORY/commit/%commit%

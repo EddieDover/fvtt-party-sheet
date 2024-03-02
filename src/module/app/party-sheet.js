@@ -10,8 +10,8 @@ import {
 } from "../utils.js";
 import { HiddenCharactersSettings } from "./hidden-characters-settings.js";
 
-const FEEDBACK_URL = "https://github.com/eddiedover/theater-of-the-mind/issues/new?template=feature_request.md";
-const BUGREPORT_URL = "https://github.com/eddiedover/theater-of-the-mind/issues/new?template=bug_report.md";
+const FEEDBACK_URL = "https://github.com/eddiedover/fvtt-party-sheet/issues/new?template=feature_request.md";
+const BUGREPORT_URL = "https://github.com/eddiedover/fvtt-party-sheet/issues/new?template=bug_report.md";
 const DISCORD_URL = "https://discord.gg/XuGx7zNMKZ";
 
 const DEFAULT_EXCLUDES = ["npc"];
@@ -76,7 +76,7 @@ export class PartySheetForm extends FormApplication {
 
   getCustomPlayerData(data) {
     //@ts-ignore
-    const showDebugOutput = game.settings.get("theater-of-the-mind", "showDebugInfo");
+    const showDebugOutput = game.settings.get("fvtt-party-sheet", "showDebugInfo");
     const excludeTypes = data?.offline_excludes ? data.offline_excludes : DEFAULT_EXCLUDES;
 
     if (!data) {
@@ -84,9 +84,9 @@ export class PartySheetForm extends FormApplication {
     }
 
     // @ts-ignore
-    const showOnlyOnlineUsers = game.settings.get("theater-of-the-mind", "enableOnlyOnline");
+    const showOnlyOnlineUsers = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
     // @ts-ignore
-    const hiddenCharacters = game.settings.get("theater-of-the-mind", "hiddenCharacters");
+    const hiddenCharacters = game.settings.get("fvtt-party-sheet", "hiddenCharacters");
 
     if (showDebugOutput) {
       console.log("======= TOTM DEBUG ACTORS LIST ======= ");
@@ -101,7 +101,7 @@ export class PartySheetForm extends FormApplication {
       : // @ts-ignore
         game.actors.filter((actor) => {
           // @ts-ignore
-          if (game.settings.get("theater-of-the-mind", "showDebugInfo")) {
+          if (game.settings.get("fvtt-party-sheet", "showDebugInfo")) {
             console.log(actor);
           }
           if (data.offline_includes_property && data.offline_includes) {
@@ -134,7 +134,7 @@ export class PartySheetForm extends FormApplication {
           const userChar = character;
 
           // @ts-ignore
-          if (game.settings.get("theater-of-the-mind", "showDebugInfo")) {
+          if (game.settings.get("fvtt-party-sheet", "showDebugInfo")) {
             console.log(userChar);
           }
 
@@ -515,11 +515,11 @@ export class PartySheetForm extends FormApplication {
 
   getData(options) {
     // @ts-ignore
-    const minimalView = game.settings.get("theater-of-the-mind", "enableMinimalView");
+    const minimalView = game.settings.get("fvtt-party-sheet", "enableMinimalView");
     // @ts-ignore
-    const hiddenCharacters = game.settings.get("theater-of-the-mind", "hiddenCharacters");
+    const hiddenCharacters = game.settings.get("fvtt-party-sheet", "hiddenCharacters");
     // @ts-ignore
-    const enableOnlyOnline = game.settings.get("theater-of-the-mind", "enableOnlyOnline");
+    const enableOnlyOnline = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
     // @ts-ignore
     const customSystems = getCustomSystems();
 
@@ -554,7 +554,7 @@ export class PartySheetForm extends FormApplication {
       classes: ["form"],
       title: "Party Sheet",
       // resizable: true,
-      template: "modules/theater-of-the-mind/templates/party-sheet.hbs",
+      template: "modules/fvtt-party-sheet/templates/party-sheet.hbs",
       // @ts-ignore
       width: "auto", // $(window).width() > 960 ? 960 : $(window).width() - 100,
       height: "auto", //$(window).height() > 800 ? 800 : $(window).height() - 100,

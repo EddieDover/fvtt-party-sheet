@@ -1,18 +1,18 @@
 {
-  "name": "theater-of-the-mind",
+  "name": "fvtt-party-sheet",
   "version": "2.1.0",
-  "description": "A FoundryVTT module for DMs",
+  "description": "A FoundryVTT module that adds a customizable Party Sheet window.",
   "main": "index.js",
   "author": {
     "name": "Eddie Dover",
     "email": "ed@eddiedover.dev"
   },
-  "url": "https://www.github.com/EddieDover/Theater-Of-The-Mind",
+  "url": "https://www.github.com/EddieDover/fvtt-party-sheet",
   "license": "MIT",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://www.github.com/EddieDover/Theater-Of-The-Mind"
+    "url": "https://www.github.com/EddieDover/fvtt-party-sheet"
   },
   "maintainers": [
     {

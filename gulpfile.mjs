@@ -23,7 +23,7 @@ import zip from "gulp-zip";
 /*  CONFIGURATION   */
 /********************/
 
-const packageId = "theater-of-the-mind";
+const packageId = "fvtt-party-sheet";
 const sourceDirectory = "./src";
 const distDirectory = "./dist";
 const stylesDirectory = `${sourceDirectory}/styles`;
@@ -89,7 +89,7 @@ async function cleanDist() {
  */
 function copyDist() {
   // Take everything inside the dist folder and zip it into a subfolder named totm.zip
-  return gulp.src(`${distDirectory}/**/*`).pipe(gulp.dest(`${distDirectory}/theater-of-the-mind`));
+  return gulp.src(`${distDirectory}/**/*`).pipe(gulp.dest(`${distDirectory}/fvtt-party-sheet`));
 }
 
 /**
@@ -98,7 +98,7 @@ function copyDist() {
  */
 function zipDist() {
   return gulp
-    .src(`${distDirectory}/theater-of-the-mind/**/*`, { base: `${distDirectory}` })
+    .src(`${distDirectory}/fvtt-party-sheet/**/*`, { base: `${distDirectory}` })
     .pipe(zip(`${packageId}.zip`))
     .pipe(gulp.dest(`${distDirectory}`));
 }

@@ -5,7 +5,7 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 // switching to https://github.com/paulmelnikow/rollup-plugin-cpy may be necessary in the future.
 
 export default () => ({
-  input: "src/module/theater-of-the-mind.js",
+  input: "src/module/fvtt-party-sheet.js",
   output: {
     dir: "dist/module",
     format: "es",

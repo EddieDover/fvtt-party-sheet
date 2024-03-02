@@ -1,17 +1,17 @@
 <form autocomplete="off" class="totm-hc-psform">
   <div class="totm-toprow">
     {{#unless enableOnlyOnline}}
-    <button class="totm-options" name="totm-options"><i class="fas fa-cog"></i>{{localize "theater-of-the-mind.hide-sheet.button" }}</button>
+    <button class="totm-options" name="totm-options"><i class="fas fa-cog"></i>{{localize "fvtt-party-sheet.hide-sheet.button" }}</button>
     {{/unless}}
     {{#unless minimalView}}
     <div style="flex-grow:1"></div>
-    <button type="button" class="btn btn--primary" style="max-width:50px" name="feedback" title="{{localize "theater-of-the-mind.party-sheet.feedback"}}">
+    <button type="button" class="btn btn--primary" style="max-width:50px" name="feedback" title="{{localize "fvtt-party-sheet.party-sheet.feedback"}}">
       <i class="fas fa-comment"></i>
     </button>
-    <button type="button" class="btn btn--primary" style="max-width:50px" name="bugreport" title="{{localize "theater-of-the-mind.party-sheet.bugreport"}}">
+    <button type="button" class="btn btn--primary" style="max-width:50px" name="bugreport" title="{{localize "fvtt-party-sheet.party-sheet.bugreport"}}">
       <i class="fas fa-bug"></i>
     </button>
-    <button type="button" class="btn btn--primary" style="max-width:50px" name="discord" title="{{localize "theater-of-the-mind.party-sheet.discord"}}">
+    <button type="button" class="btn btn--primary" style="max-width:50px" name="discord" title="{{localize "fvtt-party-sheet.party-sheet.discord"}}">
       <i class="fab fa-discord"></i>
     </button>
     {{/unless}}
@@ -68,11 +68,11 @@
       </tbody>
     </table>
     {{else}}
-      <div class="totm-ps-no-players">{{ localize "theater-of-the-mind.party-sheet.no-players" }}</div>
+      <div class="totm-ps-no-players">{{ localize "fvtt-party-sheet.party-sheet.no-players" }}</div>
     {{/if}}
 
   {{else}}
-    <div class="totm-ps-no-systems">{{ localize "theater-of-the-mind.party-sheet.no-systems" }}</div>
+    <div class="totm-ps-no-systems">{{ localize "fvtt-party-sheet.party-sheet.no-systems" }}</div>
   {{/if}}
 
   <button name="totm-close" class="totm-close"><i class="fas fa-times"></i>Close</button>

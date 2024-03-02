@@ -2,7 +2,7 @@ import { HiddenCharactersSettings } from "./hidden-characters-settings";
 
 export const registerSettings = () => {
   // @ts-ignore
-  game.settings.register("theater-of-the-mind", "hiddenCharacters", {
+  game.settings.register("fvtt-party-sheet", "hiddenCharacters", {
     "scope": "world",
     "config": false,
     "default": [],
@@ -10,9 +10,9 @@ export const registerSettings = () => {
   });
 
   // @ts-ignore
-  game.settings.register("theater-of-the-mind", "enableMinimalView", {
-    "name": "theater-of-the-mind.settings.enable-minimal-view.name",
-    "hint": "theater-of-the-mind.settings.enable-minimal-view.hint",
+  game.settings.register("fvtt-party-sheet", "enableMinimalView", {
+    "name": "fvtt-party-sheet.settings.enable-minimal-view.name",
+    "hint": "fvtt-party-sheet.settings.enable-minimal-view.hint",
     "scope": "world",
     "config": true,
     "default": false,
@@ -20,9 +20,9 @@ export const registerSettings = () => {
   });
 
   // @ts-ignore
-  game.settings.register("theater-of-the-mind", "enableOnlyOnline", {
-    "name": "theater-of-the-mind.settings.enable-only-online.name",
-    "hint": "theater-of-the-mind.settings.enable-only-online.hint",
+  game.settings.register("fvtt-party-sheet", "enableOnlyOnline", {
+    "name": "fvtt-party-sheet.settings.enable-only-online.name",
+    "hint": "fvtt-party-sheet.settings.enable-only-online.hint",
     "scope": "world",
     "config": true,
     "default": true,
@@ -30,9 +30,9 @@ export const registerSettings = () => {
   });
 
   // @ts-ignore
-  game.settings.register("theater-of-the-mind", "showDebugInfo", {
-    "name": "theater-of-the-mind.settings.show-debug-info.name",
-    "hint": "theater-of-the-mind.settings.show-debug-info.hint",
+  game.settings.register("fvtt-party-sheet", "showDebugInfo", {
+    "name": "fvtt-party-sheet.settings.show-debug-info.name",
+    "hint": "fvtt-party-sheet.settings.show-debug-info.hint",
     "scope": "world",
     "config": true,
     "default": false,
@@ -40,19 +40,19 @@ export const registerSettings = () => {
   });
 
   // @ts-ignore
-  game.settings.registerMenu("theater-of-the-mind", "configureHiddenCharacters", {
+  game.settings.registerMenu("fvtt-party-sheet", "configureHiddenCharacters", {
     "name": "",
-    "label": "theater-of-the-mind.hide-sheet.button",
-    "hint": "theater-of-the-mind.hide-sheet.hint",
+    "label": "fvtt-party-sheet.hide-sheet.button",
+    "hint": "fvtt-party-sheet.hide-sheet.hint",
     "icon": "fas fa-cog",
     "restricted": true,
     "type": HiddenCharactersSettings,
   });
 
   // // @ts-ignore
-  // game.settings.register("theater-of-the-mind", "enableDarkMode", {
-  //   "name": "theater-of-the-mind.settings.enable-dark-mode.name",
-  //   "hint": "theater-of-the-mind.settings.enable-dark-mode.hint",
+  // game.settings.register("fvtt-party-sheet", "enableDarkMode", {
+  //   "name": "fvtt-party-sheet.settings.enable-dark-mode.name",
+  //   "hint": "fvtt-party-sheet.settings.enable-dark-mode.hint",
   //   "scope": "world",
   //   "config": true,
   //   "default": false,
@@ -63,9 +63,9 @@ export const registerSettings = () => {
   // });
 
   // @ts-ignore
-  game.settings.register("theater-of-the-mind", "enableSounds", {
-    "name": "theater-of-the-mind.settings.enable-sounds.name",
-    "hint": "theater-of-the-mind.settings.enable-sounds.hint",
+  game.settings.register("fvtt-party-sheet", "enableSounds", {
+    "name": "fvtt-party-sheet.settings.enable-sounds.name",
+    "hint": "fvtt-party-sheet.settings.enable-sounds.hint",
     "scope": "world",
     "config": true,
     "default": false,

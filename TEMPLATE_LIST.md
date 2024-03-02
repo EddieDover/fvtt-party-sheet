@@ -1,4 +1,4 @@
-# Theater Of the Mind Template List
+# fvtt-party-sheet Template List
 
 Please unfold any entry to see a screenshot.
 

@@ -1,5 +1,5 @@
 {
-  "theater-of-the-mind": {
+  "fvtt-party-sheet": {
     "party-sheet": {
       "name": "Nombre",
       "race": "Raza",
@@ -24,10 +24,6 @@
       "enable-only-online": {
         "name": "Mostrar solo personajes en línea",
         "hint": "Solo muestra personajes asignados a jugadores conectados. Desactivar esta opción mostrará todos los personajes que no sean NPC, pero te permitirá 'ocultar' los que no te interesan."
-      },
-      "enable-sounds": {
-        "name": "Habilitar Sonidos de Syrinscape",
-        "hint": "El soporte de sonido requiere los módulos Syrinscape Integration (fvtt-synrin-control) y Midi QOL (midi-qol)."
       },
       "enable-dark-mode": {
         "name": "Habilitar el modo oscuro",

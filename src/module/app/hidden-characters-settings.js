@@ -14,9 +14,9 @@ export class HiddenCharactersSettings extends FormApplication {
         return { "uuid": actor.uuid, "name": actor.name };
       });
     // @ts-ignore
-    const hiddenCharacters = game.settings.get("theater-of-the-mind", "hiddenCharacters");
+    const hiddenCharacters = game.settings.get("fvtt-party-sheet", "hiddenCharacters");
     // @ts-ignore
-    const enableOnlyOnline = game.settings.get("theater-of-the-mind", "enableOnlyOnline");
+    const enableOnlyOnline = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
 
     // @ts-ignore
     return mergeObject(super.getData(options), {
@@ -34,7 +34,7 @@ export class HiddenCharactersSettings extends FormApplication {
       classes: ["form"],
       title: "Configure Hidden Characters",
       // resizable: true,
-      template: "modules/theater-of-the-mind/templates/hidden-characters.hbs",
+      template: "modules/fvtt-party-sheet/templates/hidden-characters.hbs",
       // @ts-ignore
       width: "auto", // $(window).width() > 960 ? 960 : $(window).width() - 100,
       height: "auto",
@@ -51,7 +51,7 @@ export class HiddenCharactersSettings extends FormApplication {
       }
     }
     // @ts-ignore
-    game.settings.set("theater-of-the-mind", "hiddenCharacters", hiddenCharacters);
+    game.settings.set("fvtt-party-sheet", "hiddenCharacters", hiddenCharacters);
     const closefunc = this.overrides?.onexit;
     if (closefunc) {
       closefunc();
