@@ -30,7 +30,7 @@ export class HiddenCharactersSettings extends FormApplication {
   static get defaultOptions() {
     // @ts-ignore
     return foundry.utils.mergeObject(super.defaultOptions, {
-      id: "totm-hidden-characters-settings",
+      id: "fvtt-party-sheet-hidden-characters-settings",
       classes: ["form"],
       title: "Configure Hidden Characters",
       // resizable: true,

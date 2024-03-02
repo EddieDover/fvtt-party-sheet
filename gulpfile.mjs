@@ -88,7 +88,7 @@ async function cleanDist() {
  * @returns {NodeJS.ReadWriteStream} The copied files
  */
 function copyDist() {
-  // Take everything inside the dist folder and zip it into a subfolder named totm.zip
+  // Take everything inside the dist folder and zip it into a subfolder named fvtt-party-sheet.zip
   return gulp.src(`${distDirectory}/**/*`).pipe(gulp.dest(`${distDirectory}/fvtt-party-sheet`));
 }
 

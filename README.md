@@ -19,8 +19,8 @@ If you create a template, please submit it via email, Discord or GitHub as a Pul
 
   - The Party Sheet is no longer bound to simply the built-in dnd5e system. Additional systems can be supported by writing a JSON file following the guidelines in [TEMPLATE_README.md](TEMPLATE_README.md) and placing it in either:
 
-    - Native Foundry: your <FOUNDRY_VTT/Data/totm/> folder.
-    - The Forge: the folder named <totm> at the top level of your assets library (created by the module).
+    - Native Foundry: your <FOUNDRY_VTT/Data/partysheets/> folder.
+    - The Forge: the folder named <partysheets> at the top level of your assets library (created by the module).
 
 ## Systems & Templates
 
@@ -34,11 +34,11 @@ Please see the [TEMPLATE_README.md]TEMPLATE_README.md) for information on how to
 
 ### Template Installation
 
-If using native **Foundry**, place the templates you wish to use in the <FOUNDRY_VTT/Data/totm/> folder.
+If using native **Foundry**, place the templates you wish to use in the <FOUNDRY_VTT/Data/partysheets/> folder.
 
-If using **The Forge**, this module will create a folder at the top level of your Assets Library named `totm`. Place your templates in this folder.
+If using **The Forge**, this module will create a folder at the top level of your Assets Library named `partysheets`. Place your templates in this folder.
 
-If using The Forge, install the module on your local Foundry installation to have access to the [example_templates](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates) folder, and to upload any you would like to use to your Assets Library in the <totm> folder at the top level. Or, if you haven't installed Foundry and only used the license key on The Forge, use the GitHub link above. In this case, you will have to download the file to your computer, then upload it to The Forge. If you create a template, please submit it via email, Discord or GitHub, and we will include it in future updates with full credit.
+If using The Forge, install the module on your local Foundry installation to have access to the [example_templates](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates) folder, and to upload any you would like to use to your Assets Library in the <partysheets> folder at the top level. Or, if you haven't installed Foundry and only used the license key on The Forge, use the GitHub link above. In this case, you will have to download the file to your computer, then upload it to The Forge. If you create a template, please submit it via email, Discord or GitHub, and we will include it in future updates with full credit.
 
 # Support
 

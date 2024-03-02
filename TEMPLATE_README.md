@@ -1,10 +1,10 @@
 # Template System JSON Documentation
 
-Examples can be found in the [example_templates](https://github.com/EddieDover/fvtt-party-sheet/example_templates) folder. As well, several systems other than 5e have been made, and are in the [example_templates] folder in native Foundry. If using the Forge, install the module on your local Foundry installation to have access to the [example_templates] folder, and to upload any you would like to use to your Assets Library in the <totm> folder at the top level. Or, if you haven't installed Foundry and only used the license key on The Forge, use the GitHub link above. In this case, you will have to download the file to your computer, then upload it to The Forge. If you create a template, please submit it via email, Discord or GitHub, and we will include it in future updates with full credit.
+Examples can be found in the [example_templates](https://github.com/EddieDover/fvtt-party-sheet/example_templates) folder. As well, several systems other than 5e have been made, and are in the [example_templates] folder in native Foundry. If using the Forge, install the module on your local Foundry installation to have access to the [example_templates] folder, and to upload any you would like to use to your Assets Library in the <partysheets> folder at the top level. Or, if you haven't installed Foundry and only used the license key on The Forge, use the GitHub link above. In this case, you will have to download the file to your computer, then upload it to The Forge. If you create a template, please submit it via email, Discord or GitHub, and we will include it in future updates with full credit.
 
-If using native Foundry, place your templates in the <FOUNDRY_VTT/Data/totm/> folder.
+If using native Foundry, place your templates in the <FOUNDRY_VTT/Data/partysheets/> folder.
 
-If using The Forge, this module will create a folder at the top level of your Assets Library named `totm`. Place your templates in this folder.
+If using The Forge, this module will create a folder at the top level of your Assets Library named `partysheets`. Place your templates in this folder.
 
 ## Required Minimal Top Level Structure
 
@@ -421,11 +421,11 @@ Result:
   * Decide if you want one row, or need 2 because you have a lot of information to display. Or do both!
   * Choose one of the following .json examples, and make sure you have the name you want displayed, the exact name of your system, and your name added.
   * Open your editor of choice and paste the example into it. You've created your first template!
-  * Save it in the proper [totm] folder as described at the top of this document.
+  * Save it in the proper [partysheets] folder as described at the top of this document.
   * Enable the module, and refresh.
   * In the module settings, turn on the debugger and turn off show only online players.
   * Now, when you click the Party Sheet icon in your token controls, you will get a thin table with the characters in the system and their clickable Actor Portraits, and their name.
-  * Open the console, and scroll for the listings that say "SystemActor" beneath a line that says "These are all the actors in your game. They have not yet been filtered based on your inclusions/exclusions." It has a header "TOTM DEBUG CHARACTER LIST." Click the arrow to open an Actor, then click the arrow to open system. Most of your values will be here. Some good detective work will help you find the values you want. Remember that you will have to assemble them, starting with system, then, for instance, attributes, then the name of the attribute, ending up with "system.attribute.str" as a typical example.
+  * Open the console, and scroll for the listings that say "SystemActor" beneath a line that says "These are all the actors in your game. They have not yet been filtered based on your inclusions/exclusions." It has a header "FVTT-PARTY_SHEET DEBUG CHARACTER LIST." Click the arrow to open an Actor, then click the arrow to open system. Most of your values will be here. Some good detective work will help you find the values you want. Remember that you will have to assemble them, starting with system, then, for instance, attributes, then the name of the attribute, ending up with "system.attribute.str" as a typical example.
   * Start adding them to further columns, and you'll be done in no time if you've read these instructions thoroughly.
 
 One row:

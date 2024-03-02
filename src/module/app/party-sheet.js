@@ -10,8 +10,9 @@ import {
 } from "../utils.js";
 import { HiddenCharactersSettings } from "./hidden-characters-settings.js";
 
-const FEEDBACK_URL = "https://github.com/eddiedover/fvtt-party-sheet/issues/new?template=feature_request.md";
-const BUGREPORT_URL = "https://github.com/eddiedover/fvtt-party-sheet/issues/new?template=bug_report.md";
+const FEEDBACK_URL = "https://github.com/EddieDover/fvtt-party-sheet/issues/new/choose";
+const BUGREPORT_URL =
+  "https://github.com/EddieDover/fvtt-party-sheet/issues/new?assignees=EddieDover&labels=bug&projects=&template=bug_report.yml&title=%5BBug%5D%3A+";
 const DISCORD_URL = "https://discord.gg/XuGx7zNMKZ";
 
 const DEFAULT_EXCLUDES = ["npc"];
@@ -89,7 +90,7 @@ export class PartySheetForm extends FormApplication {
     const hiddenCharacters = game.settings.get("fvtt-party-sheet", "hiddenCharacters");
 
     if (showDebugOutput) {
-      console.log("======= TOTM DEBUG ACTORS LIST ======= ");
+      console.log("======= FVTT-PARTY-SHEET DEBUG ACTORS LIST ======= ");
       console.log(
         "These are all the actors in your game. They have not yet been filtered based on your inclusions/exclusions.",
       );
@@ -126,7 +127,7 @@ export class PartySheetForm extends FormApplication {
 
     try {
       if (showDebugOutput) {
-        console.log("======= TOTM DEBUG CHARACTER LIST ======= ");
+        console.log("======= FVTT-PARTY-SHEET DEBUG CHARACTER LIST ======= ");
         console.log("These are all the actors your party sheet will display.");
       }
       const finalActorList = actorList
@@ -216,11 +217,11 @@ export class PartySheetForm extends FormApplication {
       isSafeStringNeeded = true;
       value = value.replaceAll(
         "{charactersheet}",
-        `<input type="image" name="totm-actorimage" data-actorid="${character.uuid}" class="token-image" src="${
-          character.prototypeToken.texture.src
-        }" title="${character.prototypeToken.name}" width="36" height="36" style="transform: rotate(${
-          character.prototypeToken.rotation ?? 0
-        }deg);"/>`,
+        `<input type="image" name="fvtt-party-sheet-actorimage" data-actorid="${
+          character.uuid
+        }" class="token-image" src="${character.prototypeToken.texture.src}" title="${
+          character.prototypeToken.name
+        }" width="36" height="36" style="transform: rotate(${character.prototypeToken.rotation ?? 0}deg);"/>`,
       );
     }
 
@@ -492,11 +493,11 @@ export class PartySheetForm extends FormApplication {
       case "charactersheet":
         // @ts-ignore
         return new Handlebars.SafeString(
-          `<input type="image" name="totm-actorimage" data-actorid="${character.uuid}" class="token-image" src="${
-            character.prototypeToken.texture.src
-          }" title="${character.prototypeToken.name}" width="36" height="36" style="transform: rotate(${
-            character.prototypeToken.rotation ?? 0
-          }deg);"/>`,
+          `<input type="image" name="fvtt-party-sheet-actorimage" data-actorid="${
+            character.uuid
+          }" class="token-image" src="${character.prototypeToken.texture.src}" title="${
+            character.prototypeToken.name
+          }" width="36" height="36" style="transform: rotate(${character.prototypeToken.rotation ?? 0}deg);"/>`,
         );
       case "array-string-builder":
         return this.processArrayStringBuilder(character, type, value);
@@ -555,7 +556,7 @@ export class PartySheetForm extends FormApplication {
   static get defaultOptions() {
     // @ts-ignore
     return foundry.utils.mergeObject(super.defaultOptions, {
-      id: "totm-party-sheet",
+      id: "fvtt-party-sheet-party-sheet",
       classes: ["form"],
       title: "Party Sheet",
       // resizable: true,
@@ -611,13 +612,13 @@ export class PartySheetForm extends FormApplication {
   activateListeners(html) {
     super.activateListeners(html);
     // @ts-ignore
-    $('button[name="totm-options"]', html).click(this.openOptions.bind(this));
+    $('button[name="fvtt-party-sheet-options"]', html).click(this.openOptions.bind(this));
     // @ts-ignore
-    $('button[name="totm-close"]', html).click(this.closeWindow.bind(this));
+    $('button[name="fvtt-party-sheet-close"]', html).click(this.closeWindow.bind(this));
     // @ts-ignore
-    $('input[name="totm-actorimage"]', html).click(this.openActorSheet.bind(this));
+    $('input[name="fvtt-party-sheet-actorimage"]', html).click(this.openActorSheet.bind(this));
     // @ts-ignore
-    $('select[name="totm-system"]', html).change(this.changeSystem.bind(this));
+    $('select[name="fvtt-party-sheet-system"]', html).change(this.changeSystem.bind(this));
     // @ts-ignore
     $('button[name="feedback"]', html).click(this.onFeedback.bind(this));
     // @ts-ignore

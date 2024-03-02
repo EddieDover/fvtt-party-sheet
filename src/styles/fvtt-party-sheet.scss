@@ -1,30 +1,30 @@
-#totm-system-select {
+#fvtt-party-sheet-system-select {
   display: flex;
   margin-top: 0.25rem;
   width: 100%;
 }
 
-.totm-toprow {
+.fvtt-party-sheet-toprow {
   display:flex;
   flex-direction:row;
   flex-wrap:nowrap;
 }
 
-.totm-options {
+.fvtt-party-sheet-options {
   max-width: 400px;
 }
 
-.totm-ps-no-systems {
+.fvtt-party-sheet-ps-no-systems {
   padding: 1rem;
 }
 
-.totm-hc-form {
+.fvtt-party-sheet-hc-form {
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
 
-  .totm-hc-section {
+  .fvtt-party-sheet-hc-section {
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -32,7 +32,7 @@
     height: 100%;
     overflow-y: auto;
 
-    .totm-hc-item {
+    .fvtt-party-sheet-hc-item {
       display: flex;
       align-items: center;
       width: fit-content;
@@ -44,12 +44,11 @@
   }
 }
 
-#totm-ps-table {
+#fvtt-party-sheet-ps-table {
     text-align:center;
 
     th {
       padding: 0.3em;
-      word-break: break-word;
     }
 
     tr {
@@ -86,7 +85,7 @@
       }
     }
 
-    .totm-senses {
+    .fvtt-party-sheet-senses {
       text-overflow:ellipsis;
       overflow-x: hidden;
       max-width: 100px;
@@ -95,12 +94,11 @@
       padding-right:5px;
     }
 
-    .totm-dc {
-      overflow-wrap: break-word;
+    .fvtt-party-sheet-dc {
       word-break: normal;
     }
 
-    .totm-ps-name-bar {
+    .fvtt-party-sheet-ps-name-bar {
         width:100%;
         display:flex;
         flex-direction: row;
@@ -108,7 +106,7 @@
         align-items: center;
         text-align:left;
 
-        .totm-ps-name-bar-namerace {
+        .fvtt-party-sheet-ps-name-bar-namerace {
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: auto 1fr;
@@ -133,7 +131,7 @@
         }
     }
 
-    .totm-ps-finrow {
+    .fvtt-party-sheet-ps-finrow {
         border-bottom: 1px solid black;
         margin-bottom: 5px;
     }

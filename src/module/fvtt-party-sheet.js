@@ -212,7 +212,7 @@ async function loadSystemTemplate(path) {
  * Load all the user-provided templates for systems
  */
 async function loadSystemTemplates() {
-  // Look inside the "totm" folder. Any JSON file inside should be loaded
+  // Look inside the "partysheets" folder. Any JSON file inside should be loaded
   const templatePaths = [];
   // @ts-ignore
 
@@ -226,13 +226,13 @@ async function loadSystemTemplates() {
 
   try {
     // @ts-ignore
-    await FilePicker.createDirectory(assetPrefix, "totm"); //, { bucket: "public" }
+    await FilePicker.createDirectory(assetPrefix, "partysheets"); //, { bucket: "public" }
   } catch (e) {
-    console.log("Failed creating TOTM directory. It probably already exists.");
+    console.log("Failed creating PartySheets directory. It probably already exists.");
   }
 
   // @ts-ignore
-  const templateFiles = await FilePicker.browse(assetPrefix, "totm"); // `modules/${MODULE_NAME}/templates`);
+  const templateFiles = await FilePicker.browse(assetPrefix, "partysheets"); // `modules/${MODULE_NAME}/templates`);
 
   templateFiles.files.forEach((file) => {
     if (file.endsWith(".json")) {

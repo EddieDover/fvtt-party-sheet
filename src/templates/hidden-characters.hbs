@@ -1,8 +1,8 @@
-<form autocomplete="off" class="totm-hc-form">
+<form autocomplete="off" class="fvtt-party-sheet-hc-form">
   <p>{{localize "fvtt-party-sheet.hide-sheet.tooltip"}}</p>
-  <section class="totm-hc-section">
+  <section class="fvtt-party-sheet-hc-section">
     {{#each characters}}
-    <div class="totm-hc-item">
+    <div class="fvtt-party-sheet-hc-item">
       <input type="checkbox" name="character-{{this.uuid}}" value="{{this.uuid}}" class="hidden-character" id="hidden-character-{{this.uuid}}" {{#hccontains this.uuid hiddenCharacters}}checked{{/hccontains}}>
       <label for="hidden-character-{{this.uuid}}">{{this.name}}</label>
     </div>
