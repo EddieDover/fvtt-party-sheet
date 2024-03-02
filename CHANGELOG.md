@@ -1,4 +1,21 @@
 
+## [2.2.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.1.0...v2.2.0) (2024-03-02)
+
+
+### Features
+
+#### **_Now named fvtt-party-sheet instead of 'Theater of the Mind' to better reflect functionality._**
+
+* added `object-loop` type. See documentation. ([51b9329](https://github.com/EddieDover/fvtt-party-sheet/commit/51b9329f76987b80b3eadcf1b655e073f86298ee))
+* added spacing and space removing tags {s}, {s#}, {s0}. See documentation. ([312f1b6](https://github.com/EddieDover/fvtt-party-sheet/commit/312f1b6a1fb2b0780cd3c2777f2e5f53fb426ff3))
+* added underline support with {u} {/u} ([693e372](https://github.com/EddieDover/fvtt-party-sheet/commit/693e372bf44bbb678c5d15449f0eea27fb4c79bd))
+* largest-from-array and smallest-from-array will return the largest/smallest numeric values from an array ([e416972](https://github.com/EddieDover/fvtt-party-sheet/commit/e416972bc93053ecca770c4d9bf28bc60bb281dc)), closes [#65](https://github.com/EddieDover/fvtt-party-sheet/issues/65)
+* remove alpha Syrinscape support ([4d0ac64](https://github.com/EddieDover/fvtt-party-sheet/commit/4d0ac6460c751812920879b0a93e5e561e0889b1))
+* **templates:** Added World of Darkness (Vtm5e) - pmenezesdev ([517f36d](https://github.com/EddieDover/fvtt-party-sheet/commit/517f36dc909ceaaae02e25d18afa9b3df918bb04))
+* **templates:** Alien RPG updated to show Careers from Building Better Worlds ([3c793cf](https://github.com/EddieDover/fvtt-party-sheet/commit/3c793cf4c9fb15782c181fa0ee4db97f34e36403))
+* **templates:** All EmoCthulhu templates updated to use the new bold and italic tags. ([81e9fdd](https://github.com/EddieDover/fvtt-party-sheet/commit/81e9fdd7b7e1eac2250374c4d0c48ad1ad6e2470))
+* **templates:** All EmoCthulhu Year Zero Engine templates updated to use all new special keywords. ([18f4bb8](https://github.com/EddieDover/fvtt-party-sheet/commit/18f4bb846f926a773934267baa473b8c491935ee))
+
 ## [2.1.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.0.3...v2.1.0) (2024-02-25)
 
 
