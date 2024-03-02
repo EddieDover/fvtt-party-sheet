@@ -48,27 +48,4 @@ export const registerSettings = () => {
     "restricted": true,
     "type": HiddenCharactersSettings,
   });
-
-  // // @ts-ignore
-  // game.settings.register("fvtt-party-sheet", "enableDarkMode", {
-  //   "name": "fvtt-party-sheet.settings.enable-dark-mode.name",
-  //   "hint": "fvtt-party-sheet.settings.enable-dark-mode.hint",
-  //   "scope": "world",
-  //   "config": true,
-  //   "default": false,
-  //   "type": Boolean,
-  //   "onChange": () => {
-  //     // Hooks.call("renderSceneControls");
-  //   },
-  // });
-
-  // @ts-ignore
-  game.settings.register("fvtt-party-sheet", "enableSounds", {
-    "name": "fvtt-party-sheet.settings.enable-sounds.name",
-    "hint": "fvtt-party-sheet.settings.enable-sounds.hint",
-    "scope": "world",
-    "config": true,
-    "default": false,
-    "type": Boolean,
-  });
 };

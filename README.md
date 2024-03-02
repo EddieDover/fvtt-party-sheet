@@ -22,8 +22,6 @@ If you create a template, please submit it via email, Discord or GitHub as a Pul
     - Native Foundry: your <FOUNDRY_VTT/Data/totm/> folder.
     - The Forge: the folder named <totm> at the top level of your assets library (created by the module).
 
-- Sound effects support if you have Syrinscape ([fvtt-syrin-control](https://github.com/frondeus/fvtt-syrin-control)) and Midi QOL ([midi-qol](https://gitlab.com/tposney/midi-qol/)) installed.
-
 ## Systems & Templates
 
 ### Template Examples

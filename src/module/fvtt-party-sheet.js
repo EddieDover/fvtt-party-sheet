@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-import { THEATER_SOUNDS } from "./sounds.js";
 import { registerSettings } from "./app/settings.js";
 import { PartySheetForm } from "./app/party-sheet.js";
 import { addCustomSystem, toProperCase } from "./utils.js";
@@ -244,7 +243,6 @@ async function loadSystemTemplates() {
   templatePaths.forEach(async (path) => {
     await loadSystemTemplate(path);
   });
-
 }
 
 /* Hooks */
@@ -255,7 +253,6 @@ Hooks.on("init", () => {
 
   registerSettings();
 });
-
 
 // @ts-ignore
 Hooks.on("ready", async () => {
