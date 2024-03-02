@@ -513,6 +513,11 @@ export class PartySheetForm extends FormApplication {
     }
   }
 
+  // eslint-disable-next-line no-unused-vars
+  _updateObject(event, formData) {
+    // Don't delete this function or FoundryVTT complains...
+  }
+
   getData(options) {
     // @ts-ignore
     const minimalView = game.settings.get("fvtt-party-sheet", "enableMinimalView");
