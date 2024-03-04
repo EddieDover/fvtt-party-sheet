@@ -30,7 +30,7 @@ For a comprehensive list of the pre-made templates provided by this module and s
 
 ### Making your own system template
 
-Please see the [TEMPLATE_README.md]TEMPLATE_README.md) for information on how to create your own template.
+Please see the [TEMPLATE_README.md](TEMPLATE_README.md) for information on how to create your own template.
 
 ### Template Installation
 
