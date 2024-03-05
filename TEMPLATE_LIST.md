@@ -30,14 +30,6 @@ Please unfold any entry to see a screenshot.
 alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 </details>
 
-<details>
-
-![](./example_templates/alienrpg/alienrpg-no-name.jpg)
-
-<summary>
-alienrpg-no-name.json - Michael Card (Emo Cthulhu)</summary>
-</details>
-
 ## Blade Runner RPG "blade-runner"
 
 <details>
@@ -48,21 +40,11 @@ alienrpg-no-name.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![](./example_templates/blade-runner/blade-runner-basic-no-name.jpg)
-
-<summary>blade-runner-basic-no-name.json - Michael Card (Emo Cthulhu)</summary></details>
-
 <details>
 
 ![](./example_templates/blade-runner/blade-runner-expanded.jpg)
 
 <summary>blade-runner-expanded.json - Michael Card (Emo Cthulhu)</summary></details>
-
-<details>
-
-![](./example_templates/blade-runner/blade-runner-expanded-no-name.jpg)
-
-<summary>blade-runner-expanded-no-name.json - Michael Card (Emo Cthulhu)</summary></details>
 
 ## Coriolis "yzecoriolis"
 
