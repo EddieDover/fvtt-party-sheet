@@ -54,21 +54,9 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![](./example_templates/coriolis/coriolis-no-name.jpg)
-
-<summary>coriolis-no-name.json - Michael Card (Emo Cthulhu)</summary></details>
-
-<details>
-
 ![](./example_templates/coriolis/coriolis-compact.jpg)
 
 <summary>coriolis-compact.json - Michael Card (Emo Cthulhu)</summary></details>
-
-<details>
-
-![](./example_templates/coriolis/coriolis-compact-no-name.jpg)
-
-<summary>coriolis-compact-no-name.json - Michael Card (Emo Cthulhu)</summary></details>
 
 ## Cyberpunk RED "cyberpunk-red-core"
 
@@ -85,12 +73,6 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 ![](./example_templates/dragonbane/dragonbane-name.jpg)
 
 <summary>dragonbane-name.json - Michael Card (Emo Cthulhu)</summary></details>
-
-<details>
-
-![](./example_templates/dragonbane/dragonbane-no-name.jpg)
-
-<summary>dragonbane-no-name.json - Michael Card (Emo Cthulhu)</summary></details>
 
 ## Fallout 2d20 "fallout"
 
