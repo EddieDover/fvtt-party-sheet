@@ -146,12 +146,6 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <summary>vaesen.json - Michael Card (Emo Cthulhu)</summary></details>
 
-<details>
-
-![](./example_templates/vaesen/vaesen-no-name.jpg)
-
-<summary>vaesen-no-name.json - Michael Card (Emo Cthulhu)</summary></details>
-
 ## World of Darkness "Vtm5e"
 
 
