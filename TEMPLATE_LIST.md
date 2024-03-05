@@ -40,8 +40,6 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-<details>
-
 ![](./example_templates/blade-runner/blade-runner-expanded.jpg)
 
 <summary>blade-runner-expanded.json - Michael Card (Emo Cthulhu)</summary></details>
