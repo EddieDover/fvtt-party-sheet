@@ -16,6 +16,7 @@ export default () => ({
     copy({
       targets: [
         { src: "*.md", dest: "dist" },
+        // { src: "example_templates/*", dest: "dist/example_templates" },
         {
           src: "example_templates/**/*.json",
           dest: "dist/example_templates",
