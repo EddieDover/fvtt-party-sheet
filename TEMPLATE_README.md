@@ -184,7 +184,7 @@ There are a few special keywords that must be surrounded by { } marks, to allow 
   * {+} - Adds the values of two objects and outputs the result, i.e. `system.attributes.str {+} system.attributes.wis` will output the character's str and wis added together.
   * {s} adds a space
   * {s#} adds multiple spaces where # is the amount of spaces desired.
-  * {s0} will remove all spaces between it's preceeding and succeeding elements. E.g. `D{s0} system.attributes.str` becomes `D8`
+  * {s0} will remove all spaces between it's preceeding and succeeding elements. E.g. `D {s0} system.attributes.str` becomes `D8`
   * {i} & {/i} - Anything between these tags will be displayed in _italics_
   * {b} & {/b} - Anything between these tags will be displayed in **bold**
   * {u} & {/u} - Anything between these tags will be displayed as <u>underlined</u>
@@ -300,7 +300,7 @@ Code:
   "type": "array-string-builder",
   "header": "show",
   "text": "statuses => value, "
-}, // No comma if last item in the row
+}
 ```
 
 This example is used to display Active Status Effects on a character, such as burning, bleeding, prone, etc. They are stored by Foundry under the actor as `.statuses`, and the value is an array of strings. To display an array of values with no definite end or number of values or even empty sometimes, array-string-builder is your weapon of choice.
