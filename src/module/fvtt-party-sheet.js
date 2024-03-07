@@ -240,9 +240,9 @@ async function loadSystemTemplates() {
     }
   });
 
-  templatePaths.forEach(async (path) => {
+  for (const path of templatePaths) {
     await loadSystemTemplate(path);
-  });
+  }
 }
 
 /* Hooks */
@@ -262,6 +262,22 @@ Hooks.on("ready", async () => {
   if (game.user.isGM) {
     log("Loading templates");
     await loadSystemTemplates();
+
+    // @ts-ignore
+    const button = $(`<li class="control-tool "
+      data-tool="PartySheet"
+      aria-label="Show Party Sheet"
+      role="button"
+      data-tooltip="Party Sheet">
+      <i class="fas fa-users"></i>
+    </li>`);
+    button.click(() => togglePartySheet());
+    // @ts-ignore
+    const controls = $("#tools-panel-token");
+
+    if (controls.find(".control-tool[data-tool='PartySheet']")) {
+      controls.append(button);
+    }
   }
 });
 
@@ -276,29 +292,5 @@ Hooks.on("renderPlayerList", () => {
   }
   if (currentPartySheet?.rendered) {
     currentPartySheet.render(true);
-  }
-});
-
-// @ts-ignore
-Hooks.on("renderSceneControls", () => {
-  // @ts-ignore
-  const showButton = game.user.isGM;
-
-  // @ts-ignore
-  const button = $(`<li class="control-tool "
-            data-tool="PartySheet"
-            aria-label="Show Party Sheet"
-            role="button"
-            data-tooltip="Party Sheet">
-            <i class="fas fa-users"></i>
-        </li>`);
-  button.click(() => togglePartySheet());
-  // @ts-ignore
-  const controls = $("#tools-panel-token");
-
-  if (showButton && controls.find(".control-tool[data-tool='PartySheet']")) {
-    controls.append(button);
-  } else if (!showButton) {
-    controls.find(".control-tool[data-tool='PartySheet']").remove();
   }
 });
