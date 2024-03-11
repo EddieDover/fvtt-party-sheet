@@ -1,4 +1,21 @@
 
+## [2.3.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.2.0...v2.3.0) (2024-03-11)
+
+
+### Features
+
+* auto-generate html from markdown files for easier viewing and image embedding ([994e15c](https://github.com/EddieDover/fvtt-party-sheet/commit/994e15c4dfd872b439aea12b3d1da9b8d7cd2322))
+
+
+### Bug Fixes
+
+* Party Sheet Button should wait to display after all templates have been loaded. This will help on slower systems. ([5bc792e](https://github.com/EddieDover/fvtt-party-sheet/commit/5bc792ec08f929b8418efe8c2a48a27f3577ee12))
+
+### Template Updates
+
+* Added {s2} to "twdu-two-rows". ([ded7ca4](https://github.com/EddieDover/fvtt-party-sheet/commit/ded7ca4d04fa4422c3c7690f23b651e16aff1faf))
+* Updated SWADE template.
+
 ## [2.2.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.1.0...v2.2.0) (2024-03-02)
 
 
