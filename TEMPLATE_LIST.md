@@ -6,7 +6,7 @@ Please unfold any entry to see a screenshot.
 
 <details>
 
-  ![](./images/preview1.png)
+  ![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/images/preview1.png)
   <summary>
   Built-In & dnd5e_template.json (Eddie Dover)
   <br/>
@@ -16,7 +16,7 @@ Please unfold any entry to see a screenshot.
 
 <details>
 
-![](./example_templates/dnd5e/dnd5e_modified.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/dnd5e/dnd5e_modified.jpg)
 
 <summary>dnd5e_modified.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -24,7 +24,7 @@ Please unfold any entry to see a screenshot.
 
 <details>
 
-![](./example_templates/alienrpg/alienrpg.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/alienrpg/alienrpg.jpg)
 
 <summary>
 alienrpg.json - Michael Card (Emo Cthulhu)</summary>
@@ -34,13 +34,13 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![](./example_templates/blade-runner/blade-runner-basic.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/blade-runner/blade-runner-basic.jpg)
 
 <summary>blade-runner-basic.json - Michael Card (Emo Cthulhu)</summary></details>
 
 <details>
 
-![](./example_templates/blade-runner/blade-runner-expanded.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/blade-runner/blade-runner-expanded.jpg)
 
 <summary>blade-runner-expanded.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -48,13 +48,13 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![](./example_templates/coriolis/coriolis.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/coriolis/coriolis.jpg)
 
 <summary>coriolis.json - Michael Card (Emo Cthulhu)</summary></details>
 
 <details>
 
-![](./example_templates/coriolis/coriolis-compact.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/coriolis/coriolis-compact.jpg)
 
 <summary>coriolis-compact.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -62,7 +62,7 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![](./example_templates/cyberpunk-RED/cyberpunk-RED-v1.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/cyberpunk-RED/cyberpunk-RED-v1.jpg)
 
 <summary>cyberpunk-red-v1.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -70,7 +70,7 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![](./example_templates/dragonbane/dragonbane-name.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/dragonbane/dragonbane-name.jpg)
 
 <summary>dragonbane-name.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -78,13 +78,13 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![](./example_templates/fallout/fallout-move.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/fallout/fallout-move.jpg)
 
 <summary>fallout-move.json - Michael Card (Emo Cthulhu)</summary></details>
 
 <details>
 
-![](./example_templates/fallout/fallout-trimmed-move.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/fallout/fallout-trimmed-move.jpg)
 
 <summary>fallout-trimmed-move.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -92,13 +92,13 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![](./example_templates/starfinder/starfinder.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/starfinder/starfinder.jpg)
 
 <summary>starfinder.json - Michael Card (Emo Cthulhu)</summary></details>
 
 <details>
 
-![](./example_templates/starfinder/starfinder-statuses.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/starfinder/starfinder-statuses.jpg)
 
 <summary>starfinder-statuses.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -106,7 +106,7 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![](./example_templates/swade/swade.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/swade/swade.jpg)
 
 <summary>swade.json - Mestre Digital</summary></details>
 
@@ -114,7 +114,7 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![](./example_templates/star-trek-adventures/sta-v1.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/star-trek-adventures/sta-v1.jpg)
 
 <summary>sta-v1.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -122,19 +122,19 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![](./example_templates/thewalkingdead/twdu-anchors.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/thewalkingdead/twdu-anchors.jpg)
 
 <summary>twdu-anchors.json - Michael Card (Emo Cthulhu)</summary></details>
 
 <details>
 
-![](./example_templates/thewalkingdead/twdu-no-anchors.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/thewalkingdead/twdu-no-anchors.jpg)
 
 <summary>twdu-no-anchors.json - Michael Card (Emo Cthulhu)</summary></details>
 
 <details>
 
-![](./example_templates/thewalkingdead/twdu-two-rows.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/thewalkingdead/twdu-two-rows.jpg)
 
 <summary>twdu-two-rows.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -142,7 +142,7 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![](./example_templates/vaesen/vaesen.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/vaesen/vaesen.jpg)
 
 <summary>vaesen.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -151,12 +151,12 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![](./example_templates/vtm5e/vtm5e-ptbr.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/vtm5e/vtm5e-ptbr.jpg)
 
 <summary>vtm5e-ptbr.json - pmenezesdev (Justicares)</summary></details>
 
 <details>
 
-![](./example_templates/vtm5e/vtm5e-en.jpg)
+![](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/vtm5e/vtm5e-en.jpg)
 
 <summary>vtm5e-en.json - pmenezesdev (Justicares)</summary></details>
