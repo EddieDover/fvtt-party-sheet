@@ -8,8 +8,7 @@
       "no-players": "No players are currently logged in.",
       "no-systems": "You do not have any json files for this system in your data/partysheets folder. Please add some to enable this feature.",
       "bugreport": "File a Bug Report",
-      "feedback": "Send Feedback",
-      "discord": "Discord"
+      "feedback": "Send Feedback"
     },
     "hide-sheet": {
       "button": "Configure Hidden Characters",
@@ -19,7 +18,7 @@
     "settings": {
       "enable-minimal-view": {
         "name": "Hide Support Buttons",
-        "hint": "Hide the buttons for bug reports, feedback, and Discord."
+        "hint": "Hide the buttons for bug reports and feedback."
       },
       "enable-only-online": {
         "name": "Show only online characters",

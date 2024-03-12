@@ -8,7 +8,7 @@ This module provides a GM with a table of characters, online only, or all, confi
 
 The original intent of this module was to provide a 'party view' feature that I found missing when I first started using [FoundryVTT](https://www.foundryvtt.com) instead of [Fantasy Grounds](https://www.fantasygrounds.com). It will be updated with features that I personally want or need, or are requested of me by some poor soul. Several templates for various systems have been created, and more are already in the works with even more planned.
 
-If you create a template, please submit it via email, Discord or GitHub as a Pull Request, and we will include it in future updates with full credit.
+If you create a template, please submit it via email or GitHub as a Pull Request, and we will include it in future updates with full credit.
 
 ## Features
 - Adds a 'Party Sheet' similar to that provided by Fantasy Grounds. Just click the Party Sheet icon on the Tokens Controls sub-menu.
@@ -38,13 +38,11 @@ If using native **Foundry**, place the templates you wish to use in the <FOUNDRY
 
 If using **The Forge**, this module will create a folder at the top level of your Assets Library named `partysheets`. Place your templates in this folder.
 
-If using The Forge, install the module on your local Foundry installation to have access to the [example_templates](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates) folder, and to upload any you would like to use to your Assets Library in the <partysheets> folder at the top level. Or, if you haven't installed Foundry and only used the license key on The Forge, use the GitHub link above. In this case, you will have to download the file to your computer, then upload it to The Forge. If you create a template, please submit it via email, Discord or GitHub, and we will include it in future updates with full credit.
+If using The Forge, install the module on your local Foundry installation to have access to the [example_templates](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates) folder, and to upload any you would like to use to your Assets Library in the <partysheets> folder at the top level. Or, if you haven't installed Foundry and only used the license key on The Forge, use the GitHub link above. In this case, you will have to download the file to your computer, then upload it to The Forge. If you create a template, please submit it via email or GitHub, and we will include it in future updates with full credit.
 
 # Support
 
 Feel free to file a Bug Report / Feature Request under the Issues tab of Github.
-
-Or you can join my **Discord** server here: https://discord.gg/XuGx7zNMKZ
 
 # Screenshots
 

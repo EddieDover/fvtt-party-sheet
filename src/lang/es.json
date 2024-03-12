@@ -8,8 +8,7 @@
       "no-players": "Ningún jugador ha iniciado sesión actualmente.",
       "no-systems": "La carpeta data/partysheets no contiene archivos JSON para este sistema. Necesitas agregar algunos para activar esta funcionalidad.",
       "bugreport": "Dar retroalimentación",
-      "feedback": "Reportar un fallo",
-      "discord": "Discord"
+      "feedback": "Reportar un fallo"
     },
     "hide-sheet": {
       "button": "Configurar personajes ocultos",
@@ -19,7 +18,7 @@
     "settings": {
       "enable-minimal-view": {
         "name": "Ocultar botones de soporte",
-        "hint": "Ocultar los botones para informes de errores, comentarios y Discord."
+        "hint": "Ocultar los botones para informes de errores y comentarios."
       },
       "enable-only-online": {
         "name": "Mostrar solo personajes en línea",

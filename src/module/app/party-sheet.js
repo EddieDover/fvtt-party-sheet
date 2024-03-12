@@ -13,7 +13,6 @@ import { HiddenCharactersSettings } from "./hidden-characters-settings.js";
 const FEEDBACK_URL = "https://github.com/EddieDover/fvtt-party-sheet/issues/new/choose";
 const BUGREPORT_URL =
   "https://github.com/EddieDover/fvtt-party-sheet/issues/new?assignees=EddieDover&labels=bug&projects=&template=bug_report.yml&title=%5BBug%5D%3A+";
-const DISCORD_URL = "https://discord.gg/XuGx7zNMKZ";
 
 const DEFAULT_EXCLUDES = ["npc"];
 // @ts-ignore
@@ -623,8 +622,6 @@ export class PartySheetForm extends FormApplication {
     $('button[name="feedback"]', html).click(this.onFeedback.bind(this));
     // @ts-ignore
     $('button[name="bugreport"]', html).click(this.onBugReport.bind(this));
-    // @ts-ignore
-    $('button[name="discord"]', html).click(this.onDiscord.bind(this));
   }
 
   onFeedback(event) {
@@ -636,12 +633,6 @@ export class PartySheetForm extends FormApplication {
   onBugReport(event) {
     event.preventDefault();
     const newWindow = window.open(BUGREPORT_URL, "_blank", "noopener,noreferrer");
-    if (newWindow) newWindow.opener = undefined;
-  }
-
-  onDiscord(event) {
-    event.preventDefault();
-    const newWindow = window.open(DISCORD_URL, "_blank", "noopener,noreferrer");
     if (newWindow) newWindow.opener = undefined;
   }
 }
