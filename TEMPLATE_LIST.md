@@ -151,7 +151,7 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![World Of Darkness - ptbr Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/tree/main/example_templates/vtm5e/vtm5e-ptbr.jpg)
+![World Of Darkness - ptbr Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/vtm5e/vtm5e-ptbr.jpg)
 
 <summary>vtm5e-ptbr.json - pmenezesdev (Justicares)</summary></details>
 
