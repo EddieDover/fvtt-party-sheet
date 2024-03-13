@@ -122,7 +122,7 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![TWDU with Anchors Screeshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/thewalkingdead/twdu-anchors.jpg)
+![TWDU with Anchors Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/thewalkingdead/twdu-anchors.jpg)
 
 <summary>twdu-anchors.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -134,7 +134,7 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![TWDU Two Rows](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/thewalkingdead/twdu-two-rows.jpg)
+![TWDU Two Rows Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/thewalkingdead/twdu-two-rows.jpg)
 
 <summary>twdu-two-rows.json - Michael Card (Emo Cthulhu)</summary></details>
 
