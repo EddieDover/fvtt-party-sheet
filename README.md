@@ -10,6 +10,8 @@ The original intent of this module was to provide a 'party view' feature that I 
 
 If you create a template, please submit it via email or GitHub as a Pull Request, and we will include it in future updates with full credit.
 
+See upcoming changes in the [UPCOMING_CHANGELOG.md](UPCOMING_CHANGELOG.md)
+
 ## Features
 - Adds a 'Party Sheet' similar to that provided by Fantasy Grounds. Just click the Party Sheet icon on the Tokens Controls sub-menu.
 
