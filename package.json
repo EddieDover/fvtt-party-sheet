@@ -36,7 +36,8 @@
     "test:ci": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --ci --reporters=default --reporters=jest-junit",
     "postinstall": "husky install",
     "release": "commit-and-tag-version --sign",
-    "release:dry": "commit-and-tag-version --dry-run"
+    "release:dry": "commit-and-tag-version --dry-run",
+    "release:upcoming": "commit-and-tag-version --dry-run --silent > UPCOMING_CHANGELOG.md"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.2.1",
