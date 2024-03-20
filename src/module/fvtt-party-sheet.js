@@ -4,6 +4,7 @@ import { PartySheetForm } from "./app/party-sheet.js";
 import { addCustomSystem, toProperCase } from "./utils.js";
 
 let currentPartySheet = null;
+let templatesLoaded = false;
 
 /**
  *
@@ -243,26 +244,12 @@ async function loadSystemTemplates() {
   for (const path of templatePaths) {
     await loadSystemTemplate(path);
   }
+
+  templatesLoaded = true;
 }
 
-/* Hooks */
-
-// @ts-ignore
-Hooks.on("init", () => {
-  log("Initializing");
-
-  registerSettings();
-});
-
-// @ts-ignore
-Hooks.on("ready", async () => {
-  log("Ready");
-
-  // @ts-ignore
-  if (game.user.isGM) {
-    log("Loading templates");
-    await loadSystemTemplates();
-
+const showButton = () => {
+  if (templatesLoaded) {
     // @ts-ignore
     const button = $(`<li class="control-tool "
       data-tool="PartySheet"
@@ -279,6 +266,29 @@ Hooks.on("ready", async () => {
       controls.append(button);
     }
   }
+};
+
+/* Hooks */
+
+// @ts-ignore
+Hooks.on("init", () => {
+  log("Initializing");
+
+  registerSettings();
+});
+
+// @ts-ignore
+Hooks.on("ready", async () => {
+  log("Ready");
+
+  // @ts-ignore
+  if (game.user.isGM) {
+    if (!templatesLoaded) {
+      log("Loading templates");
+      await loadSystemTemplates();
+    }
+  }
+  showButton();
 });
 
 // @ts-ignore
@@ -293,4 +303,9 @@ Hooks.on("renderPlayerList", () => {
   if (currentPartySheet?.rendered) {
     currentPartySheet.render(true);
   }
+});
+
+// @ts-ignore
+Hooks.on("renderSceneControls", () => {
+  showButton();
 });
