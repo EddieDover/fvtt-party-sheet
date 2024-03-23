@@ -423,9 +423,7 @@ export class PartySheetForm extends FormApplication {
       if (objFilter) {
         loopData = loopData.filter((data) => data.type === objFilter);
       }
-      //const regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+\s(?!})/g;
-      // Dropped the space checking before and after. This shouldn't break anything but let's see.
-      const regValue = /(?<!{)(?:\w+(?:\.\w+)*)+(?!})/g;
+      const regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+\s(?!})/g;
       const reg = new RegExp(regValue);
       const allMatches = Array.from(actualValue.matchAll(reg), (match) => match[0].trim());
 
