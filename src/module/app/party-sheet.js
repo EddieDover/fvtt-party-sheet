@@ -488,7 +488,7 @@ export class PartySheetForm extends FormApplication {
       finStrs = finStrs.map((str, idx) => dd_section_start(idx) + this.cleanString(str) + dd_section_end);
       finStr = finStrs.join("");
     } else {
-      finStr = finStrs.join(", ");
+      finStr = finStrs.join(chunks?.length > 0 ? "" : ", ");
       finStr = finStr.trim();
       finStr = this.cleanString(finStr);
     }
