@@ -372,51 +372,81 @@ export class PartySheetForm extends FormApplication {
    * @returns {string} The text to render
    */
   processObjectLoop(character, type, value) {
-    const objName = value.split("=>")[0].trim();
-    const actualValue = value.split("=>")[1];
-    const objData = extractPropertyByString(character, objName);
-
-    let loopData = [];
-    const objKeys = Object.keys(objData);
-    let outStr = "";
+    const chunks = value.split("||").map((thing) => thing.trim());
+    let finStr = "";
     let outputText = "";
-    if (
-      objKeys.length == 6 &&
-      objKeys[0] == "documentClass" &&
-      objKeys[1] == "name" &&
-      objKeys[2] == "model" &&
-      objKeys[3] == "_initialized" &&
-      objKeys[4] == "_source" &&
-      objKeys[5] == "invalidDocumentIds"
-    ) {
-      loopData = Object.keys(objData._source).map((key) => {
-        return objData._source[key];
-      });
-    } else {
-      loopData = Object.keys(objData).map((key) => {
-        return objData[key];
-      });
-    }
 
-    const regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+\s(?!})/g;
-    const reg = new RegExp(regValue);
-    const allMatches = Array.from(actualValue.matchAll(reg), (match) => match[0].trim());
+    chunks.forEach((chunk) => {
+      let outStr = "";
+      let prefix = "";
+      let objName = chunk.split("=>")[0].trim();
+      const findPrefixMatches = objName.match(/^(.*)\s/);
 
-    if (loopData.length ?? loopData.length !== 0) {
-      for (const objSubData of loopData) {
-        let tempLine = actualValue;
-        for (const m of allMatches) {
-          tempLine = tempLine.replace(m, extractPropertyByString(objSubData, m));
-        }
-        outStr += tempLine;
+      if (findPrefixMatches?.length) {
+        prefix = findPrefixMatches[1].trim();
+
+        objName = objName.replace(prefix, "").trim();
       }
-    } else {
-      return "";
-    }
-    outStr = outStr.trim();
-    outStr = this.cleanString(outStr);
+      let objFilter = null;
+
+      const filterMatches = objName.match(/(?<=.)\{([^}]+)\}(?=$)/);
+
+      if (filterMatches?.length) {
+        objFilter = filterMatches[1];
+        objName = objName.replace(`{${objFilter}}`, "");
+      }
+
+      const actualValue = chunk.split("=>")[1];
+
+      const objData = extractPropertyByString(character, objName);
+
+      let loopData = [];
+      const objKeys = Object.keys(objData);
+      if (
+        objKeys.length == 6 &&
+        objKeys[0] == "documentClass" &&
+        objKeys[1] == "name" &&
+        objKeys[2] == "model" &&
+        objKeys[3] == "_initialized" &&
+        objKeys[4] == "_source" &&
+        objKeys[5] == "invalidDocumentIds"
+      ) {
+        loopData = Object.keys(objData._source).map((key) => {
+          return objData._source[key];
+        });
+      } else {
+        loopData = Object.keys(objData).map((key) => {
+          return objData[key];
+        });
+      }
+
+      if (objFilter) {
+        loopData = loopData.filter((data) => data.type === objFilter);
+      }
+      //const regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+\s(?!})/g;
+      const regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+(?!})/g; //dropped the s for instances where the value is a single word not sure if good.
+      const reg = new RegExp(regValue);
+      const allMatches = Array.from(actualValue.matchAll(reg), (match) => match[0].trim());
+
+      if (loopData.length ?? loopData.length !== 0) {
+        for (const objSubData of loopData) {
+          let tempLine = actualValue;
+          for (const m of allMatches) {
+            tempLine = tempLine.replace(m, extractPropertyByString(objSubData, m));
+          }
+          outStr += tempLine;
+        }
+      } else {
+        return "";
+      }
+      if (outStr) {
+        finStr += prefix + outStr;
+      }
+    });
+    finStr = finStr.trim();
+    finStr = this.cleanString(finStr);
     let isSafeStringNeeded = false;
-    [isSafeStringNeeded, outputText] = parseExtras(outStr);
+    [isSafeStringNeeded, outputText] = parseExtras(finStr);
     // @ts-ignore
     return isSafeStringNeeded ? new Handlebars.SafeString(outputText) : outputText;
   }
