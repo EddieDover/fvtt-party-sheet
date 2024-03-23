@@ -15,6 +15,8 @@ const BUGREPORT_URL =
   "https://github.com/EddieDover/fvtt-party-sheet/issues/new?assignees=EddieDover&labels=bug&projects=&template=bug_report.yml&title=%5BBug%5D%3A+";
 
 const DEFAULT_EXCLUDES = ["npc"];
+
+let generated_dropdowns = 0;
 // @ts-ignore
 export class PartySheetForm extends FormApplication {
   constructor() {
@@ -374,13 +376,16 @@ export class PartySheetForm extends FormApplication {
   processObjectLoop(character, type, value) {
     const isDropdown = value.trim().startsWith("{dropdown} ");
     const dropdownKeys = [];
+
     if (isDropdown) {
       value = value.replace("{dropdown} ", "");
+      generated_dropdowns += 1;
     }
     const chunks = value.split("||").map((thing) => thing.trim());
     let finStr = "";
     let finStrs = [];
     let outputText = "";
+    let validDropdownSections = 0;
 
     chunks.forEach((chunk) => {
       let outStr = "";
@@ -394,10 +399,6 @@ export class PartySheetForm extends FormApplication {
         objName = objName.replace(prefix, "").trim();
       }
 
-      if (isDropdown) {
-        dropdownKeys.push(prefix ? prefix : objName);
-      }
-
       let objFilter = null;
 
       const filterMatches = objName.match(/(?<=.)\{([^}]+)\}(?=$)/);
@@ -405,6 +406,11 @@ export class PartySheetForm extends FormApplication {
       if (filterMatches?.length) {
         objFilter = filterMatches[1];
         objName = objName.replace(`{${objFilter}}`, "");
+      }
+
+      if (isDropdown) {
+        dropdownKeys.push(objFilter || objName);
+        validDropdownSections += 1;
       }
 
       const actualValue = chunk.split("=>")[1];
@@ -434,8 +440,15 @@ export class PartySheetForm extends FormApplication {
       if (objFilter) {
         loopData = loopData.filter((data) => data.type === objFilter);
       }
-      //const regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+\s(?!})/g;
-      const regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+(?!})/g; //dropped the s for instances where the value is a single word not sure if good.
+
+      if (loopData.length === 0) {
+        if (isDropdown) {
+          dropdownKeys.pop();
+          validDropdownSections -= 1;
+        }
+      }
+
+      const regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+\s(?!})/g;
       const reg = new RegExp(regValue);
       const allMatches = Array.from(actualValue.matchAll(reg), (match) => match[0].trim());
 
@@ -451,30 +464,41 @@ export class PartySheetForm extends FormApplication {
         return "";
       }
       if (outStr) {
-        //finStr += prefix + outStr;
-        console.log("pushing ", outStr);
         finStrs.push(prefix + outStr);
       }
     });
 
     let dropdownString = "";
-    console.log(finStrs);
-    if (isDropdown && dropdownKeys.length === chunks.length) {
-      dropdownString = "<select name='fvtt-party-sheet-dropdown' class='fvtt-party-sheet-dropdown'>";
+    let isSafeStringNeeded = false;
+
+    if (isDropdown && dropdownKeys.length === validDropdownSections && validDropdownSections > 1) {
+      isSafeStringNeeded = true;
+      dropdownString = `<select class='fvtt-party-sheet-dropdown' data-dropdownsection='${generated_dropdowns}' >`;
       for (let i = 0; i < finStrs.length; i++) {
         dropdownString += `<option value="${i}">${dropdownKeys[i]}</option>`;
       }
-      dropdownString += "</select>";
+      dropdownString += "</select><br/>";
     }
-    finStr = finStrs.join(", ");
+    if (isDropdown) {
+      const dd_section_start = (idx) =>
+        `<div data-dropdownsection='${generated_dropdowns}' data-dropdownoption='${idx}' ${
+          idx != 0 ? 'style="display: none;"' : ""
+        } >`;
+      const dd_section_end = "</div>";
+      finStrs = finStrs.map((str, idx) => dd_section_start(idx) + this.cleanString(str) + dd_section_end);
+      finStr = finStrs.join("");
+    } else {
+      finStr = finStrs.join(", ");
+      finStr = finStr.trim();
+      finStr = this.cleanString(finStr);
+    }
 
-    finStr = finStr.trim();
-    finStr = this.cleanString(finStr);
-    let isSafeStringNeeded = false;
     [isSafeStringNeeded, outputText] = parseExtras(finStr);
 
-    // @ts-ignore
-    return isSafeStringNeeded ? new Handlebars.SafeString(dropdownString ?? "" + outputText) : outputText;
+    return isSafeStringNeeded
+      ? // @ts-ignore
+        new Handlebars.SafeString((dropdownString || "") + outputText)
+      : outputText;
   }
 
   /**
@@ -666,6 +690,7 @@ export class PartySheetForm extends FormApplication {
 
   activateListeners(html) {
     super.activateListeners(html);
+
     // @ts-ignore
     $('button[name="fvtt-party-sheet-options"]', html).click(this.openOptions.bind(this));
     // @ts-ignore
@@ -678,6 +703,19 @@ export class PartySheetForm extends FormApplication {
     $('button[name="feedback"]', html).click(this.onFeedback.bind(this));
     // @ts-ignore
     $('button[name="bugreport"]', html).click(this.onBugReport.bind(this));
+    // @ts-ignore
+    $('select[class="fvtt-party-sheet-dropdown"]', html).change((event) => {
+      console.log(event.currentTarget.dataset);
+      console.log(event.currentTarget.dataset.dropdownsection);
+      const dropdownSection = event.currentTarget.dataset.dropdownsection;
+      const dropdownValue = event.currentTarget.value;
+
+      // @ts-ignore
+      $(`div[data-dropdownsection="${dropdownSection}"]`).hide();
+
+      // @ts-ignore
+      $(`div[data-dropdownsection="${dropdownSection}"][data-dropdownoption="${dropdownValue}"]`).show();
+    });
   }
 
   onFeedback(event) {
