@@ -372,8 +372,14 @@ export class PartySheetForm extends FormApplication {
    * @returns {string} The text to render
    */
   processObjectLoop(character, type, value) {
+    const isDropdown = value.trim().startsWith("{dropdown} ");
+    const dropdownKeys = [];
+    if (isDropdown) {
+      value = value.replace("{dropdown} ", "");
+    }
     const chunks = value.split("||").map((thing) => thing.trim());
     let finStr = "";
+    let finStrs = [];
     let outputText = "";
 
     chunks.forEach((chunk) => {
@@ -387,6 +393,11 @@ export class PartySheetForm extends FormApplication {
 
         objName = objName.replace(prefix, "").trim();
       }
+
+      if (isDropdown) {
+        dropdownKeys.push(prefix ? prefix : objName);
+      }
+
       let objFilter = null;
 
       const filterMatches = objName.match(/(?<=.)\{([^}]+)\}(?=$)/);
@@ -440,15 +451,30 @@ export class PartySheetForm extends FormApplication {
         return "";
       }
       if (outStr) {
-        finStr += prefix + outStr;
+        //finStr += prefix + outStr;
+        console.log("pushing ", outStr);
+        finStrs.push(prefix + outStr);
       }
     });
+
+    let dropdownString = "";
+    console.log(finStrs);
+    if (isDropdown && dropdownKeys.length === chunks.length) {
+      dropdownString = "<select name='fvtt-party-sheet-dropdown' class='fvtt-party-sheet-dropdown'>";
+      for (let i = 0; i < finStrs.length; i++) {
+        dropdownString += `<option value="${i}">${dropdownKeys[i]}</option>`;
+      }
+      dropdownString += "</select>";
+    }
+    finStr = finStrs.join(", ");
+
     finStr = finStr.trim();
     finStr = this.cleanString(finStr);
     let isSafeStringNeeded = false;
     [isSafeStringNeeded, outputText] = parseExtras(finStr);
+
     // @ts-ignore
-    return isSafeStringNeeded ? new Handlebars.SafeString(outputText) : outputText;
+    return isSafeStringNeeded ? new Handlebars.SafeString(dropdownString ?? "" + outputText) : outputText;
   }
 
   /**
