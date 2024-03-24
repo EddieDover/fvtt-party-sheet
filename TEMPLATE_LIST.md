@@ -90,7 +90,7 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![Fallout 2d20 v2 Screeshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/fallout/fallout-v2.jpg)
+![Fallout 2d20 v2 Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/fallout/fallout-v2.jpg)
 
 <summary>fallout-v2.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -130,9 +130,13 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <summary>sta-v1.json - Michael Card (Emo Cthulhu)</summary></details>
 
+<details>
+
 ![Star Trek Adventures v2 Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/star-trek-adventures/sta-v2.jpg)
 
 <summary>sta-v2.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
 
 ![Star Trek Adventures v2 Ship Sheet Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/star-trek-adventures/sta-ship-v2.jpg)
 
