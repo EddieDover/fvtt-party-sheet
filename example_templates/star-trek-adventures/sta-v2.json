@@ -1,0 +1,168 @@
+{
+    "name": "Star Trek Adventures - v2",
+    "system": "sta",
+    "author": "Michael Card (EmoCthulhu)",
+    "offline_excludes": [
+        "npc",
+        "base",
+        "starship",
+        "extendedtask",
+        "smallcraft"
+    ],
+    "rows": [
+        [
+            {
+                "name": "Character Sheet",
+                "type": "charactersheet",
+                "align": "center",
+                "header": "hide",
+                "text": ""
+            },
+            {
+                "name": "Details",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "{b} name {/b}{nl}Species:{i} system.species {/i}{nl} system.assignment {nl} system.rank"
+            },
+            {
+                "name": "Determination",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "{b} system.determination.value {/b} / {u} system.determination.max {/u}"
+            },
+            {
+                "name": "Stress",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "minwidth": 60,
+                "header": "show",
+                "text": "{b} system.stress.value {/b} / {u} system.stress.max {/u}"
+            },
+            {
+                "name": "Attributes",
+                "type": "direct-complex",
+                "align": "left",
+                "valign": "top",
+                "header": "show",
+                "text": [
+                    {
+                        "type": "match",
+                        "ifdata": "system.attributes.control.selected",
+                        "matches": true,
+                        "text": "{b}Control: system.attributes.control.value {/b}{nl}",
+                        "else": "Control: system.attributes.control.value {nl}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.attributes.daring.selected",
+                        "matches": true,
+                        "text": "{b}Daring: system.attributes.daring.value {/b}{nl}",
+                        "else": "Daring: system.attributes.daring.value {nl}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.attributes.fitness.selected",
+                        "matches": true,
+                        "text": "{b}Fitness: system.attributes.fitness.value {/b}{nl}",
+                        "else": "Fitness: system.attributes.fitness.value {nl}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.attributes.insight.selected",
+                        "matches": true,
+                        "text": "{b}Insight: system.attributes.insight.value {/b}{nl}",
+                        "else": "Insight: system.attributes.insight.value {nl}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.attributes.presence.selected",
+                        "matches": true,
+                        "text": "{b}Presence: system.attributes.presence.value {/b}{nl}",
+                        "else": "Presence: system.attributes.presence.value {nl}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.attributes.reason.selected",
+                        "matches": true,
+                        "text": "{b}Reason: system.attributes.reason.value {/b}",
+                        "else": "Reason: system.attributes.reason.value"
+                    }
+                ]
+            },
+            {
+                "name": "Disciplines",
+                "type": "direct-complex",
+                "align": "left",
+                "valign": "top",
+                "header": "show",
+                "text": [
+                    {
+                        "type": "match",
+                        "ifdata": "system.disciplines.command.selected",
+                        "matches": true,
+                        "text": "{b}Command: system.disciplines.command.value {/b}{nl}",
+                        "else": "Command: system.disciplines.command.value {nl}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.disciplines.conn.selected",
+                        "matches": true,
+                        "text": "{b}Conn: system.disciplines.conn.value {/b}{nl}",
+                        "else": "Conn: system.disciplines.conn.value {nl}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.disciplines.engineering.selected",
+                        "matches": true,
+                        "text": "{b}Engineering: system.disciplines.engineering.value {/b}{nl}",
+                        "else": "Engineering: system.disciplines.engineering.value {nl}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.disciplines.medicine.selected",
+                        "matches": true,
+                        "text": "{b}Medicine: system.disciplines.medicine.value {/b}{nl}",
+                        "else": "Medicine: system.disciplines.medicine.value {nl}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.disciplines.science.selected",
+                        "matches": true,
+                        "text": "{b}Science: system.disciplines.science.value {/b}{nl}",
+                        "else": "Science: system.disciplines.science.value {nl}"
+                    },
+                    {
+                        "type": "match",
+                        "ifdata": "system.disciplines.security.selected",
+                        "matches": true,
+                        "text": "{b}Security: system.disciplines.security.value {/b}",
+                        "else": "Security: system.disciplines.security.value"
+                    }
+                ]
+            },
+            {
+                "name": "Traits",
+                "type": "direct",
+                "align": "left",
+                "valign": "top",
+                "maxwidth": 70,
+                "header": "show",
+                "text": "system.traits"
+            },
+            {
+                "name": "Talents/Focuses",
+                "type": "object-loop",
+                "filter": "type",
+                "align": "left",
+                "valign": "top",
+                "header": "show",
+                "text": "{dropdown} items{talent} => name {nl} || items{focus} => name {nl}"
+            }
+        ]
+    ]
+}
