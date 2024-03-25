@@ -66,6 +66,12 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <summary>cyberpunk-red-v1.json - Michael Card (Emo Cthulhu)</summary></details>
 
+<details>
+
+![Cyberpunk RED v2 Screeshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/cyberpunk-RED/cyberpunk-RED-v2.jpg)
+
+<summary>cyberpunk-red-v2.json - Michael Card (Emo Cthulhu)</summary></details>
+
 ## Dragonbane "dragonbane"
 
 <details>
