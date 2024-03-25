@@ -601,6 +601,7 @@ export class PartySheetForm extends FormApplication {
           return "";
       }
     } catch (ex) {
+      console.log(ex);
       throw new TemplateProcessError(ex);
     }
   }
@@ -645,8 +646,9 @@ export class PartySheetForm extends FormApplication {
         selectedName = ex.data.name;
         selectedAuthor = ex.data.author;
         invalidTemplateError = true;
+      } else {
+        console.log(ex);
       }
-      console.log(ex);
     }
 
     // @ts-ignore
