@@ -4,6 +4,17 @@ var customSystems = [DND5E];
 export var selectedSystem = null;
 const NEWLINE_ELEMENTS = ["{newline}", "{nl}"];
 
+export class TemplateProcessError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "TemplateProcessError";
+    this.data = {
+      name: "",
+      author: "",
+    };
+  }
+}
+
 /**
  * Converts a string to proper case.
  * @param {string} inputString - The input string to convert.
