@@ -20,7 +20,7 @@ function log(message) {
  */
 function isForgeVTT() {
   // @ts-ignore
-  if (!(typeof ForgeVTT !== "undefined")) {
+  if (typeof ForgeVTT === "undefined") {
     return false;
   }
   // @ts-ignore
@@ -62,8 +62,8 @@ Handlebars.registerHelper("checkIndex", function (index, options) {
 
 // @ts-ignore
 Handlebars.registerHelper("hcifhidden", function (row, options) {
-  var key = options.hash["key"];
-  var myoptions = row[key]?.options ?? {};
+  const key = options.hash["key"];
+  const myoptions = row[key]?.options ?? {};
 
   if (myoptions?.header === "show") {
     return options.inverse(this);
@@ -74,13 +74,13 @@ Handlebars.registerHelper("hcifhidden", function (row, options) {
 
 // @ts-ignore
 Handlebars.registerHelper("getAlignment", function (row, key) {
-  var myoptions = row[key]?.options ?? {};
+  const myoptions = row[key]?.options ?? {};
   return myoptions.align ?? "center";
 });
 
 // @ts-ignore
 Handlebars.registerHelper("getVAlignment", function (row, key) {
-  var myoptions = row[key]?.options ?? {};
+  const myoptions = row[key]?.options ?? {};
   if (myoptions.valign === "top" || myoptions.valign === "bottom") {
     return myoptions.valign;
   } else {
@@ -90,25 +90,25 @@ Handlebars.registerHelper("getVAlignment", function (row, key) {
 
 // @ts-ignore
 Handlebars.registerHelper("getColSpan", function (row, key) {
-  var myoptions = row[key]?.options ?? {};
+  const myoptions = row[key]?.options ?? {};
   return myoptions?.colspan ?? 1;
 });
 
 // @ts-ignore
 Handlebars.registerHelper("getMaxWidth", function (row, key) {
-  var myoptions = row[key]?.options ?? {};
+  const myoptions = row[key]?.options ?? {};
   return myoptions?.maxwidth ? `${myoptions?.maxwidth}px` : "none";
 });
 
 // @ts-ignore
 Handlebars.registerHelper("getMinWidth", function (row, key) {
-  var myoptions = row[key]?.options ?? {};
+  const myoptions = row[key]?.options ?? {};
   return myoptions?.minwidth ? `${myoptions?.minwidth}px` : "auto";
 });
 
 // @ts-ignore
 Handlebars.registerHelper("eachInMap", function (map, block) {
-  var out = "";
+  let out = "";
   Object.keys(map).map(function (prop) {
     out += block.fn({ key: prop, value: map[prop] });
   });
@@ -125,8 +125,8 @@ Handlebars.registerHelper("debug", function (data) {
 Handlebars.registerHelper("getKeys", function (obj, options) {
   const keys = Object.keys(obj);
   let result = "";
-  for (let i = 0; i < keys.length; i++) {
-    result += options.fn(keys[i]);
+  for (const element of keys) {
+    result += options.fn(element);
   }
   return result;
 });

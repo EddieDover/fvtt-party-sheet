@@ -65,9 +65,12 @@
       </tbody>
     </table>
     {{else}}
-      <div class="fvtt-party-sheet-ps-no-players">{{ localize "fvtt-party-sheet.party-sheet.no-players" }}</div>
+      {{#if invalidTemplateError}}
+          <div class="fvtt-party-sheet-ps-no-players">{{{ localize "fvtt-party-sheet.party-sheet.invalid-template" }}}</div>
+        {{else}}
+          <div class="fvtt-party-sheet-ps-no-players">{{ localize "fvtt-party-sheet.party-sheet.no-players" }}</div>
+      {{/if}}
     {{/if}}
-
   {{else}}
     <div class="fvtt-party-sheet-ps-no-systems">{{ localize "fvtt-party-sheet.party-sheet.no-systems" }}</div>
   {{/if}}

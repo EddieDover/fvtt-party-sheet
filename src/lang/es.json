@@ -5,6 +5,7 @@
       "race": "Raza",
       "senses": "Sentidos",
       "classes": "Clases",
+      "invalid-template": "La plantilla que está usando no es válida. <BR/> Por favor revise la plantilla y vuelva a intentarlo.",
       "no-players": "Ningún jugador ha iniciado sesión actualmente.",
       "no-systems": "La carpeta data/partysheets no contiene archivos JSON para este sistema. Necesitas agregar algunos para activar esta funcionalidad.",
       "bugreport": "Dar retroalimentación",
