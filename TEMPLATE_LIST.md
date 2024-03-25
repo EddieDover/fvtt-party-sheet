@@ -66,6 +66,12 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <summary>cyberpunk-red-v1.json - Michael Card (Emo Cthulhu)</summary></details>
 
+<details>
+
+![Cyberpunk RED v2 Screeshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/cyberpunk-RED/cyberpunk-RED-v2.jpg)
+
+<summary>cyberpunk-red-v2.json - Michael Card (Emo Cthulhu)</summary></details>
+
 ## Dragonbane "dragonbane"
 
 <details>
@@ -87,6 +93,12 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 ![Fallout 2d20 Trimmed Screeshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/fallout/fallout-trimmed-move.jpg)
 
 <summary>fallout-trimmed-move.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
+
+![Fallout 2d20 v2 Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/fallout/fallout-v2.jpg)
+
+<summary>fallout-v2.json - Michael Card (Emo Cthulhu)</summary></details>
 
 ## Starfinder "sfrpg"
 
@@ -117,6 +129,24 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 ![Star Trek Adventures v1 Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/star-trek-adventures/sta-v1.jpg)
 
 <summary>sta-v1.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
+
+![Star Trek Adventures v1 Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/star-trek-adventures/sta-v1.jpg)
+
+<summary>sta-v1.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
+
+![Star Trek Adventures v2 Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/star-trek-adventures/sta-v2.jpg)
+
+<summary>sta-v2.json - Michael Card (Emo Cthulhu)</summary></details>
+
+<details>
+
+![Star Trek Adventures v2 Ship Sheet Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/star-trek-adventures/sta-ship-v2.jpg)
+
+<summary>sta-ship-v2.json - Michael Card (Emo Cthulhu)</summary></details>
 
 ## The Walking Dead Universe RPG "twdu"
 
