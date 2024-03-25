@@ -5,6 +5,7 @@ import {
   getSelectedSystem,
   parseExtras,
   parsePluses,
+  TemplateProcessError,
   trimIfString,
   updateSelectedSystem,
 } from "../utils.js";
@@ -170,7 +171,14 @@ export class PartySheetForm extends FormApplication {
       }
       return { name: data.name, author: data.author, players: finalActorList, rowcount: data.rows.length };
     } catch (ex) {
-      console.log(ex);
+      // Detect if this is a TemplateProcessError or not
+      if (ex instanceof TemplateProcessError) {
+        ex.data.name = data.name;
+        ex.data.author = data.author;
+        throw ex;
+      } else {
+        console.log(ex);
+      }
     }
     return { name: "", author: "", players: [], rowcount: 0 };
   }
@@ -564,32 +572,36 @@ export class PartySheetForm extends FormApplication {
    * @memberof PartySheetForm
    */
   getCustomData(character, type, value) {
-    switch (type) {
-      case "direct":
-        return this.processDirect(character, type, value);
-      case "direct-complex":
-        return this.processDirectComplex(character, type, value);
-      case "charactersheet":
-        // @ts-ignore
-        return new Handlebars.SafeString(
-          `<input type="image" name="fvtt-party-sheet-actorimage" data-actorid="${
-            character.uuid
-          }" class="token-image" src="${character.prototypeToken.texture.src}" title="${
-            character.prototypeToken.name
-          }" width="36" height="36" style="transform: rotate(${character.prototypeToken.rotation ?? 0}deg);"/>`,
-        );
-      case "array-string-builder":
-        return this.processArrayStringBuilder(character, type, value);
-      case "string":
-        return value;
-      case "object-loop":
-        return this.processObjectLoop(character, type, value);
-      case "largest-from-array":
-        return this.processLargestFromArray(character, type, value);
-      case "smallest-from-array":
-        return this.processSmallestFromArray(character, type, value);
-      default:
-        return "";
+    try {
+      switch (type) {
+        case "direct":
+          return this.processDirect(character, type, value);
+        case "direct-complex":
+          return this.processDirectComplex(character, type, value);
+        case "charactersheet":
+          // @ts-ignore
+          return new Handlebars.SafeString(
+            `<input type="image" name="fvtt-party-sheet-actorimage" data-actorid="${
+              character.uuid
+            }" class="token-image" src="${character.prototypeToken.texture.src}" title="${
+              character.prototypeToken.name
+            }" width="36" height="36" style="transform: rotate(${character.prototypeToken.rotation ?? 0}deg);"/>`,
+          );
+        case "array-string-builder":
+          return this.processArrayStringBuilder(character, type, value);
+        case "string":
+          return value;
+        case "object-loop":
+          return this.processObjectLoop(character, type, value);
+        case "largest-from-array":
+          return this.processLargestFromArray(character, type, value);
+        case "smallest-from-array":
+          return this.processSmallestFromArray(character, type, value);
+        default:
+          return "";
+      }
+    } catch (ex) {
+      throw new TemplateProcessError(ex);
     }
   }
 
@@ -616,7 +628,27 @@ export class PartySheetForm extends FormApplication {
 
     updateSelectedSystem(applicableSystems[selectedIdx]);
     const selectedSystem = getSelectedSystem();
-    let { name: sysName, author: sysAuthor, players, rowcount } = this.getCustomPlayerData(selectedSystem);
+    let selectedName, selectedAuthor, players, rowcount;
+    let invalidTemplateError = false;
+    try {
+      let result = this.getCustomPlayerData(selectedSystem);
+      selectedName = result.name;
+      selectedAuthor = result.author;
+      players = result.players;
+      rowcount = result.rowcount;
+    } catch (ex) {
+      if (ex instanceof TemplateProcessError) {
+        // @ts-ignore
+        ui.notifications.error(
+          `There was an error processing the template for ${selectedSystem.name} by ${selectedSystem.author}.`,
+        );
+        selectedName = ex.data.name;
+        selectedAuthor = ex.data.author;
+        invalidTemplateError = true;
+      }
+      console.log(ex);
+    }
+
     // @ts-ignore
     return mergeObject(super.getData(options), {
       minimalView,
@@ -625,8 +657,9 @@ export class PartySheetForm extends FormApplication {
       rowcount,
       players,
       applicableSystems,
-      selectedName: sysName,
-      selectedAuthor: sysAuthor,
+      selectedName,
+      selectedAuthor,
+      invalidTemplateError,
       // @ts-ignore
       overrides: this.overrides,
     });
