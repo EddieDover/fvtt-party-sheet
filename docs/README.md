@@ -9,7 +9,7 @@
 
 | Upcoming Changes | Template Readme | Template List |
 | --- | --- | --- |
-| [Link](UPCOMING_CHANGELOG.md) | [Link](TEMPLATE_README.md) | [Link](TEMPLATE_API.md) |
+| [Link](UPCOMING_CHANGELOG.md) | [Link](TEMPLATE_README.md) | [Link](TEMPLATE_LIST.md) |
 
 ## About
 
