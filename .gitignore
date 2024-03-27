@@ -9,3 +9,4 @@ tools/
 copydist.bat
 .env
 foundryconfig.json
+docs/CNAME
