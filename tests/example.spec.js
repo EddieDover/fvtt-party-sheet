@@ -1,19 +1,45 @@
 // @ts-check
+// eslint-disable-next-line no-shadow
 import { test, expect } from "@playwright/test";
 
 test("has title", async ({ page }) => {
   await page.goto("https://localhost:30000/");
 
-  // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/West Coast Crew/);
 });
 
-// test("get started link", async ({ page }) => {
-//   await page.goto("https://playwright.dev/");
+const doLogin = async (page) => {
+  await page.goto("https://localhost:30000/join");
 
-//   // Click the get started link.
-//   await page.getByRole("link", { name: "Get started" }).click();
+  await page.setViewportSize({ width: 1718, height: 1276 });
 
-//   // Expects page to have a heading with the name of Installation.
-//   await expect(page.getByRole("heading", { name: "Installation" })).toBeVisible();
-// });
+  await page.click("select");
+
+  await page.selectOption('[name="userid"]', { label: "Gamemaster" });
+
+  await page.click('[name="password"]');
+
+  // eslint-disable-next-line no-undef
+  await page.fill('[name="password"]', process.env.PW_PASSWORD);
+
+  await Promise.all([page.click(".form-footer:nth-child(4) > .bright"), page.waitForLoadState("networkidle")]);
+};
+
+const clickPartySheet = async (page) => {
+  await page.getByLabel("Show Party Sheet").click();
+};
+
+test("Verify party sheet opens", async ({ page }) => {
+  await doLogin(page);
+  await clickPartySheet(page);
+  await expect(page.getByRole("heading", { name: "Party Sheet" })).toBeVisible();
+});
+
+test("Verify dialog works.", async ({ page }) => {
+  await doLogin(page);
+  await clickPartySheet(page);
+  await page.locator("#fvtt-party-sheet-system-select").selectOption("dnd5e - with fails___Blerp");
+  await expect(page.getByText("There was an error processing").first()).toBeVisible();
+  await expect(page.getByText("The template you are using is")).toBeVisible();
+  await page.locator("#fvtt-party-sheet-system-select").selectOption("dnd5e___Built-In");
+});
