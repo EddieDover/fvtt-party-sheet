@@ -32,6 +32,7 @@
     "lint:fix": "eslint --ext .js,.cjs,.mjs --fix .",
     "format": "prettier --write \"./**/*.(js|cjs|mjs|json|yml|scss)\"",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:playwright": "npx playright test",
     "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch",
     "test:ci": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --ci --reporters=default --reporters=jest-junit",
     "postinstall": "husky install",
@@ -40,8 +41,10 @@
     "release:upcoming": "commit-and-tag-version --dry-run --silent > UPCOMING_CHANGELOG.md"
   },
   "devDependencies": {
+    "@playwright/test": "^1.42.1",
     "@rollup/plugin-node-resolve": "^15.2.1",
     "@rollup/stream": "^3.0.0",
+    "@types/node": "^20.11.30",
     "@typhonjs-fvtt/eslint-config-foundry.js": "^0.8.0",
     "commit-and-tag-version": "^12.2.0",
     "cross-env": "^7.0.3",

@@ -9,3 +9,7 @@ tools/
 copydist.bat
 .env
 foundryconfig.json
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
