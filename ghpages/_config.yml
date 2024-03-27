@@ -1,0 +1,8 @@
+remote_theme: pages-themes/cayman@v0.2.0
+source: "../"
+destination: "../docs"
+plugins:
+- jekyll-remote-theme
+show_downloads: true
+safe: false
+exclude: ['.github/', '.husky/', '.vscode/', 'api_doc_generation/', 'dist/', 'node_modules/', 'src/', 'docs/', 'ghpages/', '*.yaml', '*.mjs', '*.json', 'jest.config.js', 'test/']
