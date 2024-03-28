@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Template System JSON Documentation | fvtt-party-sheet</title>
+<meta name="generator" content="Jekyll v3.9.5" />
+<meta property="og:title" content="Template System JSON Documentation" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A module for FoundryVTT providing a system-agnostic JSON-templated party sheet." />
+<meta property="og:description" content="A module for FoundryVTT providing a system-agnostic JSON-templated party sheet." />
+<meta property="og:site_name" content="fvtt-party-sheet" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Template System JSON Documentation" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"A module for FoundryVTT providing a system-agnostic JSON-templated party sheet.","headline":"Template System JSON Documentation","url":"/TEMPLATE_README.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script src="https://code.jquery.com/jquery-3.3.0.min.js" integrity="sha256-RTQy8VOmNlT6b2PIRur37p6JEBZUE7o8wPgMvu18MC4=" crossorigin="anonymous"></script>
+    <script src="/assets/js/main.js"></script>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">Template System JSON Documentation</h1>
+      <h2 class="project-tagline">A module for FoundryVTT providing a system-agnostic JSON-templated party sheet.</h2>
+      
+        <a href="https://github.com/EddieDover/fvtt-party-sheet" class="btn" target="_blank">View on GitHub</a>
+        <a href="https://github.com/EddieDover/fvtt-party-sheet/issues/new/choose" class="btn" target="_blank">Report a bug</a>
+        <a href="https://github.com/EddieDover/fvtt-party-sheet/discussions/new?category=support" class="btn" target="_blank">Get support</a>
+      
+      
+      
+        <a href="https://github.com/EddieDover/fvtt-party-sheet/releases/latest/download/module.zip" class="btn">Latest Release: v2.3.2</a>
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;">
+      <nav style="width:fit-content;margin-right:1rem;">
+        <ul></ul>
+      </nav>
+      <section>
+        <h1 id="template-system-json-documentation">Template System JSON Documentation</h1>
+
+<p>Examples can be found in the <a href="https://github.com/EddieDover/fvtt-party-sheet/example_templates">example_templates</a> folder. As well, several systems other than 5e have been made, and are in the [example_templates] folder in native Foundry. If using the Forge, install the module on your local Foundry installation to have access to the [example_templates] folder, and to upload any you would like to use to your Assets Library in the <code class="language-plaintext highlighter-rouge">&lt;partysheets&gt;</code> folder at the top level. Or, if you haven’t installed Foundry and only used the license key on The Forge, use the GitHub link above. In this case, you will have to download the file to your computer, then upload it to The Forge. If you create a template, please submit it via email or GitHub, and we will include it in future updates with full credit.</p>
+
+<p>If using native Foundry, place your templates in the &lt;FOUNDRY_VTT/Data/partysheets/&gt; folder.</p>
+
+<p>If using The Forge, this module will create a folder at the top level of your Assets Library named <code class="language-plaintext highlighter-rouge">partysheets</code>. Place your templates in this folder.</p>
+
+<h2 id="required-minimal-top-level-structure">Required Minimal Top Level Structure</h2>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;YOUR_TEMPLATE_NAME&gt;"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;YOUR_TEMPLATE_SYSTEM&gt;"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;YOUR_NAME&gt;"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"rows"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="err">//</span><span class="w"> </span><span class="err">See</span><span class="w"> </span><span class="err">Below</span><span class="w"> </span><span class="err">Section</span><span class="w"> </span><span class="err">For</span><span class="w"> </span><span class="err">Details</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Note: Templates will be displayed to the user as ‘YOUR_TEMPLATE_NAME - YOUR_NAME’ and only if the system matches the current system in use.</strong></p>
+
+<h3 id="optional-top-level-properties">Optional Top Level Properties</h3>
+
+<p>The following properties are also available at the top level of the system structure.</p>
+
+<p><strong>offline_excludes_property</strong> - string - This is optional and defaults to the value of <code class="language-plaintext highlighter-rouge">actor.type</code>. Only override if needed. All overrides are treated as if their parent object is the character. Example:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;YOUR_TEMPLATE_NAME&gt;"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;YOUR_TEMPLATE_SYSTEM&gt;"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;YOUR_NAME&gt;"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"offline_excludes_property"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.subtype"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"offline_excludes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="s2">"npc"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"rows"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="err">//</span><span class="w"> </span><span class="err">See</span><span class="w"> </span><span class="err">Below</span><span class="w"> </span><span class="err">Section</span><span class="w"> </span><span class="err">For</span><span class="w"> </span><span class="err">Details</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>offline_excludes</strong> - array - This is optional and defaults to <code class="language-plaintext highlighter-rouge">["npc"]</code>. Any object inside the exclusion list that matches the value of the offline_excludes_property will be excluded from showing in the party list. Example:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;YOUR_TEMPLATE_NAME&gt;"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;YOUR_TEMPLATE_SYSTEM&gt;"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;YOUR_NAME&gt;"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"offline_excludes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="s2">"npc"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"vehicle"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"creature"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"base"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"starship"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"rows"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="err">//</span><span class="w"> </span><span class="err">See</span><span class="w"> </span><span class="err">Below</span><span class="w"> </span><span class="err">Section</span><span class="w"> </span><span class="err">For</span><span class="w"> </span><span class="err">Details</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>offline_includes_property</strong> - string - This is optional but if used, both it and <strong>offline_includes</strong> are required to function. It has no default property. It will be treated as if its parent object is the character. If you use this, <strong>offline_excludes_property</strong>/<strong>offline_excludes</strong> will be ignored. Example:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;YOUR_TEMPLATE_NAME&gt;"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;YOUR_TEMPLATE_SYSTEM&gt;"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;YOUR_NAME&gt;"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"offline_includes_property"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.subtype"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"offline_includes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="s2">"pc"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"rows"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="err">//</span><span class="w"> </span><span class="err">See</span><span class="w"> </span><span class="err">Below</span><span class="w"> </span><span class="err">Section</span><span class="w"> </span><span class="err">For</span><span class="w"> </span><span class="err">Details</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>offline_includes</strong>: array - This is the same as <strong>offline_excludes</strong> but it is an inclusion list.</p>
+
+<h3 id="row-specific-structure">Row Specific Structure</h3>
+
+<p>The “rows” property must contain an array of an array of column data.</p>
+
+<p><code class="language-plaintext highlighter-rouge">"rows": []</code> is empty</p>
+
+<p><code class="language-plaintext highlighter-rouge">"rows": [ [] ]</code> will contain one row</p>
+
+<p><code class="language-plaintext highlighter-rouge">"rows": "[ [], [] ]</code> will contain two rows.</p>
+
+<p>Inside the row array, the plugin expects items in the following format:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;COLUMN_NAME&gt;"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;DATA_TYPE&gt;"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;COLUMN_TYPE&gt;"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;DATA_VALUE&gt;"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Therefore, a one row array should look like:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w"> </span><span class="nl">"rows"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+  </span><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+
+  </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Two rows should look like:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w"> </span><span class="nl">"rows"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+  </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>You can have more than two rows.</p>
+
+<p><strong>Each item corresponds to a single column on the sheet. If you have multiple rows, then each row must have the same number of columns.</strong> See the below Examples section for more examples (and note, in the above structure example, the two row example has 2 columns in each). In order to achieve this, you may have to make empty columns:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"."</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hide"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"text:"</span><span class="w"> </span><span class="s2">""</span><span class="w">
+  </span><span class="p">}</span><span class="err">,</span><span class="w"> </span><span class="err">//</span><span class="w"> </span><span class="err">no</span><span class="w"> </span><span class="err">comma</span><span class="w"> </span><span class="err">if</span><span class="w"> </span><span class="err">the</span><span class="w"> </span><span class="err">last</span><span class="w"> </span><span class="err">column</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Note that even empty columns need unique names. Feel free to be as descriptive as necessary, since the column <strong>name</strong> will not be displayed if the <code class="language-plaintext highlighter-rouge">header</code> is not <code class="language-plaintext highlighter-rouge">show</code>.  <strong>No two columns can have the same <code class="language-plaintext highlighter-rouge">name</code> value.</strong></p>
+
+<h3 id="primary-property-specifics">Primary Property Specifics</h3>
+
+<p><strong>name</strong> - This can be any value you wish. If the header is “show” then it will be displayed as the column header.</p>
+
+<p><strong>type</strong> - This is the type of data being displayed, possible choices are:</p>
+
+<ul>
+  <li><strong>direct</strong> - This will process the text in the <strong>text</strong> property and parse out any string sections to see if they are properties of the character.</li>
+  <li><strong>direct-complex</strong> - This will expect the <strong>text</strong> property to contain an array of complex types. See documentation below.</li>
+  <li><strong>string</strong> - This will simply display the text in the <strong>text</strong> property without modification.</li>
+  <li><strong>array-string-builder</strong> - This will accept a <strong>text</strong> property in the following format: **<array_object> =&gt; <sub_property_string>** See examples below for more information</sub_property_string></array_object></li>
+  <li><strong>largest-from-array</strong> - This will accept a <strong>text</strong> property of an array and return the largest numeric item from it. See examples below for more information</li>
+  <li><strong>smallest-from-array</strong> - This will accept a <strong>text</strong> property of an array and return the largest numeric item from it. See examples below for more information</li>
+  <li><strong>object-loop</strong> - This will accept a <strong>text</strong> property in the following format: **<optional_dropdown> <block_prefix> <object_with_subobjects> =&gt; <sub_property_string>**. Multiple object-loops may be performed, by splitting each with a double-pipe `||`. See examples below for more information</sub_property_string></object_with_subobjects></block_prefix></optional_dropdown></li>
+  <li><strong>charactersheet</strong> - This will display the character sheet in the column, ignoring anything in the <strong>text</strong> property.</li>
+</ul>
+
+<p><strong>header</strong> - This property controls if the column text is displayed as a header in the generated table. It accepts either ‘show’ or ‘skip’.</p>
+
+<ul>
+  <li><strong>show</strong> - Show the column as a <strong>header</strong> column.</li>
+  <li><strong>skip</strong> - Do NOT Show the column as a <strong>header</strong> column.</li>
+</ul>
+
+<p><strong>maxwidth</strong> - This <em>optional</em> property controls the maximum width of the column. Value must be a number that represents the width in pixels. <code class="language-plaintext highlighter-rouge">"maxwidth": 200,</code> (note the lack of quotes around the number)</p>
+
+<p><strong>minwidth</strong> - This <em>optional</em> property controls the minimum width of the column. Value must be a number that represents the width in pixels. <code class="language-plaintext highlighter-rouge">"minwidth": 100,</code></p>
+
+<p><strong>valign</strong> - This <em>optional</em> property controls the vertical alignment of the cells. It only accepts ‘top’ and ‘bottom’. If left out, or if an improper value is used, the setting will be ignored and will use whatever css the game system provides, since as some systems already override the table css and set the whole table to top, or middle. However, if your system has css code to set valign on table properties, using valign should override the system’s value.</p>
+
+<p><strong>text</strong> - This property is either a <strong>string</strong>, <strong>boolean</strong>, or an <strong>array</strong> of objects based on if you’re using <strong>direct-complex</strong> or not. See examples below.</p>
+
+<h3 id="text---accepted-values">Text - accepted values</h3>
+
+<ul>
+  <li>boolean - Quotes are not needed, simply use <code class="language-plaintext highlighter-rouge">false</code>, or <code class="language-plaintext highlighter-rouge">true</code>, i.e. <code class="language-plaintext highlighter-rouge">"match": true,</code></li>
+  <li>numbers - Always examine your systems values to see if they are strings or plain numbers, if they are plain numbers do not include quotes around the value, i.e. <code class="language-plaintext highlighter-rouge">"match": 23,</code> If they are actually strings, then you will need to surround the number with quotes to make it a string as well, i.e. <code class="language-plaintext highlighter-rouge">"match:" "23",</code></li>
+  <li>string:  You can include arbitrary text in your output values. Simply make sure they are within the quotes for the text you are creating, i.e. <code class="language-plaintext highlighter-rouge">"text": "name has system.criticalInjury.time days left before system.criticalInjury.name heals.</code></li>
+  <li>Due to the way things are parsed by the plugin there are a few very important caveats you must keep in mind:
+    <ol>
+      <li>If you are using a data string like “system.attributes.str”, or a keyword (see below) like <code class="language-plaintext highlighter-rouge">{newline}</code>, along with custom text, such as <code class="language-plaintext highlighter-rouge">STR: system.attributes.str</code> as an output, there <strong>must</strong> be spaces around the data string,
+        <ul>
+          <li>INCORRECT - <code class="language-plaintext highlighter-rouge">STR:system.attributes.str/system.attributes.maxstr</code></li>
+          <li>CORRECT     - <code class="language-plaintext highlighter-rouge">STR: system.attributes.str / system.attributes.maxstr</code>
+    * The more astute among you may notice that in the example templates, <code class="language-plaintext highlighter-rouge">.value</code> is often left out. To save your poor typing muscles, even if the value you find for a piece of character data is <code class="language-plaintext highlighter-rouge">system.attributes.str.value</code> the module parses data in the following way. Entering <code class="language-plaintext highlighter-rouge">system.attributes.str</code> will make the module look for <code class="language-plaintext highlighter-rouge">system.attributes.str.value</code> and display that if it finds it. If not found, it will display <code class="language-plaintext highlighter-rouge">system.attributes.str</code> as is.</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+</ul>
+
+<h3 id="text---special-keywords">Text - Special Keywords</h3>
+
+<p>There are a few special keywords that must be surrounded by { } marks, to allow easier formatting, note that they must be surrounded by spaces unless they are next to the opening or closing quotes. They are as follows:</p>
+
+<ul>
+  <li>{newline} - Adds a line break to the text rendered.</li>
+  <li>{charactersheet} - Inserts a clickable image of the character that will open their character sheet.</li>
+  <li>{+} - Adds the values of two objects and outputs the result, i.e. <code class="language-plaintext highlighter-rouge">system.attributes.str {+} system.attributes.wis</code> will output the character’s str and wis added together.</li>
+  <li>{s} adds a space</li>
+  <li>{s#} adds multiple spaces where # is the amount of spaces desired.</li>
+  <li>{s0} will remove all spaces between it’s preceeding and succeeding elements. E.g. <code class="language-plaintext highlighter-rouge">D{s0} system.attributes.str</code> becomes <code class="language-plaintext highlighter-rouge">D8</code></li>
+  <li>{i} &amp; {/i} - Anything between these tags will be displayed in <em>italics</em></li>
+  <li>{b} &amp; {/b} - Anything between these tags will be displayed in <strong>bold</strong></li>
+  <li>{u} &amp; {/u} - Anything between these tags will be displayed as <u>underlined</u></li>
+</ul>
+
+<h3 id="direct-complex-object">Direct-Complex Object</h3>
+
+<p>The direct complex object was originally created to show values for attributes but only if they existed. It was originally used for the DND5E Senses display.</p>
+
+<p>A direct complex object has three properties:</p>
+
+<ul>
+  <li>type - The type of object. Currently accepted values are:
+    <ul>
+      <li>“exists” - Does the <strong>value</strong> exist or not. If using <strong>exists</strong> it will look for an <em>OPTIONAL</em> property named <strong>else</strong> and if the thing you’re checking for doesn’t exist, the value of <strong>else</strong> will be parsed. You may leave <strong>else</strong> out if not using it.</li>
+    </ul>
+
+    <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"exists"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.attribute.isplayersick"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Player is sick with system.attribute.sickness"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"else"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Healthy for system.attribute.daysSinceSick days"</span><span class="w">
+    </span><span class="p">}</span><span class="err">,</span><span class="w">
+</span></code></pre></div>    </div>
+
+    <ul>
+      <li>“match” - Checks for an additional <strong>match</strong> property. If the <strong>value</strong> matches the <strong>match</strong> property, then <strong>text</strong> is processed.</li>
+      <li>“match-all” - Same as match, but the <strong>value</strong> can be an array of properties to match against.</li>
+    </ul>
+  </li>
+  <li>value - The attribute that you’re checking against</li>
+  <li>text - The text to be displayed if the <strong>type</strong> check passes. It will be processed in the same manner as the <strong>value</strong> is processed on a standard <strong>direct</strong> column type.</li>
+</ul>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Senses"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct-complex"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hide"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"exists"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.attributes.senses.darkvision"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Darkvision: system.attributes.senses.darkvision"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"exists"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.attributes.senses.blindsight"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Blindsight: system.attributes.senses.blindsight"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"exists"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.attributes.senses.tremorsense"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tremorsense: system.attributes.senses.tremorsense"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"exists"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.attributes.senses.truesight"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Truesight: system.attributes.senses.truesight"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"exists"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.attributes.senses.special"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Special: system.attributes.senses.special"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>In this example, the table will contain one column named Senses, but the column name will be hidden (skipped). It will then loop through each item in the <strong>value</strong> field. In this case, it will check each of the dnd5e system senses. If they exist on the character, then the text will be displayed, formatted as a <strong>direct</strong> line, and all appended together at the end. <strong>Note</strong> All values that exist will be displayed. You can additionally follow the <strong>text</strong> with <strong>else</strong>, and if the contents of <strong>value</strong> DO NOT exist the value in <strong>else</strong> will be displayed instead.</p>
+
+<p>In this example, the following character only has one sense that exists, so it’s the only one displayed:</p>
+
+<p><img src="/doc_images/senses1.png" alt="Example Sense" /></p>
+
+<p>Here’s an example of how to use <strong>match</strong>:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Career"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"align"</span><span class="p">:</span><span class="w"> </span><span class="s2">"center"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct-complex"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hide"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"match"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"ifdata"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.general.career"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"matches"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Colonial Marine"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"match"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"ifdata"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.general.career"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"matches"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Career: Colonial Marshall"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"match"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"ifdata"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.general.career"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"matches"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Career: Company Agent"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"match"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"ifdata"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.general.career"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"matchse"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Pilot"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="err">,</span><span class="w">
+</span></code></pre></div></div>
+
+<p>In this example, the system will contain a column named Career, but the column name will be hidden. It will then loop through each item in the <strong>text</strong> field. In this system <code class="language-plaintext highlighter-rouge">Alien RPG</code>, the player’s career is a number, stored in <code class="language-plaintext highlighter-rouge">system.general.career</code>. In this example, if the value in <code class="language-plaintext highlighter-rouge">system.general.career</code> matches <code class="language-plaintext highlighter-rouge">1</code> then the text <code class="language-plaintext highlighter-rouge">Colonial Marine</code> is output, otherwise, if the career matches <code class="language-plaintext highlighter-rouge">2</code> then the text is <code class="language-plaintext highlighter-rouge">Colonial Marshall</code>, if <code class="language-plaintext highlighter-rouge">3</code>, <code class="language-plaintext highlighter-rouge">Company Agent</code> is output and so on. All values that match will be displayed. Any items where <strong>matches</strong> is the same as the contents of <strong>ifdata</strong> will display the value in <strong>text</strong>. You can additionally follow the <strong>text</strong> with <strong>else</strong>, and if the contents of <strong>ifdata</strong> DO NOT match the value in <strong>matches</strong> the value in <strong>else</strong> will be displayed instead.</p>
+
+<h2 id="examples">Examples</h2>
+
+<h3 id="example-of-array-string-builder">Example of array-string-builder</h3>
+
+<p>Code:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Statuses"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"array-string-builder"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"statuses =&gt; value, "</span><span class="w">
+</span><span class="p">}</span><span class="err">,</span><span class="w"> </span><span class="err">//</span><span class="w"> </span><span class="err">No</span><span class="w"> </span><span class="err">comma</span><span class="w"> </span><span class="err">if</span><span class="w"> </span><span class="err">last</span><span class="w"> </span><span class="err">item</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">the</span><span class="w"> </span><span class="err">row</span><span class="w">
+</span></code></pre></div></div>
+
+<p>This example is used to display Active Status Effects on a character, such as burning, bleeding, prone, etc. They are stored by Foundry under the actor as <code class="language-plaintext highlighter-rouge">.statuses</code>, and the value is an array of strings. To display an array of values with no definite end or number of values or even empty sometimes, array-string-builder is your weapon of choice.</p>
+
+<h3 id="example-of-object-loop">Example of object-loop</h3>
+
+<p>Code:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Classes"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"object-loop"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"header"</span><span class="p">:</span><span class="s2">"show"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"classes =&gt; {i} name {/i} {b} level {/b} {newline}"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>This example is used to display Classes for a character in Pathfinder 1E. It wil loop through the classes object, that looks like this:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"classes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"cleric"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Cleric"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"level"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"rogue"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Rogue"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"level"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>and produce:</p>
+
+<blockquote>
+
+  <p>  <u>Cleric</u> - <strong>1</strong>
+  <u>Rogue</u> - <strong>1</strong></p>
+</blockquote>
+
+<p>Code:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">  </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Talents/Equipment"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"object-loop"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{u}Talents:{/u}{nl} items{talent} =&gt; name {nl} || {u}Weapons:{/u}{nl} items{starshipweapon} =&gt; name Damage: {b} system.damage {/b}{nl} || {u}Other Cargo:{/u}{nl} items{item} =&gt; name {nl}"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>This advanced example is used to display Talents, Weapons, and Other Cargo of starships in Star Trek Adventures.
+It will recognize that there are three different object-loops because of the double-pipe separator <code class="language-plaintext highlighter-rouge">||</code>.
+It will recognize <code class="language-plaintext highlighter-rouge">{u}Talents:{/u}{nl}</code>, <code class="language-plaintext highlighter-rouge">{u}Weapons:{/u}{nl}</code>, and <code class="language-plaintext highlighter-rouge">{u}Other Cargo:{/u}{nl}</code> as prefixes of these loops.
+Otherwise, it will treat the loops themselves as normal, producing <strong>combined</strong> output like this:</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Talents:
+TalentOne
+TalentTwo
+
+Weapons:
+WeaponOne Damage: 5
+WeaponTwo Damage: 2
+
+Other Cargo:
+ItemOne
+ItemTwo
+</code></pre></div></div>
+
+<p>If this takes more up space than desired, simply prefix the entire text string with <code class="language-plaintext highlighter-rouge">{dropdown}</code> (note the extra space at the end), and the resulting output will feature a dropdown box that allows you to select one of the available filters to view, while hiding the rest.
+Ex: <code class="language-plaintext highlighter-rouge">"text": "{dropdown} {u}Talents:{/u}{nl} items{talent} =&gt; name {nl} || {u}Weapons:{/u}{nl} items{starshipweapon} =&gt; name Damage: {b} system.damage {/b}{nl} || {u}Other Cargo:{/u}{nl} items{item} =&gt; name {nl}"</code></p>
+
+<h3 id="example-of-largest-from-array-and-smallest-from-array">Example of largest-from-array and smallest-from-array</h3>
+
+<p>Code:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Largest"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"largest-from-array"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"text"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"system.abilities"</span><span class="w">
+  </span><span class="p">}</span><span class="err">,</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Smallest"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"smallest-from-array"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"text"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"system.abilities"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Given the following abilities (from Pathfinder 1E):</p>
+
+<p><img src="/doc_images/pf1e_stats.png" alt="Pathfinder 1E Stats" /></p>
+
+<p>the result would be</p>
+
+<p><img src="/doc_images/ls_results.png" alt="Largest and Smallest Results" /></p>
+
+<h3 id="extremely-basic-file-example">Extremely Basic File Example</h3>
+
+<p>Code:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Test Person's DND 5E Template"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dnd5e"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Test Person"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"rows"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Name"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{charactersheet} name {newline} system.details.race"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="err">//</span><span class="w"> </span><span class="err">Note</span><span class="w"> </span><span class="err">that</span><span class="w"> </span><span class="err">this</span><span class="w"> </span><span class="err">uses</span><span class="w"> </span><span class="err">both</span><span class="w"> </span><span class="err">the</span><span class="w"> </span><span class="err">charactersheet</span><span class="w"> </span><span class="err">and</span><span class="w"> </span><span class="err">newline</span><span class="w"> </span><span class="err">special</span><span class="w"> </span><span class="err">keywords.</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Result:</p>
+
+<p><img src="/doc_images/ex1.png" alt="Basic Example" /></p>
+
+<h2 id="notes-for-forge-users"><strong>Notes for Forge Users:</strong></h2>
+
+<ul>
+  <li>It is best to use native Foundry for testing until you are 100% certain you are happy with your template.</li>
+  <li>Between The Forge’s upload system that will not upload a file again if it sees the file already exists, and various browsers caching files, you may find that if you upload a changed .json, the changes will not appear. This is why testing is best on Foundry where you can just save the file, then refresh your client (F5), and changes should be instantaneous. If you can only use Forge then It is highly recommended that multiple edited uploads be a different file name every time, to avoid this issue, until your template is complete.</li>
+  <li>The Forge does not allow read or write access to text based files in the Core Data systems or modules, only images which are read-only. Thus to grab the example .json files use the methods described at the top of this document.</li>
+</ul>
+
+<h2 id="notes-for-inexperienced-template-creators"><strong>Notes for inexperienced template creators:</strong></h2>
+
+<ul>
+  <li>A JSON friendly editor like VSCode, Notepad++, etc., is highly suggested. They show you with instant feedback if you put or forget a comma where you shouldn’t, etc. VSCode is particularly nice and it creates a list of things you type very often, and gives you a box to autocomplete your entries.</li>
+  <li>Many problems are simply with your JSON file. A missed comma there, a comma that shouldn’t exist here.</li>
+  <li>If your template fails to appear, then press F12 and check your console logs for errors. The module tries to let you know if there are issues with your JSON, it will be early on in the console, you’ll see a list of JSONs loaded, and if they are valid, it will say Loaded vaesen.json - good json.</li>
+  <li>Use JSON Validation extensions for your editor of choice, or sites like <a href="https://jsonlint.com/">https://jsonlint.com/</a> to validate your JSON.</li>
+  <li>Double check that property values you’re using are correct for your selected system.</li>
+  <li>The first great way to do this, is to click the debugger for the module on. Then when the party sheet is rendered, you can go into the console and you will see a list of Actors. Clicking the side arrow down will show the name so you can narrow down whichever actor/actors are acting up. Opening the entire entry will show all the values for that Actor.</li>
+  <li>Another way is to install Illandril’s Token Tooltips. Place some actors on the scene, off to the left side. Then go in to Configure Settings &gt; Illandril’s Token Tooltips &gt; Configure Tooltip Values. At the bottom left is a button that says “Enable Data Key Debugger.” Once clicked you can hover over a token, and all the values in that token will be displayed. You can ignore all the ones about prototype.token, and look for system.attributes.whatever/system.abilities.whatever, etc.</li>
+  <li>At the very bottom is type, and you only want to show PC’s, so check to see if type is character. You may want to drag some tokens like vehicles, animals and monsters onto the scene so you can see what their type is listed as, and exclude that type using the offline_excludes array detailed above.</li>
+</ul>
+
+<h2 id="other-notes"><strong>Other Notes:</strong></h2>
+
+<ul>
+  <li>Module Conflicts:
+    <ul>
+      <li>Arius Planeswalker’s Stylish Journal for Monk’s Enhanced Journal - changes the CSS so dramatically that tables will not render correctly.</li>
+      <li>An issue with MAD Cartographer map modules. Due to sloppy data on the part of those at The MAD Cartographer, some of their modules have the <code class="language-plaintext highlighter-rouge">type</code> set to character for map actor tokens. These will show up in your player sheet, and you have to manually hide them. It varies from module to module. Deserts is one, luckily you only have to hide 4 actors by using the [Configure Hidden Actors] button, or doing it in settings.</li>
+    </ul>
+  </li>
+  <li>CSS:
+    <ul>
+      <li>Some system developers are bound and determined to change everything about default Foundry css just because they can (I’m looking at you, Free League Publishing), so while every effort has been made to make the tables look the same between systems, you may see some that are quite different (I’m looking at you, Vaesen).</li>
+      <li>That said, the module can only accommodate some minimal alignment and visual improvements. To try and override every system out there would be impossible. There is no intention to allow more than minwidth/maxwidth, align and valign.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="still-not-sure-where-to-start-look-no-further"><strong>Still not sure where to start? <em>Look no further!</em></strong></h2>
+
+<ul>
+  <li>First jot down the values you think you want to display from one of your character’s character sheets.</li>
+  <li>Decide if you want one row, or need 2 because you have a lot of information to display. Or do both!</li>
+  <li>Choose one of the following .json examples, and make sure you have the name you want displayed, the exact name of your system, and your name added.</li>
+  <li>Open your editor of choice and paste the example into it. You’ve created your first template!</li>
+  <li>Save it in the proper [partysheets] folder as described at the top of this document.</li>
+  <li>Enable the module, and refresh.</li>
+  <li>In the module settings, turn on the debugger and turn off show only online players.</li>
+  <li>Now, when you click the Party Sheet icon in your token controls, you will get a thin table with the characters in the system and their clickable Actor Portraits, and their name.</li>
+  <li>Open the console, and scroll for the listings that say “SystemActor” beneath a line that says “These are all the actors in your game. They have not yet been filtered based on your inclusions/exclusions.” It has a header “FVTT-PARTY_SHEET DEBUG CHARACTER LIST.” Click the arrow to open an Actor, then click the arrow to open system. Most of your values will be here. Some good detective work will help you find the values you want. Remember that you will have to assemble them, starting with system, then, for instance, attributes, then the name of the attribute, ending up with “system.attribute.str” as a typical example.</li>
+  <li>Start adding them to further columns, and you’ll be done in no time if you’ve read these instructions thoroughly.</li>
+</ul>
+
+<p>One row:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Some System - 1 Row"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"some-system"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Your Name Here"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"offline_excludes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"npc"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"base"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"rows"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Character Sheet"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"charactersheet"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"align"</span><span class="p">:</span><span class="w"> </span><span class="s2">"center"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hide"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Name"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"align"</span><span class="p">:</span><span class="w"> </span><span class="s2">"center"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"name"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Two Rows:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Some System - Two Rows"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"some-system"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Your Name Here"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"offline_excludes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"npc"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"base"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"rows"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Character Sheet"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"charactersheet"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"align"</span><span class="p">:</span><span class="w"> </span><span class="s2">"center"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hide"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Name"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"align"</span><span class="p">:</span><span class="w"> </span><span class="s2">"center"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"name"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"."</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hide"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">".."</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hide"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+      </section>
+    </div>
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/EddieDover/fvtt-party-sheet">fvtt-party-sheet</a> is maintained by <a href="https://github.com/EddieDover">EddieDover</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>
