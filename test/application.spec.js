@@ -2,12 +2,6 @@
 // eslint-disable-next-line no-shadow
 import { test, expect } from "@playwright/test";
 
-test("has title", async ({ page }) => {
-  await page.goto("https://localhost:30000/");
-
-  await expect(page).toHaveTitle(/West Coast Crew/);
-});
-
 const doLogin = async (page) => {
   await page.goto("https://localhost:30000/join");
 
@@ -28,6 +22,16 @@ const doLogin = async (page) => {
 const clickPartySheet = async (page) => {
   await page.getByLabel("Show Party Sheet").click();
 };
+
+test("can see foundry login", async ({ page }) => {
+  await page.goto("https://localhost:30000/");
+
+  await expect(page).toHaveTitle(/West Coast Crew/);
+});
+
+test("can login", async ({ page }) => {
+  await doLogin(page);
+});
 
 test("Verify party sheet opens", async ({ page }) => {
   await doLogin(page);
