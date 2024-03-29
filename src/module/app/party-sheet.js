@@ -5,6 +5,7 @@ import {
   getSelectedSystem,
   parseExtras,
   parsePluses,
+  TemplateProcessError,
   trimIfString,
   updateSelectedSystem,
 } from "../utils.js";
@@ -13,9 +14,10 @@ import { HiddenCharactersSettings } from "./hidden-characters-settings.js";
 const FEEDBACK_URL = "https://github.com/EddieDover/fvtt-party-sheet/issues/new/choose";
 const BUGREPORT_URL =
   "https://github.com/EddieDover/fvtt-party-sheet/issues/new?assignees=EddieDover&labels=bug&projects=&template=bug_report.yml&title=%5BBug%5D%3A+";
-const DISCORD_URL = "https://discord.gg/XuGx7zNMKZ";
 
 const DEFAULT_EXCLUDES = ["npc"];
+
+let generated_dropdowns = 0;
 // @ts-ignore
 export class PartySheetForm extends FormApplication {
   constructor() {
@@ -169,7 +171,14 @@ export class PartySheetForm extends FormApplication {
       }
       return { name: data.name, author: data.author, players: finalActorList, rowcount: data.rows.length };
     } catch (ex) {
-      console.log(ex);
+      // Detect if this is a TemplateProcessError or not
+      if (ex instanceof TemplateProcessError) {
+        ex.data.name = data.name;
+        ex.data.author = data.author;
+        throw ex;
+      } else {
+        console.log(ex);
+      }
     }
     return { name: "", author: "", players: [], rowcount: 0 };
   }
@@ -373,53 +382,131 @@ export class PartySheetForm extends FormApplication {
    * @returns {string} The text to render
    */
   processObjectLoop(character, type, value) {
-    const objName = value.split("=>")[0].trim();
-    const actualValue = value.split("=>")[1];
-    const objData = extractPropertyByString(character, objName);
+    const isDropdown = value.trim().startsWith("{dropdown} ");
+    const dropdownKeys = [];
 
-    let loopData = [];
-    const objKeys = Object.keys(objData);
-    let outStr = "";
+    if (isDropdown) {
+      value = value.replace("{dropdown} ", "");
+      generated_dropdowns += 1;
+    }
+    const chunks = value.split("||").map((thing) => thing.trim());
+    let finStr = "";
+    let finStrs = [];
     let outputText = "";
-    if (
-      objKeys.length == 6 &&
-      objKeys[0] == "documentClass" &&
-      objKeys[1] == "name" &&
-      objKeys[2] == "model" &&
-      objKeys[3] == "_initialized" &&
-      objKeys[4] == "_source" &&
-      objKeys[5] == "invalidDocumentIds"
-    ) {
-      loopData = Object.keys(objData._source).map((key) => {
-        return objData._source[key];
-      });
-    } else {
-      loopData = Object.keys(objData).map((key) => {
-        return objData[key];
-      });
-    }
+    let validDropdownSections = 0;
 
-    const regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+\s(?!})/g;
-    const reg = new RegExp(regValue);
-    const allMatches = Array.from(actualValue.matchAll(reg), (match) => match[0].trim());
+    chunks.forEach((chunk) => {
+      let outStr = "";
+      let prefix = "";
+      let objName = chunk.split("=>")[0].trim();
+      const findPrefixMatches = objName.match(/^(.*)\s/);
 
-    if (loopData.length ?? loopData.length !== 0) {
-      for (const objSubData of loopData) {
-        let tempLine = actualValue;
-        for (const m of allMatches) {
-          tempLine = tempLine.replace(m, extractPropertyByString(objSubData, m));
-        }
-        outStr += tempLine;
+      if (findPrefixMatches?.length) {
+        prefix = findPrefixMatches[1].trim();
+
+        objName = objName.replace(prefix, "").trim();
       }
-    } else {
-      return "";
-    }
-    outStr = outStr.trim();
-    outStr = this.cleanString(outStr);
+
+      let objFilter = null;
+
+      const filterMatches = objName.match(/(?<=.)\{([^}]+)\}(?=$)/);
+
+      if (filterMatches?.length) {
+        objFilter = filterMatches[1];
+        objName = objName.replace(`{${objFilter}}`, "");
+      }
+
+      if (isDropdown) {
+        dropdownKeys.push(objFilter || objName);
+        validDropdownSections += 1;
+      }
+
+      const actualValue = chunk.split("=>")[1];
+
+      const objData = extractPropertyByString(character, objName);
+
+      let loopData = [];
+      const objKeys = Object.keys(objData);
+      if (
+        objKeys.length == 6 &&
+        objKeys[0] == "documentClass" &&
+        objKeys[1] == "name" &&
+        objKeys[2] == "model" &&
+        objKeys[3] == "_initialized" &&
+        objKeys[4] == "_source" &&
+        objKeys[5] == "invalidDocumentIds"
+      ) {
+        loopData = Object.keys(objData._source).map((key) => {
+          return objData._source[key];
+        });
+      } else {
+        loopData = Object.keys(objData).map((key) => {
+          return objData[key];
+        });
+      }
+
+      if (objFilter) {
+        loopData = loopData.filter((data) => data.type === objFilter);
+      }
+
+      if (loopData.length === 0) {
+        if (isDropdown) {
+          dropdownKeys.pop();
+          validDropdownSections -= 1;
+        }
+      }
+
+      const regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+\s(?!})/g;
+      const reg = new RegExp(regValue);
+      const allMatches = Array.from(actualValue.matchAll(reg), (match) => match[0].trim());
+
+      if (loopData.length ?? loopData.length !== 0) {
+        for (const objSubData of loopData) {
+          let tempLine = actualValue;
+          for (const m of allMatches) {
+            tempLine = tempLine.replace(m, extractPropertyByString(objSubData, m));
+          }
+          outStr += tempLine;
+        }
+      } else {
+        return "";
+      }
+      if (outStr) {
+        finStrs.push(prefix + outStr);
+      }
+    });
+
+    let dropdownString = "";
     let isSafeStringNeeded = false;
-    [isSafeStringNeeded, outputText] = parseExtras(outStr);
-    // @ts-ignore
-    return isSafeStringNeeded ? new Handlebars.SafeString(outputText) : outputText;
+
+    if (isDropdown && dropdownKeys.length === validDropdownSections && validDropdownSections > 1) {
+      isSafeStringNeeded = true;
+      dropdownString = `<select class='fvtt-party-sheet-dropdown' data-dropdownsection='${generated_dropdowns}' >`;
+      for (let i = 0; i < finStrs.length; i++) {
+        dropdownString += `<option value="${i}">${dropdownKeys[i]}</option>`;
+      }
+      dropdownString += "</select><br/>";
+    }
+    if (isDropdown) {
+      const dd_section_start = (idx) =>
+        `<div data-dropdownsection='${generated_dropdowns}' data-dropdownoption='${idx}' ${
+          idx != 0 ? 'style="display: none;"' : ""
+        } >`;
+      const dd_section_end = "</div>";
+      finStrs = finStrs.map((str, idx) => dd_section_start(idx) + this.cleanString(str) + dd_section_end);
+      finStr = finStrs.join("");
+    } else {
+      finStr = finStrs.join(chunks?.length > 0 ? "" : ", ");
+      finStr = finStr.trim();
+      finStr = this.cleanString(finStr);
+    }
+
+    [isSafeStringNeeded, outputText] = parseExtras(finStr);
+
+    return isSafeStringNeeded
+      ? // @ts-ignore
+        new Handlebars.SafeString((dropdownString || "") + outputText)
+      : outputText;
   }
 
   /**
@@ -485,32 +572,37 @@ export class PartySheetForm extends FormApplication {
    * @memberof PartySheetForm
    */
   getCustomData(character, type, value) {
-    switch (type) {
-      case "direct":
-        return this.processDirect(character, type, value);
-      case "direct-complex":
-        return this.processDirectComplex(character, type, value);
-      case "charactersheet":
-        // @ts-ignore
-        return new Handlebars.SafeString(
-          `<input type="image" name="fvtt-party-sheet-actorimage" data-actorid="${
-            character.uuid
-          }" class="token-image" src="${character.prototypeToken.texture.src}" title="${
-            character.prototypeToken.name
-          }" width="36" height="36" style="transform: rotate(${character.prototypeToken.rotation ?? 0}deg);"/>`,
-        );
-      case "array-string-builder":
-        return this.processArrayStringBuilder(character, type, value);
-      case "string":
-        return value;
-      case "object-loop":
-        return this.processObjectLoop(character, type, value);
-      case "largest-from-array":
-        return this.processLargestFromArray(character, type, value);
-      case "smallest-from-array":
-        return this.processSmallestFromArray(character, type, value);
-      default:
-        return "";
+    try {
+      switch (type) {
+        case "direct":
+          return this.processDirect(character, type, value);
+        case "direct-complex":
+          return this.processDirectComplex(character, type, value);
+        case "charactersheet":
+          // @ts-ignore
+          return new Handlebars.SafeString(
+            `<input type="image" name="fvtt-party-sheet-actorimage" data-actorid="${
+              character.uuid
+            }" class="token-image" src="${character.prototypeToken.texture.src}" title="${
+              character.prototypeToken.name
+            }" width="36" height="36" style="transform: rotate(${character.prototypeToken.rotation ?? 0}deg);"/>`,
+          );
+        case "array-string-builder":
+          return this.processArrayStringBuilder(character, type, value);
+        case "string":
+          return value;
+        case "object-loop":
+          return this.processObjectLoop(character, type, value);
+        case "largest-from-array":
+          return this.processLargestFromArray(character, type, value);
+        case "smallest-from-array":
+          return this.processSmallestFromArray(character, type, value);
+        default:
+          return "";
+      }
+    } catch (ex) {
+      console.log(ex);
+      throw new TemplateProcessError(ex);
     }
   }
 
@@ -537,7 +629,28 @@ export class PartySheetForm extends FormApplication {
 
     updateSelectedSystem(applicableSystems[selectedIdx]);
     const selectedSystem = getSelectedSystem();
-    let { name: sysName, author: sysAuthor, players, rowcount } = this.getCustomPlayerData(selectedSystem);
+    let selectedName, selectedAuthor, players, rowcount;
+    let invalidTemplateError = false;
+    try {
+      let result = this.getCustomPlayerData(selectedSystem);
+      selectedName = result.name;
+      selectedAuthor = result.author;
+      players = result.players;
+      rowcount = result.rowcount;
+    } catch (ex) {
+      if (ex instanceof TemplateProcessError) {
+        // @ts-ignore
+        ui.notifications.error(
+          `There was an error processing the template for ${selectedSystem.name} by ${selectedSystem.author}.`,
+        );
+        selectedName = ex.data.name;
+        selectedAuthor = ex.data.author;
+        invalidTemplateError = true;
+      } else {
+        console.log(ex);
+      }
+    }
+
     // @ts-ignore
     return mergeObject(super.getData(options), {
       minimalView,
@@ -546,8 +659,9 @@ export class PartySheetForm extends FormApplication {
       rowcount,
       players,
       applicableSystems,
-      selectedName: sysName,
-      selectedAuthor: sysAuthor,
+      selectedName,
+      selectedAuthor,
+      invalidTemplateError,
       // @ts-ignore
       overrides: this.overrides,
     });
@@ -611,6 +725,7 @@ export class PartySheetForm extends FormApplication {
 
   activateListeners(html) {
     super.activateListeners(html);
+
     // @ts-ignore
     $('button[name="fvtt-party-sheet-options"]', html).click(this.openOptions.bind(this));
     // @ts-ignore
@@ -624,7 +739,16 @@ export class PartySheetForm extends FormApplication {
     // @ts-ignore
     $('button[name="bugreport"]', html).click(this.onBugReport.bind(this));
     // @ts-ignore
-    $('button[name="discord"]', html).click(this.onDiscord.bind(this));
+    $('select[class="fvtt-party-sheet-dropdown"]', html).change((event) => {
+      const dropdownSection = event.currentTarget.dataset.dropdownsection;
+      const dropdownValue = event.currentTarget.value;
+
+      // @ts-ignore
+      $(`div[data-dropdownsection="${dropdownSection}"]`).hide();
+
+      // @ts-ignore
+      $(`div[data-dropdownsection="${dropdownSection}"][data-dropdownoption="${dropdownValue}"]`).show();
+    });
   }
 
   onFeedback(event) {
@@ -636,12 +760,6 @@ export class PartySheetForm extends FormApplication {
   onBugReport(event) {
     event.preventDefault();
     const newWindow = window.open(BUGREPORT_URL, "_blank", "noopener,noreferrer");
-    if (newWindow) newWindow.opener = undefined;
-  }
-
-  onDiscord(event) {
-    event.preventDefault();
-    const newWindow = window.open(DISCORD_URL, "_blank", "noopener,noreferrer");
     if (newWindow) newWindow.opener = undefined;
   }
 }

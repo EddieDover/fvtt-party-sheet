@@ -7,6 +7,7 @@ import fs from "fs-extra";
 import gulp from "gulp";
 import { deleteAsync } from "del";
 import sass from "gulp-dart-sass";
+import markdown from "gulp-markdown";
 import sourcemaps from "gulp-sourcemaps";
 import path from "node:path";
 import buffer from "vinyl-buffer";
@@ -79,8 +80,8 @@ async function copyFiles() {
  * Cleans the dist folder
  * @returns {NodeJS.ReadWriteStream} The cleaned files
  */
-async function cleanDist() {
-  return await deleteAsync([`${distDirectory}/**/*`, `${distDirectory}`]);
+function cleanDist() {
+  return deleteAsync([`${distDirectory}/**/*`, `${distDirectory}`]);
 }
 
 /**
@@ -116,7 +117,7 @@ export function watch() {
   );
 }
 
-export const build = gulp.series(clean, buildCode, buildStyles, copyFiles); //gulp.parallel(buildCode, buildStyles, copyFiles));
+export const build = gulp.series(clean, buildCode, buildStyles, copyFiles, convert_markdown); //gulp.parallel(buildCode, buildStyles, copyFiles));
 
 /********************/
 /*    DEV EXPORT    */
@@ -175,6 +176,13 @@ function getDataPaths() {
   } else {
     throw new Error("No dataPath defined in foundryconfig.json");
   }
+}
+
+/**
+ * Convert markdown files to HTML
+ */
+export async function convert_markdown() {
+  await gulp.src("*.md").pipe(markdown()).pipe(gulp.dest("dist"));
 }
 
 /**

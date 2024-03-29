@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>fvtt-party-sheet - A FoundryVTT Module | fvtt-party-sheet</title>
+<meta name="generator" content="Jekyll v3.9.5" />
+<meta property="og:title" content="fvtt-party-sheet - A FoundryVTT Module" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A module for FoundryVTT providing a system-agnostic JSON-templated party sheet." />
+<meta property="og:description" content="A module for FoundryVTT providing a system-agnostic JSON-templated party sheet." />
+<meta property="og:site_name" content="fvtt-party-sheet" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="fvtt-party-sheet - A FoundryVTT Module" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","description":"A module for FoundryVTT providing a system-agnostic JSON-templated party sheet.","headline":"fvtt-party-sheet - A FoundryVTT Module","name":"fvtt-party-sheet","url":"/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script src="https://code.jquery.com/jquery-3.3.0.min.js" integrity="sha256-RTQy8VOmNlT6b2PIRur37p6JEBZUE7o8wPgMvu18MC4=" crossorigin="anonymous"></script>
+    <script src="/assets/js/main.js"></script>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">fvtt-party-sheet - A FoundryVTT Module</h1>
+      <h2 class="project-tagline">A module for FoundryVTT providing a system-agnostic JSON-templated party sheet.</h2>
+      
+        <a href="https://github.com/EddieDover/fvtt-party-sheet" class="btn" target="_blank">View on GitHub</a>
+        <a href="https://github.com/EddieDover/fvtt-party-sheet/issues/new/choose" class="btn" target="_blank">Report a bug</a>
+        <a href="https://github.com/EddieDover/fvtt-party-sheet/discussions/new?category=support" class="btn" target="_blank">Get support</a>
+      
+      
+      
+        <a href="https://github.com/EddieDover/fvtt-party-sheet/releases/latest/download/module.zip" class="btn">Latest Release: v2.3.2</a>
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;">
+      <nav style="width:fit-content;margin-right:1rem;">
+        <ul></ul>
+      </nav>
+      <section>
+        <h1 id="fvtt-party-sheet---a-foundryvtt-module">fvtt-party-sheet - A <a href="https://www.foundryvtt.com">FoundryVTT</a> Module</h1>
+
+<p><img src="https://img.shields.io/badge/dynamic/json?label=Downloads@latest&amp;query=assets%5B1%5D.download_count&amp;url=https%3A%2F%2Fapi.github.com%2Frepos%2FEddieDover%2Ffvtt-party-sheet%2Freleases%2Flatest" alt="Latest Release Download Count" />
+<img src="https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&amp;query=package.installs&amp;suffix=%25&amp;url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Ffvtt-party-sheet&amp;colorB=4aa94a" alt="Forge Installs" />
+<a href="https://www.foundryvtt-hub.com/package/fvtt-party-sheet/"><img src="https://img.shields.io/endpoint?logoColor=white&amp;url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Ffvtt-party-sheet%2Fshield%2Fendorsements" alt="Foundry Hub Endorsements" /></a>
+<a href="https://www.foundryvtt-hub.com/package/fvtt-party-sheet/"><img src="https://img.shields.io/endpoint?logoColor=white&amp;url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Ffvtt-party-sheet%2Fshield%2Fcomments" alt="Foundry Hub Comments" /></a></p>
+
+<h2 id="links">Links</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Upcoming Changes</th>
+      <th>Template Readme</th>
+      <th>Template List</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="/UPCOMING_CHANGELOG.html">Link</a></td>
+      <td><a href="/TEMPLATE_README.html">Link</a></td>
+      <td><a href="/TEMPLATE_LIST.html">Link</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="about">About</h2>
+
+<p>This module provides a GM with a table of characters in order to quickly see their important stats, traits, abilites, etc. Originally 5e only, it is now system agnostic and you can create easy to make .json templates for your system. It supports native Foundry and The Forge. Complete instructions for creating templates and placing them in the right folder on Foundry and Forge are included in the <a href="/TEMPLATE_README.html">TEMPLATE_README.md</a> file.</p>
+
+<p>If you create a template, please submit it via email or GitHub as a Pull Request, and we will include it in future updates with full credit.</p>
+
+<p>See upcoming changes in the <a href="/UPCOMING_CHANGELOG.html">UPCOMING_CHANGELOG.md</a></p>
+
+<h2 id="features">Features</h2>
+
+<ul>
+  <li>
+    <p>Adds a ‘Party Sheet’ similar to that provided by Fantasy Grounds. Just click the Party Sheet icon on the Tokens Controls sub-menu.</p>
+
+    <ul>
+      <li>
+        <p>The Party Sheet can be configured via the options to either display only currently connected players, or all non-npc characters. When using the all-characters display, there is a separate dialog to allow hiding of any characters the DM doesn’t need to worry about. See the <a href="/TEMPLATE_README.html">TEMPLATE_README.md</a> file for instructions on how to create a json file for your own system.</p>
+      </li>
+      <li>
+        <p>Clicking a character portrait will open their sheet.</p>
+      </li>
+      <li>
+        <p>The Party Sheet is no longer bound to simply the built-in dnd5e system. Additional systems can be supported by writing a JSON file following the guidelines in <a href="/TEMPLATE_README.html">TEMPLATE_README.md</a> and placing it in either:</p>
+
+        <ul>
+          <li>Native Foundry: your &lt;FOUNDRY_VTT/Data/partysheets/&gt; folder.</li>
+          <li>The Forge: the folder named <partysheets> at the top level of your assets library (created by the module).</partysheets></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="systems--templates">Systems &amp; Templates</h2>
+
+<h3 id="template-examples">Template Examples</h3>
+
+<p>For a comprehensive list of the pre-made templates provided by this module and screenshots of each, please see <strong><a href="/TEMPLATE_LIST.html">TEMPLATE_LIST.md</a></strong> or examine the contents of the <a href="https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates">example_templates</a> folder.</p>
+
+<h3 id="making-your-own-system-template">Making your own system template</h3>
+
+<p>Please see the <a href="/TEMPLATE_README.html">TEMPLATE_README.md</a> for information on how to create your own template.</p>
+
+<h3 id="template-installation">Template Installation</h3>
+
+<p>If using native <strong>Foundry</strong>, place the templates you wish to use in the &lt;FOUNDRY_VTT/Data/partysheets/&gt; folder.</p>
+
+<p>If using <strong>The Forge</strong>, this module will create a folder at the top level of your Assets Library named <code class="language-plaintext highlighter-rouge">partysheets</code>. Place your templates in this folder.</p>
+
+<p>If using The Forge, install the module on your local Foundry installation to have access to the <a href="https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates">example_templates</a> folder, and to upload any you would like to use to your Assets Library in the <partysheets> folder at the top level. Or, if you haven't installed Foundry and only used the license key on The Forge, use the GitHub link above. In this case, you will have to download the file to your computer, then upload it to The Forge. If you create a template, please submit it via email or GitHub, and we will include it in future updates with full credit.</partysheets></p>
+
+<h2 id="support">Support</h2>
+
+<p>Feel free to file a Bug Report / Feature Request under the Issues tab of Github.</p>
+
+<h2 id="screenshots">Screenshots</h2>
+
+<p>Primary Icon:</p>
+
+<p><img src="/images/psi.png" alt="Party Sheet Icon" /></p>
+
+<p>Party Sheet Window:</p>
+
+<p><img src="/images/preview1.png" alt="Preview of Plugin Party Sheet - Only Connected Players" /></p>
+
+<h2 id="contributions">Contributions</h2>
+
+<p>To contribute a translation or template, either:</p>
+
+<ol>
+  <li>Open a PR with the necessary new files and appropriate changes to the codebase</li>
+  <li>Open an issue and attach the relevant files.</li>
+</ol>
+
+<h2 id="unit-testing">Unit Testing</h2>
+
+<p>This module uses a mix of jest and playwright. New tests, or enhancements to the testing pipeline, are always welcome.</p>
+
+      </section>
+    </div>
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/EddieDover/fvtt-party-sheet">fvtt-party-sheet</a> is maintained by <a href="https://github.com/EddieDover">EddieDover</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

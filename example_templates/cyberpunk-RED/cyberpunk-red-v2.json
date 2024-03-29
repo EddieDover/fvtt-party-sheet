@@ -1,0 +1,223 @@
+{
+    "name": "Cyberpunk RED - v2",
+    "system": "cyberpunk-red-core",
+    "author": "Michael Card (EmoCthulhu)",
+    "offline_excludes": [
+        "npc",
+        "base",
+        "blackIce",
+        "container",
+        "demon",
+        "mook"
+    ],
+    "rows": [
+        [
+            {
+                "name": "Character Sheet",
+                "type": "charactersheet",
+                "align": "center",
+                "header": "hide",
+                "text": ""
+            },
+            {
+                "name": "Name",
+                "type": "direct",
+                "align": "left",
+                "header": "show",
+                "text": "{b} name {/b}{nl}{u}Main Role:{/u}{b} system.roleInfo.activeRole {/b}"
+            },
+            {
+                "name": "INT",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.stats.int"
+            },
+            {
+                "name": "REF",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.stats.ref"
+            },
+            {
+                "name": "DEX",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.stats.dex"
+            },
+            {
+                "name": "TECH",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.stats.tech"
+            },
+            {
+                "name": "COOL",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.stats.cool"
+            },
+            {
+                "name": "WILL",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.stats.will"
+            },
+            {
+                "name": "LUCK",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.stats.luck"
+            },
+            {
+                "name": "MOVE",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.stats.move"
+            },
+            {
+                "name": "BODY",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.stats.body"
+            },
+            {
+                "name": "EMP",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "{b} system.stats.emp {/b} / system.stats.emp.max"
+            },
+            {
+                "name": "Statuses",
+                "type": "direct",
+                "maxwidth": 70,
+                "header": "show",
+                "text": ""
+            }
+        ],
+        [
+            {
+                "name": ".",
+                "type": "direct",
+                "header": "hide",
+                "text": ""
+            },
+            {
+                "name": "Role(s)",
+                "type": "object-loop",
+                "filter": "type",
+                "align": "left",
+                "valign": "top",
+                "header": "show",
+                "text": "items{role} => {b} name {/b}{nl}{u} system.mainRoleAbility {/u}{s}{b} system.rank {/b}{nl}"
+            },
+            {
+                "name": "Health",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",   
+                "text": "{b} system.derivedStats.hp {/b} / system.derivedStats.hp.max"
+            },
+            {
+                "name": "Serious",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.derivedStats.seriouslyWounded"
+            },
+            {
+                "name": "Saves",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.derivedStats.deathSave"
+            },
+            {
+                "name": "Walk",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.derivedStats.walk"
+            },
+            {
+                "name": "Run",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.derivedStats.run"
+            },
+            {
+                "name": "Rep",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.reputation"
+            },
+            {
+                "name": "I.P.",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.improvementPoints"
+            },
+            {
+                "name": "Wealth",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "system.wealth"
+            },
+            {
+                "name": "..",
+                "type": "direct",
+                "align": "center",
+                "header": "hide",
+                "text": ""
+            },
+            {
+                "name": "Humanity",
+                "type": "direct",
+                "align": "center",
+                "valign": "top",
+                "header": "show",
+                "text": "{b} system.derivedStats.humanity {/b} / system.derivedStats.humanity.max"
+            },
+            {
+                "name": "Status",
+                "type": "array-string-builder",
+                "align": "left",
+                "valign": "top",
+                "maxwidth": 70,
+                "header": "hide",
+                "text": "statuses => value, "
+            }
+        ]
+    ]
+}

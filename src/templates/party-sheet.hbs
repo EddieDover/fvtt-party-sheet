@@ -11,9 +11,6 @@
     <button type="button" class="btn btn--primary" style="max-width:50px" name="bugreport" title="{{localize "fvtt-party-sheet.party-sheet.bugreport"}}">
       <i class="fas fa-bug"></i>
     </button>
-    <button type="button" class="btn btn--primary" style="max-width:50px" name="discord" title="{{localize "fvtt-party-sheet.party-sheet.discord"}}">
-      <i class="fab fa-discord"></i>
-    </button>
     {{/unless}}
   </div>
   {{#if applicableSystems.length}}
@@ -68,9 +65,12 @@
       </tbody>
     </table>
     {{else}}
-      <div class="fvtt-party-sheet-ps-no-players">{{ localize "fvtt-party-sheet.party-sheet.no-players" }}</div>
+      {{#if invalidTemplateError}}
+          <div class="fvtt-party-sheet-ps-no-players">{{{ localize "fvtt-party-sheet.party-sheet.invalid-template" }}}</div>
+        {{else}}
+          <div class="fvtt-party-sheet-ps-no-players">{{ localize "fvtt-party-sheet.party-sheet.no-players" }}</div>
+      {{/if}}
     {{/if}}
-
   {{else}}
     <div class="fvtt-party-sheet-ps-no-systems">{{ localize "fvtt-party-sheet.party-sheet.no-systems" }}</div>
   {{/if}}

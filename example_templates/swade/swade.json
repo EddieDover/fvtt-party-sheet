@@ -29,7 +29,7 @@
         "align": "center",
         "header": "show",
         "minwidth": 60,
-        "text": "system.wounds.value / system.wounds.max"
+        "text": "system.wounds.value {s0} / {s0} system.wounds.max"
       },
       {
         "name": "Fatigue",
@@ -37,7 +37,7 @@
         "align": "center",
         "header": "show",
         "minwidth": 60,
-        "text": "system.fatigue.value / system.fatigue.max"
+        "text": "system.fatigue.value {s0} / {s0} system.fatigue.max"
       },
       {
         "name": "Bennies",
@@ -45,7 +45,7 @@
         "align": "center",
         "header": "show",
         "minwidth": 60,
-        "text": "system.bennies.value / system.bennies.max"
+        "text": "system.bennies.value {s0} / {s0} system.bennies.max"
       },
       {
         "name": "Pace",
@@ -53,7 +53,7 @@
         "align": "center",
         "header": "show",
         "minwidth": 75,
-        "text": "system.stats.speed.value | D system.stats.speed.runningDie ( system.stats.speed.runningMod )"
+        "text": "system.stats.speed.value | D{s0} system.stats.speed.runningDie ( {s0} system.stats.speed.runningMod {s0} )"
       },
       {
         "name": "Parry",
@@ -69,7 +69,7 @@
         "align": "center",
         "header": "show",
         "minwidth": 70,
-        "text": "system.stats.toughness.value ( system.stats.toughness.armor )"
+        "text": "system.stats.toughness.value ( {s0} system.stats.toughness.armor {s0} )"
       },
       {
         "name": "PP",
@@ -77,15 +77,15 @@
         "align": "center",
         "header": "show",
         "minwidth": 60,
-        "text": "system.powerPoints.general.value / system.powerPoints.general.max"
+        "text": "system.powerPoints.general.value {s0} / {s0} system.powerPoints.general.max"
       },
       {
         "name": "Attributes",
         "type": "direct",
-        "align": "center",
+        "align": "right",
         "header": "show",
-        "minwidth": 80,
-        "text": "Agility: system.attributes.agility.die.sides {newline} Smarts: system.attributes.smarts.die.sides {newline} Spirit: system.attributes.spirit.die.sides {newline} Strength: system.attributes.strength.die.sides {newline} Vigor: system.attributes.vigor.die.sides"
+        "minwidth": 90,
+        "text": "{b}Agility:{/b} D{s0} system.attributes.agility.die.sides {newline} {b}Smarts:{/b} D{s0} system.attributes.smarts.die.sides {newline} {b}Spirit:{/b} D{s0} system.attributes.spirit.die.sides {newline} {b}Strength:{/b} D{s0} system.attributes.strength.die.sides {newline} {b}Vigor:{/b} D{s0} system.attributes.vigor.die.sides"
       },
       {
         "name": "Status",

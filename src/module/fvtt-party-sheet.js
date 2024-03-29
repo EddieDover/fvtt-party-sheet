@@ -1,30 +1,9 @@
 /* eslint-disable no-undef */
 import { registerSettings } from "./app/settings.js";
 import { PartySheetForm } from "./app/party-sheet.js";
-import { addCustomSystem, toProperCase } from "./utils.js";
+import { log, loadSystemTemplates, toProperCase, areTemplatesLoaded } from "./utils.js";
 
 let currentPartySheet = null;
-
-/**
- *
- * @param {any} message The message to send to console.log
- */
-function log(message) {
-  console.log("fvtt-party-sheet | ", message);
-}
-
-/**
- * Checks if the current environment is ForgeVTT
- * @returns {boolean} True if the current environment is ForgeVTT
- */
-function isForgeVTT() {
-  // @ts-ignore
-  if (!(typeof ForgeVTT !== "undefined")) {
-    return false;
-  }
-  // @ts-ignore
-  return ForgeVTT.usingTheForge;
-}
 
 // @ts-ignore
 Handlebars.registerHelper("hccontains", function (needle, haystack, options) {
@@ -61,8 +40,8 @@ Handlebars.registerHelper("checkIndex", function (index, options) {
 
 // @ts-ignore
 Handlebars.registerHelper("hcifhidden", function (row, options) {
-  var key = options.hash["key"];
-  var myoptions = row[key]?.options ?? {};
+  const key = options.hash["key"];
+  const myoptions = row[key]?.options ?? {};
 
   if (myoptions?.header === "show") {
     return options.inverse(this);
@@ -73,13 +52,13 @@ Handlebars.registerHelper("hcifhidden", function (row, options) {
 
 // @ts-ignore
 Handlebars.registerHelper("getAlignment", function (row, key) {
-  var myoptions = row[key]?.options ?? {};
+  const myoptions = row[key]?.options ?? {};
   return myoptions.align ?? "center";
 });
 
 // @ts-ignore
 Handlebars.registerHelper("getVAlignment", function (row, key) {
-  var myoptions = row[key]?.options ?? {};
+  const myoptions = row[key]?.options ?? {};
   if (myoptions.valign === "top" || myoptions.valign === "bottom") {
     return myoptions.valign;
   } else {
@@ -89,25 +68,25 @@ Handlebars.registerHelper("getVAlignment", function (row, key) {
 
 // @ts-ignore
 Handlebars.registerHelper("getColSpan", function (row, key) {
-  var myoptions = row[key]?.options ?? {};
+  const myoptions = row[key]?.options ?? {};
   return myoptions?.colspan ?? 1;
 });
 
 // @ts-ignore
 Handlebars.registerHelper("getMaxWidth", function (row, key) {
-  var myoptions = row[key]?.options ?? {};
+  const myoptions = row[key]?.options ?? {};
   return myoptions?.maxwidth ? `${myoptions?.maxwidth}px` : "none";
 });
 
 // @ts-ignore
 Handlebars.registerHelper("getMinWidth", function (row, key) {
-  var myoptions = row[key]?.options ?? {};
+  const myoptions = row[key]?.options ?? {};
   return myoptions?.minwidth ? `${myoptions?.minwidth}px` : "auto";
 });
 
 // @ts-ignore
 Handlebars.registerHelper("eachInMap", function (map, block) {
-  var out = "";
+  let out = "";
   Object.keys(map).map(function (prop) {
     out += block.fn({ key: prop, value: map[prop] });
   });
@@ -124,8 +103,8 @@ Handlebars.registerHelper("debug", function (data) {
 Handlebars.registerHelper("getKeys", function (obj, options) {
   const keys = Object.keys(obj);
   let result = "";
-  for (let i = 0; i < keys.length; i++) {
-    result += options.fn(keys[i]);
+  for (const element of keys) {
+    result += options.fn(element);
   }
   return result;
 });
@@ -186,64 +165,25 @@ function togglePartySheet() {
   }
 }
 
-/**
- * Load all the user-provided templates for systems
- * @param {string} path The path to the template
- * @returns {Promise<void>} A promise that resolves when the template is loaded
- */
-async function loadSystemTemplate(path) {
-  try {
-    const templateName = path.split("/").pop().split(".")[0];
-    log(`Loading template: ${templateName}`);
-    const template = JSON.parse(await fetch(path).then((r) => r.text()));
-    if (template.name && template.author && template.system && template.rows) {
-      console.log(`${path} - Good Template`);
-      addCustomSystem(template);
-    } else {
-      console.log(`${path} - Bad Template`);
-    }
-  } catch (e) {
-    console.log(`${path} - Failed to Load. See error below.`);
-    console.error(e);
-  }
-}
-
-/**
- * Load all the user-provided templates for systems
- */
-async function loadSystemTemplates() {
-  // Look inside the "partysheets" folder. Any JSON file inside should be loaded
-  const templatePaths = [];
-  // @ts-ignore
-
-  let assetPrefix = "data";
-
-  if (isForgeVTT()) {
-    console.log("Detected ForgeVTT");
+const showButton = () => {
+  if (areTemplatesLoaded()) {
     // @ts-ignore
-    assetPrefix = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId()) + "/";
-  }
-
-  try {
+    const button = $(`<li class="control-tool "
+      data-tool="PartySheet"
+      aria-label="Show Party Sheet"
+      role="button"
+      data-tooltip="Party Sheet">
+      <i class="fas fa-users"></i>
+    </li>`);
+    button.click(() => togglePartySheet());
     // @ts-ignore
-    await FilePicker.createDirectory(assetPrefix, "partysheets"); //, { bucket: "public" }
-  } catch (e) {
-    console.log("Failed creating PartySheets directory. It probably already exists.");
-  }
+    const controls = $("#tools-panel-token");
 
-  // @ts-ignore
-  const templateFiles = await FilePicker.browse(assetPrefix, "partysheets"); // `modules/${MODULE_NAME}/templates`);
-
-  templateFiles.files.forEach((file) => {
-    if (file.endsWith(".json")) {
-      templatePaths.push(file);
+    if (controls.find(".control-tool[data-tool='PartySheet']")) {
+      controls.append(button);
     }
-  });
-
-  templatePaths.forEach(async (path) => {
-    await loadSystemTemplate(path);
-  });
-}
+  }
+};
 
 /* Hooks */
 
@@ -260,9 +200,12 @@ Hooks.on("ready", async () => {
 
   // @ts-ignore
   if (game.user.isGM) {
-    log("Loading templates");
-    await loadSystemTemplates();
+    if (!areTemplatesLoaded()) {
+      log("Loading templates");
+      await loadSystemTemplates();
+    }
   }
+  showButton();
 });
 
 // @ts-ignore
@@ -281,24 +224,5 @@ Hooks.on("renderPlayerList", () => {
 
 // @ts-ignore
 Hooks.on("renderSceneControls", () => {
-  // @ts-ignore
-  const showButton = game.user.isGM;
-
-  // @ts-ignore
-  const button = $(`<li class="control-tool "
-            data-tool="PartySheet"
-            aria-label="Show Party Sheet"
-            role="button"
-            data-tooltip="Party Sheet">
-            <i class="fas fa-users"></i>
-        </li>`);
-  button.click(() => togglePartySheet());
-  // @ts-ignore
-  const controls = $("#tools-panel-token");
-
-  if (showButton && controls.find(".control-tool[data-tool='PartySheet']")) {
-    controls.append(button);
-  } else if (!showButton) {
-    controls.find(".control-tool[data-tool='PartySheet']").remove();
-  }
+  showButton();
 });
