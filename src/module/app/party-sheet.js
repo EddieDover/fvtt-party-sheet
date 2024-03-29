@@ -740,8 +740,6 @@ export class PartySheetForm extends FormApplication {
     $('button[name="bugreport"]', html).click(this.onBugReport.bind(this));
     // @ts-ignore
     $('select[class="fvtt-party-sheet-dropdown"]', html).change((event) => {
-      console.log(event.currentTarget.dataset);
-      console.log(event.currentTarget.dataset.dropdownsection);
       const dropdownSection = event.currentTarget.dataset.dropdownsection;
       const dropdownValue = event.currentTarget.value;
 
