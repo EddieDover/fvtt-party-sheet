@@ -1,4 +1,11 @@
 
+## [2.4.1](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.4.0...v2.4.1) (2024-05-24)
+
+
+### Features
+
+* verified with Foundry v12 ([d589d83](https://github.com/EddieDover/fvtt-party-sheet/commit/d589d837cdc35e5db80c57cdb4d02cc3eaaed9ca))
+
 ## [2.4.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.3.2...v2.4.0) (2024-04-06)
 
 
