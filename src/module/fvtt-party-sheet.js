@@ -185,6 +185,19 @@ const showButton = () => {
   }
 };
 
+/**
+ * Register the API
+ */
+function registerAPI() {
+  // @ts-ignore
+  game["fvtt-party-sheet"] = {};
+  // @ts-ignore
+  game["fvtt-party-sheet"].api = {
+    togglePartySheet: togglePartySheet,
+  };
+  log("API registered");
+}
+
 /* Hooks */
 
 // @ts-ignore
@@ -200,6 +213,7 @@ Hooks.on("ready", async () => {
 
   // @ts-ignore
   if (game.user.isGM) {
+    registerAPI();
     if (!areTemplatesLoaded()) {
       log("Loading templates");
       await loadSystemTemplates();
