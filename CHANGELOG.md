@@ -1,4 +1,11 @@
 
+## [2.5.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.4.1...v2.5.0) (2024-06-09)
+
+
+### Features
+
+* adds an API with a togglePartySheet function ([d93ecff](https://github.com/EddieDover/fvtt-party-sheet/commit/d93ecffa857f76917e4784bfe367dbee321642ce))
+
 ## [2.4.1](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.4.0...v2.4.1) (2024-05-24)
 
 
