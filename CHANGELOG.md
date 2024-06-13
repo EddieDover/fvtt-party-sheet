@@ -1,4 +1,11 @@
 
+## [2.5.1](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.5.0...v2.5.1) (2024-06-13)
+
+
+### Features
+
+* added new discord link ([ce0a020](https://github.com/EddieDover/fvtt-party-sheet/commit/ce0a020739dd4f7703fab8c157398b929a89e271))
+
 ## [2.5.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.4.1...v2.5.0) (2024-06-09)
 
 
