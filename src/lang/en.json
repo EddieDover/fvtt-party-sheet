@@ -9,7 +9,8 @@
       "no-players": "No players are currently logged in.",
       "no-systems": "You do not have any json files for this system in your data/partysheets folder. Please add some to enable this feature.",
       "bugreport": "File a Bug Report",
-      "feedback": "Send Feedback"
+      "feedback": "Send Feedback",
+      "discord": "Discord"
     },
     "hide-sheet": {
       "button": "Configure Hidden Characters",

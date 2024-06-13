@@ -14,6 +14,7 @@ import { HiddenCharactersSettings } from "./hidden-characters-settings.js";
 const FEEDBACK_URL = "https://github.com/EddieDover/fvtt-party-sheet/issues/new/choose";
 const BUGREPORT_URL =
   "https://github.com/EddieDover/fvtt-party-sheet/issues/new?assignees=EddieDover&labels=bug&projects=&template=bug_report.yml&title=%5BBug%5D%3A+";
+const DISCORD_URL = "https://discord.gg/mvMdc7bH2d";
 
 const DEFAULT_EXCLUDES = ["npc"];
 
@@ -739,6 +740,8 @@ export class PartySheetForm extends FormApplication {
     // @ts-ignore
     $('button[name="bugreport"]', html).click(this.onBugReport.bind(this));
     // @ts-ignore
+    $('button[name="discord"]', html).click(this.onDiscord.bind(this));
+    // @ts-ignore
     $('select[class="fvtt-party-sheet-dropdown"]', html).change((event) => {
       const dropdownSection = event.currentTarget.dataset.dropdownsection;
       const dropdownValue = event.currentTarget.value;
@@ -760,6 +763,12 @@ export class PartySheetForm extends FormApplication {
   onBugReport(event) {
     event.preventDefault();
     const newWindow = window.open(BUGREPORT_URL, "_blank", "noopener,noreferrer");
+    if (newWindow) newWindow.opener = undefined;
+  }
+
+  onDiscord(event) {
+    event.preventDefault();
+    const newWindow = window.open(DISCORD_URL, "_blank", "noopener,noreferrer");
     if (newWindow) newWindow.opener = undefined;
   }
 }
