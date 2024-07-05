@@ -1,6 +1,6 @@
 {
   "name": "fvtt-party-sheet",
-  "version": "2.3.2",
+  "version": "2.5.1",
   "description": "A FoundryVTT module that adds a customizable Party Sheet window.",
   "main": "index.js",
   "author": {
@@ -59,7 +59,7 @@
     "eslint-plugin-jsdoc": "^46.9.1",
     "eslint-plugin-prettier": "^5.0.0",
     "fs-extra": "^11.1.1",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "gulp-dart-sass": "^1.1.0",
     "gulp-markdown": "^8.0.0",
     "gulp-sourcemaps": "^3.0.0",

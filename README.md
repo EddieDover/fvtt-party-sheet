@@ -50,6 +50,14 @@ If using **The Forge**, this module will create a folder at the top level of you
 
 If using The Forge, install the module on your local Foundry installation to have access to the [example_templates](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates) folder, and to upload any you would like to use to your Assets Library in the <partysheets> folder at the top level. Or, if you haven't installed Foundry and only used the license key on The Forge, use the GitHub link above. In this case, you will have to download the file to your computer, then upload it to The Forge. If you create a template, please submit it via email or GitHub, and we will include it in future updates with full credit.
 
+## API
+
+Functionality for macros/etc is exposed behind game["fvtt-party-sheet"].api.XXXXX
+
+Current Function List:
+
+- togglePartySheet - Toggles the party open or closed.
+
 ## Support
 
 Feel free to file a Bug Report / Feature Request under the Issues tab of Github.

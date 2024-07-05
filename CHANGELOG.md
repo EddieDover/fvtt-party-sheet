@@ -1,4 +1,34 @@
 
+## [2.5.1](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.5.0...v2.5.1) (2024-06-13)
+
+
+### Features
+
+* added new discord link ([ce0a020](https://github.com/EddieDover/fvtt-party-sheet/commit/ce0a020739dd4f7703fab8c157398b929a89e271))
+
+## [2.5.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.4.1...v2.5.0) (2024-06-09)
+
+
+### Features
+
+* adds an API with a togglePartySheet function ([d93ecff](https://github.com/EddieDover/fvtt-party-sheet/commit/d93ecffa857f76917e4784bfe367dbee321642ce))
+
+## [2.4.1](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.4.0...v2.4.1) (2024-05-24)
+
+
+### Features
+
+* verified with Foundry v12 ([d589d83](https://github.com/EddieDover/fvtt-party-sheet/commit/d589d837cdc35e5db80c57cdb4d02cc3eaaed9ca))
+
+## [2.4.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.3.2...v2.4.0) (2024-04-06)
+
+
+### Features
+
+* added better error handling and notification for invalid templates ([9b82c8f](https://github.com/EddieDover/fvtt-party-sheet/commit/9b82c8f48b0f317ff3a186498a9d32291fc328ed))
+* object-loop now allows for multiple objects per loop, filters, and prefix strings. See documentation. ([f93e688](https://github.com/EddieDover/fvtt-party-sheet/commit/f93e68840f8d6735874300c3ae29bf6e7367ecb0))
+* object-loops may now contain a dropdown marker to save space. See documentation. ([8f34d98](https://github.com/EddieDover/fvtt-party-sheet/commit/8f34d981953d4d3b99e71b804db62d789b487c89))
+
 ## [2.3.2](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.3.1...v2.3.2) (2024-03-20)
 
 
