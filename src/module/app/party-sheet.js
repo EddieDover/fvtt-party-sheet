@@ -42,6 +42,7 @@ export class PartySheetForm extends FormApplication {
    * @property {number} colspan - The number of columns to span.
    * @property {number} maxwidth - The maximum width of the column in pixels.
    * @property {number} minwidth - The minimum width of the column in pixels.
+   * @property {boolean} showSign - Whether to show a plus sign for positive numbers.
    * @property {string} text - The value to display. See below for details.
    */
 
@@ -150,7 +151,7 @@ export class PartySheetForm extends FormApplication {
             row_obj.forEach((colobj) => {
               const colname = colobj.name;
               customData[colname] = {
-                text: this.getCustomData(userChar, colobj.type, colobj.text),
+                text: this.getCustomData(userChar, colobj.type, colobj.text, { showSign: colobj.showSign }),
                 options: {
                   align: colobj.align,
                   valign: colobj.valign,
@@ -208,9 +209,10 @@ export class PartySheetForm extends FormApplication {
    * Parse a direct string.
    * @param {*} character - The character to parse
    * @param {*} value - The value to parse
+   * @param {{}} options - The options for the value
    * @returns {[boolean, string]} Whether a safe string is needed and the value
    */
-  parseDirect(character, value) {
+  parseDirect(character, value, options) {
     let isSafeStringNeeded = false;
 
     value = this.cleanString(value);
@@ -236,9 +238,42 @@ export class PartySheetForm extends FormApplication {
     }
 
     value = parsePluses(value);
+    value = this.processOptions(value, options);
     [isSafeStringNeeded, value] = parseExtras(value, isSafeStringNeeded);
 
     return [isSafeStringNeeded, value];
+  }
+
+  /**
+   * Add a sign to a value.
+   * @param {*} value - The value to add a sign to
+   * @returns {*} The value with a sign
+   * @memberof PartySheetForm
+   */
+  addSign(value) {
+    if (typeof value === "string") {
+      const numValue = Number(value);
+      if (!isNaN(numValue) && numValue > 0 && !value.includes("+")) {
+        value = "+" + value;
+      }
+    } else if (typeof value === "number" && value > 0) {
+      value = "+" + value;
+    }
+    return value;
+  }
+
+  /**
+   * Process options for a value.
+   * @param {*} value - The value to process
+   * @param {*} options - The options for the value
+   * @returns {*} - The processed value
+   * @memberof PartySheetForm
+   */
+  processOptions(value, options) {
+    if (options.showSign) {
+      value = this.addSign(value);
+    }
+    return value;
   }
 
   /**
@@ -246,11 +281,12 @@ export class PartySheetForm extends FormApplication {
    * @param {*} character - The character to process
    * @param {*} type - The type of data to process
    * @param {*} value - The value to process
+   * @param {{}} options - The options for the data
    * @returns {string} The text to render
    */
-  processDirect(character, type, value) {
+  processDirect(character, type, value, options = {}) {
     let isSafeStringNeeded = false;
-    [isSafeStringNeeded, value] = this.parseDirect(character, value);
+    [isSafeStringNeeded, value] = this.parseDirect(character, value, options);
 
     //Finally detect if a safe string cast is needed.
     if (isSafeStringNeeded) {
@@ -265,9 +301,10 @@ export class PartySheetForm extends FormApplication {
    * @param {*} character - The character to process
    * @param {*} type - The type of data to process
    * @param {*} value - The value to process
+   * @param {{}} options - The options for the data
    * @returns {string} The text to render
    */
-  processDirectComplex(character, type, value) {
+  processDirectComplex(character, type, value, options = {}) {
     // Call .trim() on item.value but only if it's a string
     let outputText = "";
     for (let item of value) {
@@ -324,7 +361,7 @@ export class PartySheetForm extends FormApplication {
       }
     }
     let isSafeStringNeeded = false;
-    [isSafeStringNeeded, outputText] = this.parseDirect(character, outputText);
+    [isSafeStringNeeded, outputText] = this.parseDirect(character, outputText, options);
     // @ts-ignore
     return isSafeStringNeeded ? new Handlebars.SafeString(outputText) : outputText;
   }
@@ -569,16 +606,17 @@ export class PartySheetForm extends FormApplication {
    * @param {*} character - The character to get the data for
    * @param {*} type - The type of data to get
    * @param {*} value - The value to get
+   * @param {{}} options - The options for the data
    * @returns {string} The text to render
    * @memberof PartySheetForm
    */
-  getCustomData(character, type, value) {
+  getCustomData(character, type, value, options = {}) {
     try {
       switch (type) {
         case "direct":
-          return this.processDirect(character, type, value);
+          return this.processDirect(character, type, value, options);
         case "direct-complex":
-          return this.processDirectComplex(character, type, value);
+          return this.processDirectComplex(character, type, value, options);
         case "charactersheet":
           // @ts-ignore
           return new Handlebars.SafeString(
