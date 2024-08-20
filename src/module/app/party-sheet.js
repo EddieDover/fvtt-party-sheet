@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import {
+  addSign,
   extractPropertyByString,
   getCustomSystems,
   getSelectedSystem,
@@ -245,24 +246,6 @@ export class PartySheetForm extends FormApplication {
   }
 
   /**
-   * Add a sign to a value.
-   * @param {*} value - The value to add a sign to
-   * @returns {*} The value with a sign
-   * @memberof PartySheetForm
-   */
-  addSign(value) {
-    if (typeof value === "string") {
-      const numValue = Number(value);
-      if (!isNaN(numValue) && numValue > 0 && !value.includes("+")) {
-        value = "+" + value;
-      }
-    } else if (typeof value === "number" && value > 0) {
-      value = "+" + value;
-    }
-    return value;
-  }
-
-  /**
    * Process options for a value.
    * @param {*} value - The value to process
    * @param {*} options - The options for the value
@@ -271,7 +254,7 @@ export class PartySheetForm extends FormApplication {
    */
   processOptions(value, options) {
     if (options.showSign) {
-      value = this.addSign(value);
+      value = addSign(value);
     }
     return value;
   }
