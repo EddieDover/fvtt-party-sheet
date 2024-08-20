@@ -27,7 +27,7 @@ export class PartySheetForm extends FormApplication {
   }
 
   /**
-   * @typedef { 'direct' | 'math' | 'direct-complex' | 'string' | 'array-string-builder' } SystemDataColumnType
+   * @typedef { 'direct' | 'math' | 'direct-complex' | 'string' | 'array-string-builder'|'span' } SystemDataColumnType
    * @typedef { 'show' | 'hide' | 'skip' } SystemDataColumnHeader
    * @typedef { 'left' | 'center' | 'right' } SystemDataColumnAlignType
    * @typedef { 'top' | 'bottom' } SystemDataColumnVAlignType
@@ -41,20 +41,11 @@ export class PartySheetForm extends FormApplication {
    * @property {SystemDataColumnAlignType} align - The horizontal alignment of the column.
    * @property {SystemDataColumnVAlignType} valign - The vertical alignment of the column.
    * @property {number} colspan - The number of columns to span.
+   * @property {number} rowspan - The number of rows to span. Spanned rows must have spanover type.
    * @property {number} maxwidth - The maximum width of the column in pixels.
    * @property {number} minwidth - The minimum width of the column in pixels.
    * @property {boolean} showSign - Whether to show a plus sign for positive numbers.
    * @property {string} text - The value to display. See below for details.
-   */
-
-  /**
-   * @typedef ColOptions
-   * @property {SystemDataColumnHeader} header - Whether to show, hide, or skip the column.
-   * @property {SystemDataColumnAlignType} align - The horizontal alignment of the column.
-   * @property {SystemDataColumnVAlignType} valign - The vertical alignment of the column.
-   * @property {number} colspan - The number of columns to span.
-   * @property {number} maxwidth - The maximum width of the column in pixels.
-   * @property {number} minwidth - The minimum width of the column in pixels.
    */
 
   /**
@@ -157,6 +148,8 @@ export class PartySheetForm extends FormApplication {
                   align: colobj.align,
                   valign: colobj.valign,
                   colspan: colobj.colspan,
+                  rowspan: colobj.rowspan,
+                  spanover: colobj.type === "span",
                   maxwidth: colobj.maxwidth,
                   minwidth: colobj.minwidth,
                   header: colobj.header,
