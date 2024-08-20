@@ -174,7 +174,7 @@ Note that even empty columns need unique names. Feel free to be as descriptive a
 
 **valign** - This _optional_ property controls the vertical alignment of the cells. It only accepts 'top' and 'bottom'. If left out, or if an improper value is used, the setting will be ignored and will use whatever css the game system provides, since as some systems already override the table css and set the whole table to top, or middle. However, if your system has css code to set valign on table properties, using valign should override the system's value.
 
-**rowspan** - This _optional_ property controls the row span of the cells in the column. If this is set, you **MUST** also setup spacer elements below it in your template, and use the **type** of **span**.
+**rowspan** - This _optional_ property controls the row span of the cells in the column. If this is set, you **MUST** also place a corresponding empty row (or rows) below the main row in your template, and use the **type** of **span** (see the **span** element above).
 
 **text** - This property is either a **string**, **boolean**, or an **array** of objects based on if you're using **direct-complex** or not. See examples below.
 
