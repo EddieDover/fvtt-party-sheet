@@ -122,6 +122,12 @@ describe("Utils testing", () => {
       expect(result[1]).toEqual("Hello <i>beautiful <b>World</b></i> with <u>underline</u>");
     });
 
+    it("will parse a request with a font awesome icon", () => {
+      const result = parseExtras("Hello {fa fa-solid fa-star} World", false);
+      expect(result[0]).toEqual(true);
+      expect(result[1]).toEqual('Hello <i class="fa fa-solid fa-star"></i> World');
+    });
+
     it("will parse a request with no extras", () => {
       const result = parseExtras("Hello World", false);
       expect(result[0]).toEqual(false);

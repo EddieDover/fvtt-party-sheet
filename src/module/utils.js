@@ -266,6 +266,8 @@ export function parseExtras(value, isSafeStringNeeded = false) {
     value = value.replaceAll("{s}", "&nbsp;");
   }
 
+  ({ value, isSafeStringNeeded } = parseFontAwesome(value, isSafeStringNeeded));
+
   // Detect if the value contains {sX} where x is a digit and insert that many &nbsp; marks
   ({ value, isSafeStringNeeded } = parseSpacing(value, isSafeStringNeeded));
 
@@ -273,6 +275,24 @@ export function parseExtras(value, isSafeStringNeeded = false) {
   ({ value, isSafeStringNeeded } = parseNewlines(value, isSafeStringNeeded));
 
   return [isSafeStringNeeded, value];
+}
+
+/**
+ * Parses out font awesome elements from a string.
+ * @param {*} value - The value to parse.
+ * @param {*} isSafeStringNeeded - A boolean indicating if a SafeString is needed.
+ * @returns {{value: string, isSafeStringNeeded: boolean}} - The parsed string and a boolean indicating if a SafeString is needed.
+ */
+export function parseFontAwesome(value, isSafeStringNeeded) {
+  let match = value.match(/\{fa\s(fa-([a-zA-Z0-9-]+)\s?)*\}/g);
+  if (match) {
+    for (const item of match) {
+      isSafeStringNeeded = true;
+      let data = item.substring(1, item.length - 1);
+      value = value.replace(item, `<i class="${data}"></i>`);
+    }
+  }
+  return { value, isSafeStringNeeded };
 }
 
 /**
