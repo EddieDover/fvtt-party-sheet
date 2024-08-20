@@ -204,6 +204,19 @@ There are a few special keywords that must be surrounded by { } marks, to allow 
 * {i} & {/i} - Anything between these tags will be displayed in _italics_
 * {b} & {/b} - Anything between these tags will be displayed in **bold**
 * {u} & {/u} - Anything between these tags will be displayed as <u>underlined</u>
+* {fa fa-XXX fa-XXX} - Elements also support embedding Font Awesome icons via {fa fa-XXX fa-XXX} where `fa-XXX` are the classes normally used for [Font Awesome](https://www.fontawesome.com/) embeddings.
+    For example:
+
+    ```json
+      {
+        "name": "STR Mod",
+        "type": "direct",
+        "header": "hide",
+        "text": "{fa fa-solid fa-hand-fist} system.abilities.str.mod"
+      },
+    ```
+
+would result in a solid fist icon being shown next to the STR modifier value
 
 ### Direct-Complex Object
 
