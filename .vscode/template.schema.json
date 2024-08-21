@@ -67,6 +67,7 @@
                 "smallest-from-array",
                 "object-loop",
                 "charactersheet",
+                "span",
                 ""
               ]
             },
@@ -87,6 +88,18 @@
               "description": "Vertical alignment of the cells.",
               "type": "string",
               "enum": ["top", "bottom"]
+            },
+            "showSign": {
+              "description": "Displays a '+' symbol if the value is above zero.",
+              "type": "boolean"
+            },
+            "rowspan": {
+              "description": "Controls the row span of the cells in the column. You need also the corresponding empty rows and type 'span'.",
+              "type": "number"
+            },
+            "colspan": {
+              "description": "Controls the column span of the cells in the column.",
+              "type": "number"
             },
             "text": {
               "description": "Complex property that will be parsed based on the type."
