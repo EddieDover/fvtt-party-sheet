@@ -115,6 +115,10 @@
                     "text": {
                       "description": "The text that will be displayed if the type passes the check.",
                       "type": "string"
+                    },
+                    "else": {
+                      "description": "The text that will be displayed if the type fails the check.",
+                      "type": "string"
                     }
                   },
                   "allOf": [
