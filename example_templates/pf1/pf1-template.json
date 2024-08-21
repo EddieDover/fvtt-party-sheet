@@ -15,7 +15,7 @@
         "name": "Name",
         "type": "direct",
         "header": "show",
-        "text": "name {newline} {i} race.name {/i}"
+        "text": "name {newline} {i} race.name system.traits.type {/i}"
       },
       {
         "name": "STR",
@@ -57,13 +57,13 @@
         "name": "AC",
         "type": "direct",
         "header": "show",
-        "text": "system.attributes.ac.normal.total"
+        "text": "{fa fa-thin fa-shield} system.attributes.ac.normal.total"
       },
       {
         "name": "Fortitude",
         "type": "direct",
         "header": "show",
-        "text": "system.attributes.savingThrows.fort.total"
+        "text": "{fa fa-thin fa-heart} system.attributes.savingThrows.fort.total"
       },
       {
         "name": "Senses",
@@ -128,7 +128,7 @@
         "name": "Classes",
         "type": "object-loop",
         "header": "show",
-        "text": "classes => name {b} level {/b} {newline}"
+        "text": "classes => name level {newline}"
       },
       {
         "name": "STR Mod",
@@ -176,13 +176,13 @@
         "name": "Touch",
         "type": "direct",
         "header": "show",
-        "text": "system.attributes.ac.touch.total"
+        "text": "{fa fa-thin fa-hand-back-point-right} system.attributes.ac.touch.total"
       },
       {
         "name": "Reflexes",
         "type": "direct",
         "header": "show",
-        "text": "system.attributes.savingThrows.ref.total"
+        "text": "{fa fa-thin fa-bolt} system.attributes.savingThrows.ref.total"
       },
       {
         "name": "Span1",
@@ -276,13 +276,13 @@
         "name": "Flat-Footed",
         "type": "direct",
         "header": "show",
-        "text": "system.attributes.ac.flatFooted.total"
+        "text": "{fa fa-thin fa-shoe-prints} system.attributes.ac.flatFooted.total"
       },
       {
         "name": "Will",
         "type": "direct",
         "header": "show",
-        "text": "system.attributes.savingThrows.will.total"
+        "text": "{fa fa-thin fa-brain} system.attributes.savingThrows.will.total"
       },
       {
         "name": "Span1",
