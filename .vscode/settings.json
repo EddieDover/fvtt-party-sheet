@@ -9,5 +9,13 @@
     "editor.codeActionsOnSave": {
       "source.fixAll.markdownlint": "always"
     }
-  }
+  },
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "example_templates/**/*.json"
+      ],
+      "url": "./.vscode/template.schema.json"
+    }
+  ]
 }
