@@ -100,6 +100,16 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <summary>fallout-v2.json - Michael Card (Emo Cthulhu)</summary></details>
 
+## Pathfinder 1e "pf1"
+
+<details>
+
+![Pathfinder 1e Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/pf1/pf1.png)
+
+<summary>pf1-template.json - LeCuay (Chechu)</summary>
+
+</details>
+
 ## Starfinder "sfrpg"
 
 <details>
@@ -177,7 +187,6 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 <summary>vaesen.json - Michael Card (Emo Cthulhu)</summary></details>
 
 ## World of Darkness "Vtm5e"
-
 
 <details>
 
