@@ -21,31 +21,31 @@
         "name": "STR",
         "type": "direct",
         "header": "show",
-        "text": "system.abilities.str.value"
+        "text": "system.abilities.str.total"
       },
       {
         "name": "DEX",
         "type": "direct",
         "header": "show",
-        "text": "system.abilities.dex.value"
+        "text": "system.abilities.dex.total"
       },
       {
         "name": "CON",
         "type": "direct",
         "header": "show",
-        "text": "system.abilities.con.value"
+        "text": "system.abilities.con.total"
       },
       {
         "name": "INT",
         "type": "direct",
         "header": "show",
-        "text": "system.abilities.int.value"
+        "text": "system.abilities.int.total"
       },
       {
         "name": "WIS",
         "type": "direct",
         "header": "show",
-        "text": "system.abilities.wis.value"
+        "text": "system.abilities.wis.total"
       },
       {
         "name": "CHA",
@@ -66,9 +66,10 @@
         "text": "system.attributes.savingThrows.fort.total"
       },
       {
-        "name": "Vision",
+        "name": "Senses",
         "type": "direct-complex",
         "header": "show",
+        "rowspan": 3,
         "text": [
           {
             "type": "match",
@@ -107,6 +108,13 @@
             "text": "True seeing system.traits.senses.ts ft. {newline}"
           }
         ]
+      },
+      {
+        "name": "Statuses",
+        "type": "array-string-builder",
+        "header": "show",
+        "text": "statuses => value, ",
+        "rowspan": 2
       }
     ],
     [
@@ -126,36 +134,42 @@
         "name": "STR Mod",
         "type": "direct",
         "header": "hide",
+        "showSign": true,
         "text": "system.abilities.str.mod"
       },
       {
         "name": "DEX Mod",
         "type": "direct",
         "header": "hide",
+        "showSign": true,
         "text": "system.abilities.dex.mod"
       },
       {
         "name": "CON Mod",
         "type": "direct",
         "header": "hide",
+        "showSign": true,
         "text": "system.abilities.con.mod"
       },
       {
         "name": "INT Mod",
         "type": "direct",
         "header": "hide",
+        "showSign": true,
         "text": "system.abilities.int.mod"
       },
       {
         "name": "WIS Mod",
         "type": "direct",
         "header": "hide",
+        "showSign": true,
         "text": "system.abilities.wis.mod"
       },
       {
         "name": "CHA Mod",
         "type": "direct",
         "header": "hide",
+        "showSign": true,
         "text": "system.abilities.cha.mod"
       },
       {
@@ -171,8 +185,14 @@
         "text": "system.attributes.savingThrows.ref.total"
       },
       {
-        "name": "Spacer2",
-        "type": "direct",
+        "name": "Span1",
+        "type": "span",
+        "header": "hide",
+        "text": ""
+      },
+      {
+        "name": "Span2",
+        "type": "span",
         "header": "hide",
         "text": ""
       }
@@ -185,13 +205,39 @@
         "text": ""
       },
       {
-        "name": "Spacer2",
-        "type": "direct",
-        "header": "hide",
-        "text": ""
+        "name": "Speed",
+        "type": "direct-complex",
+        "header": "show",
+        "text": [
+          {
+            "type": "exists",
+            "value": "system.attributes.speed.land.total",
+            "text": "Land system.attributes.speed.land.total ft. {newline}"
+          },
+          {
+            "type": "exists",
+            "value": "system.attributes.speed.burrow.total",
+            "text": "Burrow system.attributes.speed.burrow.total ft. {newline}"
+          },
+          {
+            "type": "exists",
+            "value": "system.attributes.speed.climb.total",
+            "text": "Climb system.attributes.speed.climb.total ft. {newline}"
+          },
+          {
+            "type": "exists",
+            "value": "system.attributes.speed.fly.total",
+            "text": "Fly system.attributes.speed.fly.total ft. ( system.attributes.speed.fly.maneuverability ) {newline}"
+          },
+          {
+            "type": "exists",
+            "value": "system.attributes.speed.swim.total",
+            "text": "Swim system.attributes.speed.swim.total ft. {newline}"
+          }
+        ]
       },
       {
-        "name": "Spacer3",
+        "name": "Spacer2",
         "type": "direct",
         "header": "hide",
         "text": ""
@@ -239,10 +285,37 @@
         "text": "system.attributes.savingThrows.will.total"
       },
       {
-        "name": "Spacer9",
-        "type": "direct",
+        "name": "Span1",
+        "type": "span",
         "header": "hide",
         "text": ""
+      },
+      {
+        "name": "Currency",
+        "type": "direct-complex",
+        "header": "show",
+        "text": [
+          {
+            "type": "exists",
+            "value": "system.currency.pp",
+            "text": "system.currency.pp pp{s3}"
+          },
+          {
+            "type": "exists",
+            "value": "system.currency.gp",
+            "text": "system.currency.gp gp{s3}"
+          },
+          {
+            "type": "exists",
+            "value": "system.currency.sp",
+            "text": "system.currency.sp sp{s3}"
+          },
+          {
+            "type": "exists",
+            "value": "system.currency.cp",
+            "text": "system.currency.cp cp{s3}"
+          }
+        ]
       }
     ]
   ]
