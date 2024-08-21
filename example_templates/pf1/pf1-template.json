@@ -57,13 +57,13 @@
         "name": "AC",
         "type": "direct",
         "header": "show",
-        "text": "{fa fa-thin fa-shield} system.attributes.ac.normal.total"
+        "text": "{fa fa-solid fa-shield-halved} system.attributes.ac.normal.total"
       },
       {
         "name": "Fortitude",
         "type": "direct",
         "header": "show",
-        "text": "{fa fa-thin fa-heart} system.attributes.savingThrows.fort.total"
+        "text": "{fa fa-solid fa-heart-circle-plus} system.attributes.savingThrows.fort.total"
       },
       {
         "name": "Senses",
@@ -176,13 +176,13 @@
         "name": "Touch",
         "type": "direct",
         "header": "show",
-        "text": "{fa fa-thin fa-hand-back-point-right} system.attributes.ac.touch.total"
+        "text": "{fa fa-solid fa-hand-point-up} system.attributes.ac.touch.total"
       },
       {
         "name": "Reflexes",
         "type": "direct",
         "header": "show",
-        "text": "{fa fa-thin fa-bolt} system.attributes.savingThrows.ref.total"
+        "text": "{fa fa-solid fa-level-down-alt} system.attributes.savingThrows.ref.total"
       },
       {
         "name": "Span1",
@@ -276,13 +276,13 @@
         "name": "Flat-Footed",
         "type": "direct",
         "header": "show",
-        "text": "{fa fa-thin fa-shoe-prints} system.attributes.ac.flatFooted.total"
+        "text": "{fa fa-solid fa-shoe-prints} system.attributes.ac.flatFooted.total"
       },
       {
         "name": "Will",
         "type": "direct",
         "header": "show",
-        "text": "{fa fa-thin fa-brain} system.attributes.savingThrows.will.total"
+        "text": "{fa fa-solid fa-brain} system.attributes.savingThrows.will.total"
       },
       {
         "name": "Span1",
