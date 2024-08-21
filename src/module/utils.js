@@ -278,6 +278,24 @@ export function parseExtras(value, isSafeStringNeeded = false) {
 }
 
 /**
+ * Add a sign to a value.
+ * @param {string|number} value - The value to add a sign to
+ * @returns {string} The value with a sign
+ * @memberof PartySheetForm
+ */
+export function addSign(value) {
+  if (typeof value === "string") {
+    const numValue = Number(value);
+    if (!isNaN(numValue) && numValue > 0 && !value.includes("+")) {
+      value = "+" + value;
+    }
+  } else if (typeof value === "number" && value > 0) {
+    value = "+" + value.toString();
+  }
+  return value.toString();
+}
+
+ /**
  * Parses out font awesome elements from a string.
  * @param {*} value - The value to parse.
  * @param {*} isSafeStringNeeded - A boolean indicating if a SafeString is needed.

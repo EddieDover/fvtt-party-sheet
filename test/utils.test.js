@@ -1,4 +1,11 @@
-import { parsePluses, parseSpacing, parseExtras, parseNewlines, extractPropertyByString } from "../src/module/utils";
+import {
+  parsePluses,
+  parseSpacing,
+  parseExtras,
+  parseNewlines,
+  extractPropertyByString,
+  addSign,
+} from "../src/module/utils";
 
 describe("Utils testing", () => {
   describe("Plus parsing", () => {
@@ -88,6 +95,40 @@ describe("Utils testing", () => {
       const result = parseNewlines("Hello World", false);
       expect(result.value).toEqual("Hello World");
       expect(result.isSafeStringNeeded).toEqual(false);
+    });
+  });
+
+  describe("addSign parsing", () => {
+    it("will show a negative sign", () => {
+      expect(addSign(-1)).toEqual("-1");
+    });
+
+    it("will show a positive sign", () => {
+      expect(addSign(1)).toEqual("+1");
+    });
+
+    it("will show a positive sign for a string", () => {
+      expect(addSign("1")).toEqual("+1");
+    });
+
+    it("will show a negative sign for a string", () => {
+      expect(addSign("-1")).toEqual("-1");
+    });
+
+    it("will show a positive sign for a string with a plus sign", () => {
+      expect(addSign("+1")).toEqual("+1");
+    });
+
+    it("will show a negative sign for a string with a minus sign", () => {
+      expect(addSign("-1")).toEqual("-1");
+    });
+
+    it("will not show a sign for a zero", () => {
+      expect(addSign(0)).toEqual("0");
+    });
+
+    it("will not show a sign for a string zero", () => {
+      expect(addSign("0")).toEqual("0");
     });
   });
 
