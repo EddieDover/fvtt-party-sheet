@@ -97,10 +97,6 @@
               "description": "Controls the row span of the cells in the column. You need also the corresponding empty rows and type 'span'.",
               "type": "number"
             },
-            "colspan": {
-              "description": "Controls the column span of the cells in the column.",
-              "type": "number"
-            },
             "text": {
               "description": "Complex property that will be parsed based on the type."
             }
