@@ -266,6 +266,8 @@ export function parseExtras(value, isSafeStringNeeded = false) {
     value = value.replaceAll("{s}", "&nbsp;");
   }
 
+  ({ value, isSafeStringNeeded } = parseFontAwesome(value, isSafeStringNeeded));
+
   // Detect if the value contains {sX} where x is a digit and insert that many &nbsp; marks
   ({ value, isSafeStringNeeded } = parseSpacing(value, isSafeStringNeeded));
 
@@ -273,6 +275,42 @@ export function parseExtras(value, isSafeStringNeeded = false) {
   ({ value, isSafeStringNeeded } = parseNewlines(value, isSafeStringNeeded));
 
   return [isSafeStringNeeded, value];
+}
+
+/**
+ * Add a sign to a value.
+ * @param {string|number} value - The value to add a sign to
+ * @returns {string} The value with a sign
+ * @memberof PartySheetForm
+ */
+export function addSign(value) {
+  if (typeof value === "string") {
+    const numValue = Number(value);
+    if (!isNaN(numValue) && numValue > 0 && !value.includes("+")) {
+      value = "+" + value;
+    }
+  } else if (typeof value === "number" && value > 0) {
+    value = "+" + value.toString();
+  }
+  return value.toString();
+}
+
+ /**
+ * Parses out font awesome elements from a string.
+ * @param {*} value - The value to parse.
+ * @param {*} isSafeStringNeeded - A boolean indicating if a SafeString is needed.
+ * @returns {{value: string, isSafeStringNeeded: boolean}} - The parsed string and a boolean indicating if a SafeString is needed.
+ */
+export function parseFontAwesome(value, isSafeStringNeeded) {
+  let match = value.match(/\{fa\s(fa-([a-zA-Z0-9-]+)\s?)*\}/g);
+  if (match) {
+    for (const item of match) {
+      isSafeStringNeeded = true;
+      let data = item.substring(1, item.length - 1);
+      value = value.replace(item, `<i class="${data}"></i>`);
+    }
+  }
+  return { value, isSafeStringNeeded };
 }
 
 /**

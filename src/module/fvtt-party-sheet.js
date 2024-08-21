@@ -73,6 +73,12 @@ Handlebars.registerHelper("getColSpan", function (row, key) {
 });
 
 // @ts-ignore
+Handlebars.registerHelper("getRowSpan", function (row, key) {
+  const myoptions = row[key]?.options ?? {};
+  return myoptions?.rowspan ?? 1;
+});
+
+// @ts-ignore
 Handlebars.registerHelper("getMaxWidth", function (row, key) {
   const myoptions = row[key]?.options ?? {};
   return myoptions?.maxwidth ? `${myoptions?.maxwidth}px` : "none";
@@ -107,6 +113,15 @@ Handlebars.registerHelper("getKeys", function (obj, options) {
     result += options.fn(element);
   }
   return result;
+});
+
+// @ts-ignore
+Handlebars.registerHelper("isSpanOver", function (row, obj, options) {
+  const spanover = row[obj]?.options?.spanover;
+  if (!spanover) {
+    return options.fn(this);
+  }
+  return options.inverse(this);
 });
 
 // @ts-ignore

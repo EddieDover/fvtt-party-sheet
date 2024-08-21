@@ -1,4 +1,11 @@
-import { parsePluses, parseSpacing, parseExtras, parseNewlines, extractPropertyByString } from "../src/module/utils";
+import {
+  parsePluses,
+  parseSpacing,
+  parseExtras,
+  parseNewlines,
+  extractPropertyByString,
+  addSign,
+} from "../src/module/utils";
 
 describe("Utils testing", () => {
   describe("Plus parsing", () => {
@@ -91,6 +98,40 @@ describe("Utils testing", () => {
     });
   });
 
+  describe("addSign parsing", () => {
+    it("will show a negative sign", () => {
+      expect(addSign(-1)).toEqual("-1");
+    });
+
+    it("will show a positive sign", () => {
+      expect(addSign(1)).toEqual("+1");
+    });
+
+    it("will show a positive sign for a string", () => {
+      expect(addSign("1")).toEqual("+1");
+    });
+
+    it("will show a negative sign for a string", () => {
+      expect(addSign("-1")).toEqual("-1");
+    });
+
+    it("will show a positive sign for a string with a plus sign", () => {
+      expect(addSign("+1")).toEqual("+1");
+    });
+
+    it("will show a negative sign for a string with a minus sign", () => {
+      expect(addSign("-1")).toEqual("-1");
+    });
+
+    it("will not show a sign for a zero", () => {
+      expect(addSign(0)).toEqual("0");
+    });
+
+    it("will not show a sign for a string zero", () => {
+      expect(addSign("0")).toEqual("0");
+    });
+  });
+
   describe("Extras parsing", () => {
     it("will parse a simple request with italics", () => {
       const result = parseExtras("Hello {i}World{/i}", false);
@@ -120,6 +161,12 @@ describe("Utils testing", () => {
       const result = parseExtras("Hello {i}beautiful {b}World{/b}{/i} with {u}underline{/u}", false);
       expect(result[0]).toEqual(true);
       expect(result[1]).toEqual("Hello <i>beautiful <b>World</b></i> with <u>underline</u>");
+    });
+
+    it("will parse a request with a font awesome icon", () => {
+      const result = parseExtras("Hello {fa fa-solid fa-star} World", false);
+      expect(result[0]).toEqual(true);
+      expect(result[1]).toEqual('Hello <i class="fa fa-solid fa-star"></i> World');
     });
 
     it("will parse a request with no extras", () => {

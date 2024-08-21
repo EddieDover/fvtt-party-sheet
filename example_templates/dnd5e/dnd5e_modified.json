@@ -122,36 +122,42 @@
         "name": "STR Mod",
         "type": "direct",
         "header": "hide",
+        "showSign": true,
         "text": "system.abilities.str.mod"
       },
       {
         "name": "DEX Mod",
         "type": "direct",
         "header": "hide",
+        "showSign": true,
         "text": "system.abilities.dex.mod"
       },
       {
         "name": "CON Mod",
         "type": "direct",
         "header": "hide",
+        "showSign": true,
         "text": "system.abilities.con.mod"
       },
       {
         "name": "INT Mod",
         "type": "direct",
         "header": "hide",
+        "showSign": true,
         "text": "system.abilities.int.mod"
       },
       {
         "name": "WIS Mod",
         "type": "direct",
         "header": "hide",
+        "showSign": true,
         "text": "system.abilities.wis.mod"
       },
       {
         "name": "CHA Mod",
         "type": "direct",
         "header": "hide",
+        "showSign": true,
         "text": "system.abilities.cha.mod"
       },
       {

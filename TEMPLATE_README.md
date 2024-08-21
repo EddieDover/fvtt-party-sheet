@@ -161,6 +161,7 @@ Note that even empty columns need unique names. Feel free to be as descriptive a
 * **smallest-from-array** - This will accept a **text** property of an array and return the largest numeric item from it. See examples below for more information
 * **object-loop** - This will accept a **text** property in the following format: **<optional_dropdown> <block_prefix> <object_with_subobjects> => <sub_property_string>**. Multiple object-loops may be performed, by splitting each with a double-pipe `||`. See examples below for more information
 * **charactersheet** - This will display the character sheet in the column, ignoring anything in the **text** property.
+* **span** - This element will mark an individual td as a spannable cell, allowing a column setup as 'rowspan'
 
 **header** - This property controls if the column text is displayed as a header in the generated table. It accepts either 'show' or 'skip'.
 
@@ -172,6 +173,10 @@ Note that even empty columns need unique names. Feel free to be as descriptive a
 **minwidth** - This _optional_ property controls the minimum width of the column. Value must be a number that represents the width in pixels. `"minwidth": 100,`
 
 **valign** - This _optional_ property controls the vertical alignment of the cells. It only accepts 'top' and 'bottom'. If left out, or if an improper value is used, the setting will be ignored and will use whatever css the game system provides, since as some systems already override the table css and set the whole table to top, or middle. However, if your system has css code to set valign on table properties, using valign should override the system's value.
+
+**showSign** - This _optional_ property, when used on a _direct_ or _direct-complex_ object, will show a `+` sign if displaying a numeric value above zero. (Useful for ability modifier display: `5` becomes `+5`)
+
+**rowspan** - This _optional_ property controls the row span of the cells in the column. If this is set, you **MUST** also place a corresponding empty row (or rows) below the main row in your template, and use the **type** of **span** (see the **span** element above).
 
 **text** - This property is either a **string**, **boolean**, or an **array** of objects based on if you're using **direct-complex** or not. See examples below.
 
@@ -199,6 +204,19 @@ There are a few special keywords that must be surrounded by { } marks, to allow 
 * {i} & {/i} - Anything between these tags will be displayed in _italics_
 * {b} & {/b} - Anything between these tags will be displayed in **bold**
 * {u} & {/u} - Anything between these tags will be displayed as <u>underlined</u>
+* {fa fa-XXX fa-XXX} - Elements also support embedding Font Awesome icons via {fa fa-XXX fa-XXX} where `fa-XXX` are the classes normally used for [Font Awesome](https://www.fontawesome.com/) embeddings.
+    For example:
+
+    ```json
+      {
+        "name": "STR Mod",
+        "type": "direct",
+        "header": "hide",
+        "text": "{fa fa-solid fa-hand-fist} system.abilities.str.mod"
+      },
+    ```
+
+would result in a solid fist icon being shown next to the STR modifier value
 
 ### Direct-Complex Object
 
