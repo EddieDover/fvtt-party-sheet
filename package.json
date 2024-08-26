@@ -1,6 +1,6 @@
 {
   "name": "fvtt-party-sheet",
-  "version": "2.5.1",
+  "version": "2.6.0",
   "description": "A FoundryVTT module that adds a customizable Party Sheet window.",
   "main": "index.js",
   "author": {
