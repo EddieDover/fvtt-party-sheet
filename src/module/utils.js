@@ -61,25 +61,14 @@ export function isForgeVTT() {
  */
 export async function getModuleTemplate(path) {
   try {
-    const templateName = path.split("/").pop().split(".")[0];
-    log(`Loading template: ${templateName}`);
-
     /** @type {TemplateData} */
     const template = JSON.parse(await fetch(path).then((r) => r.text()));
     if (template.name && template.author && template.system && template.rows) {
-      if (template.version && template.minimumSystemVersion) {
-        console.log(`${path} - Good Template`);
-      } else {
-        console.warn(`${path} - Missing Version Information`);
-      }
       return template;
     } else {
-      console.log(`${path} - Bad Template`);
       return null;
     }
   } catch (e) {
-    console.log(`${path} - Failed to Load. See error below.`);
-    console.error(e);
     return null;
   }
 }
@@ -94,7 +83,7 @@ export async function loadSystemTemplate(path) {
     const templateName = path.split("/").pop().split(".")[0];
     log(`Loading template: ${templateName}`);
 
-    /** @type TemplateData */
+    /** @type {TemplateData} */
     const template = JSON.parse(await fetch(path).then((r) => r.text()));
     if (template.name && template.author && template.system && template.rows) {
       if (template.version && template.minimumSystemVersion) {
@@ -161,22 +150,6 @@ export async function loadModuleTemplates() {
   const templatePaths = [];
   // @ts-ignore
 
-  let assetPrefix = "data";
-
-  if (isForgeVTT()) {
-    console.log("Detected ForgeVTT");
-    // @ts-ignore
-    // eslint-disable-next-line no-undef
-    assetPrefix = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId()) + "/";
-  }
-
-  try {
-    // @ts-ignore
-    await FilePicker.createDirectory(assetPrefix, "partysheets"); //, { bucket: "public" }
-  } catch (e) {
-    console.log("Failed creating PartySheets directory. It probably already exists.");
-  }
-
   // @ts-ignore
   const templateFolders = await FilePicker.browse("data", "/modules/fvtt-party-sheet/example_templates/");
   for (const folder of templateFolders.dirs) {
@@ -189,8 +162,6 @@ export async function loadModuleTemplates() {
       }
     }
   }
-
-  console.log(templatePaths);
 
   /** @type {TemplateData[]} */
   const includedTemplates = [];

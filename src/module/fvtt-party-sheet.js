@@ -249,6 +249,7 @@ Hooks.on("ready", async () => {
     if (!areTemplatesLoaded()) {
       log("Loading templates");
       await loadSystemTemplates();
+
       const template_validation = await validateSystemTemplates();
       if (
         template_validation.outOfDateSystems ||

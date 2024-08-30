@@ -16,11 +16,11 @@
     </button>
     {{/unless}}
   </div>
-  {{#if applicableSystems.length}}
-    {{#hcifgte applicableSystems.length 2}}
+  {{#if applicableTemplates.length}}
+    {{#hcifgte applicableTemplates.length 2}}
     <select name="fvtt-party-sheet-system" id="fvtt-party-sheet-system-select">
-      {{#each applicableSystems as |system|}}
-      <option value="{{system.name}}___{{system.author}}" {{#ifCond system.name '==' ../selectedName}} {{#ifCond system.author '==' ../selectedAuthor }}selected{{/ifCond}}{{/ifCond}}>{{system.name}} - {{system.author}}</option>
+      {{#each applicableTemplates as |template|}}
+      <option value="{{template.name}}___{{template.author}}" {{#ifCond template.name '==' ../selectedName}} {{#ifCond template.author '==' ../selectedAuthor }}selected{{/ifCond}}{{/ifCond}}>{{template.name}} - {{template.author}}</option>
       {{/each}}
     </select>
     {{/hcifgte}}

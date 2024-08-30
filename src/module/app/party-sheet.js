@@ -596,11 +596,15 @@ export class PartySheetForm extends FormApplication {
     // @ts-ignore
     const enableOnlyOnline = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
     // @ts-ignore
-    const customTemplate = getCustomTemplates();
+    const customTemplates = getCustomTemplates();
 
-    const applicableTemplates = customTemplate.filter((data) => {
-      // @ts-ignore
-      return data.system === game.system.id && data.minimumSystemVersion <= game.system.version;
+    const applicableTemplates = customTemplates.filter((data) => {
+      return (
+        // @ts-ignore
+        data.system === game.system.id &&
+        // @ts-ignore
+        (data.minimumSystemVersion ? data.minimumSystemVersion <= game.system.version : true)
+      );
     });
     let selectedIdx = getSelectedTemplate()
       ? applicableTemplates.findIndex((data) => data === getSelectedTemplate())
@@ -637,7 +641,7 @@ export class PartySheetForm extends FormApplication {
       enableOnlyOnline,
       rowcount,
       players,
-      applicableSystems: applicableTemplates,
+      applicableTemplates,
       selectedName,
       selectedAuthor,
       invalidTemplateError,

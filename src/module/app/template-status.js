@@ -9,7 +9,6 @@ export class TemplateStatusForm extends FormApplication {
   }
 
   getData(options) {
-    console.log(this.template_validation);
     // @ts-ignore
     return mergeObject(super.getData(options), {
       outOfDateTemplates: this.template_validation.outOfDateTemplates,
