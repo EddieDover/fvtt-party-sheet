@@ -43,13 +43,15 @@
  * @property { string } name - The name of the template.
  * @property { string } author - The author of the template.
  * @property { string } version - The version of the template.
+ * @property { string } providedVersion - The version of the template provided.
  * @property { string } minimumSystemVersion - The minimum system version required.
  */
 
 /**
  * @typedef TemplateValidityReturnData
  * @property { TemplateValidityData[] } valid - The valid templates.
- * @property { TemplateValidityData[] } outOfDate - The out of date templates.
- * @property { TemplateValidityData[] } tooNew - The templates that are too new.
+ * @property { TemplateValidityData[] } outOfDateTemplates - The out of date templates.
+ * @property { TemplateValidityData[] } outOfDateSystems - The out of date systems.
+ * @property { TemplateValidityData[] } noSystemInformation - The templates that have no system information.
  * @property { TemplateValidityData[] } noVersionInformation - The templates that have no version information.
  */

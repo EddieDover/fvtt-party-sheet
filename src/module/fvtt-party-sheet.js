@@ -3,6 +3,7 @@ import { registerSettings } from "./app/settings.js";
 import { PartySheetForm } from "./app/party-sheet.js";
 import { log, loadSystemTemplates, toProperCase, areTemplatesLoaded, validateSystemTemplates } from "./utils.js";
 import { TemplateStatusForm } from "./app/template-status.js";
+import md5 from "blueimp-md5";
 
 let currentPartySheet = null;
 let currentTemplateStatusForm = null;
@@ -248,9 +249,22 @@ Hooks.on("ready", async () => {
     if (!areTemplatesLoaded()) {
       log("Loading templates");
       await loadSystemTemplates();
-      const template_validation = validateSystemTemplates();
-      if (template_validation.outOfDate || template_validation.tooNew || template_validation.noVersionInformation) {
-        toggleTemplateStatusForm(template_validation);
+      const template_validation = await validateSystemTemplates();
+      if (
+        template_validation.outOfDateSystems ||
+        template_validation.outOfDateTemplates ||
+        template_validation.noVersionInformation ||
+        template_validation.noSystemInformation
+      ) {
+        const newHash = md5(JSON.stringify(template_validation));
+        // @ts-ignore
+        const lastHash = game.settings.get("fvtt-party-sheet", "lastTemplateValidationHash");
+
+        if (newHash.toString() !== lastHash.toString()) {
+          // @ts-ignore
+          game.settings.set("fvtt-party-sheet", "lastTemplateValidationHash", newHash);
+          toggleTemplateStatusForm(template_validation);
+        }
       }
     }
   }

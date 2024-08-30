@@ -57,6 +57,36 @@ export function isForgeVTT() {
 /**
  * Load all the user-provided templates for systems
  * @param {string} path The path to the template
+ * @returns {Promise<TemplateData>} A promise that resolves when the template is loaded
+ */
+export async function getModuleTemplate(path) {
+  try {
+    const templateName = path.split("/").pop().split(".")[0];
+    log(`Loading template: ${templateName}`);
+
+    /** @type {TemplateData} */
+    const template = JSON.parse(await fetch(path).then((r) => r.text()));
+    if (template.name && template.author && template.system && template.rows) {
+      if (template.version && template.minimumSystemVersion) {
+        console.log(`${path} - Good Template`);
+      } else {
+        console.warn(`${path} - Missing Version Information`);
+      }
+      return template;
+    } else {
+      console.log(`${path} - Bad Template`);
+      return null;
+    }
+  } catch (e) {
+    console.log(`${path} - Failed to Load. See error below.`);
+    console.error(e);
+    return null;
+  }
+}
+
+/**
+ * Load all the user-provided templates for systems
+ * @param {string} path The path to the template
  * @returns {Promise<void>} A promise that resolves when the template is loaded
  */
 export async function loadSystemTemplate(path) {
@@ -123,36 +153,109 @@ export async function loadSystemTemplates() {
 }
 
 /**
- * Validates the system templates.
- * @returns {TemplateValidityReturnData} - A list of the valid, out of date, and too new templates.
+ * Load all the user-provided templates for modules
+ * @returns {Promise<TemplateData[]>} A promise that resolves when the templates are loaded
  */
-export function validateSystemTemplates() {
+export async function loadModuleTemplates() {
+  // Look inside the "partysheets" folder. Any JSON file inside should be loaded
+  const templatePaths = [];
+  // @ts-ignore
+
+  let assetPrefix = "data";
+
+  if (isForgeVTT()) {
+    console.log("Detected ForgeVTT");
+    // @ts-ignore
+    // eslint-disable-next-line no-undef
+    assetPrefix = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId()) + "/";
+  }
+
+  try {
+    // @ts-ignore
+    await FilePicker.createDirectory(assetPrefix, "partysheets"); //, { bucket: "public" }
+  } catch (e) {
+    console.log("Failed creating PartySheets directory. It probably already exists.");
+  }
+
+  // @ts-ignore
+  const templateFolders = await FilePicker.browse("data", "/modules/fvtt-party-sheet/example_templates/");
+  for (const folder of templateFolders.dirs) {
+    // @ts-ignore
+    const templateFiles = await FilePicker.browse("data", folder);
+
+    for (const file of templateFiles.files) {
+      if (file.endsWith(".json")) {
+        templatePaths.push(file);
+      }
+    }
+  }
+
+  console.log(templatePaths);
+
+  /** @type {TemplateData[]} */
+  const includedTemplates = [];
+
+  for (const path of templatePaths) {
+    includedTemplates.push(await getModuleTemplate(path));
+  }
+
+  return includedTemplates;
+}
+
+/**
+ * Validates the system templates.
+ * @returns {Promise<TemplateValidityReturnData>} - A list of the valid, out of date, and too new templates.
+ */
+export async function validateSystemTemplates() {
   /** @type {TemplateValidityReturnData} */
   let output = {
     valid: [],
-    outOfDate: [],
-    tooNew: [],
+    outOfDateSystems: [],
+    outOfDateTemplates: [],
     noVersionInformation: [],
+    noSystemInformation: [],
   };
 
+  const moduleTemplates = await loadModuleTemplates();
+
   for (const template of customTemplates) {
+    const moduleTemplate = moduleTemplates.find((t) => t.name === template.name);
+    let err = false;
+
     const templateData = {
       name: template.name,
       author: template.author,
       version: template.version,
+      providedVersion: moduleTemplate?.version ?? "-",
       minimumSystemVersion: template.minimumSystemVersion,
     };
     if (!template.minimumSystemVersion) {
       output.noVersionInformation.push(templateData);
+      err = true;
+    }
+
+    if (!template.minimumSystemVersion) {
+      output.noSystemInformation.push(templateData);
+      err = true;
+    }
+
+    if (!moduleTemplate) {
+      output.valid.push(templateData);
       continue;
     }
+
+    if (moduleTemplate && compareSymVer(template.version, moduleTemplate.version) < 0) {
+      output.outOfDateTemplates.push(templateData);
+      err = true;
+    }
+
     // @ts-ignore
-    const compare = compareSymVer(template.minimumSystemVersion, game.system.version);
-    if (compare > 0) {
-      output.tooNew.push(templateData);
-    } else if (compare < 0) {
-      output.outOfDate.push(templateData);
-    } else {
+    if (compareSymVer(template.minimumSystemVersion, game.system.version) < 0) {
+      output.outOfDateSystems.push(templateData);
+      err = true;
+    }
+
+    if (!err) {
       output.valid.push(templateData);
     }
   }
@@ -167,10 +270,11 @@ export function validateSystemTemplates() {
  * @returns {number} Returns 0 if the strings are equal, -1 if a is less than b, and 1 if a is greater than b.
  */
 export function compareSymVer(a, b) {
+  if (!a || !b || !a.includes(".") || !b.includes(".")) {
+    return 0;
+  }
   const [aMajor, aMinor, aPatch] = a.split(".").map(Number);
   const [bMajor, bMinor, bPatch] = b.split(".").map(Number);
-  console.log(aMajor, aMinor, aPatch);
-  console.log(bMajor, bMinor, bPatch);
 
   if (aMajor < bMajor) return -1;
   if (aMajor > bMajor) return 1;

@@ -12,9 +12,10 @@ export class TemplateStatusForm extends FormApplication {
     console.log(this.template_validation);
     // @ts-ignore
     return mergeObject(super.getData(options), {
-      outOfDate: this.template_validation.outOfDate,
-      tooNew: this.template_validation.tooNew,
+      outOfDateTemplates: this.template_validation.outOfDateTemplates,
+      outOfDateSystems: this.template_validation.outOfDateSystems,
       noVersionInformation: this.template_validation.noVersionInformation,
+      noSystemInformation: this.template_validation.noSystemInformation,
       // @ts-ignore
       systemVersion: game.system.version,
     });
