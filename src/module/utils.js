@@ -1,9 +1,8 @@
-import { DND5E } from "./systems/dnd5e";
+/** @type {TemplateData[]} */
+let customTemplates = [];
 
-let customSystems = [DND5E];
-let selectedSystem = null;
+let selectedTemplate = null;
 let templatesLoaded = false;
-
 /**
  * Are the templates loaded?
  * @returns {boolean} True if the templates are loaded
@@ -64,10 +63,16 @@ export async function loadSystemTemplate(path) {
   try {
     const templateName = path.split("/").pop().split(".")[0];
     log(`Loading template: ${templateName}`);
+
+    /** @type TemplateData */
     const template = JSON.parse(await fetch(path).then((r) => r.text()));
     if (template.name && template.author && template.system && template.rows) {
-      console.log(`${path} - Good Template`);
-      addCustomSystem(template);
+      if (template.version && template.minimumSystemVersion) {
+        console.log(`${path} - Good Template`);
+      } else {
+        console.warn(`${path} - Missing Version Information`);
+      }
+      addCustomTemplate(template);
     } else {
       console.log(`${path} - Bad Template`);
     }
@@ -118,6 +123,65 @@ export async function loadSystemTemplates() {
 }
 
 /**
+ * Validates the system templates.
+ * @returns {TemplateValidityReturnData} - A list of the valid, out of date, and too new templates.
+ */
+export function validateSystemTemplates() {
+  /** @type {TemplateValidityReturnData} */
+  let output = {
+    valid: [],
+    outOfDate: [],
+    tooNew: [],
+    noVersionInformation: [],
+  };
+
+  for (const template of customTemplates) {
+    const templateData = {
+      name: template.name,
+      author: template.author,
+      version: template.version,
+      minimumSystemVersion: template.minimumSystemVersion,
+    };
+    if (!template.minimumSystemVersion) {
+      output.noVersionInformation.push(templateData);
+      continue;
+    }
+    // @ts-ignore
+    const compare = compareSymVer(template.minimumSystemVersion, game.system.version);
+    if (compare > 0) {
+      output.tooNew.push(templateData);
+    } else if (compare < 0) {
+      output.outOfDate.push(templateData);
+    } else {
+      output.valid.push(templateData);
+    }
+  }
+
+  return output;
+}
+
+/**
+ * Compares to SymVer strings.
+ * @param {string} a - The first string to compare.
+ * @param {string} b - The second string to compare.
+ * @returns {number} Returns 0 if the strings are equal, -1 if a is less than b, and 1 if a is greater than b.
+ */
+export function compareSymVer(a, b) {
+  const [aMajor, aMinor, aPatch] = a.split(".").map(Number);
+  const [bMajor, bMinor, bPatch] = b.split(".").map(Number);
+  console.log(aMajor, aMinor, aPatch);
+  console.log(bMajor, bMinor, bPatch);
+
+  if (aMajor < bMajor) return -1;
+  if (aMajor > bMajor) return 1;
+  if (aMinor < bMinor) return -1;
+  if (aMinor > bMinor) return 1;
+  if (aPatch < bPatch) return -1;
+  if (aPatch > bPatch) return 1;
+  return 0; // strings are equal
+}
+
+/**
  * Converts a string to proper case.
  * @param {string} inputString - The input string to convert.
  * @returns {string} - The converted string in proper case.
@@ -134,32 +198,32 @@ export function toProperCase(inputString) {
  * Updates the selected system.
  * @param {*} system - The system to select.
  */
-export function updateSelectedSystem(system) {
-  selectedSystem = system;
+export function updateSelectedTemplate(system) {
+  selectedTemplate = system;
 }
 
 /**
  * Retrieves the selected system.
  * @returns {*} - The selected system.
  */
-export function getSelectedSystem() {
-  return selectedSystem;
+export function getSelectedTemplate() {
+  return selectedTemplate;
 }
 
 /**
  * Adds a custom system to the list of systems.
  * @param {*} system - The custom system to add.
  */
-export function addCustomSystem(system) {
-  customSystems.push(system);
+export function addCustomTemplate(system) {
+  customTemplates.push(system);
 }
 
 /**
  * Retrieves the list of custom systems.
  * @returns {*} - The list of custom systems.
  */
-export function getCustomSystems() {
-  return customSystems;
+export function getCustomTemplates() {
+  return customTemplates;
 }
 
 /**
@@ -295,7 +359,7 @@ export function addSign(value) {
   return value.toString();
 }
 
- /**
+/**
  * Parses out font awesome elements from a string.
  * @param {*} value - The value to parse.
  * @param {*} isSafeStringNeeded - A boolean indicating if a SafeString is needed.

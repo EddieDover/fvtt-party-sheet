@@ -1,9 +1,11 @@
 /* eslint-disable no-undef */
 import { registerSettings } from "./app/settings.js";
 import { PartySheetForm } from "./app/party-sheet.js";
-import { log, loadSystemTemplates, toProperCase, areTemplatesLoaded } from "./utils.js";
+import { log, loadSystemTemplates, toProperCase, areTemplatesLoaded, validateSystemTemplates } from "./utils.js";
+import { TemplateStatusForm } from "./app/template-status.js";
 
 let currentPartySheet = null;
+let currentTemplateStatusForm = null;
 
 // @ts-ignore
 Handlebars.registerHelper("hccontains", function (needle, haystack, options) {
@@ -168,7 +170,7 @@ Handlebars.registerHelper("ifCond", function (v1, operator, v2, options) {
 });
 
 /**
- *
+ * Toggles the party sheet
  */
 function togglePartySheet() {
   if (currentPartySheet?.rendered) {
@@ -177,6 +179,20 @@ function togglePartySheet() {
     currentPartySheet = new PartySheetForm();
     // @ts-ignore
     currentPartySheet.render(true);
+  }
+}
+
+/**
+ * Toggles the template status form
+ * @param {TemplateValidityReturnData} template_validation - The template validation data
+ */
+function toggleTemplateStatusForm(template_validation) {
+  if (currentTemplateStatusForm?.rendered) {
+    currentTemplateStatusForm.close();
+  } else {
+    currentTemplateStatusForm = new TemplateStatusForm(template_validation);
+    // @ts-ignore
+    currentTemplateStatusForm.render(true);
   }
 }
 
@@ -232,6 +248,10 @@ Hooks.on("ready", async () => {
     if (!areTemplatesLoaded()) {
       log("Loading templates");
       await loadSystemTemplates();
+      const template_validation = validateSystemTemplates();
+      if (template_validation.outOfDate || template_validation.tooNew || template_validation.noVersionInformation) {
+        toggleTemplateStatusForm(template_validation);
+      }
     }
   }
   showButton();

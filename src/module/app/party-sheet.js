@@ -2,13 +2,13 @@
 import {
   addSign,
   extractPropertyByString,
-  getCustomSystems,
-  getSelectedSystem,
+  getCustomTemplates,
+  getSelectedTemplate,
   parseExtras,
   parsePluses,
   TemplateProcessError,
   trimIfString,
-  updateSelectedSystem,
+  updateSelectedTemplate,
 } from "../utils.js";
 import { HiddenCharactersSettings } from "./hidden-characters-settings.js";
 
@@ -27,46 +27,8 @@ export class PartySheetForm extends FormApplication {
   }
 
   /**
-   * @typedef { 'direct' | 'math' | 'direct-complex' | 'string' | 'array-string-builder'|'span' } SystemDataColumnType
-   * @typedef { 'show' | 'hide' | 'skip' } SystemDataColumnHeader
-   * @typedef { 'left' | 'center' | 'right' } SystemDataColumnAlignType
-   * @typedef { 'top' | 'bottom' } SystemDataColumnVAlignType
-   */
-
-  /**
-   * @typedef SystemDataColumn
-   * @property {string} name - The name of the column.
-   * @property {SystemDataColumnType} type - The type of data to display. See below for details.
-   * @property {SystemDataColumnHeader} header - Whether to show, hide, or skip the column.
-   * @property {SystemDataColumnAlignType} align - The horizontal alignment of the column.
-   * @property {SystemDataColumnVAlignType} valign - The vertical alignment of the column.
-   * @property {number} colspan - The number of columns to span.
-   * @property {number} rowspan - The number of rows to span. Spanned rows must have spanover type.
-   * @property {number} maxwidth - The maximum width of the column in pixels.
-   * @property {number} minwidth - The minimum width of the column in pixels.
-   * @property {boolean} showSign - Whether to show a plus sign for positive numbers.
-   * @property {string} text - The value to display. See below for details.
-   */
-
-  /**
-   * @typedef SystemData
-   * @property { string } system - The system this data is for.
-   * @property { string } author - The author of this data.
-   * @property { string } name - The name of this data.
-   * @property { Array<Array<SystemDataColumn>> } rows - The rows of data to display. See below for details.
-   * @property { string } offline_excludes_property - The property to use to exclude players. Note: This is optional and defaults to the actors.type property.
-   * @property { Array<string> } offline_excludes - The types you want to exclude when showing offline players.
-   * @property { string } offline_includes_property - The property to use to show players online.
-   * @property { Array<string> } offline_includes - The types you want to include when showing online players.
-   */
-
-  /**
-   * @typedef { {name: string, author: string, players: any, rowcount: number} } CustomPlayerData
-   */
-
-  /**
    * Get the custom player data.
-   * @param { SystemData } data - The system data
+   * @param { TemplateData } data - The template data
    * @returns { CustomPlayerData } The custom player data
    * @memberof PartySheetForm
    */
@@ -634,20 +596,22 @@ export class PartySheetForm extends FormApplication {
     // @ts-ignore
     const enableOnlyOnline = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
     // @ts-ignore
-    const customSystems = getCustomSystems();
+    const customTemplate = getCustomTemplates();
 
-    const applicableSystems = customSystems.filter((data) => {
+    const applicableTemplates = customTemplate.filter((data) => {
       // @ts-ignore
-      return data.system === game.system.id;
+      return data.system === game.system.id && data.minimumSystemVersion <= game.system.version;
     });
-    let selectedIdx = getSelectedSystem() ? applicableSystems.findIndex((data) => data === getSelectedSystem()) : 0;
+    let selectedIdx = getSelectedTemplate()
+      ? applicableTemplates.findIndex((data) => data === getSelectedTemplate())
+      : 0;
 
-    updateSelectedSystem(applicableSystems[selectedIdx]);
-    const selectedSystem = getSelectedSystem();
+    updateSelectedTemplate(applicableTemplates[selectedIdx]);
+    const selectedTemplate = getSelectedTemplate();
     let selectedName, selectedAuthor, players, rowcount;
     let invalidTemplateError = false;
     try {
-      let result = this.getCustomPlayerData(selectedSystem);
+      let result = this.getCustomPlayerData(selectedTemplate);
       selectedName = result.name;
       selectedAuthor = result.author;
       players = result.players;
@@ -656,7 +620,7 @@ export class PartySheetForm extends FormApplication {
       if (ex instanceof TemplateProcessError) {
         // @ts-ignore
         ui.notifications.error(
-          `There was an error processing the template for ${selectedSystem.name} by ${selectedSystem.author}.`,
+          `There was an error processing the template for ${selectedTemplate.name} by ${selectedTemplate.author}.`,
         );
         selectedName = ex.data.name;
         selectedAuthor = ex.data.author;
@@ -673,7 +637,7 @@ export class PartySheetForm extends FormApplication {
       enableOnlyOnline,
       rowcount,
       players,
-      applicableSystems,
+      applicableSystems: applicableTemplates,
       selectedName,
       selectedAuthor,
       invalidTemplateError,
@@ -728,11 +692,11 @@ export class PartySheetForm extends FormApplication {
     const selectedSystemName = event.currentTarget.value.split("___")[0];
     const selectedSystemAuthor = event.currentTarget.value.split("___")[1];
     const selectedIndex =
-      getCustomSystems().findIndex(
+      getCustomTemplates().findIndex(
         (data) => data.name === selectedSystemName && data.author === selectedSystemAuthor,
       ) ?? -1;
     if (selectedIndex != -1) {
-      updateSelectedSystem(getCustomSystems()[selectedIndex]);
+      updateSelectedTemplate(getCustomTemplates()[selectedIndex]);
     }
     // @ts-ignore
     this.render(true);
