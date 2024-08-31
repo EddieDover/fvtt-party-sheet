@@ -3,6 +3,7 @@ import {
   addSign,
   extractPropertyByString,
   getCustomTemplates,
+  getModuleTemplates,
   getSelectedTemplate,
   parseExtras,
   parsePluses,
@@ -642,6 +643,8 @@ export class PartySheetForm extends FormApplication {
       rowcount,
       players,
       applicableTemplates,
+      // @ts-ignore
+      moduleSystemTemplates: getModuleTemplates().filter((template) => template.system === game.system.id),
       selectedName,
       selectedAuthor,
       invalidTemplateError,

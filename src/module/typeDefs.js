@@ -27,6 +27,7 @@
  * @property { string } author - The author of this data.
  * @property { string } name - The name of this data.
  * @property { string } version - The version of this data.
+ * @property { string? } preview - Optional preview image.
  * @property { Array<Array<TemplateDataColumn>> } rows - The rows of data to display. See below for details.
  * @property { string } offline_excludes_property - The property to use to exclude players. Note: This is optional and defaults to the actors.type property.
  * @property { Array<string> } offline_excludes - The types you want to exclude when showing offline players.
