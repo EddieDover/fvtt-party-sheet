@@ -74,6 +74,7 @@ export async function getModuleTemplate(path) {
     /** @type {TemplateData} */
     const template = JSON.parse(await fetch(path).then((r) => r.text()));
     const templateFileNameWithoutExtension = path.split("/").pop().split(".")[0];
+    template.path = path;
     template.preview = `${template.system}/${templateFileNameWithoutExtension}.jpg`;
     if (template.name && template.author && template.system && template.rows) {
       return template;

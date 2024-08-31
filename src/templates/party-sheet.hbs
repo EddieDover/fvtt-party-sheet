@@ -92,7 +92,15 @@
           {{#each moduleSystemTemplates as |template|}}
             <tr>
               <td>
-                <div class="fvtt-party-sheet-ps-system-name">{{template.name}}<br/>{{template.author}}<br/><button>Install</button></div>
+                <div class="fvtt-party-sheet-ps-system-name">
+                  {{template.name}}<br/>
+                  {{template.author}}<br/>
+                  <button
+                  type="button"
+                  class="fvtt-party-sheet-module-install-button"
+                  data-modulepath="{{template.path}}"
+                  >Install</button>
+                </div>
               </td>
               <td>
                 <div class="fvtt-party-sheet-ps-system-preview" style="display:flex;justify-content:center;">

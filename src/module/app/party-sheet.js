@@ -727,6 +727,22 @@ export class PartySheetForm extends FormApplication {
     // @ts-ignore
     $('button[name="discord"]', html).click(this.onDiscord.bind(this));
     // @ts-ignore
+    $('button[class="fvtt-party-sheet-module-install-button"]').click(async (event) => {
+      const dataModuleTemplatePath = event.currentTarget.dataset.modulepath;
+      const dataModuleTemplateFilename = dataModuleTemplatePath.split("/").pop();
+      const dataModuleTemplateFolder = dataModuleTemplatePath.split("/").slice(0, -1).join("/") + "/";
+      // @ts-ignore
+      const fileContents = JSON.parse(
+        await fetch(`${dataModuleTemplateFolder}${dataModuleTemplateFilename}`).then((r) => r.text()),
+      );
+      const fileObject = new File([JSON.stringify(fileContents)], dataModuleTemplateFilename, {
+        type: "application/json",
+      });
+      console.log(fileContents);
+      // @ts-ignore
+      FilePicker.upload("data", "partysheets", fileObject);
+    });
+    // @ts-ignore
     $('select[class="fvtt-party-sheet-dropdown"]', html).change((event) => {
       const dropdownSection = event.currentTarget.dataset.dropdownsection;
       const dropdownValue = event.currentTarget.value;
