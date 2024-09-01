@@ -1,5 +1,7 @@
 /** @type {TemplateData[]} */
 let customTemplates = [];
+/** @type {TemplateData[]} */
+let moduleTemplates = [];
 
 let selectedTemplate = null;
 let templatesLoaded = false;
@@ -17,6 +19,14 @@ export function areTemplatesLoaded() {
  */
 export function setTemplatesLoaded(value) {
   templatesLoaded = value;
+}
+
+/**
+ * Get the module templates
+ * @returns {TemplateData[]} The module templates
+ */
+export function getModuleTemplates() {
+  return moduleTemplates;
 }
 
 const NEWLINE_ELEMENTS = ["{newline}", "{nl}"];
@@ -63,6 +73,9 @@ export async function getModuleTemplate(path) {
   try {
     /** @type {TemplateData} */
     const template = JSON.parse(await fetch(path).then((r) => r.text()));
+    const templateFileNameWithoutExtension = path.split("/").pop().split(".")[0];
+    template.path = path;
+    template.preview = `${template.system}/${templateFileNameWithoutExtension}.jpg`;
     if (template.name && template.author && template.system && template.rows) {
       return template;
     } else {
@@ -187,7 +200,7 @@ export async function validateSystemTemplates() {
     noSystemInformation: [],
   };
 
-  const moduleTemplates = await loadModuleTemplates();
+  moduleTemplates = await loadModuleTemplates();
 
   for (const template of customTemplates) {
     const moduleTemplate = moduleTemplates.find((t) => t.name === template.name);

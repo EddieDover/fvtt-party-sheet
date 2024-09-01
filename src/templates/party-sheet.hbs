@@ -79,8 +79,45 @@
     {{/if}}
   {{else}}
     <div class="fvtt-party-sheet-ps-no-systems">
-      {{!-- {{ localize "fvtt-party-sheet.party-sheet.no-systems" }} --}}
-      
+      {{ localize "fvtt-party-sheet.party-sheet.no-systems" }}
+      {{#if moduleSystemTemplates.length }}
+        <table class="fvtt-party-sheet-ps-system">
+          <thead>
+            <tr>
+              <th>{{localize "fvtt-party-sheet.party-sheet.template-name"}}</th>
+              <th>{{localize "fvtt-party-sheet.party-sheet.template-preview"}}</th>
+            </tr>
+          </thead>
+          <tbody>
+          {{#each moduleSystemTemplates as |template|}}
+            <tr>
+              <td>
+                <div class="fvtt-party-sheet-ps-system-name">
+                  {{template.name}}<br/>
+                  {{template.author}}<br/>
+                  <button
+                  type="button"
+                  class="fvtt-party-sheet-module-install-button"
+                  data-modulepath="{{template.path}}"
+                  >Install</button>
+                </div>
+              </td>
+              <td>
+                <div class="fvtt-party-sheet-ps-system-preview" style="display:flex;justify-content:center;">
+                  <a href="https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/{{template.preview}}" target="_blank">
+                    <img
+                      style="max-width: 100px; max-height: 100px;"
+                      src="https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/{{template.preview}}"
+                      alt="{{template.name}} - {{template.author}}"
+                    >
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {{/each}}
+          </tbody>
+        </table>
+      {{/if}}
     </div>
   {{/if}}
 

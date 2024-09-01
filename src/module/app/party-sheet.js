@@ -3,6 +3,7 @@ import {
   addSign,
   extractPropertyByString,
   getCustomTemplates,
+  getModuleTemplates,
   getSelectedTemplate,
   parseExtras,
   parsePluses,
@@ -642,6 +643,8 @@ export class PartySheetForm extends FormApplication {
       rowcount,
       players,
       applicableTemplates,
+      // @ts-ignore
+      moduleSystemTemplates: getModuleTemplates().filter((template) => template.system === game.system.id),
       selectedName,
       selectedAuthor,
       invalidTemplateError,
@@ -723,6 +726,22 @@ export class PartySheetForm extends FormApplication {
     $('button[name="bugreport"]', html).click(this.onBugReport.bind(this));
     // @ts-ignore
     $('button[name="discord"]', html).click(this.onDiscord.bind(this));
+    // @ts-ignore
+    $('button[class="fvtt-party-sheet-module-install-button"]').click(async (event) => {
+      const dataModuleTemplatePath = event.currentTarget.dataset.modulepath;
+      const dataModuleTemplateFilename = dataModuleTemplatePath.split("/").pop();
+      const dataModuleTemplateFolder = dataModuleTemplatePath.split("/").slice(0, -1).join("/") + "/";
+      // @ts-ignore
+      const fileContents = JSON.parse(
+        await fetch(`${dataModuleTemplateFolder}${dataModuleTemplateFilename}`).then((r) => r.text()),
+      );
+      const fileObject = new File([JSON.stringify(fileContents)], dataModuleTemplateFilename, {
+        type: "application/json",
+      });
+      console.log(fileContents);
+      // @ts-ignore
+      FilePicker.upload("data", "partysheets", fileObject);
+    });
     // @ts-ignore
     $('select[class="fvtt-party-sheet-dropdown"]', html).change((event) => {
       const dropdownSection = event.currentTarget.dataset.dropdownsection;
