@@ -1,7 +1,14 @@
 /* eslint-disable no-undef */
 import { registerSettings } from "./app/settings.js";
 import { PartySheetForm } from "./app/party-sheet.js";
-import { log, loadSystemTemplates, toProperCase, areTemplatesLoaded, validateSystemTemplates } from "./utils.js";
+import {
+  log,
+  loadSystemTemplates,
+  toProperCase,
+  areTemplatesLoaded,
+  validateSystemTemplates,
+  setTemplatesLoaded,
+} from "./utils.js";
 import { TemplateStatusForm } from "./app/template-status.js";
 import md5 from "blueimp-md5";
 
@@ -177,7 +184,7 @@ function togglePartySheet() {
   if (currentPartySheet?.rendered) {
     currentPartySheet.close();
   } else {
-    currentPartySheet = new PartySheetForm();
+    currentPartySheet = new PartySheetForm(afterInstall);
     // @ts-ignore
     currentPartySheet.render(true);
   }
@@ -211,8 +218,19 @@ const showButton = () => {
     // @ts-ignore
     const controls = $("#tools-panel-token");
 
-    if (controls.find(".control-tool[data-tool='PartySheet']")) {
+    if (controls.find(".control-tool[data-tool='PartySheet']").length === 0) {
       controls.append(button);
+    }
+  }
+};
+
+const hideButton = () => {
+  // @ts-ignore
+  const control_parent = $("#tools-panel-token");
+  const controls = control_parent.find(".control-tool[data-tool='PartySheet']");
+  if (controls.length > 0) {
+    for (const control of controls) {
+      control.remove();
     }
   }
 };
@@ -230,6 +248,19 @@ function registerAPI() {
   log("API registered");
 }
 
+/**
+ * Runs after installation of template;
+ */
+function afterInstall() {
+  togglePartySheet();
+  setTimeout(async () => {
+    // @ts-ignore
+    setTemplatesLoaded(false);
+    await ReloadTemplates();
+    togglePartySheet();
+  }, 550);
+}
+
 /* Hooks */
 
 // @ts-ignore
@@ -242,35 +273,45 @@ Hooks.on("init", () => {
 // @ts-ignore
 Hooks.on("ready", async () => {
   log("Ready");
-
   // @ts-ignore
   if (game.user.isGM) {
     registerAPI();
+  }
+  await ReloadTemplates(true);
+});
+
+const ReloadTemplates = async (fullReload = false) => {
+  // @ts-ignore
+  if (game.user.isGM) {
+    hideButton();
+
     if (!areTemplatesLoaded()) {
-      log("Loading templates");
       await loadSystemTemplates();
 
-      const template_validation = await validateSystemTemplates();
-      if (
-        template_validation.outOfDateSystems ||
-        template_validation.outOfDateTemplates ||
-        template_validation.noVersionInformation ||
-        template_validation.noSystemInformation
-      ) {
-        const newHash = md5(JSON.stringify(template_validation));
-        // @ts-ignore
-        const lastHash = game.settings.get("fvtt-party-sheet", "lastTemplateValidationHash");
-
-        if (newHash.toString() !== lastHash.toString()) {
+      if (fullReload) {
+        const template_validation = await validateSystemTemplates();
+        if (
+          template_validation.outOfDateSystems ||
+          template_validation.outOfDateTemplates ||
+          template_validation.noVersionInformation ||
+          template_validation.noSystemInformation
+        ) {
+          const newHash = md5(JSON.stringify(template_validation));
           // @ts-ignore
-          game.settings.set("fvtt-party-sheet", "lastTemplateValidationHash", newHash);
-          toggleTemplateStatusForm(template_validation);
+          const lastHash = game.settings.get("fvtt-party-sheet", "lastTemplateValidationHash");
+
+          if (newHash.toString() !== lastHash.toString()) {
+            // @ts-ignore
+            game.settings.set("fvtt-party-sheet", "lastTemplateValidationHash", newHash);
+            toggleTemplateStatusForm(template_validation);
+          }
         }
       }
     }
+
+    showButton();
   }
-  showButton();
-});
+};
 
 // @ts-ignore
 Hooks.on("renderPlayerList", () => {

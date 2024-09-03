@@ -20,6 +20,18 @@ export class TemplateStatusForm extends FormApplication {
     });
   }
 
+  activateListeners(html) {
+    super.activateListeners(html);
+    // @ts-ignore
+    // eslint-disable-next-line no-undef
+    $('button[name="fvtt-party-sheet-template-ok-btn').click(this.CloseSheet.bind(this));
+  }
+
+  CloseSheet() {
+    // @ts-ignore
+    this.close();
+  }
+
   static get defaultOptions() {
     // @ts-ignore
     return foundry.utils.mergeObject(super.defaultOptions, {
