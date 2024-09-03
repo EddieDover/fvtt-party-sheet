@@ -23,8 +23,9 @@ const DEFAULT_EXCLUDES = ["npc"];
 let generated_dropdowns = 0;
 // @ts-ignore
 export class PartySheetForm extends FormApplication {
-  constructor() {
+  constructor(postInstallCallback = () => {}) {
     super();
+    this._postInstallCallback = postInstallCallback;
   }
 
   /**
@@ -727,6 +728,18 @@ export class PartySheetForm extends FormApplication {
     // @ts-ignore
     $('button[name="discord"]', html).click(this.onDiscord.bind(this));
     // @ts-ignore
+    $('button[class="fvtt-party-sheet-module-preview-button"]').click((event) => {
+      const modulepath = event.currentTarget.dataset.modulepath;
+      // Construct the Application instance
+      // @ts-ignore
+      const ip = new ImagePopout(
+        `https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/${modulepath}`,
+      );
+
+      // Display the image popout
+      ip.render(true);
+    });
+    // @ts-ignore
     $('button[class="fvtt-party-sheet-module-install-button"]').click(async (event) => {
       const dataModuleTemplatePath = event.currentTarget.dataset.modulepath;
       const dataModuleTemplateFilename = dataModuleTemplatePath.split("/").pop();
@@ -738,9 +751,10 @@ export class PartySheetForm extends FormApplication {
       const fileObject = new File([JSON.stringify(fileContents)], dataModuleTemplateFilename, {
         type: "application/json",
       });
-      console.log(fileContents);
       // @ts-ignore
       FilePicker.upload("data", "partysheets", fileObject);
+
+      this._postInstallCallback();
     });
     // @ts-ignore
     $('select[class="fvtt-party-sheet-dropdown"]', html).change((event) => {
