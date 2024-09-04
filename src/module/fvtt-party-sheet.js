@@ -16,6 +16,40 @@ let currentPartySheet = null;
 let currentTemplateStatusForm = null;
 
 // @ts-ignore
+Handlebars.registerPartial(
+  "installer",
+  `
+  <div style="display:flex;flex-direction:row;flex-wrap:wrap">
+    {{#each moduleSystemTemplates as |template|}}
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;padding: 3px;border: 1px solid black;border-radius: 5px;margin: 5px;">
+          <div class="fvtt-party-sheet-ps-system-name" style="display:flex;flex-direction:column;flex-wrap:nowrap;width:200px;max-height:300px;">
+            <div style="font-weight:bolder;">NAME:</div>
+            <div style="padding-bottom:3px">{{template.name}}</div>
+            <div style="font-weight:bolder;">AUTHOR:</div>
+            <div style="padding-bottom:3px">{{template.author}}</div>
+            <div style="font-weight:bolder;">VERSION:</div>
+            <div style="padding-bottom:3px">{{template.version}}</div>
+            <div style="font-weight:bolder;">SYSTEM VERSION:</div>
+            <div style="flex-grow:1;">{{template.minimumSystemVersion}}</div>
+            <button
+              type="button"
+              class="fvtt-party-sheet-module-preview-button"
+              data-modulepath="{{template.preview}}"
+              >Preview
+            </button>
+            <button
+              type="button"
+              class="fvtt-party-sheet-module-install-button"
+              data-modulepath="{{template.path}}"
+            >Install</button>
+          </div>
+      </div>
+    {{/each}}
+  </div>
+`,
+);
+
+// @ts-ignore
 Handlebars.registerHelper("hccontains", function (needle, haystack, options) {
   // @ts-ignore
   needle = Handlebars.escapeExpression(needle);
@@ -303,7 +337,14 @@ const ReloadTemplates = async (fullReload = false) => {
           if (newHash.toString() !== lastHash.toString()) {
             // @ts-ignore
             game.settings.set("fvtt-party-sheet", "lastTemplateValidationHash", newHash);
-            toggleTemplateStatusForm(template_validation);
+            if (
+              template_validation.outOfDateSystems.length > 0 ||
+              template_validation.outOfDateTemplates.length > 0 ||
+              template_validation.noVersionInformation.length > 0 ||
+              template_validation.noSystemInformation.length > 0
+            ) {
+              toggleTemplateStatusForm(template_validation);
+            }
           }
         }
       }
