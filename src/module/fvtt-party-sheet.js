@@ -19,33 +19,67 @@ let currentTemplateStatusForm = null;
 Handlebars.registerPartial(
   "installer",
   `
-  <div style="display:flex;flex-direction:row;flex-wrap:wrap">
-    {{#each moduleSystemTemplates as |template|}}
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;padding: 3px;border: 1px solid black;border-radius: 5px;margin: 5px;">
-          <div class="fvtt-party-sheet-ps-system-name" style="display:flex;flex-direction:column;flex-wrap:nowrap;width:200px;max-height:300px;">
-            <div style="font-weight:bolder;">NAME:</div>
-            <div style="padding-bottom:3px">{{template.name}}</div>
-            <div style="font-weight:bolder;">AUTHOR:</div>
-            <div style="padding-bottom:3px">{{template.author}}</div>
-            <div style="font-weight:bolder;">VERSION:</div>
-            <div style="padding-bottom:3px">{{template.version}}</div>
-            <div style="font-weight:bolder;">SYSTEM VERSION:</div>
-            <div style="flex-grow:1;">{{template.minimumSystemVersion}}</div>
+<div style="display:flex;flex-direction:row;flex-wrap:wrap">
+{{#each moduleSystemTemplates as |template|}}
+    <div style="display:flex;flex-direction:row;flex-wrap:nowrap;padding: 3px;border: 1px solid black;border-radius: 5px;margin: 5px;">
+        <div class="fvtt-party-sheet-ps-system-name" style="display:flex;flex-direction:column;flex-wrap:nowrap;width:200px;max-height:300px;">
+        <div style="font-weight:bolder;">NAME:</div>
+        <div style="padding-bottom:3px">{{template.name}}</div>
+        <div style="font-weight:bolder;">AUTHOR:</div>
+        <div style="padding-bottom:3px">{{template.author}}</div>
+        <div style="font-weight:bolder;">VERSION:</div>
+        <div style="padding-bottom:3px">{{template.version}}</div>
+        {{#if template.installedVersion}}
+            <div style="font-weight:bolder;">INSTALLED VERSION:</div>
+            <div style="padding-bottom:3px">
+                {{#compVersion template.installedVersion template.version}}
+                    {{template.installedVersion}}
+                {{else}}
+                    <span style="color:#ff6666;background-color:#000000;border-radius:5px;padding:2px;">{{template.installedVersion}}</span>
+                {{/compVersion}}
+            </div>
+        {{/if}}
+        <div style="font-weight:bolder;">SYSTEM VERSION:</div>
+        <div style="flex-grow:1;">{{template.minimumSystemVersion}}</div>
+        <button
+            type="button"
+            class="fvtt-party-sheet-module-preview-button"
+            data-modulepath="{{template.preview}}"
+            >Preview
+        </button>
+        {{#if template.installedVersion}}
+            {{#compVersion template.installedVersion template.version}}
             <button
-              type="button"
-              class="fvtt-party-sheet-module-preview-button"
-              data-modulepath="{{template.preview}}"
-              >Preview
+                type="button"
+                class="fvtt-party-sheet-module-install-button"
+                data-modulepath="{{template.path}}"
+            >
+            
+                Install
             </button>
+            {{else}}
+                <button
+                type="button"
+                style="background-color:#29b125"
+                class="fvtt-party-sheet-module-install-button"
+                data-modulepath="{{template.path}}"
+            >
+                Update
+            </button>
+            {{/compVersion}}
+        {{else}}
             <button
-              type="button"
-              class="fvtt-party-sheet-module-install-button"
-              data-modulepath="{{template.path}}"
-            >Install</button>
-          </div>
-      </div>
-    {{/each}}
-  </div>
+                type="button"
+                class="fvtt-party-sheet-module-install-button"
+                data-modulepath="{{template.path}}"
+            >
+                Install
+            </button>
+        {{/if}}
+        </div>
+    </div>
+{{/each}}
+</div>
 `,
 );
 
@@ -209,6 +243,35 @@ Handlebars.registerHelper("ifCond", function (v1, operator, v2, options) {
     default:
       return options.inverse(this);
   }
+});
+
+// @ts-ignore
+Handlebars.registerHelper("compVersion", function (v1, v2, options) {
+  const v1Parts = v1.split(".");
+  const v2Parts = v2.split(".");
+  const maxLen = Math.max(v1Parts.length, v2Parts.length);
+
+  let v1Num, v2Num;
+  for (let i = 0; i < maxLen; i++) {
+    v1Num = parseInt(v1Parts[i], 10);
+    v2Num = parseInt(v2Parts[i], 10);
+
+    if (isNaN(v1Num)) {
+      v1Num = 0;
+    }
+    if (isNaN(v2Num)) {
+      v2Num = 0;
+    }
+
+    if (v1Num > v2Num) {
+      return options.fn(this);
+    }
+    if (v1Num < v2Num) {
+      return options.inverse(this);
+    }
+  }
+
+  return options.fn(this);
 });
 
 /**

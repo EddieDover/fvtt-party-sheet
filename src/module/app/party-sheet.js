@@ -640,6 +640,18 @@ export class PartySheetForm extends FormApplication {
     const doShowInstaller = this.showInstaller;
     this.showInstaller = false;
 
+    /** @typedef {TemplateData & {installedVersion?:string}} InstalledTemplateData */
+    /** @type {InstalledTemplateData[]} */
+    // @ts-ignore
+    let moduleSystemTemplates = getModuleTemplates().filter((template) => template.system === game.system.id);
+    moduleSystemTemplates.map((template) => {
+      template.installedVersion = customTemplates.find(
+        (data) => data.name === template.name && data.author === template.author,
+      )
+        ? customTemplates.find((data) => data.name === template.name && data.author === template.author).version
+        : "";
+    });
+
     // @ts-ignore
     return mergeObject(super.getData(options), {
       minimalView,
@@ -649,7 +661,7 @@ export class PartySheetForm extends FormApplication {
       players,
       applicableTemplates,
       // @ts-ignore
-      moduleSystemTemplates: getModuleTemplates().filter((template) => template.system === game.system.id),
+      moduleSystemTemplates,
       selectedName,
       selectedAuthor,
       invalidTemplateError,
