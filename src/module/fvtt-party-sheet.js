@@ -23,14 +23,14 @@ Handlebars.registerPartial(
 {{#each moduleSystemTemplates as |template|}}
     <div style="display:flex;flex-direction:row;flex-wrap:nowrap;padding: 3px;border: 1px solid black;border-radius: 5px;margin: 5px;">
         <div class="fvtt-party-sheet-ps-system-name" style="display:flex;flex-direction:column;flex-wrap:nowrap;width:200px;max-height:300px;">
-        <div style="font-weight:bolder;">NAME:</div>
-        <div style="padding-bottom:3px">{{template.name}}</div>
-        <div style="font-weight:bolder;">AUTHOR:</div>
+        <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-name"}}:</div>
+        <div style="padding-bottom:3px;">{{template.name}}</div>
+        <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.author"}}:</div>
         <div style="padding-bottom:3px">{{template.author}}</div>
-        <div style="font-weight:bolder;">VERSION:</div>
+        <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.version"}}:</div>
         <div style="padding-bottom:3px">{{template.version}}</div>
         {{#if template.installedVersion}}
-            <div style="font-weight:bolder;">INSTALLED VERSION:</div>
+            <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-installed-version"}}:</div>
             <div style="padding-bottom:3px">
                 {{#compVersion template.installedVersion template.version}}
                     {{template.installedVersion}}
@@ -39,14 +39,8 @@ Handlebars.registerPartial(
                 {{/compVersion}}
             </div>
         {{/if}}
-        <div style="font-weight:bolder;">SYSTEM VERSION:</div>
+        <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-system-version"}}:</div>
         <div style="flex-grow:1;">{{template.minimumSystemVersion}}</div>
-        <button
-            type="button"
-            class="fvtt-party-sheet-module-preview-button"
-            data-modulepath="{{template.preview}}"
-            >Preview
-        </button>
         {{#if template.installedVersion}}
             {{#compVersion template.installedVersion template.version}}
             <button
@@ -54,8 +48,7 @@ Handlebars.registerPartial(
                 class="fvtt-party-sheet-module-install-button"
                 data-modulepath="{{template.path}}"
             >
-            
-                Install
+                {{localize "fvtt-party-sheet.reinstall"}}
             </button>
             {{else}}
                 <button
@@ -64,16 +57,23 @@ Handlebars.registerPartial(
                 class="fvtt-party-sheet-module-install-button"
                 data-modulepath="{{template.path}}"
             >
-                Update
+                {{localize "fvtt-party-sheet.update"}}
             </button>
             {{/compVersion}}
         {{else}}
-            <button
-                type="button"
-                class="fvtt-party-sheet-module-install-button"
-                data-modulepath="{{template.path}}"
+          <button
+            type="button"
+            class="fvtt-party-sheet-module-preview-button"
+            data-modulepath="{{template.preview}}"
             >
-                Install
+              {{localize "fvtt-party-sheet.preview"}}
+          </button>
+          <button
+              type="button"
+              class="fvtt-party-sheet-module-install-button"
+              data-modulepath="{{template.path}}"
+            >
+              {{localize "fvtt-party-sheet.install"}}
             </button>
         {{/if}}
         </div>
