@@ -26,6 +26,7 @@ export class PartySheetForm extends FormApplication {
   constructor(postInstallCallback = () => {}) {
     super();
     this._postInstallCallback = postInstallCallback;
+    this.showInstaller = false;
   }
 
   /**
@@ -636,6 +637,21 @@ export class PartySheetForm extends FormApplication {
       }
     }
 
+    const doShowInstaller = this.showInstaller;
+    this.showInstaller = false;
+
+    /** @typedef {TemplateData & {installedVersion?:string}} InstalledTemplateData */
+    /** @type {InstalledTemplateData[]} */
+    // @ts-ignore
+    let moduleSystemTemplates = getModuleTemplates().filter((template) => template.system === game.system.id);
+    moduleSystemTemplates.map((template) => {
+      template.installedVersion = customTemplates.find(
+        (data) => data.name === template.name && data.author === template.author,
+      )
+        ? customTemplates.find((data) => data.name === template.name && data.author === template.author).version
+        : "";
+    });
+
     // @ts-ignore
     return mergeObject(super.getData(options), {
       minimalView,
@@ -645,10 +661,11 @@ export class PartySheetForm extends FormApplication {
       players,
       applicableTemplates,
       // @ts-ignore
-      moduleSystemTemplates: getModuleTemplates().filter((template) => template.system === game.system.id),
+      moduleSystemTemplates,
       selectedName,
       selectedAuthor,
       invalidTemplateError,
+      showInstaller: doShowInstaller,
       // @ts-ignore
       overrides: this.overrides,
     });
@@ -728,6 +745,8 @@ export class PartySheetForm extends FormApplication {
     // @ts-ignore
     $('button[name="discord"]', html).click(this.onDiscord.bind(this));
     // @ts-ignore
+    $('button[name="installer"]', html).click(this.onInstaller.bind(this));
+    // @ts-ignore
     $('button[class="fvtt-party-sheet-module-preview-button"]').click((event) => {
       const modulepath = event.currentTarget.dataset.modulepath;
       // Construct the Application instance
@@ -785,5 +804,12 @@ export class PartySheetForm extends FormApplication {
     event.preventDefault();
     const newWindow = window.open(DISCORD_URL, "_blank", "noopener,noreferrer");
     if (newWindow) newWindow.opener = undefined;
+  }
+
+  onInstaller(event) {
+    event.preventDefault();
+    this.showInstaller = true;
+    // @ts-ignore
+    this.render(true);
   }
 }
