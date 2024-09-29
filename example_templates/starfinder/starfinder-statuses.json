@@ -2,6 +2,8 @@
   "name": "Starfinder - With Statuses",
   "system": "sfrpg",
   "author": "Michael Card (EmoCthulhu)",
+  "version": "1.0.0",
+  "minimumSystemVersion": "0.25.3",
   "offline_excludes": [
     "npc",
     "npc2",

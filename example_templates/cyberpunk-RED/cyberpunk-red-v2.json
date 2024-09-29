@@ -2,6 +2,8 @@
     "name": "Cyberpunk RED - v2",
     "system": "cyberpunk-red-core",
     "author": "Michael Card (EmoCthulhu)",
+    "version": "1.0.0",
+    "minimumSystemVersion": "0.88.2",
     "offline_excludes": [
         "npc",
         "base",
