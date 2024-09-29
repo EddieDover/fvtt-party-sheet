@@ -72,7 +72,7 @@
     "jest-junit": "^16.0.0",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
-    "rollup": "^2.79.1",
+    "rollup": "^2.79.2",
     "rollup-plugin-copy": "^3.5.0",
     "typescript": "^5.3.3",
     "vinyl-buffer": "^1.0.1",
