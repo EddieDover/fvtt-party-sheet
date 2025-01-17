@@ -104,7 +104,11 @@ export async function loadSystemTemplate(path) {
       } else {
         console.warn(`${path} - Missing Version Information`);
       }
-      addCustomTemplate(template);
+      if (customTemplates.find((t) => t.name === template.name && t.author === template.author)) {
+        console.warn(`${path} - Duplicate Template`);
+      } else {
+        addCustomTemplate(template);
+      }
     } else {
       console.log(`${path} - Bad Template`);
     }
