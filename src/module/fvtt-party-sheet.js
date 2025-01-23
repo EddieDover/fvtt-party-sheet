@@ -397,7 +397,7 @@ const ReloadTemplates = async (fullReload = false) => {
           // @ts-ignore
           const lastHash = game.settings.get("fvtt-party-sheet", "lastTemplateValidationHash");
 
-          if (lastHash && newHash.toString() !== lastHash.toString()) {
+          if (!lastHash || newHash.toString() !== lastHash.toString()) {
             // @ts-ignore
             game.settings.set("fvtt-party-sheet", "lastTemplateValidationHash", newHash);
             if (

@@ -29,19 +29,19 @@
       "show-debug-info": {
         "name": "Show Debug Information",
         "hint": "Enable this to show debug information in the console for all parsed characters when the party sheet is opened. Hopefully this will allow you to track down specific properties that you are trying to parse."
-      },
-      "template-status": {
-        "template-status": "Template Status",
-        "by": "by",
-        "out-of-date": "The following templates are out of date",
-        "current-version": "Current Version",
-        "module-version": "Module Version",
-        "newer-systems-installed": "The following templates have newer systems installed",
-        "no-version-informatin": "The following templates have no version information",
-        "no-system-information": "The following templates have no system information",
-        "current-system-version": "Current System Version",
-        "required-system-version": "Required System Version"
       }
+    },
+    "template-status": {
+      "template-status": "Template Status",
+      "by": "by",
+      "out-of-date": "The following templates are out of date",
+      "current-version": "Current Version",
+      "module-version": "Module Version",
+      "newer-systems-installed": "The following templates have newer systems installed",
+      "no-version-information": "The following templates have no version information",
+      "no-system-information": "The following templates have no system information",
+      "current-system-version": "Current System Version",
+      "required-system-version": "Required System Version"
     },
     "close": "Close",
     "install": "Install",
