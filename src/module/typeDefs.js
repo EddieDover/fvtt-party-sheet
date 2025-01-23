@@ -57,3 +57,9 @@
  * @property { TemplateValidityData[] } noSystemInformation - The templates that have no system information.
  * @property { TemplateValidityData[] } noVersionInformation - The templates that have no version information.
  */
+
+/**
+ * @typedef SystemVersionSet
+ * @property { string } system - The system name.
+ * @property { string } version - The version of the system.
+ */

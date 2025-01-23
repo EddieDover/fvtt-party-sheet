@@ -119,6 +119,40 @@ export async function loadSystemTemplate(path) {
 }
 
 /**
+ * Get all the systems and versions available.
+ * @returns {Promise<SystemVersionSet[]>} A list of all the systems and versions available.
+ */
+export async function getAllSystemVersions() {
+  const systemVersions = [];
+
+  let assetPrefix = "data";
+
+  if (isForgeVTT()) {
+    console.log("Detected ForgeVTT");
+    // @ts-ignore
+    // eslint-disable-next-line no-undef
+    assetPrefix = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId()) + "/";
+  }
+
+  // @ts-ignore
+  const systemFolder = await FilePicker.browse(assetPrefix, "systems"); // `modules/${MODULE_NAME}/templates`);
+  for (var folder of systemFolder.dirs) {
+    // @ts-ignore
+    const pathFolder = await FilePicker.browse(assetPrefix, folder);
+    // @ts-ignore
+    for (var file of pathFolder.files.filter((f) => f.endsWith("system.json"))) {
+      const data = JSON.parse(await fetch(file).then((r) => r.text()));
+      systemVersions.push({
+        system: data.id,
+        version: data.version,
+      });
+    }
+  }
+
+  return systemVersions;
+}
+
+/**
  * Load all the user-provided templates for systems
  */
 export async function loadSystemTemplates() {
@@ -204,6 +238,7 @@ export async function validateSystemTemplates() {
     noSystemInformation: [],
   };
 
+  const systemVersions = await getAllSystemVersions();
   moduleTemplates = await loadModuleTemplates();
 
   for (const template of customTemplates) {
@@ -214,8 +249,10 @@ export async function validateSystemTemplates() {
       name: template.name,
       author: template.author,
       version: template.version,
+      system: template.system,
       providedVersion: moduleTemplate?.version ?? "-",
       minimumSystemVersion: template.minimumSystemVersion,
+      ownedSystemVersion: systemVersions.find((s) => s.system === template.system)?.version ?? "-",
     };
     if (!template.minimumSystemVersion) {
       output.noVersionInformation.push(templateData);
@@ -237,10 +274,12 @@ export async function validateSystemTemplates() {
       err = true;
     }
 
-    // @ts-ignore
-    if (compareSymVer(template.minimumSystemVersion, game.system.version) < 0) {
-      output.outOfDateSystems.push(templateData);
-      err = true;
+    if (templateData.ownedSystemVersion !== "-") {
+      console.log(templateData);
+      if (compareSymVer(templateData.minimumSystemVersion, templateData.ownedSystemVersion) < 0) {
+        output.outOfDateSystems.push(templateData);
+        err = true;
+      }
     }
 
     if (!err) {

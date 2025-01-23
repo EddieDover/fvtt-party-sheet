@@ -22,7 +22,7 @@
                 <div>
                     {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
                     {{localize "fvtt-party-sheet.template-status.current-system-version"}}:  <span style="color:#00ff00;background-color:#000000;;border-radius:5px;padding:2px;">{{this.minimumSystemVersion}}</span>
-                    {{localize "fvtt-party-sheet.template-status.required-system-version"}}: <span style="color:#ff6666;background-color:#000000;;border-radius:5px;padding:2px;">{{../systemVersion}}</span><br/>
+                    {{localize "fvtt-party-sheet.template-status.required-system-version"}}: <span style="color:#ff6666;background-color:#000000;;border-radius:5px;padding:2px;">{{this.ownedSystemVersion}}</span><br/>
                 </div>
             {{/each}}
             </div>
