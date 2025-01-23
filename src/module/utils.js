@@ -275,7 +275,6 @@ export async function validateSystemTemplates() {
     }
 
     if (templateData.ownedSystemVersion !== "-") {
-      console.log(templateData);
       if (compareSymVer(templateData.minimumSystemVersion, templateData.ownedSystemVersion) < 0) {
         output.outOfDateSystems.push(templateData);
         err = true;
