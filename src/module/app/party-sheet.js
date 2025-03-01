@@ -653,7 +653,7 @@ export class PartySheetForm extends FormApplication {
     });
 
     // @ts-ignore
-    return mergeObject(super.getData(options), {
+    return foundry.utils.mergeObject(super.getData(options), {
       minimalView,
       hiddenCharacters,
       enableOnlyOnline,
