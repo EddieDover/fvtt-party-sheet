@@ -1,0 +1,75 @@
+{
+  "name": "Streamers Template",
+  "version": "1.0.0",
+  "minimumSystemVersion": "6.8.4",
+  "system": "pf2e",
+  "offline_excludes": ["npc", "party"],
+  "author": "Crow Valentine",
+  "rows": [
+    [
+      {
+        "name": "Character Sheet",
+        "type": "charactersheet",
+        "header": "hide", 
+        "text": ""
+      },
+      {"name": "Name",
+      "type": "direct",
+      "header": "show",
+      "text": "name {newline}"
+      },
+      { "name": "Ancestry", 
+        "type": "direct",
+        "header": "show",
+        "text": "system.details.ancestry.name"
+      },
+      {"name": "AC",
+      "type": "direct",
+      "header": "show",
+      "text": "system.attributes.ac.value"
+      },
+      {
+        "name": "Health",
+        "type": "direct",
+        "header": "show",
+        "text": "system.attributes.hp.value / system.attributes.hp.max"
+      },
+      {
+        "name": "STR",
+        "type": "direct", "showSign": true,
+        "header": "show",
+        "text": "system.abilities.str.mod"
+      },
+      {
+        "name": "DEX",
+        "type": "direct", "showSign": true,
+        "header": "show",
+        "text": "system.abilities.dex.mod"
+      },
+      {
+        "name": "CON",
+        "type": "direct", "showSign": true,
+        "header": "show",
+        "text": "system.abilities.con.mod"
+      },
+      {
+        "name": "INT",
+        "type": "direct", "showSign": true,
+        "header": "show",
+        "text": "system.abilities.int.mod"
+      },
+      {
+        "name": "WIS",
+        "type": "direct", "showSign": true,
+        "header": "show",
+        "text": "system.abilities.wis.mod"
+      },
+      {
+        "name": "CHA",
+        "type": "direct", "showSign": true,
+        "header": "show",
+        "text": "system.abilities.cha.mod"
+      }
+    ]
+  ]
+}
