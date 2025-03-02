@@ -14,6 +14,10 @@
       "tooltip": "Seleccionar personajes para ocultar"
     },
     "settings": {
+      "refresh-rate": {
+        "name": "Frecuencia de actualización",
+        "hint": "Con qué frecuencia se actualiza la hoja de grupo en segundos. Un valor más bajo puede causar problemas de rendimiento. El valor predeterminado (desactivado) es 0."
+      },
       "enable-minimal-view": {
         "name": "Ocultar botones de soporte",
         "hint": "Ocultar los botones para informes de errores y comentarios."

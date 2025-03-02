@@ -13,6 +13,7 @@ import { TemplateStatusForm } from "./app/template-status.js";
 import md5 from "blueimp-md5";
 
 let currentPartySheet = null;
+let currentRefreshInterval = null;
 let currentTemplateStatusForm = null;
 
 // @ts-ignore
@@ -284,6 +285,29 @@ function togglePartySheet() {
     currentPartySheet = new PartySheetForm(afterInstall);
     // @ts-ignore
     currentPartySheet.render(true);
+
+    // @ts-ignore
+    const refreshRate = game.settings.get("fvtt-party-sheet", "refreshRate");
+    if (refreshRate > 0) {
+      currentRefreshInterval = setInterval(() => refreshSheet(), refreshRate * 1000);
+    } else {
+      if (currentRefreshInterval) {
+        clearInterval(currentRefreshInterval);
+      }
+    }
+  }
+}
+
+/**
+ * Refreshes the party sheet
+ */
+function refreshSheet() {
+  if (currentPartySheet?.rendered) {
+    currentPartySheet.render(false, {
+      focus: false,
+    });
+  } else {
+    clearInterval(currentRefreshInterval);
   }
 }
 

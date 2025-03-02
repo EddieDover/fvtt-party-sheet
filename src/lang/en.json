@@ -14,6 +14,10 @@
       "tooltip": "Select Characters To Hide"
     },
     "settings": {
+      "refresh-rate": {
+        "name": "Refresh Rate",
+        "hint": "How often the group sheet is refreshed in seconds. A lower value may cause performance issues. Default (off) is 0."
+      },
       "enable-minimal-view": {
         "name": "Hide Support Buttons",
         "hint": "Hide the buttons for bug reports and feedback."

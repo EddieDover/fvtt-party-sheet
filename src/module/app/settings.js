@@ -10,6 +10,16 @@ export const registerSettings = () => {
   });
 
   // @ts-ignore
+  game.settings.register("fvtt-party-sheet", "refreshRate", {
+    "name": "fvtt-party-sheet.settings.refresh-rate.name",
+    "hint": "fvtt-party-sheet.settings.refresh-rate.hint",
+    "scope": "world",
+    "config": true,
+    "default": 0,
+    "type": Number,
+  });
+
+  // @ts-ignore
   game.settings.register("fvtt-party-sheet", "enableMinimalView", {
     "name": "fvtt-party-sheet.settings.enable-minimal-view.name",
     "hint": "fvtt-party-sheet.settings.enable-minimal-view.hint",
