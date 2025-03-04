@@ -48,4 +48,14 @@ export const registerSettings = () => {
     "restricted": true,
     "type": HiddenCharactersSettings,
   });
+
+  // @ts-ignore
+  game.settings.register("fvtt-party-sheet", "lastTemplateValidationHash", {
+    "name": "",
+    "hint": "",
+    "scope": "world",
+    "config": false,
+    "default": null,
+    "type": Object,
+  });
 };

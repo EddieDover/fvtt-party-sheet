@@ -2,6 +2,8 @@
     "name": "The Walking Dead Universe RPG - With Anchors",
     "system": "twdu",
     "author": "Michael Card (EmoCthulhu)",
+    "version": "1.0.0",
+    "minimumSystemVersion": "2.0.2",
     "offline_excludes": [
       "npc",
       "base",

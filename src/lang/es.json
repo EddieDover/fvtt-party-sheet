@@ -1,10 +1,6 @@
 {
   "fvtt-party-sheet": {
     "party-sheet": {
-      "name": "Nombre",
-      "race": "Raza",
-      "senses": "Sentidos",
-      "classes": "Clases",
       "invalid-template": "La plantilla que está usando no es válida. <BR/> Por favor revise la plantilla y vuelva a intentarlo.",
       "no-players": "Ningún jugador ha iniciado sesión actualmente.",
       "no-systems": "La carpeta data/partysheets no contiene archivos JSON para este sistema. Necesitas agregar algunos para activar esta funcionalidad.",
@@ -33,7 +29,30 @@
       "show-debug-info": {
         "name": "Mostrar información de depuración",
         "hint": "Actívelo para mostrar información de depuración en la consola para todos los personajes analizados cuando se abre la hoja de grupo. Esperemos que esto le permita rastrear propiedades específicas que está intentando analizar."
+      },
+      "template-status": {
+        "template-status": "Estado de plantilla",
+        "by": "por",
+        "out-of-date": "Las siguientes plantillas están desactualizadas",
+        "current-version": "Versión actual",
+        "module-version": "Versión de módulo",
+        "newer-systems-installed": "Las siguientes plantillas tienen sistemas más nuevos instalados",
+        "no-version-informatin": "Las siguientes plantillas no tienen información de versión",
+        "no-system-information": "Las siguientes plantillas no tienen información del sistema",
+        "current-system-version": "Versión actual del sistema",
+        "required-system-version": "Versión del sistema requerida"
       }
-    }
+    },
+    "close": "Cerca",
+    "install": "Instalar",
+    "reinstall": "Reinstalar",
+    "installer": "Instaladora",
+    "update": "Actualizar",
+    "template-name": "Nombre",
+    "preview": "Avance",
+    "author": "Autora",
+    "version": "Versión",
+    "template-installed-version": "Versión instalada",
+    "template-system-version": "Versión del sistema"
   }
 }

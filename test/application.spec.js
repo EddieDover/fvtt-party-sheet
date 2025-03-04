@@ -45,5 +45,4 @@ test("Verify dialog works.", async ({ page }) => {
   await page.locator("#fvtt-party-sheet-system-select").selectOption("dnd5e - with fails___Blerp");
   await expect(page.getByText("There was an error processing").first()).toBeVisible();
   await expect(page.getByText("The template you are using is")).toBeVisible();
-  await page.locator("#fvtt-party-sheet-system-select").selectOption("dnd5e___Built-In");
 });
