@@ -430,7 +430,11 @@ const ReloadTemplates = async (fullReload = false) => {
               template_validation.noVersionInformation.length > 0 ||
               template_validation.noSystemInformation.length > 0
             ) {
-              toggleTemplateStatusForm(template_validation);
+              // @ts-ignore
+              const showTemplateStatusForm = game.settings.get("fvtt-party-sheet", "showTemplateStatusForm");
+              if (showTemplateStatusForm) {
+                toggleTemplateStatusForm(template_validation);
+              }
             }
           }
         }

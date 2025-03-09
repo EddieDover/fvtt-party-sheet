@@ -68,4 +68,14 @@ export const registerSettings = () => {
     "default": null,
     "type": Object,
   });
+
+  // @ts-ignore
+  game.settings.register("fvtt-party-sheet", "showTemplateStatusForm", {
+    "name": "fvtt-party-sheet.settings.show-template-status-form",
+    "hint": "fvtt-party-sheet.settings.show-template-status-form",
+    "scope": "world",
+    "config": true,
+    "default": false,
+    "type": Boolean,
+  });
 };
