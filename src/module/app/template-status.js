@@ -10,7 +10,7 @@ export class TemplateStatusForm extends FormApplication {
 
   getData(options) {
     // @ts-ignore
-    return mergeObject(super.getData(options), {
+    return foundry.utils.mergeObject(super.getData(options), {
       outOfDateTemplates: this.template_validation.outOfDateTemplates,
       outOfDateSystems: this.template_validation.outOfDateSystems,
       noVersionInformation: this.template_validation.noVersionInformation,
