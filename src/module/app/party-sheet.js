@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import {
   addSign,
+  compareSymVer,
   extractPropertyByString,
   getCustomTemplates,
   getModuleTemplates,
@@ -606,7 +607,7 @@ export class PartySheetForm extends FormApplication {
         // @ts-ignore
         data.system === game.system.id &&
         // @ts-ignore
-        (data.minimumSystemVersion ? data.minimumSystemVersion <= game.system.version : true)
+        compareSymVer(data.minimumSystemVersion, game.system.version) <= 0
       );
     });
     let selectedIdx = getSelectedTemplate()
