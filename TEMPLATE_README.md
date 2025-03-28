@@ -333,7 +333,7 @@ Code:
   "type": "array-string-builder",
   "header": "show",
   "text": "statuses => value, "
-}, // No comma if last item in the row
+}
 ```
 
 This example is used to display Active Status Effects on a character, such as burning, bleeding, prone, etc. They are stored by Foundry under the actor as `.statuses`, and the value is an array of strings. To display an array of values with no definite end or number of values or even empty sometimes, array-string-builder is your weapon of choice.
