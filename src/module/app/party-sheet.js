@@ -1,14 +1,16 @@
 /* eslint-disable no-undef */
 import {
   addSign,
+  compareSymVer,
   extractPropertyByString,
-  getCustomSystems,
-  getSelectedSystem,
+  getCustomTemplates,
+  getModuleTemplates,
+  getSelectedTemplate,
   parseExtras,
   parsePluses,
   TemplateProcessError,
   trimIfString,
-  updateSelectedSystem,
+  updateSelectedTemplate,
 } from "../utils.js";
 import { HiddenCharactersSettings } from "./hidden-characters-settings.js";
 
@@ -22,51 +24,15 @@ const DEFAULT_EXCLUDES = ["npc"];
 let generated_dropdowns = 0;
 // @ts-ignore
 export class PartySheetForm extends FormApplication {
-  constructor() {
+  constructor(postInstallCallback = () => {}) {
     super();
+    this._postInstallCallback = postInstallCallback;
+    this.showInstaller = false;
   }
 
   /**
-   * @typedef { 'direct' | 'math' | 'direct-complex' | 'string' | 'array-string-builder'|'span' } SystemDataColumnType
-   * @typedef { 'show' | 'hide' | 'skip' } SystemDataColumnHeader
-   * @typedef { 'left' | 'center' | 'right' } SystemDataColumnAlignType
-   * @typedef { 'top' | 'bottom' } SystemDataColumnVAlignType
-   */
-
-  /**
-   * @typedef SystemDataColumn
-   * @property {string} name - The name of the column.
-   * @property {SystemDataColumnType} type - The type of data to display. See below for details.
-   * @property {SystemDataColumnHeader} header - Whether to show, hide, or skip the column.
-   * @property {SystemDataColumnAlignType} align - The horizontal alignment of the column.
-   * @property {SystemDataColumnVAlignType} valign - The vertical alignment of the column.
-   * @property {number} colspan - The number of columns to span.
-   * @property {number} rowspan - The number of rows to span. Spanned rows must have spanover type.
-   * @property {number} maxwidth - The maximum width of the column in pixels.
-   * @property {number} minwidth - The minimum width of the column in pixels.
-   * @property {boolean} showSign - Whether to show a plus sign for positive numbers.
-   * @property {string} text - The value to display. See below for details.
-   */
-
-  /**
-   * @typedef SystemData
-   * @property { string } system - The system this data is for.
-   * @property { string } author - The author of this data.
-   * @property { string } name - The name of this data.
-   * @property { Array<Array<SystemDataColumn>> } rows - The rows of data to display. See below for details.
-   * @property { string } offline_excludes_property - The property to use to exclude players. Note: This is optional and defaults to the actors.type property.
-   * @property { Array<string> } offline_excludes - The types you want to exclude when showing offline players.
-   * @property { string } offline_includes_property - The property to use to show players online.
-   * @property { Array<string> } offline_includes - The types you want to include when showing online players.
-   */
-
-  /**
-   * @typedef { {name: string, author: string, players: any, rowcount: number} } CustomPlayerData
-   */
-
-  /**
    * Get the custom player data.
-   * @param { SystemData } data - The system data
+   * @param { TemplateData } data - The template data
    * @returns { CustomPlayerData } The custom player data
    * @memberof PartySheetForm
    */
@@ -634,20 +600,26 @@ export class PartySheetForm extends FormApplication {
     // @ts-ignore
     const enableOnlyOnline = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
     // @ts-ignore
-    const customSystems = getCustomSystems();
+    const customTemplates = getCustomTemplates();
 
-    const applicableSystems = customSystems.filter((data) => {
-      // @ts-ignore
-      return data.system === game.system.id;
+    const applicableTemplates = customTemplates.filter((data) => {
+      return (
+        // @ts-ignore
+        data.system === game.system.id &&
+        // @ts-ignore
+        compareSymVer(data.minimumSystemVersion, game.system.version) <= 0
+      );
     });
-    let selectedIdx = getSelectedSystem() ? applicableSystems.findIndex((data) => data === getSelectedSystem()) : 0;
+    let selectedIdx = getSelectedTemplate()
+      ? applicableTemplates.findIndex((data) => data === getSelectedTemplate())
+      : 0;
 
-    updateSelectedSystem(applicableSystems[selectedIdx]);
-    const selectedSystem = getSelectedSystem();
+    updateSelectedTemplate(applicableTemplates[selectedIdx]);
+    const selectedTemplate = getSelectedTemplate();
     let selectedName, selectedAuthor, players, rowcount;
     let invalidTemplateError = false;
     try {
-      let result = this.getCustomPlayerData(selectedSystem);
+      let result = this.getCustomPlayerData(selectedTemplate);
       selectedName = result.name;
       selectedAuthor = result.author;
       players = result.players;
@@ -656,7 +628,7 @@ export class PartySheetForm extends FormApplication {
       if (ex instanceof TemplateProcessError) {
         // @ts-ignore
         ui.notifications.error(
-          `There was an error processing the template for ${selectedSystem.name} by ${selectedSystem.author}.`,
+          `There was an error processing the template for ${selectedTemplate.name} by ${selectedTemplate.author}.`,
         );
         selectedName = ex.data.name;
         selectedAuthor = ex.data.author;
@@ -666,17 +638,35 @@ export class PartySheetForm extends FormApplication {
       }
     }
 
+    const doShowInstaller = this.showInstaller;
+    this.showInstaller = false;
+
+    /** @typedef {TemplateData & {installedVersion?:string}} InstalledTemplateData */
+    /** @type {InstalledTemplateData[]} */
     // @ts-ignore
-    return mergeObject(super.getData(options), {
+    let moduleSystemTemplates = getModuleTemplates().filter((template) => template.system === game.system.id);
+    moduleSystemTemplates.map((template) => {
+      template.installedVersion = customTemplates.find(
+        (data) => data.name === template.name && data.author === template.author,
+      )
+        ? customTemplates.find((data) => data.name === template.name && data.author === template.author).version
+        : "";
+    });
+
+    // @ts-ignore
+    return foundry.utils.mergeObject(super.getData(options), {
       minimalView,
       hiddenCharacters,
       enableOnlyOnline,
       rowcount,
       players,
-      applicableSystems,
+      applicableTemplates,
+      // @ts-ignore
+      moduleSystemTemplates,
       selectedName,
       selectedAuthor,
       invalidTemplateError,
+      showInstaller: doShowInstaller,
       // @ts-ignore
       overrides: this.overrides,
     });
@@ -728,11 +718,11 @@ export class PartySheetForm extends FormApplication {
     const selectedSystemName = event.currentTarget.value.split("___")[0];
     const selectedSystemAuthor = event.currentTarget.value.split("___")[1];
     const selectedIndex =
-      getCustomSystems().findIndex(
+      getCustomTemplates().findIndex(
         (data) => data.name === selectedSystemName && data.author === selectedSystemAuthor,
       ) ?? -1;
     if (selectedIndex != -1) {
-      updateSelectedSystem(getCustomSystems()[selectedIndex]);
+      updateSelectedTemplate(getCustomTemplates()[selectedIndex]);
     }
     // @ts-ignore
     this.render(true);
@@ -755,6 +745,37 @@ export class PartySheetForm extends FormApplication {
     $('button[name="bugreport"]', html).click(this.onBugReport.bind(this));
     // @ts-ignore
     $('button[name="discord"]', html).click(this.onDiscord.bind(this));
+    // @ts-ignore
+    $('button[name="installer"]', html).click(this.onInstaller.bind(this));
+    // @ts-ignore
+    $('button[class="fvtt-party-sheet-module-preview-button"]').click((event) => {
+      const modulepath = event.currentTarget.dataset.modulepath;
+      // Construct the Application instance
+      // @ts-ignore
+      const ip = new ImagePopout(
+        `https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/${modulepath}`,
+      );
+
+      // Display the image popout
+      ip.render(true);
+    });
+    // @ts-ignore
+    $('button[class="fvtt-party-sheet-module-install-button"]').click(async (event) => {
+      const dataModuleTemplatePath = event.currentTarget.dataset.modulepath;
+      const dataModuleTemplateFilename = dataModuleTemplatePath.split("/").pop();
+      const dataModuleTemplateFolder = dataModuleTemplatePath.split("/").slice(0, -1).join("/") + "/";
+      // @ts-ignore
+      const fileContents = JSON.parse(
+        await fetch(`${dataModuleTemplateFolder}${dataModuleTemplateFilename}`).then((r) => r.text()),
+      );
+      const fileObject = new File([JSON.stringify(fileContents)], dataModuleTemplateFilename, {
+        type: "application/json",
+      });
+      // @ts-ignore
+      FilePicker.upload("data", "partysheets", fileObject);
+
+      this._postInstallCallback();
+    });
     // @ts-ignore
     $('select[class="fvtt-party-sheet-dropdown"]', html).change((event) => {
       const dropdownSection = event.currentTarget.dataset.dropdownsection;
@@ -784,5 +805,12 @@ export class PartySheetForm extends FormApplication {
     event.preventDefault();
     const newWindow = window.open(DISCORD_URL, "_blank", "noopener,noreferrer");
     if (newWindow) newWindow.opener = undefined;
+  }
+
+  onInstaller(event) {
+    event.preventDefault();
+    this.showInstaller = true;
+    // @ts-ignore
+    this.render(true);
   }
 }

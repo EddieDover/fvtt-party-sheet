@@ -1,6 +1,6 @@
 import copy from "rollup-plugin-copy";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
-
+import commonjs from "@rollup/plugin-commonjs";
 // Due to rollup-plugin-copy being garbage with globbing,
 // switching to https://github.com/paulmelnikow/rollup-plugin-cpy may be necessary in the future.
 
@@ -13,6 +13,10 @@ export default () => ({
   },
   plugins: [
     nodeResolve(),
+    commonjs({
+      include: /node_modules/,
+      requireReturnsDefault: "auto",
+    }),
     copy({
       targets: [
         { src: "*.md", dest: "dist" },

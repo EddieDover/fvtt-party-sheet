@@ -2,6 +2,8 @@
     "name": "Fallout 2d20 - With Movement",
     "system": "fallout",
     "author": "Michael Card (EmoCthulhu)",
+    "version": "1.0.0",
+    "minimumSystemVersion": "11.12.2",
     "offline_excludes": [
         "npc",
         "base",

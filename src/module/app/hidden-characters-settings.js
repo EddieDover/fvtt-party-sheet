@@ -19,7 +19,7 @@ export class HiddenCharactersSettings extends FormApplication {
     const enableOnlyOnline = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
 
     // @ts-ignore
-    return mergeObject(super.getData(options), {
+    return foundry.utils.mergeObject(super.getData(options), {
       characters: this.characterList,
       hiddenCharacters,
       enableOnlyOnline,

@@ -1,0 +1,56 @@
+<form autocomplete="off" class="fvtt-party-sheet-template-status-dialog">
+  <p>{{localize "fvtt-party-sheet.template-status.template-status"}}</p>
+  <div style="display:flex; flex-direction:row; flex-wrap:nowrap">
+
+    <div style="display: grid;grid-template-columns: repeat(2, 1fr);grid-template-rows: repeat(2, 1fr);grid-column-gap: 5px;grid-row-gap: 5px;">
+        <div style="display:flex; flex-direction:column; flex-wrap:nowrap;flex-grow:1;">
+            <p>{{localize "fvtt-party-sheet.template-status.out-of-date"}}:</p>
+            <div style="background-color:#ffffff;flex-grow:1;padding:5px;">
+            {{#each outOfDateTemplates}}
+                <div>
+                    {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
+                    {{localize "fvtt-party-sheet.template-status.current-version"}}:  <span style="color:#ff6666;background-color:#000000;border-radius:5px;padding:2px;">{{this.version}}</span>
+                    {{localize "fvtt-party-sheet.template-status.module-version"}}: <span style="color:#00ff00;background-color:#000000;;border-radius:5px;padding:2px;">{{this.providedVersion}}</span><br/>
+                </div>
+            {{/each}}
+            </div>
+        </div>
+        <div style="display:flex; flex-direction:column; flex-wrap:nowrap;flex-grow:1;">
+            <p>{{localize "fvtt-party-sheet.template-status.newer-systems-installed"}}:</p>
+            <div style="background-color:#ffffff;flex-grow:1;padding:5px;">
+            {{#each outOfDateSystems}}
+                <div>
+                    {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
+                    {{localize "fvtt-party-sheet.template-status.required-system-version"}}:  <span style="color:#00ff00;background-color:#000000;;border-radius:5px;padding:2px;">{{this.minimumSystemVersion}}</span>
+                    {{localize "fvtt-party-sheet.template-status.current-system-version"}}: <span style="color:#ff6666;background-color:#000000;;border-radius:5px;padding:2px;">{{this.ownedSystemVersion}}</span><br/>
+                </div>
+            {{/each}}
+            </div>
+        </div>
+        <div style="display:flex; flex-direction:column; flex-wrap:nowrap;flex-grow:1;">
+            <p>{{localize "fvtt-party-sheet.template-status.no-version-information"}}:</p>
+            <div style="background-color:#ffffff;flex-grow:1;padding:5px;">
+            {{#each noVersionInformation}}
+                <div>
+                    {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        <div style="display:flex; flex-direction:column; flex-wrap:nowrap;flex-grow:1;">
+            <p>{{localize "fvtt-party-sheet.template-status.no-system-information"}}:</p>
+            <div style="background-color:#ffffff;flex-grow:1;padding:5px;">
+            {{#each noSystemInformation}}
+                <div>
+                    {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
+                </div>
+            {{/each}}
+            </div>
+        </div>
+    </div>
+
+  </div>
+  <button type="button" id="fvtt-party-sheet-template-ok-btn" name="fvtt-party-sheet-template-ok-btn">
+    {{localize "fvtt-party-sheet.close"}}
+  </button>
+</form>
