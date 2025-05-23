@@ -182,20 +182,53 @@ function togglePartySheet() {
 
 const showButton = () => {
   if (areTemplatesLoaded()) {
+    let v13AndUp = false;
+    let controls = null;
+
     // @ts-ignore
-    const button = $(`<li class="control-tool "
+    const version = game.version.split(".").map((v) => parseInt(v, 10));
+    const majorVersion = version[0];
+
+    if (majorVersion >= 13) {
+      // @ts-ignore
+      controls = $("#scene-controls-tools");
+      v13AndUp = true;
+    } else {
+      // @ts-ignore
+      controls = $("#tools-panel-token");
+    }
+
+    if (v13AndUp) {
+      const newli = document.createElement("li");
+      const newbutton = document.createElement("button");
+      newbutton.setAttribute("type", "button");
+      newbutton.setAttribute("class", "control ui-control tool icon toggle fas fa-users");
+      newbutton.setAttribute("data-tool", "PartySheet");
+      newbutton.setAttribute("aria-label", "Party Sheet");
+      newbutton.setAttribute("aria-pressed", "false");
+      newbutton.setAttribute(
+        "data-tooltip-html",
+        '<div class="toolclip themed theme-dark"><h4>Party Sheet</h4><p>Show the Party Sheet</p></div>',
+      );
+      newbutton.addEventListener("click", () => togglePartySheet());
+      newli.appendChild(newbutton);
+      if (controls.find(".control[data-tool='PartySheet']").length === 0) {
+        controls.append(newli);
+      }
+    } else {
+      // @ts-ignore
+      const button = $(`<li class="control-tool "
       data-tool="PartySheet"
       aria-label="Show Party Sheet"
       role="button"
       data-tooltip="Party Sheet">
       <i class="fas fa-users"></i>
     </li>`);
-    button.click(() => togglePartySheet());
-    // @ts-ignore
-    const controls = $("#tools-panel-token");
+      button.click(() => togglePartySheet());
 
-    if (controls.find(".control-tool[data-tool='PartySheet']")) {
-      controls.append(button);
+      if (controls.find(".control-tool[data-tool='PartySheet']").length === 0) {
+        controls.append(button);
+      }
     }
   }
 };
