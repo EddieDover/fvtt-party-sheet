@@ -1,4 +1,10 @@
 
+## [2.7.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.6.0...v2.7.0) (2025-05-23)
+
+### Bug Fixes
+
+* updated module to work with v13 ([5d77ee9](https://github.com/EddieDover/fvtt-party-sheet/commit/5d77ee920d0bd921e54d1f3fca42f482ad9c16cd))
+
 ## [2.6.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.5.1...v2.6.0) (2024-08-26)
 
 ### Features
