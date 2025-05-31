@@ -8,9 +8,7 @@ Please unfold any entry to see a screenshot.
 
   ![DnD5e Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/images/preview1.png)
   <summary>
-  Built-In & dnd5e_template.json (Eddie Dover)
-  <br/>
-  - Note: this does not require any upload of a .json, but you can make your own or edit the examples in the [example_templates] folder to your liking and it will show up in the dropdown of available .json files
+  dnd5e_template.json (Eddie Dover)
   </summary>
 </details>
 

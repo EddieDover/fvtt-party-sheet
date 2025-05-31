@@ -1,9 +1,88 @@
 /* eslint-disable no-undef */
 import { registerSettings } from "./app/settings.js";
 import { PartySheetForm } from "./app/party-sheet.js";
-import { log, loadSystemTemplates, toProperCase, areTemplatesLoaded } from "./utils.js";
+import {
+  log,
+  loadSystemTemplates,
+  toProperCase,
+  areTemplatesLoaded,
+  validateSystemTemplates,
+  setTemplatesLoaded,
+} from "./utils.js";
+import { TemplateStatusForm } from "./app/template-status.js";
+import md5 from "blueimp-md5";
 
 let currentPartySheet = null;
+let currentRefreshInterval = null;
+let currentTemplateStatusForm = null;
+
+// @ts-ignore
+Handlebars.registerPartial(
+  "installer",
+  `
+<div style="display:flex;flex-direction:row;flex-wrap:wrap">
+{{#each moduleSystemTemplates as |template|}}
+    <div style="display:flex;flex-direction:row;flex-wrap:nowrap;padding: 3px;border: 1px solid black;border-radius: 5px;margin: 5px;">
+        <div class="fvtt-party-sheet-ps-system-name" style="display:flex;flex-direction:column;flex-wrap:nowrap;width:200px;max-height:300px;">
+        <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-name"}}:</div>
+        <div style="padding-bottom:3px;">{{template.name}}</div>
+        <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.author"}}:</div>
+        <div style="padding-bottom:3px">{{template.author}}</div>
+        <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.version"}}:</div>
+        <div style="padding-bottom:3px">{{template.version}}</div>
+        {{#if template.installedVersion}}
+            <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-installed-version"}}:</div>
+            <div style="padding-bottom:3px">
+                {{#compVersion template.installedVersion template.version}}
+                    {{template.installedVersion}}
+                {{else}}
+                    <span style="color:#ff6666;background-color:#000000;border-radius:5px;padding:2px;">{{template.installedVersion}}</span>
+                {{/compVersion}}
+            </div>
+        {{/if}}
+        <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-system-version"}}:</div>
+        <div style="flex-grow:1;">{{template.minimumSystemVersion}}</div>
+        {{#if template.installedVersion}}
+            {{#compVersion template.installedVersion template.version}}
+            <button
+                type="button"
+                class="fvtt-party-sheet-module-install-button"
+                data-modulepath="{{template.path}}"
+            >
+                {{localize "fvtt-party-sheet.reinstall"}}
+            </button>
+            {{else}}
+                <button
+                type="button"
+                style="background-color:#29b125"
+                class="fvtt-party-sheet-module-install-button"
+                data-modulepath="{{template.path}}"
+            >
+                {{localize "fvtt-party-sheet.update"}}
+            </button>
+            {{/compVersion}}
+        {{else}}
+          <button
+            type="button"
+            class="fvtt-party-sheet-module-preview-button"
+            data-modulepath="{{template.preview}}"
+            >
+              {{localize "fvtt-party-sheet.preview"}}
+          </button>
+          <button
+              type="button"
+              class="fvtt-party-sheet-module-install-button"
+              data-modulepath="{{template.path}}"
+            >
+              {{localize "fvtt-party-sheet.install"}}
+            </button>
+        {{/if}}
+        </div>
+    </div>
+{{/each}}
+</div>
+`,
+);
 
 // @ts-ignore
 Handlebars.registerHelper("hccontains", function (needle, haystack, options) {
@@ -167,16 +246,82 @@ Handlebars.registerHelper("ifCond", function (v1, operator, v2, options) {
   }
 });
 
+// @ts-ignore
+Handlebars.registerHelper("compVersion", function (v1, v2, options) {
+  const v1Parts = v1.split(".");
+  const v2Parts = v2.split(".");
+  const maxLen = Math.max(v1Parts.length, v2Parts.length);
+
+  let v1Num, v2Num;
+  for (let i = 0; i < maxLen; i++) {
+    v1Num = parseInt(v1Parts[i], 10);
+    v2Num = parseInt(v2Parts[i], 10);
+
+    if (isNaN(v1Num)) {
+      v1Num = 0;
+    }
+    if (isNaN(v2Num)) {
+      v2Num = 0;
+    }
+
+    if (v1Num > v2Num) {
+      return options.fn(this);
+    }
+    if (v1Num < v2Num) {
+      return options.inverse(this);
+    }
+  }
+
+  return options.fn(this);
+});
+
 /**
- *
+ * Toggles the party sheet
  */
 function togglePartySheet() {
   if (currentPartySheet?.rendered) {
     currentPartySheet.close();
   } else {
-    currentPartySheet = new PartySheetForm();
+    currentPartySheet = new PartySheetForm(afterInstall);
     // @ts-ignore
     currentPartySheet.render(true);
+
+    // @ts-ignore
+    const refreshRate = game.settings.get("fvtt-party-sheet", "refreshRate");
+    if (refreshRate > 0) {
+      currentRefreshInterval = setInterval(() => refreshSheet(), refreshRate * 1000);
+    } else {
+      if (currentRefreshInterval) {
+        clearInterval(currentRefreshInterval);
+      }
+    }
+  }
+}
+
+/**
+ * Refreshes the party sheet
+ */
+function refreshSheet() {
+  if (currentPartySheet?.rendered) {
+    currentPartySheet.render(false, {
+      focus: false,
+    });
+  } else {
+    clearInterval(currentRefreshInterval);
+  }
+}
+
+/**
+ * Toggles the template status form
+ * @param {TemplateValidityReturnData} template_validation - The template validation data
+ */
+function toggleTemplateStatusForm(template_validation) {
+  if (currentTemplateStatusForm?.rendered) {
+    currentTemplateStatusForm.close();
+  } else {
+    currentTemplateStatusForm = new TemplateStatusForm(template_validation);
+    // @ts-ignore
+    currentTemplateStatusForm.render(true);
   }
 }
 
@@ -233,6 +378,17 @@ const showButton = () => {
   }
 };
 
+const hideButton = () => {
+  // @ts-ignore
+  const control_parent = $("#tools-panel-token");
+  const controls = control_parent.find(".control-tool[data-tool='PartySheet']");
+  if (controls.length > 0) {
+    for (const control of controls) {
+      control.remove();
+    }
+  }
+};
+
 /**
  * Register the API
  */
@@ -244,6 +400,19 @@ function registerAPI() {
     togglePartySheet: togglePartySheet,
   };
   log("API registered");
+}
+
+/**
+ * Runs after installation of template;
+ */
+function afterInstall() {
+  togglePartySheet();
+  setTimeout(async () => {
+    // @ts-ignore
+    setTemplatesLoaded(false);
+    await ReloadTemplates();
+    togglePartySheet();
+  }, 550);
 }
 
 /* Hooks */
@@ -258,17 +427,56 @@ Hooks.on("init", () => {
 // @ts-ignore
 Hooks.on("ready", async () => {
   log("Ready");
-
   // @ts-ignore
   if (game.user.isGM) {
     registerAPI();
-    if (!areTemplatesLoaded()) {
-      log("Loading templates");
-      await loadSystemTemplates();
-    }
   }
-  showButton();
+  await ReloadTemplates(true);
 });
+
+const ReloadTemplates = async (fullReload = false) => {
+  // @ts-ignore
+  if (game.user.isGM) {
+    hideButton();
+
+    if (!areTemplatesLoaded()) {
+      await loadSystemTemplates();
+
+      if (fullReload) {
+        const template_validation = await validateSystemTemplates();
+        if (
+          template_validation.outOfDateSystems ||
+          template_validation.outOfDateTemplates ||
+          template_validation.noVersionInformation ||
+          template_validation.noSystemInformation
+        ) {
+          const newHash = md5(JSON.stringify(template_validation));
+          // @ts-ignore
+          const lastHash = game.settings.get("fvtt-party-sheet", "lastTemplateValidationHash");
+
+          if (!lastHash || newHash.toString() !== lastHash.toString()) {
+            // @ts-ignore
+            game.settings.set("fvtt-party-sheet", "lastTemplateValidationHash", newHash);
+            if (
+              template_validation.outOfDateSystems.length > 0 ||
+              template_validation.outOfDateTemplates.length > 0 ||
+              template_validation.noVersionInformation.length > 0 ||
+              template_validation.noSystemInformation.length > 0
+            ) {
+              // @ts-ignore
+              const showTemplateStatusForm = game.settings.get("fvtt-party-sheet", "showTemplateStatusForm");
+              if (showTemplateStatusForm) {
+                toggleTemplateStatusForm(template_validation);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    showButton();
+  }
+};
 
 // @ts-ignore
 Hooks.on("renderPlayerList", () => {
