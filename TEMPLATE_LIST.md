@@ -6,7 +6,7 @@ Please unfold any entry to see a screenshot.
 
 <details>
 
-![DnD5e Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/images/preview1.png)
+![DnD5e Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/dnd5e/dnd5e_template.jpg)
 
   <summary>
   dnd5e_template.json (Eddie Dover)
@@ -56,13 +56,13 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![Coriolis Full Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/coriolis/coriolis.jpg)
+![Coriolis Full Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/yzecoriolis/coriolis.jpg)
 
 <summary>coriolis.json - Michael Card (Emo Cthulhu)</summary></details>
 
 <details>
 
-![Coriolis Compact Screeshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/coriolis/coriolis-compact.jpg)
+![Coriolis Compact Screeshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/yzecoriolis/coriolis-compact.jpg)
 
 <summary>coriolis-compact.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -70,13 +70,13 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![Cyberpunk RED Minimal Screeshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/cyberpunk-RED/cyberpunk-RED-v1.jpg)
+![Cyberpunk RED Minimal Screeshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/cyberpunk-red-core/cyberpunk-RED-v1.jpg)
 
 <summary>cyberpunk-red-v1.json - Michael Card (Emo Cthulhu)</summary></details>
 
 <details>
 
-![Cyberpunk RED v2 Screeshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/cyberpunk-RED/cyberpunk-RED-v2.jpg)
+![Cyberpunk RED v2 Screeshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/cyberpunk-red-core/cyberpunk-RED-v2.jpg)
 
 <summary>cyberpunk-red-v2.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -122,13 +122,13 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![Starfinder Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/starfinder/starfinder.jpg)
+![Starfinder Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/sfrpg/starfinder.jpg)
 
 <summary>starfinder.json - Michael Card (Emo Cthulhu)</summary></details>
 
 <details>
 
-![Starfinder with Statuses Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/starfinder/starfinder-statuses.jpg)
+![Starfinder with Statuses Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/sfrpg/starfinder-statuses.jpg)
 
 <summary>starfinder-statuses.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -144,25 +144,25 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![Star Trek Adventures v1 Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/star-trek-adventures/sta-v1.jpg)
+![Star Trek Adventures v1 Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/sta/sta-v1.jpg)
 
 <summary>sta-v1.json - Michael Card (Emo Cthulhu)</summary></details>
 
 <details>
 
-![Star Trek Adventures v1 Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/star-trek-adventures/sta-v1.jpg)
+![Star Trek Adventures v1 Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/sta/sta-v1.jpg)
 
 <summary>sta-v1.json - Michael Card (Emo Cthulhu)</summary></details>
 
 <details>
 
-![Star Trek Adventures v2 Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/star-trek-adventures/sta-v2.jpg)
+![Star Trek Adventures v2 Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/sta/sta-v2.jpg)
 
 <summary>sta-v2.json - Michael Card (Emo Cthulhu)</summary></details>
 
 <details>
 
-![Star Trek Adventures v2 Ship Sheet Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/star-trek-adventures/sta-ship-v2.jpg)
+![Star Trek Adventures v2 Ship Sheet Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/sta/sta-ship-v2.jpg)
 
 <summary>sta-ship-v2.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -170,19 +170,19 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![TWDU with Anchors Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/thewalkingdead/twdu-anchors.jpg)
+![TWDU with Anchors Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/twdu/twdu-anchors.jpg)
 
 <summary>twdu-anchors.json - Michael Card (Emo Cthulhu)</summary></details>
 
 <details>
 
-![TWDU without Anchors Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/thewalkingdead/twdu-no-anchors.jpg)
+![TWDU without Anchors Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/twdu/twdu-no-anchors.jpg)
 
 <summary>twdu-no-anchors.json - Michael Card (Emo Cthulhu)</summary></details>
 
 <details>
 
-![TWDU Two Rows Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/thewalkingdead/twdu-two-rows.jpg)
+![TWDU Two Rows Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/twdu/twdu-two-rows.jpg)
 
 <summary>twdu-two-rows.json - Michael Card (Emo Cthulhu)</summary></details>
 
@@ -194,7 +194,7 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <summary>vaesen.json - Michael Card (Emo Cthulhu)</summary></details>
 
-## World of Darkness "Vtm5e"
+## World of Darkness "vtm5e"
 
 <details>
 
