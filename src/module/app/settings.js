@@ -1,4 +1,5 @@
 import { HiddenCharactersSettings } from "./hidden-characters-settings";
+import { TemplateStatusForm } from "./template-status";
 
 export const registerSettings = () => {
   // @ts-ignore
@@ -7,6 +8,19 @@ export const registerSettings = () => {
     "config": false,
     "default": [],
     "type": Array,
+  });
+
+  // @ts-ignore
+  game.settings.register("fvtt-party-sheet", "validationInfo", {
+    "scope": "world",
+    "config": false,
+    default: {
+      outOfDateTemplates: [],
+      outOfDateSystems: [],
+      noVersionInformation: [],
+      noSystemInformation: [],
+    },
+    "type": Object,
   });
 
   // @ts-ignore
@@ -70,12 +84,12 @@ export const registerSettings = () => {
   });
 
   // @ts-ignore
-  game.settings.register("fvtt-party-sheet", "showTemplateStatusForm", {
-    "name": "fvtt-party-sheet.settings.show-template-status-form",
-    "hint": "fvtt-party-sheet.settings.show-template-status-form",
-    "scope": "world",
-    "config": true,
-    "default": false,
-    "type": Boolean,
+  game.settings.registerMenu("fvtt-party-sheet", "showTemplateStatusForm", {
+    "name": "",
+    "label": "fvtt-party-sheet.settings.show-template-status-form.name",
+    "hint": "fvtt-party-sheet.settings.show-template-status-form.hint",
+    "icon": "fas fa-heartbeat",
+    "restructed": true,
+    "type": TemplateStatusForm,
   });
 };

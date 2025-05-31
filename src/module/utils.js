@@ -275,7 +275,7 @@ export async function validateSystemTemplates() {
     }
 
     if (templateData.ownedSystemVersion !== "-") {
-      if (compareSymVer(templateData.minimumSystemVersion, templateData.ownedSystemVersion) < 0) {
+      if (compareSymVer(templateData.ownedSystemVersion, templateData.minimumSystemVersion) < 0) {
         output.outOfDateSystems.push(templateData);
         err = true;
       }
@@ -346,6 +346,13 @@ export function getSelectedTemplate() {
  */
 export function addCustomTemplate(system) {
   customTemplates.push(system);
+}
+
+/**
+ * Clears the list of systems.
+ */
+export function clearCustomTemplates() {
+  customTemplates = [];
 }
 
 /**

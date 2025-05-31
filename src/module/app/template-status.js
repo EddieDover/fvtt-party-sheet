@@ -1,11 +1,9 @@
 // @ts-ignore
 export class TemplateStatusForm extends FormApplication {
-  /**
-   * @param {TemplateValidityReturnData} template_validation - The template validation data
-   */
-  constructor(template_validation) {
+  constructor() {
     super();
-    this.template_validation = template_validation;
+    // @ts-ignore
+    this.template_validation = game.settings.get("fvtt-party-sheet", "validationInfo") || {};
   }
 
   getData(options) {
@@ -15,6 +13,7 @@ export class TemplateStatusForm extends FormApplication {
       outOfDateSystems: this.template_validation.outOfDateSystems,
       noVersionInformation: this.template_validation.noVersionInformation,
       noSystemInformation: this.template_validation.noSystemInformation,
+      valid: this.template_validation.valid,
       // @ts-ignore
       systemVersion: game.system.version,
     });

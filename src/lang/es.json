@@ -34,18 +34,22 @@
         "name": "Mostrar información de depuración",
         "hint": "Actívelo para mostrar información de depuración en la consola para todos los personajes analizados cuando se abre la hoja de grupo. Esperemos que esto le permita rastrear propiedades específicas que está intentando analizar."
       },
-      "template-status": {
-        "template-status": "Estado de plantilla",
-        "by": "por",
-        "out-of-date": "Las siguientes plantillas están desactualizadas",
-        "current-version": "Versión actual",
-        "module-version": "Versión de módulo",
-        "newer-systems-installed": "Las siguientes plantillas tienen sistemas más nuevos instalados",
-        "no-version-informatin": "Las siguientes plantillas no tienen información de versión",
-        "no-system-information": "Las siguientes plantillas no tienen información del sistema",
-        "current-system-version": "Versión actual del sistema",
-        "required-system-version": "Versión del sistema requerida"
+      "show-template-status-form": {
+        "name": "Mostrar formulario de estado de plantilla",
+        "hint": "Habilita esta opción para mostrar el formulario de estado de plantilla cuando se abra la hoja de grupo. Esto te mostrará qué plantillas están desactualizadas, cuáles tienen sistemas más nuevos instalados y cuáles no tienen información de versión."
       }
+    },
+    "template-status": {
+      "template-status": "Estado de plantilla",
+      "by": "por",
+      "out-of-date": "Las siguientes plantillas están desactualizadas",
+      "current-version": "Versión actual",
+      "module-version": "Versión de módulo",
+      "newer-required-system": "Las siguientes plantillas necesitan sistemas más nuevos instalados",
+      "no-version-informatin": "Las siguientes plantillas no tienen información de versión",
+      "no-system-information": "Las siguientes plantillas no tienen información del sistema",
+      "current-system-version": "Versión actual del sistema",
+      "required-system-version": "Versión del sistema requerida"
     },
     "close": "Cerca",
     "install": "Instalar",

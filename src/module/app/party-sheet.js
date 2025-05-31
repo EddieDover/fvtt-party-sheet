@@ -24,10 +24,11 @@ const DEFAULT_EXCLUDES = ["npc"];
 let generated_dropdowns = 0;
 // @ts-ignore
 export class PartySheetForm extends FormApplication {
-  constructor(postInstallCallback = () => {}) {
+  constructor(postInstallCallback = async () => {}) {
     super();
     this._postInstallCallback = postInstallCallback;
     this.showInstaller = false;
+    this.savedOptions = undefined;
   }
 
   /**
@@ -103,7 +104,7 @@ export class PartySheetForm extends FormApplication {
 
           let row_data = [];
 
-          data.rows.map((row_obj) => {
+          data.rows.forEach((row_obj) => {
             let customData = {};
 
             row_obj.forEach((colobj) => {
@@ -592,16 +593,34 @@ export class PartySheetForm extends FormApplication {
     // Don't delete this function or FoundryVTT complains...
   }
 
+  updateSelectedTemplateIndex(applicableTemplates) {
+    // @ts-ignore
+
+    let selectedIdx = getSelectedTemplate()
+      ? applicableTemplates.findIndex(
+          (data) => data.name === getSelectedTemplate().name && data.author === getSelectedTemplate().author,
+        )
+      : 0;
+
+    updateSelectedTemplate(applicableTemplates[selectedIdx]);
+    return getSelectedTemplate();
+  }
+
   getData(options) {
+    if (options) {
+      this.savedOptions = options;
+    } else if (this.savedOptions) {
+      options = this.savedOptions;
+    }
+
     // @ts-ignore
     const minimalView = game.settings.get("fvtt-party-sheet", "enableMinimalView");
     // @ts-ignore
     const hiddenCharacters = game.settings.get("fvtt-party-sheet", "hiddenCharacters");
     // @ts-ignore
     const enableOnlyOnline = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
-    // @ts-ignore
-    const customTemplates = getCustomTemplates();
 
+    const customTemplates = getCustomTemplates();
     const applicableTemplates = customTemplates.filter((data) => {
       return (
         // @ts-ignore
@@ -610,12 +629,8 @@ export class PartySheetForm extends FormApplication {
         compareSymVer(data.minimumSystemVersion, game.system.version) <= 0
       );
     });
-    let selectedIdx = getSelectedTemplate()
-      ? applicableTemplates.findIndex((data) => data === getSelectedTemplate())
-      : 0;
+    const selectedTemplate = this.updateSelectedTemplateIndex(applicableTemplates);
 
-    updateSelectedTemplate(applicableTemplates[selectedIdx]);
-    const selectedTemplate = getSelectedTemplate();
     let selectedName, selectedAuthor, players, rowcount;
     let invalidTemplateError = false;
     try {
@@ -641,16 +656,21 @@ export class PartySheetForm extends FormApplication {
     const doShowInstaller = this.showInstaller;
     this.showInstaller = false;
 
-    /** @typedef {TemplateData & {installedVersion?:string}} InstalledTemplateData */
+    /** @typedef {TemplateData & {installedVersion?:string, installed:boolean}} InstalledTemplateData */
     /** @type {InstalledTemplateData[]} */
     // @ts-ignore
     let moduleSystemTemplates = getModuleTemplates().filter((template) => template.system === game.system.id);
-    moduleSystemTemplates.map((template) => {
-      template.installedVersion = customTemplates.find(
+
+    moduleSystemTemplates.forEach((template) => {
+      const foundTemplate = customTemplates.find(
         (data) => data.name === template.name && data.author === template.author,
-      )
-        ? customTemplates.find((data) => data.name === template.name && data.author === template.author).version
-        : "";
+      );
+      if (foundTemplate) {
+        template.installedVersion = foundTemplate.version || "";
+        template.installed = true;
+      } else {
+        template.installed = false;
+      }
     });
 
     // @ts-ignore
@@ -772,10 +792,11 @@ export class PartySheetForm extends FormApplication {
         type: "application/json",
       });
       // @ts-ignore
-      FilePicker.upload("data", "partysheets", fileObject);
-
-      this._postInstallCallback();
+      await FilePicker.upload("data", "partysheets", fileObject);
+      await this._postInstallCallback();
+      this.label = "Installed";
     });
+
     // @ts-ignore
     $('select[class="fvtt-party-sheet-dropdown"]', html).change((event) => {
       const dropdownSection = event.currentTarget.dataset.dropdownsection;

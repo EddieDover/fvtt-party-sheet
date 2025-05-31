@@ -8,9 +8,9 @@ import {
   areTemplatesLoaded,
   validateSystemTemplates,
   setTemplatesLoaded,
+  clearCustomTemplates,
 } from "./utils.js";
 import { TemplateStatusForm } from "./app/template-status.js";
-import md5 from "blueimp-md5";
 
 let currentPartySheet = null;
 let currentRefreshInterval = null;
@@ -30,52 +30,67 @@ Handlebars.registerPartial(
         <div style="padding-bottom:3px">{{template.author}}</div>
         <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.version"}}:</div>
         <div style="padding-bottom:3px">{{template.version}}</div>
-        {{#if template.installedVersion}}
-            <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-installed-version"}}:</div>
-            <div style="padding-bottom:3px">
-                {{#compVersion template.installedVersion template.version}}
-                    {{template.installedVersion}}
-                {{else}}
-                    <span style="color:#ff6666;background-color:#000000;border-radius:5px;padding:2px;">{{template.installedVersion}}</span>
-                {{/compVersion}}
-            </div>
-        {{/if}}
+        <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-installed-version"}}:</div>
+        <div style="padding-bottom:3px">
+            {{#if template.installedVersion}}        
+              {{#compVersion template.installedVersion template.version}}
+                  {{template.installedVersion}}
+              {{else}}
+                  <span style="color:#ff6666;background-color:#000000;border-radius:5px;padding:2px;">{{template.installedVersion}}</span>
+              {{/compVersion}}
+            {{else}}
+              <span style="border-radius:5px;padding:2px;"></span>
+            {{/if}}
+        </div>
         <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-system-version"}}:</div>
         <div style="flex-grow:1;">{{template.minimumSystemVersion}}</div>
         {{#if template.installedVersion}}
-            {{#compVersion template.installedVersion template.version}}
-            <button
-                type="button"
-                class="fvtt-party-sheet-module-install-button"
-                data-modulepath="{{template.path}}"
-            >
-                {{localize "fvtt-party-sheet.reinstall"}}
-            </button>
-            {{else}}
-                <button
-                type="button"
-                style="background-color:#29b125"
-                class="fvtt-party-sheet-module-install-button"
-                data-modulepath="{{template.path}}"
-            >
+              {{#compVersion template.installedVersion template.version}}
+              <button
+                  type="button"
+                  class="fvtt-party-sheet-module-install-button"
+                  data-modulepath="{{template.path}}"
+              >
+                  {{localize "fvtt-party-sheet.reinstall"}}
+              </button>
+              {{else}}
+                  <button
+                  type="button"
+                  style="background-color:#29b125"
+                  class="fvtt-party-sheet-module-install-button"
+                  data-modulepath="{{template.path}}"
+              >
                 {{localize "fvtt-party-sheet.update"}}
-            </button>
-            {{/compVersion}}
+              </button>
+              {{/compVersion}}
         {{else}}
-          <button
-            type="button"
-            class="fvtt-party-sheet-module-preview-button"
-            data-modulepath="{{template.preview}}"
-            >
-              {{localize "fvtt-party-sheet.preview"}}
-          </button>
-          <button
+          {{#if template.version}}
+            <button
               type="button"
-              class="fvtt-party-sheet-module-install-button"
-              data-modulepath="{{template.path}}"
-            >
+              class="fvtt-party-sheet-module-preview-button"
+              data-modulepath="{{template.preview}}"
+              >
+                {{localize "fvtt-party-sheet.preview"}}
+            </button>
+            {{#if template.installed}}
+              <button
+                  type="button"
+                  style="background-color:#29b125"
+                  class="fvtt-party-sheet-module-install-button"
+                  data-modulepath="{{template.path}}"
+                >
+                {{localize "fvtt-party-sheet.update"}}
+              </button>
+            {{else}}
+              <button
+                type="button"
+                class="fvtt-party-sheet-module-install-button"
+                data-modulepath="{{template.path}}"
+              >
               {{localize "fvtt-party-sheet.install"}}
             </button>
+            {{/if}}
+          {{/if}}
         {{/if}}
         </div>
     </div>
@@ -250,6 +265,7 @@ Handlebars.registerHelper("ifCond", function (v1, operator, v2, options) {
 Handlebars.registerHelper("compVersion", function (v1, v2, options) {
   const v1Parts = v1.split(".");
   const v2Parts = v2.split(".");
+
   const maxLen = Math.max(v1Parts.length, v2Parts.length);
 
   let v1Num, v2Num;
@@ -319,7 +335,7 @@ function toggleTemplateStatusForm(template_validation) {
   if (currentTemplateStatusForm?.rendered) {
     currentTemplateStatusForm.close();
   } else {
-    currentTemplateStatusForm = new TemplateStatusForm(template_validation);
+    currentTemplateStatusForm = new TemplateStatusForm();
     // @ts-ignore
     currentTemplateStatusForm.render(true);
   }
@@ -405,12 +421,13 @@ function registerAPI() {
 /**
  * Runs after installation of template;
  */
-function afterInstall() {
+async function afterInstall() {
   togglePartySheet();
-  setTimeout(async () => {
-    // @ts-ignore
-    setTemplatesLoaded(false);
-    await ReloadTemplates();
+  // @ts-ignore
+  setTemplatesLoaded(false);
+  await ReloadTemplates(true);
+  currentPartySheet = null;
+  setTimeout(() => {
     togglePartySheet();
   }, 550);
 }
@@ -439,39 +456,17 @@ const ReloadTemplates = async (fullReload = false) => {
   if (game.user.isGM) {
     hideButton();
 
-    if (!areTemplatesLoaded()) {
+    if (fullReload) {
+      clearCustomTemplates();
+    }
+
+    if (!areTemplatesLoaded() || fullReload) {
       await loadSystemTemplates();
 
-      if (fullReload) {
-        const template_validation = await validateSystemTemplates();
-        if (
-          template_validation.outOfDateSystems ||
-          template_validation.outOfDateTemplates ||
-          template_validation.noVersionInformation ||
-          template_validation.noSystemInformation
-        ) {
-          const newHash = md5(JSON.stringify(template_validation));
-          // @ts-ignore
-          const lastHash = game.settings.get("fvtt-party-sheet", "lastTemplateValidationHash");
-
-          if (!lastHash || newHash.toString() !== lastHash.toString()) {
-            // @ts-ignore
-            game.settings.set("fvtt-party-sheet", "lastTemplateValidationHash", newHash);
-            if (
-              template_validation.outOfDateSystems.length > 0 ||
-              template_validation.outOfDateTemplates.length > 0 ||
-              template_validation.noVersionInformation.length > 0 ||
-              template_validation.noSystemInformation.length > 0
-            ) {
-              // @ts-ignore
-              const showTemplateStatusForm = game.settings.get("fvtt-party-sheet", "showTemplateStatusForm");
-              if (showTemplateStatusForm) {
-                toggleTemplateStatusForm(template_validation);
-              }
-            }
-          }
-        }
-      }
+      const template_validation = await validateSystemTemplates();
+      console.log("Template validation", template_validation);
+      // @ts-ignore
+      game.settings.set("fvtt-party-sheet", "validationInfo", template_validation);
     }
 
     showButton();
