@@ -735,8 +735,9 @@ export class PartySheetForm extends FormApplication {
   }
 
   changeSystem(event) {
-    const selectedSystemName = event.currentTarget.value.split("___")[0];
-    const selectedSystemAuthor = event.currentTarget.value.split("___")[1];
+    const namedata = event.currentTarget.value.split("___");
+    const selectedSystemName = namedata[0];
+    const selectedSystemAuthor = namedata[1];
     const selectedIndex =
       getCustomTemplates().findIndex(
         (data) => data.name === selectedSystemName && data.author === selectedSystemAuthor,

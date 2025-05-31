@@ -74,16 +74,6 @@ export const registerSettings = () => {
   });
 
   // @ts-ignore
-  game.settings.register("fvtt-party-sheet", "lastTemplateValidationHash", {
-    "name": "",
-    "hint": "",
-    "scope": "world",
-    "config": false,
-    "default": null,
-    "type": Object,
-  });
-
-  // @ts-ignore
   game.settings.registerMenu("fvtt-party-sheet", "showTemplateStatusForm", {
     "name": "",
     "label": "fvtt-party-sheet.settings.show-template-status-form.name",

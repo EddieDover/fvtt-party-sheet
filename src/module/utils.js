@@ -326,10 +326,10 @@ export function toProperCase(inputString) {
 
 /**
  * Updates the selected system.
- * @param {*} system - The system to select.
+ * @param {*} template - The system to select.
  */
-export function updateSelectedTemplate(system) {
-  selectedTemplate = system;
+export function updateSelectedTemplate(template) {
+  selectedTemplate = template;
 }
 
 /**

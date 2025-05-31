@@ -464,7 +464,6 @@ const ReloadTemplates = async (fullReload = false) => {
       await loadSystemTemplates();
 
       const template_validation = await validateSystemTemplates();
-      console.log("Template validation", template_validation);
       // @ts-ignore
       game.settings.set("fvtt-party-sheet", "validationInfo", template_validation);
     }
