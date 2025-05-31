@@ -1,10 +1,6 @@
 {
   "fvtt-party-sheet": {
     "party-sheet": {
-      "name": "Name",
-      "race": "Race",
-      "senses": "Senses",
-      "classes": "Classes",
       "invalid-template": "The template you are using is invalid. <br/> Please check the template and try again.",
       "no-players": "No players are currently logged in.",
       "no-systems": "You do not have any json files for this system in your data/partysheets folder. Please add some to enable this feature.",
@@ -18,6 +14,10 @@
       "tooltip": "Select Characters To Hide"
     },
     "settings": {
+      "refresh-rate": {
+        "name": "Refresh Rate",
+        "hint": "How often the group sheet is refreshed in seconds. A lower value may cause performance issues. Default (off) is 0."
+      },
       "enable-minimal-view": {
         "name": "Hide Support Buttons",
         "hint": "Hide the buttons for bug reports and feedback."
@@ -33,7 +33,34 @@
       "show-debug-info": {
         "name": "Show Debug Information",
         "hint": "Enable this to show debug information in the console for all parsed characters when the party sheet is opened. Hopefully this will allow you to track down specific properties that you are trying to parse."
+      },
+      "show-template-status-form": {
+        "name": "Show Template Status Form",
+        "hint": "This will show you which templates are out of date, which have newer systems installed, and which have no version information."
       }
-    }
+    },
+    "template-status": {
+      "template-status": "Template Status",
+      "by": "by",
+      "out-of-date": "The following templates are out of date",
+      "current-version": "Current Version",
+      "module-version": "Module Version",
+      "newer-required-system": "The following templates need newer systems installed",
+      "no-version-information": "The following templates have no version information",
+      "no-system-information": "The following templates have no system information",
+      "current-system-version": "Current System Version",
+      "required-system-version": "Required System Version"
+    },
+    "close": "Close",
+    "install": "Install",
+    "reinstall": "Reinstall",
+    "installer": "Installer",
+    "update": "Update",
+    "template-name": "Name",
+    "preview": "Preview",
+    "author": "Author",
+    "version": "Version",
+    "template-installed-version": "Installed Version",
+    "template-system-version": "System Version"
   }
 }

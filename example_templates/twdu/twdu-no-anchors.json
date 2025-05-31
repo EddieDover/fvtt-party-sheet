@@ -1,7 +1,9 @@
   {
-    "name": "The Walking Dead Universe RPG - With Anchors",
+    "name": "The Walking Dead Universe RPG - No Anchors",
     "system": "twdu",
     "author": "Michael Card (EmoCthulhu)",
+    "version": "1.0.0",
+    "minimumSystemVersion": "2.0.2",
     "offline_excludes": [
       "npc",
       "base",
@@ -27,42 +29,13 @@
           "text": "{b} name {/b} {nl} Archetype: {i} system.archetype {/i}"
         },
         {
-          "name": "Health",
+          "name": "Health/Stress",
           "minwidth": 50,
           "type": "direct",
           "align": "center",
           "valign": "top",
           "header": "show",
-          "text": "{b} system.health {/b} / {u}3{/u}"
-        },
-        {
-          "name": "Stress",
-          "minwidth": 50,
-          "type": "direct",
-          "align": "center",
-          "valign": "top",
-          "header": "show",
-          "text": "{b} system.stress.value {/b}/{u} system.stress.max {/u}"
-        },
-        {
-          "name": "Anchor(s)",
-          "type": "direct-complex",
-          "align": "left",
-          "maxwidth": 100,
-          "valign": "top",
-          "header": "show",
-          "text": [
-            {
-              "type": "exists",
-              "value": "system.pcAnchor",
-              "text": "{b} PC: {/b} {nl} system.pcAnchor {nl} {nl}"
-            },
-            {
-              "type": "exists",
-              "value": "system.npcAnchor",
-              "text": "{b} NPC: {/b} {nl} system.npcAnchor"
-            }
-          ]
+          "text": "HP: {b} system.health {/b} / {u}3{/u} {nl} SP: {/b}{b} system.stress.value {/b}/{u} system.stress.max {/u}"
         },
         {
           "name": "STR Group",
@@ -80,7 +53,7 @@
           "align": "left",
           "valign": "top",
           "header": "show",
-          "text": "{u}AGL{/u}{s2}{b} system.attributes.agl {/b}{nl}{nl} Mob: system.skills.mobility / {b} system.skills.mobility {+} system.attributes.agl {/b}{nl} RC: system.skills.rangedCombat /  {b} system.skills.rangedCombat {+} system.attributes.agl {/b}{nl} St: system.skills.stealth / {b} system.skills.stealth {+} system.attributes.agl {/b}"
+          "text": "{u}STR{/u}{s2}{b} system.attributes.str {/b}{nl}{nl} CC: system.skills.closeCombat / {b} system.skills.closeCombat {+} system.attributes.str {/b}{nl} End: system.skills.endure / {b} system.skills.endure {+} system.attributes.str {/b}{nl} For: system.skills.force / {b} system.skills.force {+} system.attributes.str {/b}"
         },
         {
           "name": "WIT Group",

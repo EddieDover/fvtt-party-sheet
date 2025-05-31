@@ -5,60 +5,89 @@
  * NPM: https://www.npmjs.com/package/typhonjs-config-eslint
  * NPM: https://www.npmjs.com/package/@typhonjs-fvtt/eslint-config-foundry.js
  */
- {
-    // ESLint configs are prone to particular choices, so if the first config below doesn't work for you then replace
-    // with one that you do prefer. The second config defines globals defined in `foundry.js` for use w/ `no-shadow`.
-    "extends": [
-      "eslint:recommended",
-      "@typhonjs-fvtt/eslint-config-foundry.js/0.8.0",
-      "plugin:jest/recommended",
-      "plugin:prettier/recommended",
-      "plugin:jsdoc/recommended",
-      "plugin:jsdoc/recommended-typescript-flavor"
+{
+  // ESLint configs are prone to particular choices, so if the first config below doesn't work for you then replace
+  // with one that you do prefer. The second config defines globals defined in `foundry.js` for use w/ `no-shadow`.
+  "extends": [
+    "eslint:recommended",
+    "@typhonjs-fvtt/eslint-config-foundry.js/0.8.0",
+    "plugin:jest/recommended",
+    "plugin:prettier/recommended",
+    "plugin:jsdoc/recommended",
+    "plugin:jsdoc/recommended-typescript-flavor"
+  ],
+  "plugins": [
+    "jest",
+    "jsdoc"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "extraFileExtensions": [
+      ".cjs",
+      ".mjs"
     ],
-    "plugins": ["jest", "jsdoc"],
-    "parserOptions": {
-      "ecmaVersion": 2020,
-      "extraFileExtensions": [".cjs", ".mjs"],
-      "sourceType": "module"
-    },
-
-    // Defines / overrides a few more environment parameters not provided in the configs above.
-    "env": {
-      "browser": true,
-      "es6": true
-    },
-
-    // Prevents overwriting any built in globals particularly from `@typhonjs-fvtt/eslint-config-foundry.js`, but also
-    // node & browser environments. `event / window.event` shadowing is allowed due to being a common variable name and
-    // an uncommonly used browser feature.
-    //
-    // Note: if you are using Typescript you must use `@typescript-eslint/no-shadow`
-    "rules": {
-      "no-shadow": ["error", { "builtinGlobals": true, "hoist": "all", "allow": ["event"] }],
-      "brace-style": ["error", "1tbs"],
-      "require-jsdoc": "off",
-      "quotes": ["error", "double", { "avoidEscape": true }],
-      "linebreak-style": ["error", "unix"],
-      // "no-shadow": ["error", { "builtinGlobals": true, "hoist": "all", "allow": ["event"] }],
-      // "brace-style": ["error", "1tbs"],
-      "require-jsdoc": 2,
-      "require-await": "error",
-      "no-return-await": "error"
-    },
-
-    "overrides": [
+    "sourceType": "module"
+  },
+  // Defines / overrides a few more environment parameters not provided in the configs above.
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  // Prevents overwriting any built in globals particularly from `@typhonjs-fvtt/eslint-config-foundry.js`, but also
+  // node & browser environments. `event / window.event` shadowing is allowed due to being a common variable name and
+  // an uncommonly used browser feature.
+  //
+  // Note: if you are using Typescript you must use `@typescript-eslint/no-shadow`
+  "rules": {
+    "no-shadow": [
+      "error",
       {
-        "files": ["./*.js", "./*.cjs", "./*.mjs"],
-        "env": {
-          "node": true
-        }
-      },
-      {
-        "files": ["./test/**/*.js"],
-        "env": {
-          "jest/globals": true
-        }
+        "builtinGlobals": true,
+        "hoist": "all",
+        "allow": [
+          "event"
+        ]
       }
-    ]
-  }
+    ],
+    "brace-style": [
+      "error",
+      "1tbs"
+    ],
+    "quotes": [
+      "error",
+      "double",
+      {
+        "avoidEscape": true
+      }
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    // "no-shadow": ["error", { "builtinGlobals": true, "hoist": "all", "allow": ["event"] }],
+    // "brace-style": ["error", "1tbs"],
+    "require-jsdoc": 2,
+    "require-await": "error",
+    "no-return-await": "error"
+  },
+  "overrides": [
+    {
+      "files": [
+        "./*.js",
+        "./*.cjs",
+        "./*.mjs"
+      ],
+      "env": {
+        "node": true
+      }
+    },
+    {
+      "files": [
+        "./test/**/*.js"
+      ],
+      "env": {
+        "jest/globals": true
+      }
+    }
+  ]
+}

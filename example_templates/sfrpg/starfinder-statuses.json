@@ -1,7 +1,9 @@
 {
-  "name": "Starfinder",
+  "name": "Starfinder - With Statuses",
   "system": "sfrpg",
   "author": "Michael Card (EmoCthulhu)",
+  "version": "1.0.0",
+  "minimumSystemVersion": "0.25.3",
   "offline_excludes": [
     "npc",
     "npc2",
@@ -271,6 +273,13 @@
         "valign": "top",
         "header": "show",
         "text": "system.traits.senses"
+      },
+      {
+        "name": "Statuses",
+        "type": "direct",
+        "align": "left",
+        "header": "show",
+        "text": ""
       }
     ],
     [
@@ -551,6 +560,225 @@
         "maxwidth": 125,
         "header": "show",
         "text": "system.traits.languages => value, "
+      },
+      {
+        "name": "Status",
+        "type": "direct-complex",
+        "align": "left",
+        "valign": "top",
+        "header": "hide",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.conditions.asleep",
+            "matches": true,
+            "text": "Asleep {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.bleeding",
+            "matches": true,
+            "text": "Bleeding {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.blinded",
+            "matches": true,
+            "text": "Blinded {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.burning",
+            "matches": true,
+            "text": "Burning {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.confused",
+            "matches": true,
+            "text": "Confused {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.cowering",
+            "matches": true,
+            "text": "Cowering {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.dazed",
+            "matches": true,
+            "text": "Dazed {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.dazzled",
+            "matches": true,
+            "text": "Dazzled {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.dead",
+            "matches": true,
+            "text": "Dead {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.deafened",
+            "matches": true,
+            "text": "Deafened {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.dying",
+            "matches": true,
+            "text": "Dying {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.encumbered",
+            "matches": true,
+            "text": "Encumbered {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.entangled",
+            "matches": true,
+            "text": "Entangled {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.exhausted",
+            "matches": true,
+            "text": "Exhausted {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.fascinated",
+            "matches": true,
+            "text": "Fascinated {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.fatigued",
+            "matches": true,
+            "text": "Fatigued {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.flat-footed",
+            "matches": true,
+            "text": "Flat Footed {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.frightened",
+            "matches": true,
+            "text": "Frightened {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.grappled",
+            "matches": true,
+            "text": "Grappled {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.helpless",
+            "matches": true,
+            "text": "Helpless {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.invisible",
+            "matches": true,
+            "text": "Invisible {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.nauseated",
+            "matches": true,
+            "text": "Nauseated {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.off-kilter",
+            "matches": true,
+            "text": "Off Kilter {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.off-target",
+            "matches": true,
+            "text": "Off Target {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.overburdened",
+            "matches": true,
+            "text": "Over Burdened {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.panicked",
+            "matches": true,
+            "text": "Panicked {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.paralyzed",
+            "matches": true,
+            "text": "Paralyzed {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.pinned",
+            "matches": true,
+            "text": "Pinned {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.prone",
+            "matches": true,
+            "text": "Prone {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.shaken",
+            "matches": true,
+            "text": "Shaken {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.sickened",
+            "matches": true,
+            "text": "Sickened {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.stable",
+            "matches": true,
+            "text": "Stable {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.staggered",
+            "matches": true,
+            "text": "Staggered {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.stunned",
+            "matches": true,
+            "text": "Stunned {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.conditions.unconscious",
+            "matches": true,
+            "text": "Unconscious {newline}"
+          }
+        ]
       }
     ]
   ]

@@ -1,6 +1,6 @@
 {
   "name": "fvtt-party-sheet",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "A FoundryVTT module that adds a customizable Party Sheet window.",
   "main": "index.js",
   "author": {
@@ -45,6 +45,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.42.1",
+    "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.2.1",
     "@rollup/stream": "^3.0.0",
     "@types/node": "^20.11.30",

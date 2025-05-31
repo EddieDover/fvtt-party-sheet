@@ -2,6 +2,8 @@
   "name": "Vaesen",
   "system": "vaesen",
   "author": "Michael Card (EmoCthulhu)",
+  "version": "1.0.0",
+  "minimumSystemVersion": "6.0.2",
   "offline_excludes": [
     "npc",
     "base",

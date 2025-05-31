@@ -37,15 +37,11 @@
       "url": "https://github.com/eddiedover/"
     }
   ],
-  "version": "2.6.0",
+  "version": "2.7.0",
   "compatibility": {
     "minimum": "11",
-    "verified": "12"
+    "verified": "13"
   },
-  "esmodules": [
-    "module/fvtt-party-sheet.js"
-  ],
-  "styles": [
-    "styles/fvtt-party-sheet.css"
-  ]
+  "esmodules": ["module/fvtt-party-sheet.js"],
+  "styles": ["styles/fvtt-party-sheet.css"]
 }

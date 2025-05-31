@@ -1,3 +1,19 @@
+## [2.8.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.6.0...v2.8.0) (2025-05-31)
+
+### Features
+
+* now shows an install wizard if no templates are installed for a system ([8416ac0](https://github.com/EddieDover/fvtt-party-sheet/commit/8416ac0a6228150096dff9a1bb1dc0687a08941d))
+* **templates:** added Castles and Crusades template by PhildoBaggins ([f0a4cd2](https://github.com/EddieDover/fvtt-party-sheet/commit/f0a4cd2d2d5945aa0c9c77fa7e80b608e927486f))
+
+### Bug Fixes
+
+* updated UI to work with v13 ([5d77ee9](https://github.com/EddieDover/fvtt-party-sheet/commit/5d77ee920d0bd921e54d1f3fca42f482ad9c16cd))
+
+## [2.7.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.6.0...v2.7.0) (2025-05-23)
+
+### Bug Fixes
+
+* updated module to work with v13 ([5d77ee9](https://github.com/EddieDover/fvtt-party-sheet/commit/5d77ee920d0bd921e54d1f3fca42f482ad9c16cd))
 
 ## [2.6.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.5.1...v2.6.0) (2024-08-26)
 
