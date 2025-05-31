@@ -6,7 +6,8 @@ Please unfold any entry to see a screenshot.
 
 <details>
 
-  ![DnD5e Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/images/preview1.png)
+![DnD5e Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/images/preview1.png)
+
   <summary>
   dnd5e_template.json (Eddie Dover)
   </summary>
@@ -41,6 +42,15 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 ![Blade Runner Expanded Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/blade-runner/blade-runner-expanded.jpg)
 
 <summary>blade-runner-expanded.json - Michael Card (Emo Cthulhu)</summary></details>
+
+## Castles and Crusades
+
+<details>
+
+![CnC](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/castles-and-crusades/cac_phildo.jpg)
+<summary>cnc_phildo.json - PhildoBaggins</summary>
+
+</details>
 
 ## Coriolis "yzecoriolis"
 
