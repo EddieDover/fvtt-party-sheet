@@ -1,4 +1,14 @@
-## [2.8.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.6.0...v2.8.0) (2025-05-31)
+## [2.7.1](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.7.0...v2.7.1) (2025-06-01)
+
+### Features
+
+* **templates:** updated both dnd5e templates ([4793a0b](https://github.com/EddieDover/fvtt-party-sheet/commit/4793a0bfaa37637f761c08cf4e27b183d4583f7d))
+
+### Bug Fixes
+
+* corrected bug with array-string-builder failing to loop properly ([9ffbb52](https://github.com/EddieDover/fvtt-party-sheet/commit/9ffbb52f0704b1752ab65dfc1f4f0bd44ea1783e))
+
+## [2.7.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.6.0...v2.7.0) (2025-05-31)
 
 ### Features
 
@@ -8,12 +18,6 @@
 ### Bug Fixes
 
 * updated UI to work with v13 ([5d77ee9](https://github.com/EddieDover/fvtt-party-sheet/commit/5d77ee920d0bd921e54d1f3fca42f482ad9c16cd))
-
-## [2.7.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.6.0...v2.7.0) (2025-05-23)
-
-### Bug Fixes
-
-* updated module to work with v13 ([5d77ee9](https://github.com/EddieDover/fvtt-party-sheet/commit/5d77ee920d0bd921e54d1f3fca42f482ad9c16cd))
 
 ## [2.6.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.5.1...v2.6.0) (2024-08-26)
 
