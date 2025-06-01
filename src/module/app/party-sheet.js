@@ -318,7 +318,7 @@ export class PartySheetForm extends FormApplication {
    */
   processArrayStringBuilder(character, type, value) {
     const objName = value.split("=>")[0].trim();
-    let outStr = value.split("=>")[1];
+    let outStrTemplate = value.split("=>")[1];
     let finalStr = "";
 
     let objData = extractPropertyByString(character, objName);
@@ -329,19 +329,26 @@ export class PartySheetForm extends FormApplication {
       });
     }
 
-    const regValue = /(?:\*\.|[\w.]+)+/g;
+    const regValue = /(\{[^}]*\})|((?:\*\.|[\w.]+)+)/g;
     const reg = new RegExp(regValue);
-    const allMatches = Array.from(outStr.matchAll(reg), (match) => match[0]);
+    const allMatches = Array.from(outStrTemplate.matchAll(reg), (match) => match[0]).filter(
+      (m) => !m.startsWith("{") && !m.endsWith("}"),
+    );
 
+    let outStr = "";
     if (objData.size ?? objData.length !== 0) {
+      let subCount = 0;
       for (const objSubData of objData) {
+        let templateCopy = outStrTemplate;
         for (const m of allMatches) {
           if (m === "value") {
-            finalStr += outStr.replace(m, objSubData);
+            finalStr += outStrTemplate.replace(m, objSubData);
             continue;
           }
-          outStr = outStr.replace(m, extractPropertyByString(objSubData, m));
+          templateCopy = templateCopy.replace(m, extractPropertyByString(objSubData, m));
         }
+        outStr += templateCopy + (subCount > 0 ? "\n" : "");
+        subCount += 1;
       }
     } else {
       return "";
@@ -352,7 +359,12 @@ export class PartySheetForm extends FormApplication {
     finalStr = finalStr.trim();
     finalStr = this.cleanString(finalStr);
     finalStr = this.removeTrailingComma(finalStr);
-    return finalStr === value ? "" : finalStr;
+    finalStr = finalStr === value ? "" : finalStr;
+
+    const [isSafeStringNeeded, outputText] = parseExtras(finalStr);
+
+    // @ts-ignore
+    return isSafeStringNeeded ? new Handlebars.SafeString(outputText) : outputText;
   }
 
   /**
