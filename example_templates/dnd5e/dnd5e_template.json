@@ -2,14 +2,9 @@
   "name": "dnd5e",
   "system": "dnd5e",
   "author": "Your Name Here",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minimumSystemVersion": "3.3.1",
-  "offline_excludes": [
-    "npc",
-    "base",
-    "vehicle",
-    "group"
-  ],
+  "offline_excludes": ["npc", "base", "vehicle", "group"],
   "rows": [
     [
       {
@@ -90,7 +85,7 @@
         "name": "Classes",
         "type": "array-string-builder",
         "header": "show",
-        "text": "classes => name - system.levels"
+        "text": "classes => name - system.levels {newline}"
       },
       {
         "name": "STR Mod",
