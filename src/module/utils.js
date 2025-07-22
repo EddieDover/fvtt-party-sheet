@@ -1,9 +1,10 @@
-import { DND5E } from "./systems/dnd5e";
+/** @type {TemplateData[]} */
+let customTemplates = [];
+/** @type {TemplateData[]} */
+let moduleTemplates = [];
 
-let customSystems = [DND5E];
-let selectedSystem = null;
+let selectedTemplate = null;
 let templatesLoaded = false;
-
 /**
  * Are the templates loaded?
  * @returns {boolean} True if the templates are loaded
@@ -18,6 +19,14 @@ export function areTemplatesLoaded() {
  */
 export function setTemplatesLoaded(value) {
   templatesLoaded = value;
+}
+
+/**
+ * Get the module templates
+ * @returns {TemplateData[]} The module templates
+ */
+export function getModuleTemplates() {
+  return moduleTemplates;
 }
 
 const NEWLINE_ELEMENTS = ["{newline}", "{nl}"];
@@ -58,16 +67,48 @@ export function isForgeVTT() {
 /**
  * Load all the user-provided templates for systems
  * @param {string} path The path to the template
+ * @returns {Promise<TemplateData>} A promise that resolves when the template is loaded
+ */
+export async function getModuleTemplate(path) {
+  try {
+    /** @type {TemplateData} */
+    const template = JSON.parse(await fetch(path).then((r) => r.text()));
+    const templateFileNameWithoutExtension = path.split("/").pop().split(".")[0];
+    template.path = path;
+    template.preview = `${template.system}/${templateFileNameWithoutExtension}.jpg`;
+    if (template.name && template.author && template.system && template.rows) {
+      return template;
+    } else {
+      return null;
+    }
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Load all the user-provided templates for systems
+ * @param {string} path The path to the template
  * @returns {Promise<void>} A promise that resolves when the template is loaded
  */
 export async function loadSystemTemplate(path) {
   try {
     const templateName = path.split("/").pop().split(".")[0];
     log(`Loading template: ${templateName}`);
+
+    /** @type {TemplateData} */
     const template = JSON.parse(await fetch(path).then((r) => r.text()));
     if (template.name && template.author && template.system && template.rows) {
-      console.log(`${path} - Good Template`);
-      addCustomSystem(template);
+      if (template.version && template.minimumSystemVersion) {
+        console.log(`${path} - Good Template`);
+      } else {
+        console.warn(`${path} - Missing Version Information`);
+      }
+      if (customTemplates.find((t) => t.name === template.name && t.author === template.author)) {
+        console.warn(`${path} - Duplicate Template`);
+      } else {
+        addCustomTemplate(template);
+      }
     } else {
       console.log(`${path} - Bad Template`);
     }
@@ -75,6 +116,40 @@ export async function loadSystemTemplate(path) {
     console.log(`${path} - Failed to Load. See error below.`);
     console.error(e);
   }
+}
+
+/**
+ * Get all the systems and versions available.
+ * @returns {Promise<SystemVersionSet[]>} A list of all the systems and versions available.
+ */
+export async function getAllSystemVersions() {
+  const systemVersions = [];
+
+  let assetPrefix = "data";
+
+  if (isForgeVTT()) {
+    console.log("Detected ForgeVTT");
+    // @ts-ignore
+    // eslint-disable-next-line no-undef
+    assetPrefix = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId()) + "/";
+  }
+
+  // @ts-ignore
+  const systemFolder = await FilePicker.browse(assetPrefix, "systems"); // `modules/${MODULE_NAME}/templates`);
+  for (var folder of systemFolder.dirs) {
+    // @ts-ignore
+    const pathFolder = await FilePicker.browse(assetPrefix, folder);
+    // @ts-ignore
+    for (var file of pathFolder.files.filter((f) => f.endsWith("system.json"))) {
+      const data = JSON.parse(await fetch(file).then((r) => r.text()));
+      systemVersions.push({
+        system: data.id,
+        version: data.version,
+      });
+    }
+  }
+
+  return systemVersions;
 }
 
 /**
@@ -118,6 +193,125 @@ export async function loadSystemTemplates() {
 }
 
 /**
+ * Load all the user-provided templates for modules
+ * @returns {Promise<TemplateData[]>} A promise that resolves when the templates are loaded
+ */
+export async function loadModuleTemplates() {
+  // Look inside the "partysheets" folder. Any JSON file inside should be loaded
+  const templatePaths = [];
+  // @ts-ignore
+
+  // @ts-ignore
+  const templateFolders = await FilePicker.browse("data", "/modules/fvtt-party-sheet/example_templates/");
+  for (const folder of templateFolders.dirs) {
+    // @ts-ignore
+    const templateFiles = await FilePicker.browse("data", folder);
+
+    for (const file of templateFiles.files) {
+      if (file.endsWith(".json")) {
+        templatePaths.push(file);
+      }
+    }
+  }
+
+  /** @type {TemplateData[]} */
+  const includedTemplates = [];
+
+  for (const path of templatePaths) {
+    includedTemplates.push(await getModuleTemplate(path));
+  }
+
+  return includedTemplates;
+}
+
+/**
+ * Validates the system templates.
+ * @returns {Promise<TemplateValidityReturnData>} - A list of the valid, out of date, and too new templates.
+ */
+export async function validateSystemTemplates() {
+  /** @type {TemplateValidityReturnData} */
+  let output = {
+    valid: [],
+    outOfDateSystems: [],
+    outOfDateTemplates: [],
+    noVersionInformation: [],
+    noSystemInformation: [],
+  };
+
+  const systemVersions = await getAllSystemVersions();
+  moduleTemplates = await loadModuleTemplates();
+
+  for (const template of customTemplates) {
+    const moduleTemplate = moduleTemplates.find((t) => t.name === template.name);
+    let err = false;
+
+    const templateData = {
+      name: template.name,
+      author: template.author,
+      version: template.version,
+      system: template.system,
+      providedVersion: moduleTemplate?.version ?? "-",
+      minimumSystemVersion: template.minimumSystemVersion,
+      ownedSystemVersion: systemVersions.find((s) => s.system === template.system)?.version ?? "-",
+    };
+    if (!template.minimumSystemVersion) {
+      output.noVersionInformation.push(templateData);
+      err = true;
+    }
+
+    if (!template.minimumSystemVersion) {
+      output.noSystemInformation.push(templateData);
+      err = true;
+    }
+
+    if (!moduleTemplate) {
+      output.valid.push(templateData);
+      continue;
+    }
+
+    if (moduleTemplate && compareSymVer(template.version, moduleTemplate.version) < 0) {
+      output.outOfDateTemplates.push(templateData);
+      err = true;
+    }
+
+    if (templateData.ownedSystemVersion !== "-") {
+      if (compareSymVer(templateData.ownedSystemVersion, templateData.minimumSystemVersion) < 0) {
+        output.outOfDateSystems.push(templateData);
+        err = true;
+      }
+    }
+
+    if (!err) {
+      output.valid.push(templateData);
+    }
+  }
+
+  return output;
+}
+
+/**
+ * Compares to SymVer strings.
+ * @param {string} a - The first string to compare.
+ * @param {string} b - The second string to compare.
+ * @returns {number} Returns 0 if the strings are equal, -1 if a is less than b, and 1 if a is greater than b.
+ */
+export function compareSymVer(a, b) {
+  if (!a || !b || !a.includes(".") || !b.includes(".")) {
+    return 0;
+  }
+  const [aMajor, aMinor, aPatch] = a.split(".").map(Number);
+  const [bMajor, bMinor, bPatch] = b.split(".").map(Number);
+
+  if (aMajor < bMajor) return -1;
+  if (aMajor > bMajor) return 1;
+  if (aMinor < bMinor) return -1;
+  if (aMinor > bMinor) return 1;
+  if (aPatch < bPatch) return -1;
+  if (aPatch > bPatch) return 1;
+  return 0; // strings are equal
+}
+
+/**
  * Converts a string to proper case.
  * @param {string} inputString - The input string to convert.
  * @returns {string} - The converted string in proper case.
@@ -132,34 +326,41 @@ export function toProperCase(inputString) {
 
 /**
  * Updates the selected system.
- * @param {*} system - The system to select.
+ * @param {*} template - The system to select.
  */
-export function updateSelectedSystem(system) {
-  selectedSystem = system;
+export function updateSelectedTemplate(template) {
+  selectedTemplate = template;
 }
 
 /**
  * Retrieves the selected system.
  * @returns {*} - The selected system.
  */
-export function getSelectedSystem() {
-  return selectedSystem;
+export function getSelectedTemplate() {
+  return selectedTemplate;
 }
 
 /**
  * Adds a custom system to the list of systems.
  * @param {*} system - The custom system to add.
  */
-export function addCustomSystem(system) {
-  customSystems.push(system);
+export function addCustomTemplate(system) {
+  customTemplates.push(system);
+}
+
+/**
+ * Clears the list of systems.
+ */
+export function clearCustomTemplates() {
+  customTemplates = [];
 }
 
 /**
  * Retrieves the list of custom systems.
  * @returns {*} - The list of custom systems.
  */
-export function getCustomSystems() {
-  return customSystems;
+export function getCustomTemplates() {
+  return customTemplates;
 }
 
 /**
@@ -295,7 +496,7 @@ export function addSign(value) {
   return value.toString();
 }
 
- /**
+/**
  * Parses out font awesome elements from a string.
  * @param {*} value - The value to parse.
  * @param {*} isSafeStringNeeded - A boolean indicating if a SafeString is needed.

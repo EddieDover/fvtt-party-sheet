@@ -1,13 +1,10 @@
 {
   "name": "dnd5e - with status effects",
   "system": "dnd5e",
-  "author": "Edited by Emo Cthulhu",
-  "offline_excludes": [
-    "npc",
-    "base",
-    "vehicle",
-    "group"
-  ],
+  "author": "EmoCthulhu (edits)",
+  "version": "1.0.1",
+  "minimumSystemVersion": "3.3.1",
+  "offline_excludes": ["npc", "base", "vehicle", "group"],
   "rows": [
     [
       {
@@ -116,7 +113,7 @@
         "name": "Classes",
         "type": "array-string-builder",
         "header": "show",
-        "text": "classes => name - system.levels"
+        "text": "classes => name - system.levels {newline}"
       },
       {
         "name": "STR Mod",

@@ -3,8 +3,11 @@
     {{#unless enableOnlyOnline}}
     <button class="fvtt-party-sheet-options" name="fvtt-party-sheet-options"><i class="fas fa-cog"></i>{{localize "fvtt-party-sheet.hide-sheet.button" }}</button>
     {{/unless}}
-    {{#unless minimalView}}
     <div style="flex-grow:1"></div>
+    <button type="button" class="btn btn--primary" style="max-width:50px" name="installer" title="{{localize "fvtt-party-sheet.installer"}}">
+      <i class="fas fa-download"></i>
+    </button>
+    {{#unless minimalView}}
     <button type="button" class="btn btn--primary" style="max-width:50px" name="feedback" title="{{localize "fvtt-party-sheet.party-sheet.feedback"}}">
       <i class="fas fa-comment"></i>
     </button>
@@ -16,70 +19,78 @@
     </button>
     {{/unless}}
   </div>
-  {{#if applicableSystems.length}}
-    {{#hcifgte applicableSystems.length 2}}
-    <select name="fvtt-party-sheet-system" id="fvtt-party-sheet-system-select">
-      {{#each applicableSystems as |system|}}
-      <option value="{{system.name}}___{{system.author}}" {{#ifCond system.name '==' ../selectedName}} {{#ifCond system.author '==' ../selectedAuthor }}selected{{/ifCond}}{{/ifCond}}>{{system.name}} - {{system.author}}</option>
-      {{/each}}
-    </select>
-    {{/hcifgte}}
-    {{#if players}}
-    <table id='fvtt-party-sheet-ps-table'>
-      <thead>
-        {{#with players.[0] as |player_data|}}
-          {{#each player_data as |row|}}
-          <tr>
-            {{#getKeys row}}
-              {{#hcifhidden row key=this}}
-                <th></th>
-              {{else}}
-                <th
-                  colspan="{{getColSpan row this}}"
-                  style="max-width:{{getMaxWidth row this}};min-width:{{getMinWidth row this}};"
-                >{{this}}</th>
-              {{/hcifhidden}}
+  {{#if showInstaller}}
+    {{> installer}}
+  {{else}}
+    {{#if applicableTemplates.length}}
+      {{#hcifgte applicableTemplates.length 2}}
+      <select name="fvtt-party-sheet-system" id="fvtt-party-sheet-system-select">
+        {{#each applicableTemplates as |template|}}
+        <option value="{{template.name}}___{{template.author}}" {{#ifCond template.name '==' ../selectedName}} {{#ifCond template.author '==' ../selectedAuthor }}selected{{/ifCond}}{{/ifCond}}>{{template.name}} - {{template.author}}</option>
+        {{/each}}
+      </select>
+      {{/hcifgte}}
+      {{#if players}}
+      <table id='fvtt-party-sheet-ps-table'>
+        <thead>
+          {{#with players.[0] as |player_data|}}
+            {{#each player_data as |row|}}
+            <tr>
+              {{#getKeys row}}
+                {{#hcifhidden row key=this}}
+                  <th></th>
+                {{else}}
+                  <th
+                    colspan="{{getColSpan row this}}"
+                    style="max-width:{{getMaxWidth row this}};min-width:{{getMinWidth row this}};"
+                  >{{this}}</th>
+                {{/hcifhidden}}
+              {{/getKeys}}
+            </tr>
+            {{/each}}
+          {{/with}}
+        </thead>
+        {{#each players as |player_data|}}
+          {{#each player_data as |player_row|}}
+          <tr
+            {{#checkIndex @../index}}
+              class="dark"
+            {{else}}
+              class="light"
+            {{/checkIndex}}
+          >
+            {{#getKeys player_row}}
+              {{#isSpanOver player_row this}}
+              <td
+              class="fvtt-party-sheet-dc"
+              rowspan="{{getRowSpan player_row this}}"
+              style="text-align:{{getAlignment player_row this}};vertical-align:{{getVAlignment player_row this}};max-width:{{getMaxWidth player_row this}};min-width:{{getMinWidth player_row this}};"
+              >
+                {{getData player_row this}}
+              </td>
+              {{/isSpanOver}}
             {{/getKeys}}
           </tr>
           {{/each}}
-        {{/with}}
-      </thead>
-      {{#each players as |player_data|}}
-        {{#each player_data as |player_row|}}
-        <tr
-          {{#checkIndex @../index}}
-            class="dark"
-          {{else}}
-            class="light"
-          {{/checkIndex}}
-        >
-          {{#getKeys player_row}}
-            {{#isSpanOver player_row this}}
-            <td
-            class="fvtt-party-sheet-dc"
-            rowspan="{{getRowSpan player_row this}}"
-            style="text-align:{{getAlignment player_row this}};vertical-align:{{getVAlignment player_row this}};max-width:{{getMaxWidth player_row this}};min-width:{{getMinWidth player_row this}};"
-            >
-              {{getData player_row this}}
-            </td>
-            {{/isSpanOver}}
-          {{/getKeys}}
-        </tr>
         {{/each}}
-      {{/each}}
 
-      </tbody>
-    </table>
-    {{else}}
-      {{#if invalidTemplateError}}
-          <div class="fvtt-party-sheet-ps-no-players">{{{ localize "fvtt-party-sheet.party-sheet.invalid-template" }}}</div>
-        {{else}}
-          <div class="fvtt-party-sheet-ps-no-players">{{ localize "fvtt-party-sheet.party-sheet.no-players" }}</div>
+        </tbody>
+      </table>
+      {{else}}
+        {{#if invalidTemplateError}}
+            <div class="fvtt-party-sheet-ps-no-players">{{{ localize "fvtt-party-sheet.party-sheet.invalid-template" }}}</div>
+          {{else}}
+            <div class="fvtt-party-sheet-ps-no-players">{{ localize "fvtt-party-sheet.party-sheet.no-players" }}</div>
+        {{/if}}
       {{/if}}
+    {{else}}
+      <div class="fvtt-party-sheet-ps-no-systems">
+        {{ localize "fvtt-party-sheet.party-sheet.no-systems" }}
+        {{#if moduleSystemTemplates.length }}
+          {{> installer}}
+        {{/if}}
+      </div>
     {{/if}}
-  {{else}}
-    <div class="fvtt-party-sheet-ps-no-systems">{{ localize "fvtt-party-sheet.party-sheet.no-systems" }}</div>
   {{/if}}
-
   <button name="fvtt-party-sheet-close" class="fvtt-party-sheet-close"><i class="fas fa-times"></i>Close</button>
 </form>
