@@ -52,7 +52,7 @@
         "align": "center",
         "header": "show",
         "minwidth": 75,
-        "text": "system.pace.default | D{s0} system.pace.running.die ( {s0} system.pace.running.mod {s0} )"
+        "text": "system.pace.ground | D{s0} system.pace.running.die ( {s0} system.pace.running.mod {s0} )"
       },
       {
         "name": "Parry",
