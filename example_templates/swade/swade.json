@@ -2,10 +2,9 @@
   "name": "Savage Worlds",
   "system": "swade",
   "author": "Mestre Digital",
-  "offline_excludes": [
-    "npc",
-    "vehicle"
-  ],
+  "offline_excludes": ["npc", "vehicle"],
+  "version": "1.0.0",
+  "minimumSystemVersion": "4.4.2",
   "rows": [
     [
       {
