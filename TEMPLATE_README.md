@@ -13,11 +13,21 @@ If using The Forge, this module will create a folder at the top level of your As
   "name": "<YOUR_TEMPLATE_NAME>",
   "system": "<YOUR_TEMPLATE_SYSTEM>",
   "author": "<YOUR_NAME>",
+  "version": "<TEMPLATE_VERSION>",
+  "minimumSystemVersion": "<MINIMUM_SYSTEM_VERSION>",
   "rows": [] // See Below Section For Details
 }
 ```
 
 **Note: Templates will be displayed to the user as 'YOUR_TEMPLATE_NAME - YOUR_NAME' and only if the system matches the current system in use.**
+
+**Required Properties:**
+- **name** - The display name for your template
+- **system** - The exact game system ID this template is designed for (e.g., dnd5e, pf1e, pf2e, sfrpg, alienrpg)
+- **author** - The author or creator of this template
+- **version** - Template version using semantic versioning (e.g., "1.0.0", "1.2.1")
+- **minimumSystemVersion** - Minimum version of the game system required. Use the system's versioning format: MAJOR.MINOR (e.g., "2.4") or MAJOR.MINOR.PATCH (e.g., "1.0.12")
+- **rows** - Array of template row data (see below section for details)
 
 ### Optional Top Level Properties
 
@@ -443,6 +453,8 @@ Code:
     "name": "Test Person's DND 5E Template",
     "system": "dnd5e",
     "author": "Test Person",
+    "version": "1.0.0",
+    "minimumSystemVersion": "2.4",
     "rows" : [
         [
             {
@@ -508,6 +520,8 @@ One row:
     "name": "Some System - 1 Row",
     "system": "some-system",
     "author": "Your Name Here",
+    "version": "1.0.0",
+    "minimumSystemVersion": "1.0",
     "offline_excludes": [
         "npc",
         "base"
@@ -540,6 +554,8 @@ Two Rows:
     "name": "Some System - Two Rows",
     "system": "some-system",
     "author": "Your Name Here",
+    "version": "1.0.0",
+    "minimumSystemVersion": "1.0",
     "offline_excludes": [
         "npc",
         "base"

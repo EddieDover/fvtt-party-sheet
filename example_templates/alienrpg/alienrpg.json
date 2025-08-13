@@ -5,13 +5,11 @@
   "version": "1.0.0",
   "minimumSystemVersion": "3.2.1",
   "offline_includes_property": "system.header.npc",
-  "offline_includes": [
-    false
-  ],
+  "offline_includes": [false],
   "rows": [
     [
       {
-        "Name": "Character",
+        "name": "Character",
         "type": "charactersheet",
         "header": "hide",
         "text": ""
