@@ -13,6 +13,7 @@ import {
   updateSelectedTemplate,
 } from "../utils.js";
 import { HiddenCharactersSettings } from "./hidden-characters-settings.js";
+import { ParserFactory } from "../parsing/parser-factory.js";
 
 const FEEDBACK_URL = "https://github.com/EddieDover/fvtt-party-sheet/issues/new/choose";
 const BUGREPORT_URL =
@@ -29,6 +30,8 @@ export class PartySheetForm extends FormApplication {
     this._postInstallCallback = postInstallCallback;
     this.showInstaller = false;
     this.savedOptions = undefined;
+
+    this.parserEngine = ParserFactory.createParserEngine();
   }
 
   /**
@@ -567,33 +570,13 @@ export class PartySheetForm extends FormApplication {
    */
   getCustomData(character, type, value, options = {}) {
     try {
-      switch (type) {
-        case "direct":
-          return this.processDirect(character, type, value, options);
-        case "direct-complex":
-          return this.processDirectComplex(character, type, value, options);
-        case "charactersheet":
-          // @ts-ignore
-          return new Handlebars.SafeString(
-            `<input type="image" name="fvtt-party-sheet-actorimage" data-actorid="${
-              character.uuid
-            }" class="token-image" src="${character.prototypeToken.texture.src}" title="${
-              character.prototypeToken.name
-            }" width="36" height="36" style="transform: rotate(${character.prototypeToken.rotation ?? 0}deg);"/>`,
-          );
-        case "array-string-builder":
-          return this.processArrayStringBuilder(character, type, value);
-        case "string":
-          return value;
-        case "object-loop":
-          return this.processObjectLoop(character, type, value);
-        case "largest-from-array":
-          return this.processLargestFromArray(character, type, value);
-        case "smallest-from-array":
-          return this.processSmallestFromArray(character, type, value);
-        default:
-          return "";
+      if (this.parserEngine.hasProcessor(type)) {
+        return this.parserEngine.process(character, type, value, options);
       }
+
+      // Fallback for any unregistered types
+      console.warn(`No processor registered for type: ${type}. Returning empty string.`);
+      return "";
     } catch (ex) {
       console.log(ex);
       throw new TemplateProcessError(ex);
