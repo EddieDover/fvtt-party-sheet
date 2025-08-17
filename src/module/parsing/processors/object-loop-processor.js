@@ -1,5 +1,6 @@
 import { DataProcessor } from "../base-processor.js";
 import { extractPropertyByString } from "../../utils.js";
+import { TemplateProcessor } from "../template-processor.js";
 
 /**
  * Processor for "object-loop" data type - loops through object data with complex templating
@@ -116,7 +117,7 @@ export class ObjectLoopProcessor extends DataProcessor {
     }
 
     // Process template replacements
-    const output = this.processTemplate(actualValue, loopData);
+    const output = TemplateProcessor.processTemplateWithArray(actualValue, loopData);
     return { success: true, output, prefix };
   }
 
@@ -134,31 +135,6 @@ export class ObjectLoopProcessor extends DataProcessor {
     } else {
       return Object.keys(objData).map((key) => objData[key]);
     }
-  }
-
-  /**
-   * Process template with data replacements
-   * @param {string} template - The template string
-   * @param {Array} loopData - The data to loop through
-   * @returns {string} Processed template string
-   */
-  processTemplate(template, loopData) {
-    const regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+\s(?!})/g;
-    const allMatches = Array.from(template.matchAll(regValue), (match) => match[0].trim());
-
-    let output = "";
-    for (const objSubData of loopData) {
-      let tempLine = template;
-      for (const match of allMatches) {
-        const replacement = extractPropertyByString(objSubData, match);
-        if (replacement !== undefined) {
-          tempLine = tempLine.replace(match, replacement);
-        }
-      }
-      output += tempLine;
-    }
-
-    return output;
   }
 
   /**
