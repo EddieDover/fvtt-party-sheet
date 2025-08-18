@@ -2,7 +2,7 @@
   "name": "Star Trek Adventures - Ship Sheet - v2",
   "system": "sta",
   "author": "Michael Card (EmoCthulhu)",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minimumSystemVersion": "1.2.8",
   "offline_excludes": ["npc", "base", "character", "extendedtask"],
   "rows": [

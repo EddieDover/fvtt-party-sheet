@@ -50,6 +50,7 @@ export class DirectProcessor extends DataProcessor {
     if (isSafeStringNeeded) {
       // Check if Handlebars is available (it won't be in test environment)
       // eslint-disable-next-line no-undef
+      // @ts-ignore
       if (typeof Handlebars !== "undefined") {
         // @ts-ignore
         // eslint-disable-next-line no-undef

@@ -21,7 +21,13 @@
         "text": "{system.details.ancestry.name} {newline} {system.details.class.name}"
       },
       { "name": "AC", "type": "direct", "header": "show", "text": "{system.attributes.ac.value}" },
-      { "name": "Perception", "type": "direct", "showSign": true, "header": "show", "text": "{system.perception.value}" },
+      {
+        "name": "Perception",
+        "type": "direct",
+        "showSign": true,
+        "header": "show",
+        "text": "{system.perception.value}"
+      },
       {
         "name": "Health",
         "type": "direct-complex",
