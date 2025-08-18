@@ -184,23 +184,28 @@ Note that even empty columns need unique names. Feel free to be as descriptive a
 
 * boolean - Quotes are not needed, simply use `false`, or `true`, i.e. `"match": true,`
 * numbers - Always examine your systems values to see if they are strings or plain numbers, if they are plain numbers do not include quotes around the value, i.e. `"match": 23,` If they are actually strings, then you will need to surround the number with quotes to make it a string as well, i.e. `"match:" "23",`
-* string:  You can include arbitrary text in your output values. Simply make sure they are within the quotes for the text you are creating, i.e. `"text": "name has system.criticalInjury.time days left before system.criticalInjury.name heals.`
-* Due to the way things are parsed by the plugin there are a few very important caveats you must keep in mind:
-  1. If you are using a data string like "system.attributes.str", or a keyword (see below) like `{newline}`, along with custom text, such as `STR: system.attributes.str` as an output, there **must** be spaces around the data string,
-      * INCORRECT - `STR:system.attributes.str/system.attributes.maxstr`
-      * CORRECT     - `STR: system.attributes.str / system.attributes.maxstr`
-  * The more astute among you may notice that in the example templates, `.value` is often left out. To save your poor typing muscles, even if the value you find for a piece of character data is `system.attributes.str.value` the module parses data in the following way. Entering `system.attributes.str` will make the module look for `system.attributes.str.value` and display that if it finds it. If not found, it will display `system.attributes.str` as is.
+* string:  You can include arbitrary text in your output values. Simply make sure they are within the quotes for the text you are creating, i.e. `"text": "{name} has {system.criticalInjury.time} days left before {system.criticalInjury.name} heals.`
+
+#### **IMPORTANT: Property Reference Format**
+
+**All property references must be wrapped in braces `{}`** to be processed as dynamic values. Properties not wrapped in braces will be treated as literal text.
+
+* **CORRECT** - `"text": "STR: {system.attributes.str.value}"`
+* **CORRECT** - `"text": "Character {name} has {system.attributes.str.value} STR"`  
+* **INCORRECT** - `"text": "STR: system.attributes.str.value"` (will display as literal text)
+
+**The more astute among you may notice that in the example templates, `.value` is often left out. To save your poor typing muscles, even if the value you find for a piece of character data is `system.attributes.str.value` the module parses data in the following way. Entering `{system.attributes.str}` will make the module look for `system.attributes.str.value` and display that if it finds it. If not found, it will display `system.attributes.str` as is.**
 
 ### Text - Special Keywords
 
-There are a few special keywords that must be surrounded by { } marks, to allow easier formatting, note that they must be surrounded by spaces unless they are next to the opening or closing quotes. They are as follows:
+There are a few special keywords that must be surrounded by { } marks, to allow easier formatting. **Note: These are different from property references - special keywords are predefined formatting commands, while property references access character data.**
 
 * {newline} - Adds a line break to the text rendered.
 * {charactersheet} - Inserts a clickable image of the character that will open their character sheet.
-* {+} - Adds the values of two objects and outputs the result, i.e. `system.attributes.str {+} system.attributes.wis` will output the character's str and wis added together.
+* {+} - Adds the values of two objects and outputs the result, i.e. `{system.attributes.str} {+} {system.attributes.wis}` will output the character's str and wis added together.
 * {s} adds a space
 * {s#} adds multiple spaces where # is the amount of spaces desired.
-* {s0} will remove all spaces between it's preceeding and succeeding elements. E.g. `D{s0} system.attributes.str` becomes `D8`
+* {s0} will remove all spaces between it's preceeding and succeeding elements. E.g. `D{s0}{system.attributes.str}` becomes `D8`
 * {i} & {/i} - Anything between these tags will be displayed in _italics_
 * {b} & {/b} - Anything between these tags will be displayed in **bold**
 * {u} & {/u} - Anything between these tags will be displayed as <u>underlined</u>
@@ -212,7 +217,7 @@ There are a few special keywords that must be surrounded by { } marks, to allow 
         "name": "STR Mod",
         "type": "direct",
         "header": "hide",
-        "text": "{fa fa-solid fa-hand-fist} system.abilities.str.mod"
+        "text": "{fa fa-solid fa-hand-fist} {system.abilities.str.mod}"
       },
     ```
 
@@ -231,8 +236,8 @@ A direct complex object has three properties:
       {
         "type": "exists",
         "value": "system.attribute.isplayersick",
-        "text": "Player is sick with system.attribute.sickness",
-        "else": "Healthy for system.attribute.daysSinceSick days"
+        "text": "Player is sick with {system.attribute.sickness}",
+        "else": "Healthy for {system.attribute.daysSinceSick} days"
       },
   ```
 
@@ -250,27 +255,27 @@ A direct complex object has three properties:
     {
       "type": "exists",
       "value": "system.attributes.senses.darkvision",
-      "text": "Darkvision: system.attributes.senses.darkvision"
+      "text": "Darkvision: {system.attributes.senses.darkvision}"
     },
     {
       "type": "exists",
       "value": "system.attributes.senses.blindsight",
-      "text": "Blindsight: system.attributes.senses.blindsight"
+      "text": "Blindsight: {system.attributes.senses.blindsight}"
     },
     {
       "type": "exists",
       "value": "system.attributes.senses.tremorsense",
-      "text": "Tremorsense: system.attributes.senses.tremorsense"
+      "text": "Tremorsense: {system.attributes.senses.tremorsense}"
     },
     {
       "type": "exists",
       "value": "system.attributes.senses.truesight",
-      "text": "Truesight: system.attributes.senses.truesight"
+      "text": "Truesight: {system.attributes.senses.truesight}"
     },
     {
       "type": "exists",
       "value": "system.attributes.senses.special",
-      "text": "Special: system.attributes.senses.special"
+      "text": "Special: {system.attributes.senses.special}"
     }
   ]
 }
@@ -332,11 +337,13 @@ Code:
   "name": "Statuses",
   "type": "array-string-builder",
   "header": "show",
-  "text": "statuses => value, "
+  "text": "statuses => {value}, "
 }, // No comma if last item in the row
 ```
 
 This example is used to display Active Status Effects on a character, such as burning, bleeding, prone, etc. They are stored by Foundry under the actor as `.statuses`, and the value is an array of strings. To display an array of values with no definite end or number of values or even empty sometimes, array-string-builder is your weapon of choice.
+
+**Note:** The array-string-builder type uses a special syntax `arrayname => {property}` where properties within the `=>` section are automatically processed with brace notation.
 
 ### Example of object-loop
 
@@ -347,7 +354,7 @@ Code:
   "name": "Classes",
   "type": "object-loop",
   "header":"show",
-  "text": "classes => {i} name {/i} {b} level {/b} {newline}"
+  "text": "classes => {i}{name}{/i} {b}{level}{/b} {newline}"
 }
 ```
 
@@ -374,6 +381,8 @@ and produce:
 &nbsp;&nbsp;<u>Cleric</u> - **1**
 &nbsp;&nbsp;<u>Rogue</u> - **1**
 
+**Note:** The object-loop type uses a special syntax `objectname => {property}` where properties within the `=>` section are automatically processed with brace notation.
+
 Code:
 
 ```json
@@ -381,7 +390,7 @@ Code:
       "name": "Talents/Equipment",
       "type": "object-loop",
       "header": "show",
-      "text": "{u}Talents:{/u}{nl} items{talent} => name {nl} || {u}Weapons:{/u}{nl} items{starshipweapon} => name Damage: {b} system.damage {/b}{nl} || {u}Other Cargo:{/u}{nl} items{item} => name {nl}"
+      "text": "{u}Talents:{/u}{nl} items{talent} => {name} {nl} || {u}Weapons:{/u}{nl} items{starshipweapon} => {name} Damage: {b}{system.damage}{/b}{nl} || {u}Other Cargo:{/u}{nl} items{item} => {name} {nl}"
   }
 ```
 
@@ -404,8 +413,8 @@ ItemOne
 ItemTwo
 ```
 
-If this takes more up space than desired, simply prefix the entire text string with `{dropdown}` (note the extra space at the end), and the resulting output will feature a dropdown box that allows you to select one of the available filters to view, while hiding the rest.
-Ex: `"text": "{dropdown} {u}Talents:{/u}{nl} items{talent} => name {nl} || {u}Weapons:{/u}{nl} items{starshipweapon} => name Damage: {b} system.damage {/b}{nl} || {u}Other Cargo:{/u}{nl} items{item} => name {nl}"`
+If this takes more up space than desired, simply prefix the entire text string with `{dropdown}` and the resulting output will feature a dropdown box that allows you to select one of the available filters to view, while hiding the rest.
+Ex: `"text": "{dropdown} {u}Talents:{/u}{nl} items{talent} => {name} {nl} || {u}Weapons:{/u}{nl} items{starshipweapon} => {name} Damage: {b}{system.damage}{/b}{nl} || {u}Other Cargo:{/u}{nl} items{item} => {name} {nl}"`
 
 ### Example of largest-from-array and smallest-from-array
 
@@ -449,7 +458,7 @@ Code:
                 "name": "Name",
                 "type": "direct",
                 "header": "show",
-                "text": "{charactersheet} name {newline} system.details.race"
+                "text": "{charactersheet} {name} {newline} {system.details.race}"
             }
         ]
     ]
@@ -526,7 +535,7 @@ One row:
                 "type": "direct",
                 "align": "center",
                 "header": "show",
-                "text": "name"
+                "text": "{name}"
             }
         ]
     ]
@@ -558,7 +567,7 @@ Two Rows:
                 "type": "direct",
                 "align": "center",
                 "header": "show",
-                "text": "name"
+                "text": "{name}"
             }
         ],
         [
