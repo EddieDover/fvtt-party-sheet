@@ -12,7 +12,7 @@ import {
   trimIfString,
   updateSelectedTemplate,
 } from "../utils.js";
-import { sanitizeHTML } from "../utils/html-sanitizer.js";
+import { sanitizeHTML } from "../utils/dompurify-sanitizer.js";
 import { HiddenCharactersSettings } from "./hidden-characters-settings.js";
 import { ParserFactory } from "../parsing/parser-factory.js";
 import { TemplateProcessor } from "../parsing/template-processor.js";
@@ -161,16 +161,9 @@ export class PartySheetForm extends FormApplication {
     if (typeof str !== "string") {
       return str;
     }
-    
-    // Use the robust HTML sanitizer instead of basic regex
-    return sanitizeHTML(str, {
-      allowedTags: ["b", "i", "u", "strong", "em", "span", "br"],
-      allowedAttributes: {
-        "span": ["style", "class"],
-        "*": ["class"],
-      },
-      allowedStyles: ["color", "background-color", "font-weight", "font-style", "text-decoration"],
-    });
+
+    // Use DOMPurify for robust HTML sanitization
+    return sanitizeHTML(str);
   }
 
   /**

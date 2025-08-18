@@ -1,6 +1,7 @@
 import { DataProcessor } from "../base-processor.js";
 import { extractPropertyByString, trimIfString, addSign } from "../../utils.js";
 import { TemplateProcessor } from "../template-processor.js";
+import { sanitizeHTMLWithStyles } from "../../utils/dompurify-sanitizer.js";
 
 /**
  * Processor for "direct-complex" data type - handles conditional data extraction
@@ -170,7 +171,9 @@ export class DirectComplexProcessor extends DataProcessor {
     if (typeof value !== "string") {
       return value;
     }
-    return value.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
+
+    // Use DOMPurify with allowed styles
+    return sanitizeHTMLWithStyles(value, ["color", "background-color", "font-weight", "font-style", "text-decoration"]);
   }
 
   /**
