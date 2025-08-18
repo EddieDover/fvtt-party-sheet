@@ -1,5 +1,6 @@
 import { DataProcessor } from "../base-processor.js";
-import { extractPropertyByString, addSign } from "../../utils.js";
+import { addSign } from "../../utils.js";
+import { TemplateProcessor } from "../template-processor.js";
 
 /**
  * Processor for "direct" data type - handles simple property extraction and replacement
@@ -23,13 +24,8 @@ export class DirectProcessor extends DataProcessor {
     let processedValue = this.cleanString(value);
     let isSafeStringNeeded = false;
 
-    // Parse out normal data - extract properties from character
-    for (const token of processedValue.split(" ")) {
-      const extractedValue = extractPropertyByString(character, token);
-      if (extractedValue !== undefined) {
-        processedValue = processedValue.replace(token, extractedValue);
-      }
-    }
+    // Use TemplateProcessor to handle property replacement with brace notation
+    processedValue = TemplateProcessor.processTemplate(processedValue, character);
 
     // Handle special character sheet token
     if (processedValue.indexOf("{charactersheet}") > -1) {

@@ -12,6 +12,7 @@ import {
 } from "./utils.js";
 import { TemplateStatusForm } from "./app/template-status.js";
 
+/** @type {PartySheetForm} */
 let currentPartySheet = null;
 let currentRefreshInterval = null;
 let currentTemplateStatusForm = null;

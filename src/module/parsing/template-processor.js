@@ -6,38 +6,23 @@ import { extractPropertyByString } from "../utils.js";
  */
 export class TemplateProcessor {
   /**
-   * Process template with data replacements using dual format support
-   * Supports both: " property " (spaces) and "{property}" (braces)
+   * Process template with data replacements using brace notation
+   * Only supports: "{property}" (braces) format for property references
    * @param {string} template - The template string
    * @param {any} data - The data object to extract properties from
    * @returns {string} Processed template string
    */
   static processTemplate(template, data) {
-    // Match properties in two formats:
-    // 1. Surrounded by spaces: " name " (but not common words)
-    // 2. Wrapped in braces: "{name}" (explicit property markers)
+    // Match properties wrapped in braces: "{property.path}"
     const regValue = /\{(\w+(?:\.\w+)*)\}/g;
-    const spaceRegValue = /\s(\w+(?:\.\w+)*)\s/g;
     const allMatches = [];
 
-    // First, find all brace-wrapped properties
+    // Find all brace-wrapped properties
     let match;
     while ((match = regValue.exec(template)) !== null) {
       const propertyName = match[1];
       const fullMatch = match[0];
       allMatches.push({ property: propertyName, fullMatch: fullMatch });
-    }
-
-    // Then find space-wrapped properties, but only if they exist in the data
-    regValue.lastIndex = 0; // Reset regex
-    while ((match = spaceRegValue.exec(template)) !== null) {
-      const propertyName = match[1];
-      const fullMatch = match[0];
-
-      // Only treat as property if it exists in the data or looks like a property path
-      if (this.hasProperty(data, propertyName) || propertyName.includes(".")) {
-        allMatches.push({ property: propertyName, fullMatch: fullMatch });
-      }
     }
 
     let result = template;
@@ -49,29 +34,6 @@ export class TemplateProcessor {
     }
 
     return result;
-  }
-
-  /**
-   * Check if a property exists in the data object
-   * @param {any} data - The data object
-   * @param {string} propertyPath - The property path to check
-   * @returns {boolean} True if property exists
-   */
-  static hasProperty(data, propertyPath) {
-    if (!data || typeof data !== "object") return false;
-
-    const parts = propertyPath.split(".");
-    let current = data;
-
-    for (const part of parts) {
-      if (current && typeof current === "object" && part in current) {
-        current = current[part];
-      } else {
-        return false;
-      }
-    }
-
-    return true;
   }
 
   /**
@@ -90,12 +52,12 @@ export class TemplateProcessor {
 
   /**
    * Extract all property names from a template string
+   * Only extracts properties wrapped in braces to avoid false positives
    * @param {string} template - The template string
    * @returns {Array<string>} Array of property names found in template
    */
   static extractPropertyNames(template) {
     // Only extract properties that are explicitly marked with braces
-    // This avoids false positives with regular text
     const regValue = /\{(\w+(?:\.\w+)*)\}/g;
     const propertyNames = [];
 

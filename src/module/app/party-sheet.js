@@ -14,6 +14,7 @@ import {
 } from "../utils.js";
 import { HiddenCharactersSettings } from "./hidden-characters-settings.js";
 import { ParserFactory } from "../parsing/parser-factory.js";
+import { TemplateProcessor } from "../parsing/template-processor.js";
 
 const FEEDBACK_URL = "https://github.com/EddieDover/fvtt-party-sheet/issues/new/choose";
 const BUGREPORT_URL =
@@ -181,13 +182,8 @@ export class PartySheetForm extends FormApplication {
 
     value = this.cleanString(value);
 
-    //Parse out normal data
-    for (const m of value.split(" ")) {
-      const fValue = extractPropertyByString(character, m);
-      if (fValue !== undefined) {
-        value = value.replace(m, fValue);
-      }
-    }
+    // Use TemplateProcessor to handle property replacement with brace notation
+    value = TemplateProcessor.processTemplate(value, character);
 
     if (value.indexOf("{charactersheet}") > -1) {
       isSafeStringNeeded = true;

@@ -1,5 +1,6 @@
 import { DataProcessor } from "../base-processor.js";
 import { extractPropertyByString, trimIfString, addSign } from "../../utils.js";
+import { TemplateProcessor } from "../template-processor.js";
 
 /**
  * Processor for "direct-complex" data type - handles conditional data extraction
@@ -69,10 +70,11 @@ export class DirectComplexProcessor extends DataProcessor {
     const extractedValue = extractPropertyByString(character, item.value);
 
     if (extractedValue) {
-      return item.text.replaceAll(item.value, extractedValue);
+      // Use TemplateProcessor to handle property replacement in the text
+      return TemplateProcessor.processTemplate(item.text, character);
     } else if (item.else) {
       const elseValue = extractPropertyByString(character, item.else);
-      return elseValue || item.else;
+      return elseValue || TemplateProcessor.processTemplate(item.else, character);
     }
 
     return "";
@@ -88,11 +90,12 @@ export class DirectComplexProcessor extends DataProcessor {
     const actualValue = extractPropertyByString(character, item.ifdata);
     const expectedValue = extractPropertyByString(character, item.matches) ?? item.matches;
 
-    if (actualValue === expectedValue) {
-      return extractPropertyByString(character, item.text) ?? item.text;
+    // Convert both values to strings for comparison to handle number/string mismatches
+    if (String(actualValue) === String(expectedValue)) {
+      return TemplateProcessor.processTemplate(item.text, character);
     } else if (item.else) {
       const elseValue = extractPropertyByString(character, item.else);
-      return elseValue || item.else;
+      return elseValue || TemplateProcessor.processTemplate(item.else, character);
     }
 
     return "";
@@ -112,13 +115,13 @@ export class DirectComplexProcessor extends DataProcessor {
 
     for (const testValue of testValues) {
       if (testValue === matchValue) {
-        return extractPropertyByString(character, item.text) ?? item.text;
+        return TemplateProcessor.processTemplate(item.text, character);
       }
     }
 
     if (item.else) {
       const elseValue = extractPropertyByString(character, item.else);
-      return elseValue || item.else;
+      return elseValue || TemplateProcessor.processTemplate(item.else, character);
     }
 
     return "";
@@ -135,13 +138,8 @@ export class DirectComplexProcessor extends DataProcessor {
     let processedText = this.cleanString(outputText);
     let isSafeStringNeeded = false;
 
-    // Parse out normal data - extract properties from character
-    for (const token of processedText.split(" ")) {
-      const extractedValue = extractPropertyByString(character, token);
-      if (extractedValue !== undefined) {
-        processedText = processedText.replace(token, extractedValue);
-      }
-    }
+    // Use TemplateProcessor to handle property replacement with brace notation
+    processedText = TemplateProcessor.processTemplate(processedText, character);
 
     // Handle special character sheet token
     if (processedText.indexOf("{charactersheet}") > -1) {
