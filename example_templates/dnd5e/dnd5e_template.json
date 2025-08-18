@@ -2,7 +2,7 @@
   "name": "dnd5e",
   "system": "dnd5e",
   "author": "Your Name Here",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "minimumSystemVersion": "3.3.1",
   "offline_excludes": ["npc", "base", "vehicle", "group"],
   "rows": [

@@ -1,162 +1,157 @@
 {
-    "name": "Star Trek Adventures - Ship Sheet - v2",
-    "system": "sta",
-    "author": "Michael Card (EmoCthulhu)",
-    "version": "1.0.0",
-    "minimumSystemVersion": "1.2.8",
-    "offline_excludes": [
-        "npc",
-        "base",
-        "character",
-        "extendedtask"
-    ],
-    "rows": [
-        [
-            {
-                "name": "Details",
-                "type": "direct",
-                "align": "center",
-                "valign": "top",
-                "maxwidth": 150,
-                "header": "show",
-                "text": "{charactersheet}{nl}{b} name {/b}{nl}{b}Scale{/b}{s}{u} system.scale {/u}{nl}{b}Resistance{/b}{s}{u} system.resistance {/u}"
-            },
-            {
-                "name": "Shields",
-                "type": "direct",
-                "align": "center",
-                "valign": "top",
-                "header": "show",
-                "text": "{b} system.shields.value {/b} / {u} system.shields.max {/u}"
-            },
-            {
-                "name": "Power",
-                "type": "direct",
-                "align": "center",
-                "valign": "top",
-                "header": "show",
-                "text": "{b} system.power.value {/b} / {u} system.power.max {/u}"
-            },
-            {
-                "name": "Systems",
-                "type": "direct-complex",
-                "align": "left",
-                "valign": "top",
-                "header": "show",
-                "text": [
-                    {
-                        "type": "match",
-                        "ifdata": "system.systems.communications.selected",
-                        "matches": true,
-                        "text": "{b} Communications: system.systems.communications.value {/b} {nl}",
-                        "else": "Communications: system.systems.communications.value {nl}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.systems.computers.selected",
-                        "matches": true,
-                        "text": "{b} Computers: system.systems.computers.value {/b} {nl}",
-                        "else": "Computers: system.systems.computers.value {nl}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.sytems.engines.selected",
-                        "matches": true,
-                        "text": "{b} Engines: system.systems.engines.value {/b} {nl}",
-                        "else": "Engines: system.systems.engines.value {nl}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.systems.sensors.selected",
-                        "matches": true,
-                        "text": "{b} Medicine: system.systems.sensors.value {/b} {nl}",
-                        "else": "Sensors: system.systems.sensors.value {nl}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.systems.structure.selected",
-                        "matches": true,
-                        "text": "{b} Structure: system.systems.sturcture.value {/b} {nl}",
-                        "else": "Structure: system.systems.structure.value {nl}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.systems.weapons.selected",
-                        "matches": true,
-                        "text": "{b} Weapons: system.systems.weapons.value {/b}",
-                        "else": "Weapons: system.systems.weapons.value"
-                    }
-                ]
-            },
-            {
-                "name": "Departments",
-                "type": "direct-complex",
-                "align": "left",
-                "valign": "top",
-                "header": "show",
-                "text": [
-                    {
-                        "type": "match",
-                        "ifdata": "system.departments.command.selected",
-                        "matches": true,
-                        "text": "{b} Command: system.departments.command.value {/b} {nl}",
-                        "else": "Command: system.departments.command.value {nl}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.departments.conn.selected",
-                        "matches": true,
-                        "text": "{b} Conn: system.departments.conn.value {/b} {nl}",
-                        "else": "Conn: system.departments.conn.value {nl}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.departments.engineering.selected",
-                        "matches": true,
-                        "text": "{b} Engineering: system.departments.engneering.value {/b} {nl}",
-                        "else": "Engineering: system.departments.engineering.value {nl}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.departments.medicine.selected",
-                        "matches": true,
-                        "text": "{b} Meicine: system.departments.medicine.value {/b} {nl}",
-                        "else": "Medicine: system.departments.medicine.value {nl}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.departments.science.selected",
-                        "matches": true,
-                        "text": "{b} Science: system.departments.science.value {/b} {nl}",
-                        "else": "Science: system.departments.science.value {nl}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.departments.security.selected",
-                        "matches": true,
-                        "text": "{b} Security: system.departments.security.value {/b}",
-                        "else": "Security: system.departments.security.value"
-                    }
-                ]
-            },
-            {
-                "name": "Traits",
-                "type": "direct",
-                "align": "left",
-                "valign": "top",
-                "maxwidth": 70,
-                "header": "show",
-                "text": "system.traits"
-            },
-            {
-                "name": "Talents/Equipment",
-                "type": "object-loop",
-                "filter": "type",
-                "align": "left",
-                "valign": "top",
-                "header": "show",
-                "text": "{u}Talents{/u}{nl} items{talent} => name {nl} || {u}Weapons{/u}{nl} items{starshipweapon} => name - Damage: {b} system.damage {/b}{nl} || {u}Other Cargo{/u}{nl} items{item} => name {nl}"
-            }
+  "name": "Star Trek Adventures - Ship Sheet - v2",
+  "system": "sta",
+  "author": "Michael Card (EmoCthulhu)",
+  "version": "1.0.0",
+  "minimumSystemVersion": "1.2.8",
+  "offline_excludes": ["npc", "base", "character", "extendedtask"],
+  "rows": [
+    [
+      {
+        "name": "Details",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "maxwidth": 150,
+        "header": "show",
+        "text": "{charactersheet}{nl}{b} {name} {/b}{nl}{b}Scale{/b}{s}{u} {system.scale} {/u}{nl}{b}Resistance{/b}{s}{u} {system.resistance} {/u}"
+      },
+      {
+        "name": "Shields",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "{b} {system.shields.value} {/b} / {u} {system.shields.max} {/u}"
+      },
+      {
+        "name": "Power",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "{b} {system.power.value} {/b} / {u} {system.power.max} {/u}"
+      },
+      {
+        "name": "Systems",
+        "type": "direct-complex",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.systems.communications.selected",
+            "matches": true,
+            "text": "{b} Communications: {system.systems.communications.value} {/b} {nl}",
+            "else": "Communications: {system.systems.communications.value} {nl}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.systems.computers.selected",
+            "matches": true,
+            "text": "{b} Computers: {system.systems.computers.value} {/b} {nl}",
+            "else": "Computers: {system.systems.computers.value} {nl}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.sytems.engines.selected",
+            "matches": true,
+            "text": "{b} Engines: {system.systems.engines.value} {/b} {nl}",
+            "else": "Engines: {system.systems.engines.value} {nl}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.systems.sensors.selected",
+            "matches": true,
+            "text": "{b} Sensors: {system.systems.sensors.value} {/b} {nl}",
+            "else": "Sensors: {system.systems.sensors.value} {nl}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.systems.structure.selected",
+            "matches": true,
+            "text": "{b} Structure: {system.systems.structure.value} {/b} {nl}",
+            "else": "Structure: {system.systems.structure.value} {nl}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.systems.weapons.selected",
+            "matches": true,
+            "text": "{b} Weapons: {system.systems.weapons.value} {/b}",
+            "else": "Weapons: {system.systems.weapons.value}"
+          }
         ]
+      },
+      {
+        "name": "Departments",
+        "type": "direct-complex",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.departments.command.selected",
+            "matches": true,
+            "text": "{b} Command: {system.departments.command.value} {/b} {nl}",
+            "else": "Command: {system.departments.command.value} {nl}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.departments.conn.selected",
+            "matches": true,
+            "text": "{b} Conn: {system.departments.conn.value} {/b} {nl}",
+            "else": "Conn: {system.departments.conn.value} {nl}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.departments.engineering.selected",
+            "matches": true,
+            "text": "{b} Engineering: {system.departments.engineering.value} {/b} {nl}",
+            "else": "Engineering: {system.departments.engineering.value} {nl}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.departments.medicine.selected",
+            "matches": true,
+            "text": "{b} Medicine: {system.departments.medicine.value} {/b} {nl}",
+            "else": "Medicine: {system.departments.medicine.value} {nl}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.departments.science.selected",
+            "matches": true,
+            "text": "{b} Science: {system.departments.science.value} {/b} {nl}",
+            "else": "Science: {system.departments.science.value} {nl}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.departments.security.selected",
+            "matches": true,
+            "text": "{b} Security: {system.departments.security.value} {/b}",
+            "else": "Security: {system.departments.security.value}"
+          }
+        ]
+      },
+      {
+        "name": "Traits",
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "maxwidth": 70,
+        "header": "show",
+        "text": "{system.traits}"
+      },
+      {
+        "name": "Talents/Equipment",
+        "type": "object-loop",
+        "filter": "type",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "{u}Talents{/u}{nl} items{talent} => {name} {nl} || {u}Weapons{/u}{nl} items{starshipweapon} => {name} - Damage: {b} {system.damage} {/b}{nl} || {u}Other Cargo{/u}{nl} items{item} => {name} {nl}"
+      }
     ]
+  ]
 }

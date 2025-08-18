@@ -2,7 +2,7 @@
   "name": "vtm5e",
   "system": "vtm5e",
   "author": "Arboreal",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minimumSystemVersion": "5.0.11",
   "offline_excludes": ["npc"],
   "rows": [
@@ -19,21 +19,21 @@
         "type": "direct",
         "align": "center",
         "header": "show",
-        "text": "name"
+        "text": "{name}"
       },
       {
         "name": "Health",
         "type": "direct",
         "align": "center",
         "header": "show",
-        "text": "system.health.value"
+        "text": "{system.health.value}"
       },
       {
         "name": "Willpower",
         "type": "direct",
         "align": "center",
         "header": "show",
-        "text": "system.willpower.value"
+        "text": "{system.willpower.value}"
       },
       {
         "name": "Hunger / Rage",
@@ -44,13 +44,13 @@
           {
             "type": "exists",
             "value": "system.hunger.value",
-            "text": "Hunger: system.hunger.value",
+            "text": "Hunger: {system.hunger.value}",
             "else": " Hunger: does not have"
           },
           {
             "type": "exists",
             "value": "system.rage.value",
-            "text": "{newline}Rage: system.rage.value",
+            "text": "{newline}Rage: {system.rage.value}",
             "else": "{newline} Rage: does not have"
           }
         ]
@@ -60,14 +60,14 @@
         "type": "direct",
         "align": "center",
         "header": "show",
-        "text": "system.headers.ambition"
+        "text": "{system.headers.ambition}"
       },
       {
         "name": "Desire",
         "type": "direct",
         "align": "center",
         "header": "show",
-        "text": "system.headers.desire"
+        "text": "{system.headers.desire}"
       }
     ]
   ]

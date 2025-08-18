@@ -2,7 +2,7 @@
   "name": "Alien: The Roleplaying Game",
   "system": "alienrpg",
   "author": "Michael Card (EmoCthulhu)",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minimumSystemVersion": "3.2.1",
   "offline_includes_property": "system.header.npc",
   "offline_includes": [false],
@@ -20,7 +20,7 @@
         "maxwidth": 100,
         "align": "left",
         "header": "show",
-        "text": "{b} name {/b}"
+        "text": "{b} {name} {/b}"
       },
       {
         "name": "Career",
@@ -121,7 +121,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "{b} system.header.health {/b} / system.header.health.max"
+        "text": "{b} {system.header.health} {/b} / {system.header.health.max}"
       },
       {
         "name": "Stress",
@@ -141,7 +141,7 @@
             "type": "match",
             "ifdata": "type",
             "matches": "character",
-            "text": "system.header.stress"
+            "text": "{system.header.stress}"
           }
         ]
       },
@@ -163,7 +163,7 @@
             "type": "match",
             "ifdata": "type",
             "matches": "character",
-            "text": "system.general.panic.lastRoll"
+            "text": "{system.general.panic.lastRoll}"
           }
         ]
       },
@@ -174,7 +174,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "{u} STR {/u}{s}{b} system.attributes.str {/b}{nl}{nl} CC: system.skills.closeCbt / {b} system.skills.closeCbt {+} system.attributes.str {/b}{nl} HM: system.skills.heavyMach / {b} system.skills.heavyMach {+} system.attributes.str {/b}{nl} Sta: system.skills.stamina / {b} system.skills.stamina {+} system.attributes.str {/b}"
+        "text": "{u} STR {/u}{s}{b} {system.attributes.str} {/b}{nl}{nl} CC: {system.skills.closeCbt} / {b} {system.skills.closeCbt} {+} {system.attributes.str} {/b}{nl} HM: {system.skills.heavyMach} / {b} {system.skills.heavyMach} {+} {system.attributes.str} {/b}{nl} Sta: {system.skills.stamina} / {b} {system.skills.stamina} {+} {system.attributes.str} {/b}"
       },
       {
         "name": "Agility Group",
@@ -183,7 +183,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "{u} AGL {/u}{s}{b} system.attributes.agl {/b}{nl}{nl} RC: system.skills.rangedCbt / {b} system.skills.rangedCbt {+} system.attributes.agl {/b}{nl} Mob: system.skills.mobility / {b} system.skills.mobility {+} system.attributes.agl {/b}{nl} Pilot: system.skills.piloting / {b} system.skills.piloting {+} system.attributes.agl {/b}"
+        "text": "{u} AGL {/u}{s}{b} {system.attributes.agl} {/b}{nl}{nl} RC: {system.skills.rangedCbt} / {b} {system.skills.rangedCbt} {+} {system.attributes.agl} {/b}{nl} Mob: {system.skills.mobility} / {b} {system.skills.mobility} {+} {system.attributes.agl} {/b}{nl} Pilot: {system.skills.piloting} / {b} {system.skills.piloting} {+} {system.attributes.agl} {/b}"
       },
       {
         "name": "Empathy Group",
@@ -192,7 +192,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "{u} EMP {/u}{s}{b} system.attributes.emp {/b}{nl}{nl} Com: system.skills.command / {b} system.skills.command {+} system.attributes.emp {/b}{nl} Man: system.skills.manipulation / {b} system.skills.manipulation {+} system.attributes.emp {/b}{nl} Med: system.skills.medicalAid / {b} system.skills.medicalAid {+} system.attributes.emp {/b}"
+        "text": "{u} EMP {/u}{s}{b} {system.attributes.emp} {/b}{nl}{nl} Com: {system.skills.command} / {b} {system.skills.command} {+} {system.attributes.emp} {/b}{nl} Man: {system.skills.manipulation} / {b} {system.skills.manipulation} {+} {system.attributes.emp} {/b}{nl} Med: {system.skills.medicalAid} / {b} {system.skills.medicalAid} {+} {system.attributes.emp} {/b}"
       },
       {
         "name": "Wits Group",
@@ -201,7 +201,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "{u} WIT {/u}{s}{b} system.attributes.wit {/b}{nl}{nl} Obs: system.skills.observation / {b} system.skills.observation {+} system.attributes.wit {/b}{nl} Sur: system.skills.survival / {b} system.skills.survival {+} system.attributes.wit {/b}{nl} CT: system.skills.comtech / {b} system.skills.comtech {+} system.attributes.wit {/b}"
+        "text": "{u} WIT {/u}{s}{b} {system.attributes.wit} {/b}{nl}{nl} Obs: {system.skills.observation} / {b} {system.skills.observation} {+} {system.attributes.wit} {/b}{nl} Sur: {system.skills.survival} / {b} {system.skills.survival} {+} {system.attributes.wit} {/b}{nl} CT: {system.skills.comtech} / {b} {system.skills.comtech} {+} {system.attributes.wit} {/b}"
       },
       {
         "name": "Statuses",

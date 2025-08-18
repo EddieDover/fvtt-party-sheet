@@ -2,12 +2,10 @@
   "name": "Blade Runner: The Roleplaying Game - Basic",
   "system": "blade-runner",
   "author": "Michael Card (EmoCthulhu)",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minimumSystemVersion": "12.0.1",
   "offline_includes_property": "system.subtype",
-  "offline_includes": [
-    "pc"
-  ],
+  "offline_includes": ["pc"],
   "rows": [
     [
       {
@@ -22,7 +20,7 @@
         "type": "direct",
         "align": "left",
         "header": "show",
-        "text": "{b} name {/b} {nl} Archetype: system.archetype {nl} Nature: {i} system.nature {/i}"
+        "text": "{b} {name} {/b} {nl} Archetype: {system.archetype} {nl} Nature: {i} {system.nature} {/i}"
       },
       {
         "name": "Health & Resolve",
@@ -31,7 +29,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "H: {b} system.health.value {/b} / system.health.max {nl} R: {b} system.resolve.value {/b} / system.resolve.max"
+        "text": "H: {b} {system.health.value} {/b} / {system.health.max} {nl} R: {b} {system.resolve.value} {/b} / {system.resolve.max}"
       },
       {
         "name": "STR Group",
@@ -40,7 +38,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "STR: {b}d{s0} system.attributes.str {/b}{nl}{nl} HtH: d{s0} system.skills.closeCombat / {b}d{s0} system.skills.closeCombat + d{s0} system.attributes.str {/b}{nl} For: d{s0} system.skills.force / {b}d{s0} system.skills.force + d{s0} system.attributes.str {/b}{nl} Stam: d{s0} system.skills.stamina / {b}d{s0} system.skills.stamina + d{s0} system.attributes.str {/b}"
+        "text": "STR: {b}d{s0} {system.attributes.str} {/b}{nl}{nl} HtH: d{s0} {system.skills.closeCombat} / {b}d{s0} {system.skills.closeCombat} + d{s0} {system.attributes.str} {/b}{nl} For: d{s0} {system.skills.force} / {b}d{s0} {system.skills.force} + d{s0} {system.attributes.str} {/b}{nl} Stam: d{s0} {system.skills.stamina} / {b}d{s0} {system.skills.stamina} + d{s0} {system.attributes.str} {/b}"
       },
       {
         "name": "AGL Group",
@@ -49,7 +47,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "AGL: {b}d{s0} system.attributes.agi {/b}{nl}{nl} Fire: d{s0} system.skills.firearms / {b}d{s0} system.skills.firearms.value + d{s0} system.attributes.agi {/b}{nl} Mob: d{s0} system.skills.mobility / {b}d{s0} system.skills.mobility + d{s0} system.attributes.agi {/b}{nl} Stea: d{s0} system.skills.stealth / {b}d{s0} system.skills.stealth + d{s0} system.attributes.agi {/b}"
+        "text": "AGL: {b}d{s0} {system.attributes.agi} {/b}{nl}{nl} Fire: d{s0} {system.skills.firearms} / {b}d{s0} {system.skills.firearms.value} + d{s0} {system.attributes.agi} {/b}{nl} Mob: d{s0} {system.skills.mobility} / {b}d{s0} {system.skills.mobility} + d{s0} {system.attributes.agi} {/b}{nl} Stea: d{s0} {system.skills.stealth} / {b}d{s0} {system.skills.stealth} + d{s0} {system.attributes.agi} {/b}"
       },
       {
         "name": "INT Group",
@@ -58,7 +56,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "INT: {b}d{s0} system.attributes.int {/b}{nl}{nl} Med: d{s0} system.skills.medicalAid / {b}d{s0} system.skills.medicalAid.value + d{s0} system.attributes.int {/b}{nl} Obs: d{s0} system.skills.observation / {b}d{s0} system.skills.observation + d{s0} system.attributes.int {/b}{nl} Tech: d{s0} system.skills.tech / {b}d{s0} system.skills.tech + d system.attributes.int {/b}{nl}{nl} Driving*: {b}d{s0} system.skills.driving {/b}"
+        "text": "INT: {b}d{s0} {system.attributes.int} {/b}{nl}{nl} Med: d{s0} {system.skills.medicalAid} / {b}d{s0} {system.skills.medicalAid.value} + d{s0} {system.attributes.int} {/b}{nl} Obs: d{s0} {system.skills.observation} / {b}d{s0} {system.skills.observation} + d{s0} {system.attributes.int} {/b}{nl} Tech: d{s0} {system.skills.tech} / {b}d{s0} {system.skills.tech} + d{s0} {system.attributes.int} {/b}{nl}{nl} Driving*: {b}d{s0} {system.skills.driving} {/b}"
       },
       {
         "name": "EMP Group",
@@ -67,7 +65,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "EMP: {b}d{s0} system.attributes.emp {/b}{nl}{nl} Con: d{s0} system.skills.connections / {b}d{s0} system.skills.connections.value + d{s0} system.attributes.emp.value {/b}{nl} Ins: d{s0} system.skills.insight / {b}d{s0} system.skills.insight + d{s0} system.attributes.emp {/b}{nl} Man: d{s0} system.skills.manipulation / {b}d{s0} system.skills.manipulation + d{s0} system.attributes.emp {/b}"
+        "text": "EMP: {b}d{s0} {system.attributes.emp} {/b}{nl}{nl} Con: d{s0} {system.skills.connections} / {b}d{s0} {system.skills.connections.value} + d{s0} {system.attributes.emp.value} {/b}{nl} Ins: d{s0} {system.skills.insight} / {b}d{s0} {system.skills.insight} + d{s0} {system.attributes.emp} {/b}{nl} Man: d{s0} {system.skills.manipulation} / {b}d{s0} {system.skills.manipulation} + d{s0} {system.attributes.emp} {/b}"
       },
       {
         "name": "Statuses",
@@ -84,7 +82,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.metaCurrencies.chinyen"
+        "text": "{system.metaCurrencies.chinyen}"
       },
       {
         "name": "Hum",
@@ -92,7 +90,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.metaCurrencies.humanity"
+        "text": "{system.metaCurrencies.humanity}"
       },
       {
         "name": "Promo",
@@ -100,7 +98,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.metaCurrencies.promotion"
+        "text": "{system.metaCurrencies.promotion}"
       }
     ]
   ]

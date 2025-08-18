@@ -1,6 +1,6 @@
 {
   "name": "Streamers Template",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minimumSystemVersion": "6.8.4",
   "system": "pf2e",
   "author": "Crow Valentine",
@@ -13,15 +13,15 @@
         "header": "hide",
         "text": ""
       },
-      { "name": "Name", "type": "direct", "header": "show", "text": "name {newline}" },
+      { "name": "Name", "type": "direct", "header": "show", "text": "{name} {newline}" },
       {
         "name": "Ancestry",
         "type": "direct",
         "header": "show",
-        "text": "system.details.ancestry.name {newline} system.details.class.name"
+        "text": "{system.details.ancestry.name} {newline} {system.details.class.name}"
       },
-      { "name": "AC", "type": "direct", "header": "show", "text": "system.attributes.ac.value" },
-      { "name": "Perception", "type": "direct", "showSign": true, "header": "show", "text": "system.perception.value" },
+      { "name": "AC", "type": "direct", "header": "show", "text": "{system.attributes.ac.value}" },
+      { "name": "Perception", "type": "direct", "showSign": true, "header": "show", "text": "{system.perception.value}" },
       {
         "name": "Health",
         "type": "direct-complex",
@@ -55,7 +55,7 @@
             "type": "match",
             "ifdata": "system.attributes.dying.value",
             "matches": 0,
-            "text": "system.attributes.hp.value / system.attributes.hp.max"
+            "text": "{system.attributes.hp.value} / {system.attributes.hp.max}"
           }
         ]
       },
@@ -64,42 +64,42 @@
         "type": "direct",
         "showSign": true,
         "header": "show",
-        "text": "system.abilities.str.mod"
+        "text": "{system.abilities.str.mod}"
       },
       {
         "name": "DEX",
         "type": "direct",
         "showSign": true,
         "header": "show",
-        "text": "system.abilities.dex.mod"
+        "text": "{system.abilities.dex.mod}"
       },
       {
         "name": "CON",
         "type": "direct",
         "showSign": true,
         "header": "show",
-        "text": "system.abilities.con.mod"
+        "text": "{system.abilities.con.mod}"
       },
       {
         "name": "INT",
         "type": "direct",
         "showSign": true,
         "header": "show",
-        "text": "system.abilities.int.mod"
+        "text": "{system.abilities.int.mod}"
       },
       {
         "name": "WIS",
         "type": "direct",
         "showSign": true,
         "header": "show",
-        "text": "system.abilities.wis.mod"
+        "text": "{system.abilities.wis.mod}"
       },
       {
         "name": "CHA",
         "type": "direct",
         "showSign": true,
         "header": "show",
-        "text": "system.abilities.cha.mod"
+        "text": "{system.abilities.cha.mod}"
       }
     ]
   ]

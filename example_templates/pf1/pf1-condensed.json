@@ -2,51 +2,51 @@
   "name": "PF1e Sheet Condensed",
   "system": "pf1",
   "author": "Rexinath",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minimumSystemVersion": "11.8",
   "offline_excludes": ["npc", "trap", "vehicle", "basic", "haunt"],
   "rows": [
     [
       { "name": "Portrait", "type": "charactersheet", "header": "hide", "text": "" },
       { "name": "Name", "type": "direct", "header": "show", "text": "name" },
-      { "name": "Classes", "type": "object-loop", "header": "show", "text": "classes => name {newline}" },
+      { "name": "Classes", "type": "object-loop", "header": "show", "text": "classes => {name} {newline}" },
       {
         "name": "Physical",
         "type": "direct",
         "header": "show",
         "showSign": true,
-        "text": "STR system.abilities.str.total ( system.abilities.str.mod ) {newline} DEX system.abilities.dex.total ( system.abilities.dex.mod ) {newline} CON system.abilities.con.total ( system.abilities.con.mod )"
+        "text": "STR {system.abilities.str.total} ({system.abilities.str.mod}) {newline} DEX {system.abilities.dex.total} ({system.abilities.dex.mod}) {newline} CON {system.abilities.con.total} ({system.abilities.con.mod})"
       },
       {
         "name": "Mental",
         "type": "direct",
         "header": "show",
         "showSign": true,
-        "text": "INT system.abilities.int.total ( system.abilities.int.mod ) {newline} WIS system.abilities.wis.total ( system.abilities.wis.mod ) {newline} CHA system.abilities.cha.total ( system.abilities.cha.mod )"
+        "text": "INT {system.abilities.int.total} ({system.abilities.int.mod}) {newline} WIS {system.abilities.wis.total} ({system.abilities.wis.mod}) {newline} CHA {system.abilities.cha.total} ({system.abilities.cha.mod})"
       },
       {
         "name": "HP",
         "type": "direct",
         "header": "show",
-        "text": "{b}HP{/b} system.attributes.hp.value / system.attributes.hp.max"
+        "text": "{b}HP{/b} {system.attributes.hp.value} / {system.attributes.hp.max}"
       },
       {
         "name": "Init",
         "type": "direct",
         "header": "show",
-        "text": "{fa fa-bolt} system.attributes.init.total"
+        "text": "{fa fa-bolt} {system.attributes.init.total}"
       },
       {
         "name": "AC",
         "type": "direct",
         "header": "show",
-        "text": "{fa fa-shield-halved} system.attributes.ac.normal.total {newline} Touch {fa fa-hand-point-up} system.attributes.ac.touch.total {newline} FF {fa fa-shoe-prints} system.attributes.ac.flatFooted.total"
+        "text": "{fa fa-shield-halved} {system.attributes.ac.normal.total} {newline} Touch {fa fa-hand-point-up} {system.attributes.ac.touch.total} {newline} FF {fa fa-shoe-prints} {system.attributes.ac.flatFooted.total}"
       },
       {
         "name": "Saves",
         "type": "direct",
         "header": "show",
-        "text": "Fort {fa fa-shield-heart} system.attributes.savingThrows.fort.total {newline} Ref {fa fa-bolt} system.attributes.savingThrows.ref.total {newline} Will {fa fa-brain} system.attributes.savingThrows.will.total"
+        "text": "Fort {fa fa-shield-heart} {system.attributes.savingThrows.fort.total} {newline} Ref {fa fa-bolt} {system.attributes.savingThrows.ref.total} {newline} Will {fa fa-brain} {system.attributes.savingThrows.will.total}"
       },
       {
         "name": "Speed",
@@ -56,22 +56,22 @@
           {
             "type": "exists",
             "value": "system.attributes.speed.land.total",
-            "text": "Land system.attributes.speed.land.total ft. {newline}"
+            "text": "Land {system.attributes.speed.land.total} ft. {newline}"
           },
           {
             "type": "exists",
             "value": "system.attributes.speed.fly.total",
-            "text": "Fly system.attributes.speed.fly.total ft. ( system.attributes.speed.fly.maneuverability ) {newline}"
+            "text": "Fly {system.attributes.speed.fly.total} ft. ({system.attributes.speed.fly.maneuverability}) {newline}"
           },
           {
             "type": "exists",
             "value": "system.attributes.speed.climb.total",
-            "text": "Climb system.attributes.speed.climb.total ft. {newline}"
+            "text": "Climb {system.attributes.speed.climb.total} ft. {newline}"
           },
           {
             "type": "exists",
             "value": "system.attributes.speed.swim.total",
-            "text": "Swim system.attributes.speed.swim.total ft. {newline}"
+            "text": "Swim {system.attributes.speed.swim.total} ft. {newline}"
           }
         ]
       },
@@ -84,32 +84,32 @@
           {
             "type": "exists",
             "value": "system.traits.senses.dv",
-            "text": "Darkvision system.traits.senses.dv ft. {newline}"
+            "text": "Darkvision {system.traits.senses.dv} ft. {newline}"
           },
           {
             "type": "exists",
             "value": "system.traits.senses.tr",
-            "text": "Tremorsense system.traits.senses.tr ft. {newline}"
+            "text": "Tremorsense {system.traits.senses.tr} ft. {newline}"
           },
           {
             "type": "exists",
             "value": "system.traits.senses.bse",
-            "text": "Blindsense system.traits.senses.bse ft. {newline}"
+            "text": "Blindsense {system.traits.senses.bse} ft. {newline}"
           },
           {
             "type": "exists",
             "value": "system.traits.senses.bs",
-            "text": "Blindsight system.traits.senses.bs ft. {newline}"
+            "text": "Blindsight {system.traits.senses.bs} ft. {newline}"
           },
           {
             "type": "exists",
             "value": "system.traits.senses.sc",
-            "text": "Scent system.traits.senses.sc ft. {newline}"
+            "text": "Scent {system.traits.senses.sc} ft. {newline}"
           },
           {
             "type": "exists",
             "value": "system.traits.senses.ts",
-            "text": "True seeing system.traits.senses.ts ft. {newline}"
+            "text": "True seeing {system.traits.senses.ts} ft. {newline}"
           }
         ]
       },
@@ -118,7 +118,7 @@
         "type": "direct",
         "header": "show",
         "showSign": true,
-        "text": "Perc system.skills.per.mod {newline} Sense M. system.skills.sen.mod {newline} Stealth system.skills.ste.mod"
+        "text": "Perc {system.skills.per.mod} {newline} Sense M. {system.skills.sen.mod} {newline} Stealth {system.skills.ste.mod}"
       }
     ]
   ]
