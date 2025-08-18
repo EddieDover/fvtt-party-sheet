@@ -37,8 +37,8 @@ export function sanitizeHTML(html, options = {}) {
   try {
     return DOMPurify.sanitize(html, config);
   } catch (error) {
-    console.warn("DOMPurify sanitization failed, falling back to basic cleaning:", error);
-    return basicFallbackSanitize(html);
+    console.warn("DOMPurify sanitization failed, returning empty string:", error);
+    return ""; // Return empty string instead of potentially unsafe fallback
   }
 }
 
@@ -64,23 +64,9 @@ export function sanitizeHTMLWithStyles(html, allowedStyles = []) {
   try {
     return DOMPurify.sanitize(html, config);
   } catch (error) {
-    console.warn("DOMPurify sanitization with styles failed:", error);
-    return basicFallbackSanitize(html);
+    console.warn("DOMPurify sanitization with styles failed, returning empty string:", error);
+    return ""; // Return empty string instead of potentially unsafe fallback
   }
-}
-
-/**
- * Basic fallback sanitizer in case DOMPurify fails
- * @param {string} html - HTML to sanitize
- * @returns {string} - Basic sanitized HTML
- */
-function basicFallbackSanitize(html) {
-  return html
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
-    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, "")
-    .replace(/javascript:/gi, "")
-    .replace(/vbscript:/gi, "")
-    .replace(/<(iframe|object|embed|link|meta|style|form|input)[^>]*>/gi, "");
 }
 
 /**
