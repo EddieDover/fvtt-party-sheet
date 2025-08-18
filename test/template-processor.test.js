@@ -16,22 +16,10 @@ describe("TemplateProcessor", () => {
   };
 
   describe("processTemplate", () => {
-    test("should process properties with spaces format", () => {
-      const template = "Class:  name  (Level  level )";
-      const result = TemplateProcessor.processTemplate(template, testData);
-      expect(result).toBe("Class: Wizard (Level 5)");
-    });
-
     test("should process properties with braces format", () => {
       const template = "Class: {name} (Level {level})";
       const result = TemplateProcessor.processTemplate(template, testData);
       expect(result).toBe("Class: Wizard (Level 5)");
-    });
-
-    test("should process mixed formats", () => {
-      const template = "Class: {name} - Level  level ";
-      const result = TemplateProcessor.processTemplate(template, testData);
-      expect(result).toBe("Class: Wizard - Level 5");
     });
 
     test("should process nested properties", () => {
@@ -50,6 +38,18 @@ describe("TemplateProcessor", () => {
       const template = "Class: {name}.";
       const result = TemplateProcessor.processTemplate(template, testData);
       expect(result).toBe("Class: Wizard.");
+    });
+
+    test("should not process space-surrounded words as properties", () => {
+      const template = "Class: name (Level level)";
+      const result = TemplateProcessor.processTemplate(template, testData);
+      expect(result).toBe("Class: name (Level level)");
+    });
+
+    test("should handle multiple instances of same property", () => {
+      const template = "{name} the {name}";
+      const result = TemplateProcessor.processTemplate(template, testData);
+      expect(result).toBe("Wizard the Wizard");
     });
   });
 
@@ -74,10 +74,8 @@ describe("TemplateProcessor", () => {
   });
 
   describe("extractPropertyNames", () => {
-    test("should extract property names from spaces format when properties exist", () => {
-      const template = "Class:  name  (Level  level )";
-      // Note: extractPropertyNames now only extracts brace-wrapped properties
-      // to avoid false positives. For spaces format, use processTemplate directly.
+    test("should not extract space-surrounded words", () => {
+      const template = "Class: name (Level level)";
       const properties = TemplateProcessor.extractPropertyNames(template);
       expect(properties).toEqual([]);
     });
@@ -94,8 +92,8 @@ describe("TemplateProcessor", () => {
       expect(properties).toEqual(["system.attributes.hp.value"]);
     });
 
-    test("should handle mixed formats", () => {
-      const template = "Class: {name} - Level  level ";
+    test("should only extract brace-wrapped properties", () => {
+      const template = "Class: {name} - Level level ";
       const properties = TemplateProcessor.extractPropertyNames(template);
       expect(properties).toEqual(["name"]);
     });
