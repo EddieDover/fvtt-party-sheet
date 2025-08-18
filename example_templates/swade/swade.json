@@ -2,10 +2,9 @@
   "name": "Savage Worlds",
   "system": "swade",
   "author": "Mestre Digital",
-  "offline_excludes": [
-    "npc",
-    "vehicle"
-  ],
+  "offline_excludes": ["npc", "vehicle"],
+  "version": "1.0.0",
+  "minimumSystemVersion": "5.0.4",
   "rows": [
     [
       {
@@ -53,7 +52,7 @@
         "align": "center",
         "header": "show",
         "minwidth": 75,
-        "text": "system.stats.speed.value | D{s0} system.stats.speed.runningDie ( {s0} system.stats.speed.runningMod {s0} )"
+        "text": "system.pace.ground | D{s0} system.pace.running.die ( {s0} system.pace.running.mod {s0} )"
       },
       {
         "name": "Parry",

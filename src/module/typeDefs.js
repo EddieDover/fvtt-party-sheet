@@ -31,9 +31,9 @@
  * @property { string? } path - Optional path to the template file.
  * @property { Array<Array<TemplateDataColumn>> } rows - The rows of data to display. See below for details.
  * @property { string } offline_excludes_property - The property to use to exclude players. Note: This is optional and defaults to the actors.type property.
- * @property { Array<string> } offline_excludes - The types you want to exclude when showing offline players.
+ * @property { Array<string|boolean> } offline_excludes - The types you want to exclude when showing offline players.
  * @property { string } offline_includes_property - The property to use to show players online.
- * @property { Array<string> } offline_includes - The types you want to include when showing online players.
+ * @property { Array<string|boolean> } offline_includes - The types you want to include when showing online players.
  */
 
 /**
