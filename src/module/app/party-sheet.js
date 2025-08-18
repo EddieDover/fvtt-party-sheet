@@ -12,6 +12,7 @@ import {
   trimIfString,
   updateSelectedTemplate,
 } from "../utils.js";
+import { sanitizeHTML } from "../utils/html-sanitizer.js";
 import { HiddenCharactersSettings } from "./hidden-characters-settings.js";
 import { ParserFactory } from "../parsing/parser-factory.js";
 import { TemplateProcessor } from "../parsing/template-processor.js";
@@ -157,7 +158,19 @@ export class PartySheetForm extends FormApplication {
    * @memberof PartySheetForm
    */
   cleanString(str) {
-    return str.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+    if (typeof str !== "string") {
+      return str;
+    }
+    
+    // Use the robust HTML sanitizer instead of basic regex
+    return sanitizeHTML(str, {
+      allowedTags: ["b", "i", "u", "strong", "em", "span", "br"],
+      allowedAttributes: {
+        "span": ["style", "class"],
+        "*": ["class"],
+      },
+      allowedStyles: ["color", "background-color", "font-weight", "font-style", "text-decoration"],
+    });
   }
 
   /**

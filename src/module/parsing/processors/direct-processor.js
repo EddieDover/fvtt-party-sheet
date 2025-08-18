@@ -1,6 +1,7 @@
 import { DataProcessor } from "../base-processor.js";
 import { addSign } from "../../utils.js";
 import { TemplateProcessor } from "../template-processor.js";
+import { sanitizeHTML } from "../../utils/html-sanitizer.js";
 
 /**
  * Processor for "direct" data type - handles simple property extraction and replacement
@@ -76,8 +77,16 @@ export class DirectProcessor extends DataProcessor {
     if (typeof value !== "string") {
       return value;
     }
-    // Remove potential script tags and other dangerous HTML
-    return value.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
+    
+    // Use the robust HTML sanitizer instead of basic regex
+    return sanitizeHTML(value, {
+      allowedTags: ["b", "i", "u", "strong", "em", "span", "br"],
+      allowedAttributes: {
+        "span": ["style", "class"],
+        "*": ["class"],
+      },
+      allowedStyles: ["color", "background-color", "font-weight", "font-style", "text-decoration"],
+    });
   }
 
   /**
