@@ -522,7 +522,7 @@ One row:
                 "type": "direct",
                 "align": "center",
                 "header": "show",
-                "text": "name"
+                "text": "{name}"
             }
         ]
     ]
@@ -556,7 +556,7 @@ Two Rows:
                 "type": "direct",
                 "align": "center",
                 "header": "show",
-                "text": "name"
+                "text": "{name}"
             }
         ],
         [
