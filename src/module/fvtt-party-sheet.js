@@ -333,6 +333,9 @@ function refreshSheet() {
  * @param {TemplateValidityReturnData} template_validation - The template validation data
  */
 function toggleTemplateStatusForm(template_validation) {
+  // eslint-disable-next-line no-unused-vars
+  const templatevalidation = template_validation;
+
   if (currentTemplateStatusForm?.rendered) {
     currentTemplateStatusForm.close();
   } else {
@@ -415,6 +418,7 @@ function registerAPI() {
   // @ts-ignore
   game["fvtt-party-sheet"].api = {
     togglePartySheet: togglePartySheet,
+    toggleTemplateStatusForm: toggleTemplateStatusForm,
   };
   log("API registered");
 }

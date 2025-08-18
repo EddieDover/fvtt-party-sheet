@@ -1,4 +1,39 @@
 /**
+ * Base FormApplication class
+ * @class
+ */
+// eslint-disable-next-line no-shadow, no-unused-vars
+class FormApplication {
+  constructor() {
+    /** @type {boolean} */
+    this.rendered = false;
+  }
+
+  /**
+   * Closes the form application
+   * @returns {void}
+   */
+  close() {}
+
+  /**
+   * Renders the form application
+   * @param {boolean} force - Whether to force re-rendering the form.
+   * @param {object} options - The options for rendering the form.
+   * @returns {void}
+   */
+  // eslint-disable-next-line no-unused-vars
+  render(force = false, options = {}) {}
+
+  /**
+   * Activates event listeners for the form application.
+   * @param {any} any - The parameter for activating listeners.
+   * @returns {void}
+   */
+  // eslint-disable-next-line no-unused-vars
+  activateListeners(any) {}
+}
+
+/**
  * @typedef { 'direct' | 'math' | 'direct-complex' | 'string' | 'array-string-builder'|'span' } TemplateDataColumnType
  * @typedef { 'show' | 'hide' | 'skip' } TemplateDataColumnHeader
  * @typedef { 'left' | 'center' | 'right' } TemplateDataColumnAlignType
