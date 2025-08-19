@@ -28,9 +28,29 @@ export class ArrayStringBuilderProcessor extends DataProcessor {
 
     let objData = extractPropertyByString(character, objName);
 
+    // Handle null/undefined data
+    if (objData == null) {
+      return "";
+    }
+
     // Convert non-arrays to arrays
     if (!Array.isArray(objData) && !(objData instanceof Set)) {
-      objData = Object.keys(objData).map((key) => objData[key]);
+      // Check if it's an object with keys
+      if (typeof objData === "object" && objData !== null) {
+        const keys = Object.keys(objData);
+        if (keys.length === 0) {
+          return "";
+        }
+        objData = keys.map((key) => objData[key]);
+      } else {
+        // If it's a primitive or something else, wrap it in an array
+        objData = [objData];
+      }
+    }
+
+    // Check if the resulting data is empty
+    if ((objData.size ?? objData.length) === 0) {
+      return "";
     }
 
     const regValue = /(\{[^}]*\})|((?:\*\.|[\w.]+)+)/g;
@@ -39,8 +59,9 @@ export class ArrayStringBuilderProcessor extends DataProcessor {
     );
 
     let outStr = "";
-    if ((objData.size ?? objData.length) !== 0) {
-      let subCount = 0;
+    let subCount = 0;
+
+    try {
       for (const objSubData of objData) {
         let templateCopy = outStrTemplate;
         for (const m of allMatches) {
@@ -53,7 +74,8 @@ export class ArrayStringBuilderProcessor extends DataProcessor {
         outStr += templateCopy + (subCount > 0 ? "\n" : "");
         subCount += 1;
       }
-    } else {
+    } catch (error) {
+      console.warn("Array-string-builder processor failed to iterate over data:", error);
       return "";
     }
 
