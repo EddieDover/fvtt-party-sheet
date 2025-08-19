@@ -168,6 +168,25 @@ Handlebars.registerHelper("getColSpan", function (row, key) {
 });
 
 // @ts-ignore
+Handlebars.registerHelper("shouldSkipForColspan", function (row, currentKey, options) {
+  const keys = Object.keys(row);
+  const currentIndex = keys.indexOf(currentKey);
+
+  // Check if any previous cell in this row spans into this position
+  for (let i = 0; i < currentIndex; i++) {
+    const prevKey = keys[i];
+    const prevColspan = row[prevKey]?.options?.colspan ?? 1;
+
+    // If the previous cell spans enough columns to cover this position
+    if (i + prevColspan > currentIndex) {
+      return options.fn(this); // Skip this cell
+    }
+  }
+
+  return options.inverse(this); // Don't skip this cell
+});
+
+// @ts-ignore
 Handlebars.registerHelper("getRowSpan", function (row, key) {
   const myoptions = row[key]?.options ?? {};
   return myoptions?.rowspan ?? 1;

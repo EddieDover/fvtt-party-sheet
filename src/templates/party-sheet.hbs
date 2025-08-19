@@ -37,14 +37,18 @@
             {{#each player_data as |row|}}
             <tr>
               {{#getKeys row}}
-                {{#hcifhidden row key=this}}
-                  <th></th>
+                {{#shouldSkipForColspan row this}}
+                  <!-- Skip this header - it's covered by a previous header's colspan -->
                 {{else}}
-                  <th
-                    colspan="{{getColSpan row this}}"
-                    style="max-width:{{getMaxWidth row this}};min-width:{{getMinWidth row this}};"
-                  >{{this}}</th>
-                {{/hcifhidden}}
+                  {{#hcifhidden row key=this}}
+                    <th></th>
+                  {{else}}
+                    <th
+                      colspan="{{getColSpan row this}}"
+                      style="max-width:{{getMaxWidth row this}};min-width:{{getMinWidth row this}};"
+                    >{{this}}</th>
+                  {{/hcifhidden}}
+                {{/shouldSkipForColspan}}
               {{/getKeys}}
             </tr>
             {{/each}}
@@ -60,15 +64,20 @@
             {{/checkIndex}}
           >
             {{#getKeys player_row}}
-              {{#isSpanOver player_row this}}
-              <td
-              class="fvtt-party-sheet-dc"
-              rowspan="{{getRowSpan player_row this}}"
-              style="text-align:{{getAlignment player_row this}};vertical-align:{{getVAlignment player_row this}};max-width:{{getMaxWidth player_row this}};min-width:{{getMinWidth player_row this}};"
-              >
-                {{getData player_row this}}
-              </td>
-              {{/isSpanOver}}
+              {{#shouldSkipForColspan player_row this}}
+                <!-- Skip this cell - it's covered by a previous cell's colspan -->
+              {{else}}
+                {{#isSpanOver player_row this}}
+                <td
+                class="fvtt-party-sheet-dc"
+                colspan="{{getColSpan player_row this}}"
+                rowspan="{{getRowSpan player_row this}}"
+                style="text-align:{{getAlignment player_row this}};vertical-align:{{getVAlignment player_row this}};max-width:{{getMaxWidth player_row this}};min-width:{{getMinWidth player_row this}};"
+                >
+                  {{getData player_row this}}
+                </td>
+                {{/isSpanOver}}
+              {{/shouldSkipForColspan}}
             {{/getKeys}}
           </tr>
           {{/each}}
