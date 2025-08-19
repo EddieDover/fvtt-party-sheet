@@ -51,6 +51,17 @@ describe("TemplateProcessor", () => {
       const result = TemplateProcessor.processTemplate(template, testData);
       expect(result).toBe("Wizard the Wizard");
     });
+
+    test("should convert null values to 0", () => {
+      const dataWithNull = {
+        name: "Test",
+        score: null,
+        value: 10,
+      };
+      const template = "Name: {name}, Score: {score}, Value: {value}";
+      const result = TemplateProcessor.processTemplate(template, dataWithNull);
+      expect(result).toBe("Name: Test, Score: 0, Value: 10");
+    });
   });
 
   describe("processTemplateWithArray", () => {

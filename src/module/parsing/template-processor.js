@@ -27,7 +27,13 @@ export class TemplateProcessor {
 
     let result = template;
     for (const matchInfo of allMatches) {
-      const replacement = extractPropertyByString(data, matchInfo.property);
+      let replacement = extractPropertyByString(data, matchInfo.property);
+
+      // Convert null values to 0
+      if (replacement === null) {
+        replacement = 0;
+      }
+
       if (replacement !== undefined) {
         result = result.replace(matchInfo.fullMatch, replacement);
       }
