@@ -125,6 +125,7 @@ export class PartySheetForm extends FormApplication {
                   maxwidth: colobj.maxwidth,
                   minwidth: colobj.minwidth,
                   header: colobj.header,
+                  showTotal: colobj.showTotal,
                 },
               };
             });

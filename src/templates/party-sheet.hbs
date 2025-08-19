@@ -83,6 +83,39 @@
           {{/each}}
         {{/each}}
 
+        <!-- Totals Footer Row -->
+        {{#with players as |allPlayers|}}
+        <tr class="fvtt-party-sheet-totals-row dark" style="border-top: 2px solid #555; font-weight: bold; background-color: rgba(0, 0, 0, 0.1);">
+          {{#with allPlayers.[0].[0] as |first_row|}}
+            {{#getKeys first_row}}
+              {{#shouldSkipForColspan first_row this}}
+                <!-- Skip this cell - it's covered by a previous cell's colspan -->
+              {{else}}
+                {{#if (shouldShowTotal first_row this)}}
+                  <td 
+                    class="fvtt-party-sheet-dc"
+                    colspan="{{getColSpan first_row this}}"
+                    style="text-align:{{getAlignment first_row this}};font-weight:bold;"
+                  >
+                    Total: {{getColumnTotal allPlayers this 0}}
+                  </td>
+                {{else}}
+                  <td 
+                    class="fvtt-party-sheet-dc"
+                    colspan="{{getColSpan first_row this}}"
+                    style="text-align:{{getAlignment first_row this}};"
+                  >
+                    {{#if (eq this "Character Sheet")}}
+                      <!-- Empty for character sheet column -->
+                    {{/if}}
+                  </td>
+                {{/if}}
+              {{/shouldSkipForColspan}}
+            {{/getKeys}}
+          {{/with}}
+        </tr>
+        {{/with}}
+
         </tbody>
       </table>
       {{else}}

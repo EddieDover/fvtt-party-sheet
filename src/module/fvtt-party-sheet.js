@@ -205,6 +205,46 @@ Handlebars.registerHelper("getMinWidth", function (row, key) {
 });
 
 // @ts-ignore
+Handlebars.registerHelper("shouldShowTotal", function (row, key) {
+  const myoptions = row[key]?.options ?? {};
+  return myoptions?.showTotal === true;
+});
+
+// @ts-ignore
+Handlebars.registerHelper("getColumnTotal", function (players, columnKey, rowIndex) {
+  // Validate that players is iterable
+  if (!players || !Array.isArray(players) || players.length === 0) {
+    return "";
+  }
+
+  let total = 0;
+  let hasNumericValues = false;
+
+  try {
+    for (let i = 0; i < players.length; i++) {
+      const playerData = players[i];
+
+      if (playerData && playerData[rowIndex] && playerData[rowIndex][columnKey]) {
+        const cellText = playerData[rowIndex][columnKey].text;
+
+        // Try to extract numeric value from the text
+        const numericValue = parseFloat(cellText);
+
+        if (!isNaN(numericValue)) {
+          total += numericValue;
+          hasNumericValues = true;
+        }
+      }
+    }
+  } catch (error) {
+    console.warn("Error calculating column total:", error);
+    return "";
+  }
+
+  return hasNumericValues ? total : "";
+});
+
+// @ts-ignore
 Handlebars.registerHelper("eachInMap", function (map, block) {
   let out = "";
   Object.keys(map).map(function (prop) {

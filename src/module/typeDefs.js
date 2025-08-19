@@ -52,6 +52,7 @@ class FormApplication {
  * @property {number} maxwidth - The maximum width of the column in pixels.
  * @property {number} minwidth - The minimum width of the column in pixels.
  * @property {boolean} showSign - Whether to show a plus sign for positive numbers.
+ * @property {boolean} showTotal - Whether to show a total sum for this column in a footer row.
  * @property {string} text - The value to display. See below for details.
  */
 

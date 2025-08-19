@@ -46,7 +46,7 @@
     },
     "minimumSystemVersion": {
       "description": "The minimum version of the required system",
-      "type":"string"
+      "type": "string"
     },
     "rows": {
       "description": "The rows of the template. Keep in mind that automatically a row is created per character, this is more for data display.",
@@ -104,6 +104,10 @@
             "rowspan": {
               "description": "Controls the row span of the cells in the column. You need also the corresponding empty rows and type 'span'.",
               "type": "number"
+            },
+            "showTotal": {
+              "description": "Shows a total sum for this column in a footer row if values are numeric.",
+              "type": "boolean"
             },
             "text": {
               "description": "Complex property that will be parsed based on the type."
