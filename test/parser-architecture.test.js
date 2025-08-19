@@ -44,6 +44,7 @@ describe("Parser Architecture", () => {
       expect(parserEngine).toBeDefined();
       expect(parserEngine.getRegisteredTypes()).toContain("direct");
       expect(parserEngine.getRegisteredTypes()).toContain("string");
+      expect(parserEngine.getRegisteredTypes()).toContain("span");
       expect(parserEngine.getRegisteredTypes()).toContain("direct-complex");
     });
 
@@ -57,6 +58,18 @@ describe("Parser Architecture", () => {
     test("should return value as-is", () => {
       const result = parserEngine.process(mockCharacter, "string", "Hello World");
       expect(result).toBe("Hello World");
+    });
+  });
+
+  describe("Span Processor", () => {
+    test("should return empty string for span type", () => {
+      const result = parserEngine.process(mockCharacter, "span", "any value");
+      expect(result).toBe("");
+    });
+
+    test("should return empty string regardless of input", () => {
+      const result = parserEngine.process(mockCharacter, "span", "{name}");
+      expect(result).toBe("");
     });
   });
 

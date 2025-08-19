@@ -6,6 +6,7 @@ import {
   CharacterSheetProcessor,
   ArrayStringBuilderProcessor,
   ObjectLoopProcessor,
+  SpanProcessor,
   LargestFromArrayProcessor,
   SmallestFromArrayProcessor,
 } from "./processors/index.js";
@@ -32,6 +33,7 @@ export class ParserFactory {
     engine.registerProcessor("charactersheet", new CharacterSheetProcessor());
     engine.registerProcessor("array-string-builder", new ArrayStringBuilderProcessor(engine));
     engine.registerProcessor("object-loop", new ObjectLoopProcessor(engine));
+    engine.registerProcessor("span", new SpanProcessor());
     engine.registerProcessor("largest-from-array", new LargestFromArrayProcessor());
     engine.registerProcessor("smallest-from-array", new SmallestFromArrayProcessor());
 

@@ -22,6 +22,7 @@ export {
   CharacterSheetProcessor,
   ArrayStringBuilderProcessor,
   ObjectLoopProcessor,
+  SpanProcessor,
   LargestFromArrayProcessor,
   SmallestFromArrayProcessor,
 } from "./processors/index.js";
