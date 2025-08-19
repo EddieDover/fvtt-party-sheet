@@ -51,7 +51,7 @@
       
       
       
-        <a href="https://github.com/EddieDover/fvtt-party-sheet/releases/latest/download/module.zip" class="btn">Latest Release: v2.3.2</a>
+        <a href="https://github.com/EddieDover/fvtt-party-sheet/releases/latest/download/module.zip" class="btn">Latest Release: v2.7.1</a>
       
     </header>
 
@@ -75,11 +75,23 @@
   </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;YOUR_TEMPLATE_NAME&gt;"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;YOUR_TEMPLATE_SYSTEM&gt;"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;YOUR_NAME&gt;"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;TEMPLATE_VERSION&gt;"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"minimumSystemVersion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;MINIMUM_SYSTEM_VERSION&gt;"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"rows"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="err">//</span><span class="w"> </span><span class="err">See</span><span class="w"> </span><span class="err">Below</span><span class="w"> </span><span class="err">Section</span><span class="w"> </span><span class="err">For</span><span class="w"> </span><span class="err">Details</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Note: Templates will be displayed to the user as ‘YOUR_TEMPLATE_NAME - YOUR_NAME’ and only if the system matches the current system in use.</strong></p>
+
+<p><strong>Required Properties:</strong></p>
+<ul>
+  <li><strong>name</strong> - The display name for your template</li>
+  <li><strong>system</strong> - The exact game system ID this template is designed for (e.g., dnd5e, pf1e, pf2e, sfrpg, alienrpg)</li>
+  <li><strong>author</strong> - The author or creator of this template</li>
+  <li><strong>version</strong> - Template version using semantic versioning (e.g., “1.0.0”, “1.2.1”)</li>
+  <li><strong>minimumSystemVersion</strong> - Minimum version of the game system required. Use the system’s versioning format: MAJOR.MINOR (e.g., “2.4”) or MAJOR.MINOR.PATCH (e.g., “1.0.12”)</li>
+  <li><strong>rows</strong> - Array of template row data (see below section for details)</li>
+</ul>
 
 <h3 id="optional-top-level-properties">Optional Top Level Properties</h3>
 
@@ -217,6 +229,7 @@
   <li><strong>smallest-from-array</strong> - This will accept a <strong>text</strong> property of an array and return the largest numeric item from it. See examples below for more information</li>
   <li><strong>object-loop</strong> - This will accept a <strong>text</strong> property in the following format: **<optional_dropdown> <block_prefix> <object_with_subobjects> =&gt; <sub_property_string>**. Multiple object-loops may be performed, by splitting each with a double-pipe `||`. See examples below for more information</sub_property_string></object_with_subobjects></block_prefix></optional_dropdown></li>
   <li><strong>charactersheet</strong> - This will display the character sheet in the column, ignoring anything in the <strong>text</strong> property.</li>
+  <li><strong>span</strong> - This element will mark an individual td as a spannable cell, allowing a column setup as ‘rowspan’</li>
 </ul>
 
 <p><strong>header</strong> - This property controls if the column text is displayed as a header in the generated table. It accepts either ‘show’ or ‘skip’.</p>
@@ -232,6 +245,14 @@
 
 <p><strong>valign</strong> - This <em>optional</em> property controls the vertical alignment of the cells. It only accepts ‘top’ and ‘bottom’. If left out, or if an improper value is used, the setting will be ignored and will use whatever css the game system provides, since as some systems already override the table css and set the whole table to top, or middle. However, if your system has css code to set valign on table properties, using valign should override the system’s value.</p>
 
+<p><strong>showSign</strong> - This <em>optional</em> property, when used on a <em>direct</em> or <em>direct-complex</em> object, will show a <code class="language-plaintext highlighter-rouge">+</code> sign if displaying a numeric value above zero. (Useful for ability modifier display: <code class="language-plaintext highlighter-rouge">5</code> becomes <code class="language-plaintext highlighter-rouge">+5</code>)</p>
+
+<p><strong>rowspan</strong> - This <em>optional</em> property controls the row span of the cells in the column. If this is set, you <strong>MUST</strong> also place a corresponding empty row (or rows) below the main row in your template, and use the <strong>type</strong> of <strong>span</strong> (see the <strong>span</strong> element above).</p>
+
+<p><strong>colspan</strong> - This <em>optional</em> property controls the column span of the cells. If this is set, the cell will span across the specified number of columns. You <strong>MUST</strong> ensure that subsequent columns in the same row account for this spanning by having fewer total columns, or the table layout may break.</p>
+
+<p><strong>showTotal</strong> - This <em>optional</em> property, when set to <code class="language-plaintext highlighter-rouge">true</code>, will display a total sum for that column in a footer row. The column must contain numeric values for the total to be calculated. Non-numeric values will be ignored in the calculation. Example: <code class="language-plaintext highlighter-rouge">"showTotal": true</code></p>
+
 <p><strong>text</strong> - This property is either a <strong>string</strong>, <strong>boolean</strong>, or an <strong>array</strong> of objects based on if you’re using <strong>direct-complex</strong> or not. See examples below.</p>
 
 <h3 id="text---accepted-values">Text - accepted values</h3>
@@ -239,35 +260,50 @@
 <ul>
   <li>boolean - Quotes are not needed, simply use <code class="language-plaintext highlighter-rouge">false</code>, or <code class="language-plaintext highlighter-rouge">true</code>, i.e. <code class="language-plaintext highlighter-rouge">"match": true,</code></li>
   <li>numbers - Always examine your systems values to see if they are strings or plain numbers, if they are plain numbers do not include quotes around the value, i.e. <code class="language-plaintext highlighter-rouge">"match": 23,</code> If they are actually strings, then you will need to surround the number with quotes to make it a string as well, i.e. <code class="language-plaintext highlighter-rouge">"match:" "23",</code></li>
-  <li>string:  You can include arbitrary text in your output values. Simply make sure they are within the quotes for the text you are creating, i.e. <code class="language-plaintext highlighter-rouge">"text": "name has system.criticalInjury.time days left before system.criticalInjury.name heals.</code></li>
-  <li>Due to the way things are parsed by the plugin there are a few very important caveats you must keep in mind:
-    <ol>
-      <li>If you are using a data string like “system.attributes.str”, or a keyword (see below) like <code class="language-plaintext highlighter-rouge">{newline}</code>, along with custom text, such as <code class="language-plaintext highlighter-rouge">STR: system.attributes.str</code> as an output, there <strong>must</strong> be spaces around the data string,
-        <ul>
-          <li>INCORRECT - <code class="language-plaintext highlighter-rouge">STR:system.attributes.str/system.attributes.maxstr</code></li>
-          <li>CORRECT     - <code class="language-plaintext highlighter-rouge">STR: system.attributes.str / system.attributes.maxstr</code>
-    * The more astute among you may notice that in the example templates, <code class="language-plaintext highlighter-rouge">.value</code> is often left out. To save your poor typing muscles, even if the value you find for a piece of character data is <code class="language-plaintext highlighter-rouge">system.attributes.str.value</code> the module parses data in the following way. Entering <code class="language-plaintext highlighter-rouge">system.attributes.str</code> will make the module look for <code class="language-plaintext highlighter-rouge">system.attributes.str.value</code> and display that if it finds it. If not found, it will display <code class="language-plaintext highlighter-rouge">system.attributes.str</code> as is.</li>
-        </ul>
-      </li>
-    </ol>
-  </li>
+  <li>string:  You can include arbitrary text in your output values. Simply make sure they are within the quotes for the text you are creating, i.e. <code class="language-plaintext highlighter-rouge">"text": "{name} has {system.criticalInjury.time} days left before {system.criticalInjury.name} heals.</code></li>
 </ul>
+
+<h4 id="important-property-reference-format"><strong>IMPORTANT: Property Reference Format</strong></h4>
+
+<p><strong>All property references must be wrapped in braces <code class="language-plaintext highlighter-rouge">{}</code></strong> to be processed as dynamic values. Properties not wrapped in braces will be treated as literal text.</p>
+
+<ul>
+  <li><strong>CORRECT</strong> - <code class="language-plaintext highlighter-rouge">"text": "STR: {system.attributes.str.value}"</code></li>
+  <li><strong>CORRECT</strong> - <code class="language-plaintext highlighter-rouge">"text": "Character {name} has {system.attributes.str.value} STR"</code></li>
+  <li><strong>INCORRECT</strong> - <code class="language-plaintext highlighter-rouge">"text": "STR: system.attributes.str.value"</code> (will display as literal text)</li>
+</ul>
+
+<p><strong>The more astute among you may notice that in the example templates, <code class="language-plaintext highlighter-rouge">.value</code> is often left out. To save your poor typing muscles, even if the value you find for a piece of character data is <code class="language-plaintext highlighter-rouge">system.attributes.str.value</code> the module parses data in the following way. Entering <code class="language-plaintext highlighter-rouge">{system.attributes.str}</code> will make the module look for <code class="language-plaintext highlighter-rouge">system.attributes.str.value</code> and display that if it finds it. If not found, it will display <code class="language-plaintext highlighter-rouge">system.attributes.str</code> as is.</strong></p>
 
 <h3 id="text---special-keywords">Text - Special Keywords</h3>
 
-<p>There are a few special keywords that must be surrounded by { } marks, to allow easier formatting, note that they must be surrounded by spaces unless they are next to the opening or closing quotes. They are as follows:</p>
+<p>There are a few special keywords that must be surrounded by { } marks, to allow easier formatting. <strong>Note: These are different from property references - special keywords are predefined formatting commands, while property references access character data.</strong></p>
 
 <ul>
   <li>{newline} - Adds a line break to the text rendered.</li>
   <li>{charactersheet} - Inserts a clickable image of the character that will open their character sheet.</li>
-  <li>{+} - Adds the values of two objects and outputs the result, i.e. <code class="language-plaintext highlighter-rouge">system.attributes.str {+} system.attributes.wis</code> will output the character’s str and wis added together.</li>
+  <li>{+} - Adds the values of two objects and outputs the result, i.e. <code class="language-plaintext highlighter-rouge">{system.attributes.str} {+} {system.attributes.wis}</code> will output the character’s str and wis added together.</li>
   <li>{s} adds a space</li>
   <li>{s#} adds multiple spaces where # is the amount of spaces desired.</li>
-  <li>{s0} will remove all spaces between it’s preceeding and succeeding elements. E.g. <code class="language-plaintext highlighter-rouge">D{s0} system.attributes.str</code> becomes <code class="language-plaintext highlighter-rouge">D8</code></li>
+  <li>{s0} will remove all spaces between it’s preceeding and succeeding elements. E.g. <code class="language-plaintext highlighter-rouge">D{s0}{system.attributes.str}</code> becomes <code class="language-plaintext highlighter-rouge">D8</code></li>
   <li>{i} &amp; {/i} - Anything between these tags will be displayed in <em>italics</em></li>
   <li>{b} &amp; {/b} - Anything between these tags will be displayed in <strong>bold</strong></li>
   <li>{u} &amp; {/u} - Anything between these tags will be displayed as <u>underlined</u></li>
+  <li>
+    <p>{fa fa-XXX fa-XXX} - Elements also support embedding Font Awesome icons via {fa fa-XXX fa-XXX} where <code class="language-plaintext highlighter-rouge">fa-XXX</code> are the classes normally used for <a href="https://www.fontawesome.com/">Font Awesome</a> embeddings.
+  For example:</p>
+
+    <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"STR Mod"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hide"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{fa fa-solid fa-hand-fist} {system.abilities.str.mod}"</span><span class="w">
+    </span><span class="p">}</span><span class="err">,</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
 </ul>
+
+<p>would result in a solid fist icon being shown next to the STR modifier value</p>
 
 <h3 id="direct-complex-object">Direct-Complex Object</h3>
 
@@ -284,8 +320,8 @@
     <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">    </span><span class="p">{</span><span class="w">
       </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"exists"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.attribute.isplayersick"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Player is sick with system.attribute.sickness"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"else"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Healthy for system.attribute.daysSinceSick days"</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Player is sick with {system.attribute.sickness}"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"else"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Healthy for {system.attribute.daysSinceSick} days"</span><span class="w">
     </span><span class="p">}</span><span class="err">,</span><span class="w">
 </span></code></pre></div>    </div>
 
@@ -306,27 +342,27 @@
     </span><span class="p">{</span><span class="w">
       </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"exists"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.attributes.senses.darkvision"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Darkvision: system.attributes.senses.darkvision"</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Darkvision: {system.attributes.senses.darkvision}"</span><span class="w">
     </span><span class="p">},</span><span class="w">
     </span><span class="p">{</span><span class="w">
       </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"exists"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.attributes.senses.blindsight"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Blindsight: system.attributes.senses.blindsight"</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Blindsight: {system.attributes.senses.blindsight}"</span><span class="w">
     </span><span class="p">},</span><span class="w">
     </span><span class="p">{</span><span class="w">
       </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"exists"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.attributes.senses.tremorsense"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tremorsense: system.attributes.senses.tremorsense"</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tremorsense: {system.attributes.senses.tremorsense}"</span><span class="w">
     </span><span class="p">},</span><span class="w">
     </span><span class="p">{</span><span class="w">
       </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"exists"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.attributes.senses.truesight"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Truesight: system.attributes.senses.truesight"</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Truesight: {system.attributes.senses.truesight}"</span><span class="w">
     </span><span class="p">},</span><span class="w">
     </span><span class="p">{</span><span class="w">
       </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"exists"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system.attributes.senses.special"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Special: system.attributes.senses.special"</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Special: {system.attributes.senses.special}"</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
@@ -386,11 +422,13 @@
   </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Statuses"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"array-string-builder"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"statuses =&gt; value, "</span><span class="w">
+  </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"statuses =&gt; {value}, "</span><span class="w">
 </span><span class="p">}</span><span class="err">,</span><span class="w"> </span><span class="err">//</span><span class="w"> </span><span class="err">No</span><span class="w"> </span><span class="err">comma</span><span class="w"> </span><span class="err">if</span><span class="w"> </span><span class="err">last</span><span class="w"> </span><span class="err">item</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">the</span><span class="w"> </span><span class="err">row</span><span class="w">
 </span></code></pre></div></div>
 
 <p>This example is used to display Active Status Effects on a character, such as burning, bleeding, prone, etc. They are stored by Foundry under the actor as <code class="language-plaintext highlighter-rouge">.statuses</code>, and the value is an array of strings. To display an array of values with no definite end or number of values or even empty sometimes, array-string-builder is your weapon of choice.</p>
+
+<p><strong>Note:</strong> The array-string-builder type uses a special syntax <code class="language-plaintext highlighter-rouge">arrayname =&gt; {property}</code> where properties within the <code class="language-plaintext highlighter-rouge">=&gt;</code> section are automatically processed with brace notation.</p>
 
 <h3 id="example-of-object-loop">Example of object-loop</h3>
 
@@ -400,7 +438,7 @@
   </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Classes"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"object-loop"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"header"</span><span class="p">:</span><span class="s2">"show"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"classes =&gt; {i} name {/i} {b} level {/b} {newline}"</span><span class="w">
+  </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"classes =&gt; {i}{name}{/i} {b}{level}{/b} {newline}"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
 
@@ -428,13 +466,15 @@
   <u>Rogue</u> - <strong>1</strong></p>
 </blockquote>
 
+<p><strong>Note:</strong> The object-loop type uses a special syntax <code class="language-plaintext highlighter-rouge">objectname =&gt; {property}</code> where properties within the <code class="language-plaintext highlighter-rouge">=&gt;</code> section are automatically processed with brace notation.</p>
+
 <p>Code:</p>
 
 <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">  </span><span class="p">{</span><span class="w">
       </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Talents/Equipment"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"object-loop"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{u}Talents:{/u}{nl} items{talent} =&gt; name {nl} || {u}Weapons:{/u}{nl} items{starshipweapon} =&gt; name Damage: {b} system.damage {/b}{nl} || {u}Other Cargo:{/u}{nl} items{item} =&gt; name {nl}"</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{u}Talents:{/u}{nl} items{talent} =&gt; {name} {nl} || {u}Weapons:{/u}{nl} items{starshipweapon} =&gt; {name} Damage: {b}{system.damage}{/b}{nl} || {u}Other Cargo:{/u}{nl} items{item} =&gt; {name} {nl}"</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
 
@@ -456,8 +496,8 @@ ItemOne
 ItemTwo
 </code></pre></div></div>
 
-<p>If this takes more up space than desired, simply prefix the entire text string with <code class="language-plaintext highlighter-rouge">{dropdown}</code> (note the extra space at the end), and the resulting output will feature a dropdown box that allows you to select one of the available filters to view, while hiding the rest.
-Ex: <code class="language-plaintext highlighter-rouge">"text": "{dropdown} {u}Talents:{/u}{nl} items{talent} =&gt; name {nl} || {u}Weapons:{/u}{nl} items{starshipweapon} =&gt; name Damage: {b} system.damage {/b}{nl} || {u}Other Cargo:{/u}{nl} items{item} =&gt; name {nl}"</code></p>
+<p>If this takes more up space than desired, simply prefix the entire text string with <code class="language-plaintext highlighter-rouge">{dropdown}</code> and the resulting output will feature a dropdown box that allows you to select one of the available filters to view, while hiding the rest.
+Ex: <code class="language-plaintext highlighter-rouge">"text": "{dropdown} {u}Talents:{/u}{nl} items{talent} =&gt; {name} {nl} || {u}Weapons:{/u}{nl} items{starshipweapon} =&gt; {name} Damage: {b}{system.damage}{/b}{nl} || {u}Other Cargo:{/u}{nl} items{item} =&gt; {name} {nl}"</code></p>
 
 <h3 id="example-of-largest-from-array-and-smallest-from-array">Example of largest-from-array and smallest-from-array</h3>
 
@@ -485,6 +525,97 @@ Ex: <code class="language-plaintext highlighter-rouge">"text": "{dropdown} {u}Ta
 
 <p><img src="/doc_images/ls_results.png" alt="Largest and Smallest Results" /></p>
 
+<h3 id="example-of-colspan">Example of colspan</h3>
+
+<p>Code:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Character Name"</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{name}"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"options"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"colspan"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Level"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{system.details.level}"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>This example shows a character name cell that spans across 2 columns. The “Level” column will be positioned after the spanned cell. The table will automatically adjust to account for the spanning.</p>
+
+<h3 id="example-of-showtotal">Example of showTotal</h3>
+
+<p>Code:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Character Name"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{name}"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Gold"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{system.currency.gp}"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"options"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"showTotal"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>This example shows a Gold column that will display individual character gold amounts and automatically calculate a total sum at the bottom of the table in a footer row. The total will only appear if the column contains numeric values.</p>
+
+<h3 id="example-of-rowspan-with-span-cells">Example of rowspan with span cells</h3>
+
+<p>Code:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="w">
+  </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Character Name"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w"> 
+      </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{name}"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"options"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"rowspan"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"STR"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w"> 
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{system.abilities.str.value}"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"span"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"skip"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DEX"</span><span class="p">,</span><span class="w"> 
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"skip"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{system.abilities.dex.value}"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>This example shows a character name that spans 2 rows vertically. Note the empty span cell in the second row that acts as a placeholder for the spanned cell above it.</p>
+
 <h3 id="extremely-basic-file-example">Extremely Basic File Example</h3>
 
 <p>Code:</p>
@@ -493,13 +624,15 @@ Ex: <code class="language-plaintext highlighter-rouge">"text": "{dropdown} {u}Ta
     </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Test Person's DND 5E Template"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dnd5e"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Test Person"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"minimumSystemVersion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.4"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"rows"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="p">[</span><span class="w">
             </span><span class="p">{</span><span class="w">
                 </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Name"</span><span class="p">,</span><span class="w">
                 </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w">
                 </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w">
-                </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{charactersheet} name {newline} system.details.race"</span><span class="w">
+                </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{charactersheet} {name} {newline} {system.details.race}"</span><span class="w">
             </span><span class="p">}</span><span class="w">
         </span><span class="p">]</span><span class="w">
     </span><span class="p">]</span><span class="w">
@@ -571,6 +704,8 @@ Ex: <code class="language-plaintext highlighter-rouge">"text": "{dropdown} {u}Ta
     </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Some System - 1 Row"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"some-system"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Your Name Here"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"minimumSystemVersion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"offline_excludes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="s2">"npc"</span><span class="p">,</span><span class="w">
         </span><span class="s2">"base"</span><span class="w">
@@ -589,7 +724,7 @@ Ex: <code class="language-plaintext highlighter-rouge">"text": "{dropdown} {u}Ta
                 </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w">
                 </span><span class="nl">"align"</span><span class="p">:</span><span class="w"> </span><span class="s2">"center"</span><span class="p">,</span><span class="w">
                 </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w">
-                </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"name"</span><span class="w">
+                </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{name}"</span><span class="w">
             </span><span class="p">}</span><span class="w">
         </span><span class="p">]</span><span class="w">
     </span><span class="p">]</span><span class="w">
@@ -602,6 +737,8 @@ Ex: <code class="language-plaintext highlighter-rouge">"text": "{dropdown} {u}Ta
     </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Some System - Two Rows"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"some-system"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Your Name Here"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"minimumSystemVersion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"offline_excludes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="s2">"npc"</span><span class="p">,</span><span class="w">
         </span><span class="s2">"base"</span><span class="w">
@@ -620,7 +757,7 @@ Ex: <code class="language-plaintext highlighter-rouge">"text": "{dropdown} {u}Ta
                 </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct"</span><span class="p">,</span><span class="w">
                 </span><span class="nl">"align"</span><span class="p">:</span><span class="w"> </span><span class="s2">"center"</span><span class="p">,</span><span class="w">
                 </span><span class="nl">"header"</span><span class="p">:</span><span class="w"> </span><span class="s2">"show"</span><span class="p">,</span><span class="w">
-                </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"name"</span><span class="w">
+                </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{name}"</span><span class="w">
             </span><span class="p">}</span><span class="w">
         </span><span class="p">],</span><span class="w">
         </span><span class="p">[</span><span class="w">
