@@ -188,6 +188,10 @@ Note that even empty columns need unique names. Feel free to be as descriptive a
 
 **rowspan** - This _optional_ property controls the row span of the cells in the column. If this is set, you **MUST** also place a corresponding empty row (or rows) below the main row in your template, and use the **type** of **span** (see the **span** element above).
 
+**colspan** - This _optional_ property controls the column span of the cells. If this is set, the cell will span across the specified number of columns. You **MUST** ensure that subsequent columns in the same row account for this spanning by having fewer total columns, or the table layout may break.
+
+**showTotal** - This _optional_ property, when set to `true`, will display a total sum for that column in a footer row. The column must contain numeric values for the total to be calculated. Non-numeric values will be ignored in the calculation. Example: `"showTotal": true`
+
 **text** - This property is either a **string**, **boolean**, or an **array** of objects based on if you're using **direct-complex** or not. See examples below.
 
 ### Text - accepted values
@@ -452,6 +456,100 @@ Given the following abilities (from Pathfinder 1E):
 the result would be
 
 ![Largest and Smallest Results](doc_images/ls_results.png)
+
+### Example of colspan
+
+Code:
+
+```json
+[
+  {
+    "name": "Character Name", 
+    "type": "direct",
+    "header": "show",
+    "text": "{name}",
+    "options": {
+      "colspan": 2
+    }
+  },
+  {
+    "name": "Level",
+    "type": "direct", 
+    "header": "show",
+    "text": "{system.details.level}"
+  }
+]
+```
+
+This example shows a character name cell that spans across 2 columns. The "Level" column will be positioned after the spanned cell. The table will automatically adjust to account for the spanning.
+
+### Example of showTotal
+
+Code:
+
+```json
+[
+  {
+    "name": "Character Name",
+    "type": "direct",
+    "header": "show", 
+    "text": "{name}"
+  },
+  {
+    "name": "Gold",
+    "type": "direct",
+    "header": "show",
+    "text": "{system.currency.gp}",
+    "options": {
+      "showTotal": true
+    }
+  }
+]
+```
+
+This example shows a Gold column that will display individual character gold amounts and automatically calculate a total sum at the bottom of the table in a footer row. The total will only appear if the column contains numeric values.
+
+### Example of rowspan with span cells
+
+Code:
+
+```json
+[
+  [
+    {
+      "name": "Character Name",
+      "type": "direct", 
+      "header": "show",
+      "text": "{name}",
+      "options": {
+        "rowspan": 2
+      }
+    },
+    {
+      "name": "STR",
+      "type": "direct",
+      "header": "show", 
+      "text": "{system.abilities.str.value}"
+    }
+  ],
+  [
+    {
+      "name": "",
+      "type": "span",
+      "header": "skip",
+      "text": ""
+    },
+    {
+      "name": "DEX", 
+      "type": "direct",
+      "header": "skip",
+      "text": "{system.abilities.dex.value}"
+    }
+  ]
+]
+```
+
+This example shows a character name that spans 2 rows vertically. Note the empty span cell in the second row that acts as a placeholder for the spanned cell above it.
 
 ### Extremely Basic File Example
 
