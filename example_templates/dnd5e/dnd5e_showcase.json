@@ -1,0 +1,342 @@
+{
+  "name": "dnd5e Template Feature Showcase",
+  "system": "dnd5e",
+  "author": "EddieDover",
+  "version": "1.0.0",
+  "minimumSystemVersion": "5.0.4",
+  "offline_excludes": ["npc", "base", "vehicle", "group"],
+  "rows": [
+    [
+      {
+        "name": "Character Sheet",
+        "type": "charactersheet",
+        "header": "hide",
+        "text": ""
+      },
+      {
+        "name": "Name",
+        "type": "direct",
+        "header": "show",
+        "text": "{name} {newline} {system.details.race}"
+      },
+      {
+        "name": "STR",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.abilities.str.value}"
+      },
+      {
+        "name": "DEX",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.abilities.dex.value}"
+      },
+      {
+        "name": "CON",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.abilities.con.value}"
+      },
+      {
+        "name": "INT",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.abilities.int.value}"
+      },
+      {
+        "name": "WIS",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.abilities.wis.value}"
+      },
+      {
+        "name": "CHA",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.abilities.cha.value}"
+      },
+      {
+        "name": "AC",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.attributes.ac.value}"
+      },
+      {
+        "name": "Gold",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.currency.gp}",
+        "showTotal": true
+      },
+      {
+        "name": "Senses",
+        "type": "direct-complex",
+        "header": "show",
+        "text": [
+          {
+            "type": "exists",
+            "value": "system.attributes.senses.darkvision",
+            "text": "Darkvision: {system.attributes.senses.darkvision}"
+          },
+          {
+            "type": "exists",
+            "value": "system.attributes.senses.blindsight",
+            "text": "Blindsight: {system.attributes.senses.blindsight}"
+          },
+          {
+            "type": "exists",
+            "value": "system.attributes.senses.tremorsense",
+            "text": "Tremorsense: {system.attributes.senses.tremorsense}"
+          },
+          {
+            "type": "exists",
+            "value": "system.attributes.senses.truesight",
+            "text": "Truesight: {system.attributes.senses.truesight}"
+          },
+          {
+            "type": "exists",
+            "value": "system.attributes.senses.special",
+            "text": "Special: {system.attributes.senses.special}"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "name": "Spacer1",
+        "type": "direct",
+        "header": "hide",
+        "text": ""
+      },
+      {
+        "name": "Classes",
+        "type": "object-loop",
+        "header": "show",
+        "text": "items{class} => {name} - {system.levels} {newline}"
+      },
+      {
+        "name": "STR Mod",
+        "type": "direct",
+        "header": "hide",
+        "text": "{system.abilities.str.mod}"
+      },
+      {
+        "name": "DEX Mod",
+        "type": "direct",
+        "header": "hide",
+        "text": "{system.abilities.dex.mod}"
+      },
+      {
+        "name": "CON Mod",
+        "type": "direct",
+        "header": "hide",
+        "text": "{system.abilities.con.mod}"
+      },
+      {
+        "name": "INT Mod",
+        "type": "direct",
+        "header": "hide",
+        "text": "{system.abilities.int.mod}"
+      },
+      {
+        "name": "WIS Mod",
+        "type": "direct",
+        "header": "hide",
+        "text": "{system.abilities.wis.mod}"
+      },
+      {
+        "name": "CHA Mod",
+        "type": "direct",
+        "header": "hide",
+        "text": "{system.abilities.cha.mod}"
+      },
+      {
+        "name": "Per",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.skills.prc.passive}"
+      },
+      {
+        "name": "Ins",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.skills.ins.passive}"
+      },
+      {
+        "name": "Spacer2",
+        "type": "direct",
+        "header": "hide",
+        "text": ""
+      }
+    ],
+    [
+      {
+        "name": "Spacer3",
+        "type": "direct",
+        "header": "hide",
+        "text": ""
+      },
+      {
+        "name": "Level",
+        "type": "direct",
+        "header": "show",
+        "text": "Level {system.details.level}"
+      },
+      {
+        "name": "HP",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.attributes.hp.value}/{system.attributes.hp.max}"
+      },
+      {
+        "name": "Speed",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.attributes.movement.walk} ft"
+      },
+      {
+        "name": "Prof Bonus",
+        "type": "direct",
+        "header": "show",
+        "text": "+{system.attributes.prof}"
+      },
+      {
+        "name": "Initiative",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.attributes.init.total}"
+      },
+      {
+        "name": "Spell DC",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.attributes.spell.dc}"
+      },
+      {
+        "name": "Spell Atk",
+        "type": "direct",
+        "header": "show",
+        "text": "+{system.attributes.spell.mod}"
+      },
+      {
+        "name": "Languages",
+        "type": "array-string-builder",
+        "header": "show",
+        "text": "system.traits.languages.value => value, "
+      },
+      {
+        "name": "Tools",
+        "type": "array-string-builder",
+        "header": "show",
+        "text": "system.tools => name, "
+      },
+      {
+        "name": "Background",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.details.background}"
+      }
+    ],
+    [
+      {
+        "name": "Spacer4",
+        "type": "direct",
+        "header": "hide",
+        "text": ""
+      },
+      {
+        "name": "Character Progression",
+        "type": "direct",
+        "header": "show",
+        "text": "XP: {system.details.xp.value}/{system.details.xp.max} {newline} Level: {system.details.level}",
+        "colspan": 2
+      },
+      {
+        "name": "Colspan Placeholder",
+        "type": "direct",
+        "header": "hide",
+        "text": "Will be skipped"
+      },
+      {
+        "name": "Temp HP",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.attributes.hp.temp}"
+      },
+      {
+        "name": "Climb Speed",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.attributes.movement.climb} ft"
+      },
+      {
+        "name": "Inspiration",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.attributes.inspiration}"
+      },
+      {
+        "name": "Death Saves",
+        "type": "direct",
+        "header": "show",
+        "text": "S:{system.attributes.death.success} F:{system.attributes.death.failure}"
+      },
+      {
+        "name": "Spell Slots",
+        "type": "direct-complex",
+        "header": "show",
+        "text": [
+          {
+            "type": "exists",
+            "value": "system.spells.spell1.max",
+            "text": "1st: {system.spells.spell1.value}/{system.spells.spell1.max} {newline}"
+          },
+          {
+            "type": "exists",
+            "value": "system.spells.spell2.max",
+            "text": "2nd: {system.spells.spell2.value}/{system.spells.spell2.max} {newline}"
+          },
+          {
+            "type": "exists",
+            "value": "system.spells.spell3.max",
+            "text": "3rd: {system.spells.spell3.value}/{system.spells.spell3.max} {newline}"
+          }
+        ]
+      },
+      {
+        "name": "Cantrips",
+        "type": "array-string-builder",
+        "header": "show",
+        "text": "system.spells.cantrip => name, "
+      },
+      {
+        "name": "Skills",
+        "type": "direct-complex",
+        "header": "show",
+        "text": [
+          {
+            "type": "exists",
+            "value": "system.skills.acr.proficient",
+            "text": "Acrobatics: {system.skills.acr.total}"
+          },
+          {
+            "type": "exists",
+            "value": "system.skills.ath.proficient",
+            "text": "Athletics: {system.skills.ath.total}"
+          },
+          {
+            "type": "exists",
+            "value": "system.skills.ste.proficient",
+            "text": "Stealth: {system.skills.ste.total}"
+          }
+        ]
+      },
+      {
+        "name": "Alignment",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.details.alignment}"
+      }
+    ]
+  ]
+}
