@@ -2,8 +2,12 @@
 // eslint-disable-next-line no-shadow
 import { test, expect } from "@playwright/test";
 
+test.use({
+  ignoreHTTPSErrors: true,
+});
+
 const doLogin = async (page) => {
-  await page.goto("https://localhost:30000/join");
+  await page.goto("http://localhost:30000/join");
 
   await page.setViewportSize({ width: 1718, height: 1276 });
 
@@ -24,7 +28,7 @@ const clickPartySheet = async (page) => {
 };
 
 test("can see foundry login", async ({ page }) => {
-  await page.goto("https://localhost:30000/");
+  await page.goto("http://localhost:30000/");
 
   await expect(page).toHaveTitle(/West Coast Crew/);
 });
