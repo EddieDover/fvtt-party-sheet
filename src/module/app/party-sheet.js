@@ -6,6 +6,7 @@ import {
   getCustomTemplates,
   getModuleTemplates,
   getSelectedTemplate,
+  log,
   parseExtras,
   parsePluses,
   TemplateProcessError,
@@ -632,6 +633,7 @@ export class PartySheetForm extends FormApplication {
       if (systemMatch && !maxVersionOk) {
         // @ts-ignore
         log(
+          // @ts-ignore
           `Template "${data.name}" by ${data.author} filtered out: Current system v${game.system.version} exceeds maximum v${data.maximumSystemVersion}`,
         );
       }

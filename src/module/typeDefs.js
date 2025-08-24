@@ -103,3 +103,8 @@ class FormApplication {
  * @property { string } system - The system name.
  * @property { string } version - The version of the system.
  */
+
+/**
+ * @typedef PartySheetRenderOptions
+ * @property {boolean} [showInstaller] - Whether to show the installer
+ */

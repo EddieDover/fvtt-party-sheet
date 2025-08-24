@@ -433,15 +433,12 @@ Handlebars.registerHelper("systemVersionBelowMin", function (minVersion, options
 
 /**
  * Toggles the party sheet
- * @param {boolean} [showInstaller] - Whether to show the installer
+ * @param {PartySheetRenderOptions} [options] - Additional Options
  */
-function togglePartySheet(showInstaller = false) {
+function togglePartySheet(options = {}) {
   if (currentPartySheet?.rendered) {
     currentPartySheet.close();
   } else {
-    const options = {
-      showInstaller: showInstaller,
-    };
     currentPartySheet = new PartySheetForm(options, afterInstall);
     // @ts-ignore
     currentPartySheet.render(true);
@@ -514,15 +511,29 @@ const showSettingsButton = () => {
 
         makeSibling(sidebarSettings, settingsAreaSection);
 
-        const settingsButton = document.createElement("button");
+        let settingsButton = document.createElement("button");
         settingsButton.classList.add("settings-button");
         settingsButton.dataset.action = "openApp";
         settingsButton.type = "button";
         // @ts-ignore
-        let localizedLabel = game.i18n.localize("fvtt-player-party-sheet.interface.party-sheet");
-        settingsButton.innerHTML = `<i class='fas fa-users'></i> ${localizedLabel}`;
+        let localizedLabel = game.i18n.localize("fvtt-party-sheet.template-status.template-status");
+        settingsButton.innerHTML = `<i class='fas fa-download'></i> ${localizedLabel}`;
         settingsButton.addEventListener("click", () => {
-          togglePartySheet();
+          toggleTemplateStatusForm();
+        });
+        makeSibling(settingsAreaHeader, settingsButton);
+
+        settingsButton = document.createElement("button");
+        settingsButton.classList.add("settings-button");
+        settingsButton.dataset.action = "openApp";
+        settingsButton.type = "button";
+        // @ts-ignore
+        localizedLabel = game.i18n.localize("fvtt-party-sheet.installer");
+        settingsButton.innerHTML = `<i class='fas fa-download'></i> ${localizedLabel}`;
+        settingsButton.addEventListener("click", () => {
+          togglePartySheet({
+            showInstaller: true,
+          });
         });
         makeSibling(settingsAreaHeader, settingsButton);
       }
@@ -552,7 +563,9 @@ const showSettingsButton = () => {
       localizedLabel = game.i18n.localize("fvtt-party-sheet.installer");
       settingsButton.innerHTML = `<i class='fas fa-download'></i> ${localizedLabel}`;
       settingsButton.addEventListener("click", () => {
-        togglePartySheet(true);
+        togglePartySheet({
+          showInstaller: true,
+        });
       });
       settingsAreaDiv.append(settingsButton);
 
