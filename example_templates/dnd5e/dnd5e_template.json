@@ -4,7 +4,6 @@
   "author": "Your Name Here",
   "version": "1.0.3",
   "minimumSystemVersion": "4.4.5",
-  "maximumSystemVersion": "5.0.0",
   "offline_excludes": ["npc", "base", "vehicle", "group"],
   "rows": [
     [
