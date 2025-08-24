@@ -27,11 +27,11 @@ const DEFAULT_EXCLUDES = ["npc"];
 let generated_dropdowns = 0;
 
 export class PartySheetForm extends FormApplication {
-  constructor(postInstallCallback = async () => {}) {
+  constructor(options = {}, postInstallCallback = async () => {}) {
     super();
     this._postInstallCallback = postInstallCallback;
-    this.showInstaller = false;
     this.savedOptions = undefined;
+    this.showInstaller = options.showInstaller ?? false;
 
     this.parserEngine = ParserFactory.createParserEngine();
   }
@@ -626,6 +626,7 @@ export class PartySheetForm extends FormApplication {
       const minVersionOk = compareSymVer(data.minimumSystemVersion, game.system.version) <= 0;
       // @ts-ignore
       const maxVersionOk =
+        // @ts-ignore
         !data.maximumSystemVersion || compareSymVer(game.system.version, data.maximumSystemVersion) <= 0;
 
       if (systemMatch && !maxVersionOk) {
@@ -695,6 +696,8 @@ export class PartySheetForm extends FormApplication {
       selectedAuthor,
       invalidTemplateError,
       showInstaller: doShowInstaller,
+      // @ts-ignore
+      currentSystemVersion: game.system.version,
       // @ts-ignore
       overrides: this.overrides,
     });

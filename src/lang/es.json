@@ -68,6 +68,7 @@
     "author": "Autora",
     "version": "Versión",
     "template-installed-version": "Versión instalada",
-    "template-system-version": "Versión del sistema"
+    "template-system-version": "Versión Mín del Sistema",
+    "template-max-system-version": "Versión Máx del Sistema"
   }
 }

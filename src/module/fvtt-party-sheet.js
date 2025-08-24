@@ -10,6 +10,8 @@ import {
   setTemplatesLoaded,
   clearCustomTemplates,
   showVersionDifferenceNotifications,
+  isVersionAtLeast,
+  compareSymVer,
 } from "./utils.js";
 import { TemplateStatusForm } from "./app/template-status.js";
 
@@ -44,8 +46,24 @@ Handlebars.registerPartial(
               <span style="border-radius:5px;padding:2px;"></span>
             {{/if}}
         </div>
+        <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-status.current-system-version"}}:</div>
+        <div style="padding-bottom:3px;font-weight:bold;color:#4a90e2;">{{../currentSystemVersion}}</div>
         <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-system-version"}}:</div>
-        <div style="flex-grow:1;">{{template.minimumSystemVersion}}</div>
+        {{#systemVersionBelowMin template.minimumSystemVersion}}
+        <div style="padding-bottom:3px;color:#ff6666;background-color:#000000;border-radius:5px;padding:2px;">{{template.minimumSystemVersion}}</div>
+        {{else}}
+        <div style="padding-bottom:3px;">{{template.minimumSystemVersion}}</div>
+        {{/systemVersionBelowMin}}
+        {{#if template.maximumSystemVersion}}
+        <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-max-system-version"}}:</div>
+        {{#systemVersionAboveMax template.maximumSystemVersion}}
+        <div style="flex-grow:1;color:#ff6666;background-color:#000000;border-radius:5px;padding:2px;">{{template.maximumSystemVersion}}</div>
+        {{else}}
+        <div style="flex-grow:1;">{{template.maximumSystemVersion}}</div>
+        {{/systemVersionAboveMax}}
+        {{else}}
+        <div style="flex-grow:1;"></div>
+        {{/if}}
         {{#if template.installedVersion}}
               {{#compVersion template.installedVersion template.version}}
               <button
@@ -352,14 +370,79 @@ Handlebars.registerHelper("compVersion", function (v1, v2, options) {
   return options.fn(this);
 });
 
+// @ts-ignore
+Handlebars.registerHelper("systemVersionInRange", function (minVersion, maxVersion, options) {
+  // @ts-ignore
+  const currentSystemVersion = game.system.version;
+
+  if (!compareSymVer) {
+    // Fallback: simple string comparison if compareSymVer is not available
+    const minCheck = currentSystemVersion >= minVersion;
+    const maxCheck = !maxVersion || currentSystemVersion <= maxVersion;
+
+    if (minCheck && maxCheck) {
+      return options.fn(this);
+    } else {
+      return options.inverse(this);
+    }
+  }
+
+  const aboveMin = compareSymVer(currentSystemVersion, minVersion) >= 0;
+  const belowMax = !maxVersion || compareSymVer(currentSystemVersion, maxVersion) <= 0;
+
+  const inRange = aboveMin && belowMax;
+
+  if (inRange) {
+    return options.fn(this);
+  } else {
+    return options.inverse(this);
+  }
+});
+
+// @ts-ignore
+Handlebars.registerHelper("systemVersionAboveMax", function (maxVersion, options) {
+  if (!maxVersion) {
+    return options.inverse(this);
+  }
+
+  // @ts-ignore
+  const currentSystemVersion = game.system.version;
+
+  const aboveMax = compareSymVer(currentSystemVersion, maxVersion) > 0;
+
+  if (aboveMax) {
+    return options.fn(this);
+  } else {
+    return options.inverse(this);
+  }
+});
+
+// @ts-ignore
+Handlebars.registerHelper("systemVersionBelowMin", function (minVersion, options) {
+  // @ts-ignore
+  const currentSystemVersion = game.system.version;
+
+  const belowMin = compareSymVer(currentSystemVersion, minVersion) < 0;
+
+  if (belowMin) {
+    return options.fn(this);
+  } else {
+    return options.inverse(this);
+  }
+});
+
 /**
  * Toggles the party sheet
+ * @param {boolean} [showInstaller] - Whether to show the installer
  */
-function togglePartySheet() {
+function togglePartySheet(showInstaller = false) {
   if (currentPartySheet?.rendered) {
     currentPartySheet.close();
   } else {
-    currentPartySheet = new PartySheetForm(afterInstall);
+    const options = {
+      showInstaller: showInstaller,
+    };
+    currentPartySheet = new PartySheetForm(options, afterInstall);
     // @ts-ignore
     currentPartySheet.render(true);
 
@@ -390,12 +473,8 @@ function refreshSheet() {
 
 /**
  * Toggles the template status form
- * @param {TemplateValidityReturnData} template_validation - The template validation data
  */
-function toggleTemplateStatusForm(template_validation) {
-  // eslint-disable-next-line no-unused-vars
-  const templatevalidation = template_validation;
-
+function toggleTemplateStatusForm() {
   if (currentTemplateStatusForm?.rendered) {
     currentTemplateStatusForm.close();
   } else {
@@ -404,6 +483,83 @@ function toggleTemplateStatusForm(template_validation) {
     currentTemplateStatusForm.render(true);
   }
 }
+
+/**
+ * Make an element a sibling to another element
+ * @param {*} element - The element to make a sibling
+ * @param {*} sibling - The sibling element
+ */
+function makeSibling(element, sibling) {
+  element.parentNode.insertBefore(sibling, element.nextSibling);
+}
+
+const showSettingsButton = () => {
+  const v13andUp = isVersionAtLeast(13);
+  let button = document.querySelector("#PartySheet");
+  let settingsArea = document.querySelector("#settings-fvtt-party-sheet"); //V12
+  if (v13andUp) {
+    settingsArea = document.querySelector(".fvtt-player-party-sheet-settings");
+  }
+
+  if (!button) {
+    if (v13andUp) {
+      const sidebarSettings = document.querySelector("section.settings.flexcol");
+      if (sidebarSettings && !settingsArea) {
+        const settingsAreaSection = document.createElement("section");
+        settingsAreaSection.classList.add("fvtt-player-party-sheet-settings", "flexcol");
+        const settingsAreaHeader = document.createElement("h4");
+        settingsAreaHeader.classList.add("divider");
+        settingsAreaHeader.textContent = "Player Achievements";
+        settingsAreaSection.append(settingsAreaHeader);
+
+        makeSibling(sidebarSettings, settingsAreaSection);
+
+        const settingsButton = document.createElement("button");
+        settingsButton.classList.add("settings-button");
+        settingsButton.dataset.action = "openApp";
+        settingsButton.type = "button";
+        // @ts-ignore
+        let localizedLabel = game.i18n.localize("fvtt-player-party-sheet.interface.party-sheet");
+        settingsButton.innerHTML = `<i class='fas fa-users'></i> ${localizedLabel}`;
+        settingsButton.addEventListener("click", () => {
+          togglePartySheet();
+        });
+        makeSibling(settingsAreaHeader, settingsButton);
+      }
+    } else {
+      const sidebarSettings = document.querySelector("#settings-game");
+
+      const settingsAreaHeader = document.createElement("h2");
+      settingsAreaHeader.textContent = "Party Sheet";
+
+      makeSibling(sidebarSettings, settingsAreaHeader);
+
+      const settingsAreaDiv = document.createElement("div");
+      settingsAreaDiv.id = "settings-fvtt-player-party-sheet";
+      let settingsButton = document.createElement("button");
+      settingsButton.classList.add("settings-button");
+      // @ts-ignore
+      let localizedLabel = game.i18n.localize("fvtt-party-sheet.template-status.template-status");
+      settingsButton.innerHTML = `<i class='fas fa-download'></i> ${localizedLabel}`;
+      settingsButton.addEventListener("click", () => {
+        toggleTemplateStatusForm();
+      });
+      settingsAreaDiv.append(settingsButton);
+
+      settingsButton = document.createElement("button");
+      settingsButton.classList.add("settings-button");
+      // @ts-ignore
+      localizedLabel = game.i18n.localize("fvtt-party-sheet.installer");
+      settingsButton.innerHTML = `<i class='fas fa-download'></i> ${localizedLabel}`;
+      settingsButton.addEventListener("click", () => {
+        togglePartySheet(true);
+      });
+      settingsAreaDiv.append(settingsButton);
+
+      makeSibling(settingsAreaHeader, settingsAreaDiv);
+    }
+  }
+};
 
 const showButton = () => {
   if (areTemplatesLoaded()) {
@@ -557,4 +713,5 @@ Hooks.on("renderPlayerList", () => {
 // @ts-ignore
 Hooks.on("renderSceneControls", () => {
   showButton();
+  showSettingsButton();
 });

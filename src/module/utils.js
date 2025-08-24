@@ -580,6 +580,37 @@ export function parseNewlines(value, isSafeStringNeeded) {
 }
 
 /**
+ * Get the Foundry version
+ * @returns {{ major: number, minor: number, patch: number, full: string }} version
+ */
+export function getFoundryVersion() {
+  // @ts-ignore
+  const version = game.version;
+  const versionInfo = version.split(".");
+  const major = Number.parseInt(versionInfo[0]);
+  const minor = Number.parseInt(versionInfo[1]);
+  const patch = Number.parseInt(versionInfo[2]);
+  const full = version;
+
+  return {
+    major,
+    minor,
+    patch,
+    full,
+  };
+}
+
+/**
+ * Checks if the current Foundry version is at least the specified major version.
+ * @param {*} major - The major version to check against.
+ * @returns {boolean} True if the current version is at least the specified major version, false otherwise.
+ */
+export function isVersionAtLeast(major) {
+  const version = getFoundryVersion();
+  return version.major >= major;
+}
+
+/**
  * Shows notification banners when version differences are detected between installed templates
  * and the example templates provided with the module.
  * @param {TemplateValidityReturnData} validationData - The validation data from validateSystemTemplates()

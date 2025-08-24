@@ -48,6 +48,10 @@
       "description": "The minimum version of the required system",
       "type": "string"
     },
+    "maximumSystemVersion": {
+      "description": "The maximum version of the required system",
+      "type": "string"
+    },
     "rows": {
       "description": "The rows of the template. Keep in mind that automatically a row is created per character, this is more for data display.",
       "type": "array",

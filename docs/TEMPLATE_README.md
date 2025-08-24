@@ -15,6 +15,7 @@ If using The Forge, this module will create a folder at the top level of your As
   "author": "<YOUR_NAME>",
   "version": "<TEMPLATE_VERSION>",
   "minimumSystemVersion": "<MINIMUM_SYSTEM_VERSION>",
+  "maximumSystemVersion": "<MAXIMUM_SYSTEM_VERSION>", // Optional
   "rows": [] // See Below Section For Details
 }
 ```
@@ -27,7 +28,22 @@ If using The Forge, this module will create a folder at the top level of your As
 - **author** - The author or creator of this template
 - **version** - Template version using semantic versioning (e.g., "1.0.0", "1.2.1")
 - **minimumSystemVersion** - Minimum version of the game system required. Use the system's versioning format: MAJOR.MINOR (e.g., "2.4") or MAJOR.MINOR.PATCH (e.g., "1.0.12")
+  **maximumSystemVersion** - string - This is optional. When specified, defines the maximum version of the game system that this template supports. Use the system's versioning format: MAJOR.MINOR (e.g., "2.4") or MAJOR.MINOR.PATCH (e.g., "1.0.12").
 - **rows** - Array of template row data (see below section for details)
+
+Templates will only be shown to users when their current system version is within the range defined by `minimumSystemVersion` and `maximumSystemVersion`. Example:
+
+  ```json
+  {
+    "name": "<YOUR_TEMPLATE_NAME>",
+    "system": "<YOUR_TEMPLATE_SYSTEM>",
+    "author": "<YOUR_NAME>",
+    "version": "<TEMPLATE_VERSION>",
+    "minimumSystemVersion": "2.0",
+    "maximumSystemVersion": "2.4",
+    "rows": [] // See Below Section For Details
+  }
+  ```
 
 ### Optional Top Level Properties
 
