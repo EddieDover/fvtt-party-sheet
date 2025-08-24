@@ -60,6 +60,7 @@ class FormApplication {
  * @typedef TemplateData
  * @property { string } system - The system this data is for.
  * @property { string } minimumSystemVersion - The version of the minimum system required.
+ * @property { string } [maximumSystemVersion] - The version of the maximum system supported (optional).
  * @property { string } author - The author of this data.
  * @property { string } name - The name of this data.
  * @property { string } version - The version of this data.
@@ -81,8 +82,11 @@ class FormApplication {
  * @property { string } name - The name of the template.
  * @property { string } author - The author of the template.
  * @property { string } version - The version of the template.
+ * @property { string } system - The system the template is for.
  * @property { string } providedVersion - The version of the template provided.
  * @property { string } minimumSystemVersion - The minimum system version required.
+ * @property { string } [maximumSystemVersion] - The maximum system version supported (optional).
+ * @property { string } ownedSystemVersion - The version of the system currently installed.
  */
 
 /**

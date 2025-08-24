@@ -37,6 +37,10 @@
       "show-template-status-form": {
         "name": "Show Template Status Form",
         "hint": "This will show you which templates are out of date, which have newer systems installed, and which have no version information."
+      },
+      "show-version-notifications": {
+        "name": "Show Template Update Notifications",
+        "hint": "Display notification banners when installed templates have newer versions available in the module's example templates."
       }
     },
     "template-status": {
@@ -50,6 +54,9 @@
       "no-system-information": "The following templates have no system information",
       "current-system-version": "Current System Version",
       "required-system-version": "Required System Version"
+    },
+    "notifications": {
+      "template-update-available": "Template updates available! {count} installed template(s) have newer versions available. Check the Template Status dialog or use the Installer to update."
     },
     "close": "Close",
     "install": "Install",

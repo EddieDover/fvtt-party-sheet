@@ -100,7 +100,8 @@ export async function loadSystemTemplate(path) {
     const template = JSON.parse(await fetch(path).then((r) => r.text()));
     if (template.name && template.author && template.system && template.rows) {
       if (template.version && template.minimumSystemVersion) {
-        console.log(`${path} - Good Template`);
+        const maxVersionText = template.maximumSystemVersion ? ` (max: ${template.maximumSystemVersion})` : "";
+        console.log(`${path} - Good Template - Min system: ${template.minimumSystemVersion}${maxVersionText}`);
       } else {
         console.warn(`${path} - Missing Version Information`);
       }
@@ -242,7 +243,7 @@ export async function validateSystemTemplates() {
   moduleTemplates = await loadModuleTemplates();
 
   for (const template of customTemplates) {
-    const moduleTemplate = moduleTemplates.find((t) => t.name === template.name);
+    const moduleTemplate = moduleTemplates.find((t) => t.name === template.name && t.author === template.author);
     let err = false;
 
     const templateData = {
@@ -252,6 +253,7 @@ export async function validateSystemTemplates() {
       system: template.system,
       providedVersion: moduleTemplate?.version ?? "-",
       minimumSystemVersion: template.minimumSystemVersion,
+      maximumSystemVersion: template.maximumSystemVersion,
       ownedSystemVersion: systemVersions.find((s) => s.system === template.system)?.version ?? "-",
     };
     if (!template.minimumSystemVersion) {
@@ -270,12 +272,34 @@ export async function validateSystemTemplates() {
     }
 
     if (moduleTemplate && compareSymVer(template.version, moduleTemplate.version) < 0) {
+      // @ts-ignore
+      const currentSystem = game.system.id;
+      if (template.system === currentSystem) {
+        log(
+          `Version check: "${template.name}" by ${template.author} - Current: v${template.version}, Available: v${moduleTemplate.version}`,
+        );
+      }
       output.outOfDateTemplates.push(templateData);
       err = true;
+    } else if (moduleTemplate && compareSymVer(template.version, moduleTemplate.version) === 0) {
+      // @ts-ignore
+      const currentSystem = game.system.id;
+      if (template.system === currentSystem) {
+        log(`Version check: "${template.name}" by ${template.author} - Current: v${template.version} (up to date)`);
+      }
     }
 
     if (templateData.ownedSystemVersion !== "-") {
       if (compareSymVer(templateData.ownedSystemVersion, templateData.minimumSystemVersion) < 0) {
+        output.outOfDateSystems.push(templateData);
+        err = true;
+      }
+
+      // Check if current system version exceeds maximum supported version
+      if (
+        template.maximumSystemVersion &&
+        compareSymVer(templateData.ownedSystemVersion, template.maximumSystemVersion) > 0
+      ) {
         output.outOfDateSystems.push(templateData);
         err = true;
       }
@@ -553,4 +577,42 @@ export function parseNewlines(value, isSafeStringNeeded) {
     }
   }
   return { value, isSafeStringNeeded };
+}
+
+/**
+ * Shows notification banners when version differences are detected between installed templates
+ * and the example templates provided with the module.
+ * @param {TemplateValidityReturnData} validationData - The validation data from validateSystemTemplates()
+ */
+export function showVersionDifferenceNotifications(validationData) {
+  // @ts-ignore
+  if (!game.user.isGM) {
+    return; // Only show notifications to GM
+  }
+
+  // @ts-ignore
+  const showNotifications = game.settings.get("fvtt-party-sheet", "showVersionNotifications");
+  if (!showNotifications) {
+    return; // User has disabled version notifications
+  }
+
+  // @ts-ignore
+  const currentSystem = game.system.id;
+
+  // Filter validation data to only include templates for the current game system
+  const currentSystemOutOfDate =
+    validationData.outOfDateTemplates?.filter((template) => template.system === currentSystem) || [];
+
+  const outOfDateCount = currentSystemOutOfDate.length;
+
+  // Show notification for templates that have newer versions available in the module
+  if (outOfDateCount > 0) {
+    // @ts-ignore
+    const message = game.i18n.format("fvtt-party-sheet.notifications.template-update-available", {
+      count: outOfDateCount,
+    });
+    // @ts-ignore
+    ui.notifications.warn(message, { permanent: false, console: false });
+    log(`${outOfDateCount} template update(s) available for ${currentSystem}`);
+  }
 }

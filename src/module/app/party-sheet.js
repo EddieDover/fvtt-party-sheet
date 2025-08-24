@@ -620,12 +620,22 @@ export class PartySheetForm extends FormApplication {
 
     const customTemplates = getCustomTemplates();
     const applicableTemplates = customTemplates.filter((data) => {
-      return (
+      // @ts-ignore
+      const systemMatch = data.system === game.system.id;
+      // @ts-ignore
+      const minVersionOk = compareSymVer(data.minimumSystemVersion, game.system.version) <= 0;
+      // @ts-ignore
+      const maxVersionOk =
+        !data.maximumSystemVersion || compareSymVer(game.system.version, data.maximumSystemVersion) <= 0;
+
+      if (systemMatch && !maxVersionOk) {
         // @ts-ignore
-        data.system === game.system.id &&
-        // @ts-ignore
-        compareSymVer(data.minimumSystemVersion, game.system.version) <= 0
-      );
+        log(
+          `Template "${data.name}" by ${data.author} filtered out: Current system v${game.system.version} exceeds maximum v${data.maximumSystemVersion}`,
+        );
+      }
+
+      return systemMatch && minVersionOk && maxVersionOk;
     });
     const selectedTemplate = this.updateSelectedTemplateIndex(applicableTemplates);
 

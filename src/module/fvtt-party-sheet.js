@@ -9,6 +9,7 @@ import {
   validateSystemTemplates,
   setTemplatesLoaded,
   clearCustomTemplates,
+  showVersionDifferenceNotifications,
 } from "./utils.js";
 import { TemplateStatusForm } from "./app/template-status.js";
 
@@ -530,6 +531,9 @@ const ReloadTemplates = async (fullReload = false) => {
       const template_validation = await validateSystemTemplates();
       // @ts-ignore
       game.settings.set("fvtt-party-sheet", "validationInfo", template_validation);
+
+      // Show notification banners for version differences
+      showVersionDifferenceNotifications(template_validation);
     }
 
     showButton();

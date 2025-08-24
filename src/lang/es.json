@@ -37,6 +37,10 @@
       "show-template-status-form": {
         "name": "Mostrar formulario de estado de plantilla",
         "hint": "Habilita esta opción para mostrar el formulario de estado de plantilla cuando se abra la hoja de grupo. Esto te mostrará qué plantillas están desactualizadas, cuáles tienen sistemas más nuevos instalados y cuáles no tienen información de versión."
+      },
+      "show-version-notifications": {
+        "name": "Mostrar Notificaciones de Actualización de Plantillas",
+        "hint": "Mostrar banners de notificación cuando las plantillas instaladas tengan versiones más nuevas disponibles en las plantillas de ejemplo del módulo."
       }
     },
     "template-status": {
@@ -46,10 +50,13 @@
       "current-version": "Versión actual",
       "module-version": "Versión de módulo",
       "newer-required-system": "Las siguientes plantillas necesitan sistemas más nuevos instalados",
-      "no-version-informatin": "Las siguientes plantillas no tienen información de versión",
+      "no-version-information": "Las siguientes plantillas no tienen información de versión",
       "no-system-information": "Las siguientes plantillas no tienen información del sistema",
       "current-system-version": "Versión actual del sistema",
       "required-system-version": "Versión del sistema requerida"
+    },
+    "notifications": {
+      "template-update-available": "¡Actualizaciones de plantillas disponibles! {count} plantilla(s) instalada(s) tienen versiones más nuevas disponibles. Consulte el diálogo de Estado de Plantillas o use el Instalador para actualizar."
     },
     "close": "Cerca",
     "install": "Instalar",
