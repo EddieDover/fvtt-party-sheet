@@ -1,10 +1,10 @@
 {
-  "name": "Savage Worlds",
+  "name": "Savage Worlds Foundry V13",
   "system": "swade",
-  "author": "Mestre Digital",
-  "version": "1.1.0",
-  "minimumSystemVersion": "4.4.2",
+  "author": "Eddie Dover",
   "offline_excludes": ["npc", "vehicle"],
+  "version": "1.0.1",
+  "minimumSystemVersion": "5.0.4",
   "rows": [
     [
       {
@@ -52,7 +52,7 @@
         "align": "center",
         "header": "show",
         "minwidth": 75,
-        "text": "{system.stats.speed.value} | D{system.stats.speed.runningDie} ({system.stats.speed.runningMod})"
+        "text": "{system.pace.ground} | D{system.pace.running.die} ({system.pace.running.mod})"
       },
       {
         "name": "Parry",
@@ -68,7 +68,7 @@
         "align": "center",
         "header": "show",
         "minwidth": 70,
-        "text": "{system.stats.toughness.value}({system.stats.toughness.armor})"
+        "text": "{system.stats.toughness.value} ({system.stats.toughness.armor})"
       },
       {
         "name": "PP",
