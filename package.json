@@ -33,6 +33,7 @@
     "lint:fix": "eslint --ext .js,.cjs,.mjs --fix .",
     "format": "prettier --write \"./**/*.(js|cjs|mjs|json|yml|scss)\"",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "test:full": "npm run test && npm run test:pw",
     "test:pw": "cross-env NODE_OPTIONS=--require=dotenv/config playwright test",
     "test:pw:ui": "cross-env NODE_OPTIONS=--require=dotenv/config playwright test --ui",
