@@ -67,6 +67,9 @@
     "preview": "Preview",
     "author": "Author",
     "version": "Version",
+    "section-title": "Party Sheet",
+    "show-section-title": "Show Party Sheet",
+    "section-title-tooltip": "Show the Party Sheet",
     "template-installed-version": "Installed Version",
     "template-system-version": "Min System Version",
     "template-max-system-version": "Max System Version"

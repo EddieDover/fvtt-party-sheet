@@ -67,6 +67,9 @@
     "preview": "Avance",
     "author": "Autora",
     "version": "Versión",
+    "section-title": "Hoja de Grupo",
+    "show-section-title": "Mostrar Hoja de Grupo",
+    "section-title-tooltip": "Mostrar la Hoja de Grupo",
     "template-installed-version": "Versión instalada",
     "template-system-version": "Versión Mín del Sistema",
     "template-max-system-version": "Versión Máx del Sistema"

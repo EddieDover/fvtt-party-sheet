@@ -710,7 +710,8 @@ export class PartySheetForm extends FormApplication {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: "fvtt-party-sheet-party-sheet",
       classes: ["form"],
-      title: "Party Sheet",
+      // @ts-ignore
+      title: game.i18n.localize("fvtt-party-sheet.section-title"),
       // resizable: true,
       template: "modules/fvtt-party-sheet/templates/party-sheet.hbs",
       // @ts-ignore

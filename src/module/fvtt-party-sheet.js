@@ -506,7 +506,8 @@ const showSettingsButton = () => {
         settingsAreaSection.classList.add("fvtt-player-party-sheet-settings", "flexcol");
         const settingsAreaHeader = document.createElement("h4");
         settingsAreaHeader.classList.add("divider");
-        settingsAreaHeader.textContent = "Player Achievements";
+        // @ts-ignore
+        settingsAreaHeader.textContent = game.i18n.localize("fvtt-party-sheet.section-title");
         settingsAreaSection.append(settingsAreaHeader);
 
         makeSibling(sidebarSettings, settingsAreaSection);
@@ -541,7 +542,8 @@ const showSettingsButton = () => {
       const sidebarSettings = document.querySelector("#settings-game");
 
       const settingsAreaHeader = document.createElement("h2");
-      settingsAreaHeader.textContent = "Party Sheet";
+      // @ts-ignore
+      settingsAreaHeader.textContent = game.i18n.localize("fvtt-party-sheet.section-title");
 
       makeSibling(sidebarSettings, settingsAreaHeader);
 
@@ -597,12 +599,18 @@ const showButton = () => {
       const newbutton = document.createElement("button");
       newbutton.setAttribute("type", "button");
       newbutton.setAttribute("class", "control ui-control tool icon toggle fas fa-users");
-      newbutton.setAttribute("data-tool", "PartySheet");
-      newbutton.setAttribute("aria-label", "Party Sheet");
+      // @ts-ignore
+      newbutton.setAttribute("data-tool", game.i18n.localize("fvtt-party-sheet.section-title"));
+      // @ts-ignore
+      newbutton.setAttribute("aria-label", game.i18n.localize("fvtt-party-sheet.section-title"));
       newbutton.setAttribute("aria-pressed", "false");
       newbutton.setAttribute(
         "data-tooltip-html",
-        '<div class="toolclip themed theme-dark"><h4>Party Sheet</h4><p>Show the Party Sheet</p></div>',
+        // @ts-ignore
+        `<div class="toolclip themed theme-dark"><h4>${game.i18n.localize(
+          "fvtt-party-sheet.section-title",
+          // @ts-ignore
+        )}</h4><p>${game.i18n.localize("fvtt-party-sheet.section-title-tooltip")}</p></div>`,
       );
       newbutton.addEventListener("click", () => togglePartySheet());
       newli.appendChild(newbutton);
@@ -613,9 +621,15 @@ const showButton = () => {
       // @ts-ignore
       const button = $(`<li class="control-tool "
       data-tool="PartySheet"
-      aria-label="Show Party Sheet"
+      aria-label="${
+        // @ts-ignore
+        game.i18n.localize("fvtt-party-sheet.show-section-title")
+      }"
       role="button"
-      data-tooltip="Party Sheet">
+      data-tooltip="${
+        // @ts-ignore
+        game.i18n.localize("fvtt-party-sheet.section-title-tooltip")
+      }">
       <i class="fas fa-users"></i>
     </li>`);
       button.click(() => togglePartySheet());
