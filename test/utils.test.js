@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import {
   parsePluses,
   parseSpacing,
@@ -5,7 +6,17 @@ import {
   parseNewlines,
   extractPropertyByString,
   addSign,
+  compareSymVer,
+  validateSystemTemplates,
+  showVersionDifferenceNotifications,
+  log,
 } from "../src/module/utils";
+import { 
+  setupFoundryMocks, 
+  cleanupFoundryMocks, 
+  mockTemplateData,
+  versionTestCases
+} from './test-mocks.js';
 
 describe("Utils testing", () => {
   describe("Plus parsing", () => {
@@ -295,5 +306,335 @@ describe("extractPropertyByString testing", () => {
     };
     const result = extractPropertyByString(obj, "foo.bar");
     expect(result).toEqual("");
+  });
+});
+
+describe("Version Comparison and Validation", () => {
+  describe("compareSymVer function", () => {
+    it("should return 0 for identical versions", () => {
+      versionTestCases.identical.forEach(([v1, v2, expected]) => {
+        expect(compareSymVer(v1, v2)).toBe(expected);
+      });
+    });
+
+    it("should return negative value when first version is lower", () => {
+      versionTestCases.firstLower.forEach(([v1, v2]) => {
+        expect(compareSymVer(v1, v2)).toBeLessThan(0);
+      });
+    });
+
+    it("should return positive value when first version is higher", () => {
+      versionTestCases.firstHigher.forEach(([v1, v2]) => {
+        expect(compareSymVer(v1, v2)).toBeGreaterThan(0);
+      });
+    });
+
+    it("should handle mixed version formats correctly", () => {
+      expect(compareSymVer("1.0", "1.0.0")).toBe(0);
+      expect(compareSymVer("1.0.0", "1.0")).toBe(0);
+      expect(compareSymVer("1.1", "1.0.5")).toBeGreaterThan(0);
+      expect(compareSymVer("1.0.5", "1.1")).toBeLessThan(0);
+    });
+
+    it("should handle version strings with leading zeros", () => {
+      expect(compareSymVer("1.0.1", "1.0.01")).toBe(0);
+      expect(compareSymVer("1.01.0", "1.1.0")).toBe(0);
+      expect(compareSymVer("01.0.0", "1.0.0")).toBe(0);
+    });
+
+    it("should handle complex version comparisons", () => {
+      expect(compareSymVer("1.9.9", "2.0.0")).toBeLessThan(0);
+      expect(compareSymVer("2.0.0", "1.9.9")).toBeGreaterThan(0);
+      expect(compareSymVer("1.10.0", "1.9.0")).toBeGreaterThan(0);
+      expect(compareSymVer("1.9.0", "1.10.0")).toBeLessThan(0);
+    });
+
+    it("should handle invalid or malformed version strings gracefully", () => {
+      // Should not throw errors
+      expect(() => compareSymVer("", "1.0.0")).not.toThrow();
+      expect(() => compareSymVer("1.0.0", "")).not.toThrow();
+      expect(() => compareSymVer("abc", "1.0.0")).not.toThrow();
+      expect(() => compareSymVer("1.0.0", "xyz")).not.toThrow();
+    });
+  });
+
+  describe("System version filtering logic", () => {
+    const mockTemplates = [
+      mockTemplateData.withMaxVersion, // Template A: min 1.0, max 2.0
+      mockTemplateData.basic, // Template B: min 1.5, no max
+      mockTemplateData.highRequirements // Template C: min 2.5, max 3.0
+    ];
+
+    it("should filter templates correctly based on system version range", () => {
+      // Test current system version 1.8
+      const currentVersion = "1.8";
+      
+      // Template A: min 1.0, max 2.0 - should be included (1.8 is within range)
+      expect(compareSymVer(currentVersion, mockTemplates[0].minimumSystemVersion)).toBeGreaterThanOrEqual(0);
+      expect(compareSymVer(currentVersion, mockTemplates[0].maximumSystemVersion)).toBeLessThanOrEqual(0);
+      
+      // Template B: min 1.5, no max - should be included (1.8 >= 1.5)
+      expect(compareSymVer(currentVersion, mockTemplates[1].minimumSystemVersion)).toBeGreaterThanOrEqual(0);
+      
+      // Template C: min 2.5, max 3.0 - should be excluded (1.8 < 2.5)
+      expect(compareSymVer(currentVersion, mockTemplates[2].minimumSystemVersion)).toBeLessThan(0);
+    });
+
+    it("should handle edge cases in version range filtering", () => {
+      const currentVersion = "2.0";
+      
+      // Exactly at maximum version
+      expect(compareSymVer(currentVersion, mockTemplates[0].maximumSystemVersion)).toBe(0);
+      
+      // Above minimum version with no maximum
+      expect(compareSymVer(currentVersion, mockTemplates[1].minimumSystemVersion)).toBeGreaterThan(0);
+    });
+
+    it("should handle system version above maximum correctly", () => {
+      const currentVersion = "2.5"; 
+      
+      // Template A: min 1.0, max 2.0 - should be excluded (2.5 > 2.0)
+      expect(compareSymVer(currentVersion, mockTemplates[0].maximumSystemVersion)).toBeGreaterThan(0);
+      
+      // Template B: min 1.5, no max - should be included (2.5 >= 1.5, no upper limit)
+      expect(compareSymVer(currentVersion, mockTemplates[1].minimumSystemVersion)).toBeGreaterThan(0);
+      
+      // Template C: min 2.5, max 3.0 - should be included (2.5 >= 2.5 and 2.5 <= 3.0)
+      expect(compareSymVer(currentVersion, mockTemplates[2].minimumSystemVersion)).toBeGreaterThanOrEqual(0);
+      expect(compareSymVer(currentVersion, mockTemplates[2].maximumSystemVersion)).toBeLessThanOrEqual(0);
+    });
+  });
+
+  describe("Template version comparison logic", () => {
+    const mockInstalledTemplate = {
+      name: "Test Template",
+      author: "Test Author",
+      version: "1.5.0"
+    };
+
+    const mockModuleTemplate = {
+      name: "Test Template",
+      author: "Test Author", 
+      version: "1.6.0"
+    };
+
+    it("should detect when module template has newer version", () => {
+      expect(compareSymVer(mockInstalledTemplate.version, mockModuleTemplate.version)).toBeLessThan(0);
+    });
+
+    it("should detect when versions are identical", () => {
+      const identicalTemplate = { ...mockModuleTemplate, version: "1.5.0" };
+      expect(compareSymVer(mockInstalledTemplate.version, identicalTemplate.version)).toBe(0);
+    });
+
+    it("should detect when installed template is newer", () => {
+      const olderModuleTemplate = { ...mockModuleTemplate, version: "1.4.0" };
+      expect(compareSymVer(mockInstalledTemplate.version, olderModuleTemplate.version)).toBeGreaterThan(0);
+    });
+  });
+
+  describe("showVersionDifferenceNotifications", () => {
+    let consoleSpy;
+
+    beforeEach(() => {
+      setupFoundryMocks();
+      // Mock console.log to suppress the log function output during tests
+      consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+      cleanupFoundryMocks();
+      if (consoleSpy) {
+        consoleSpy.mockRestore();
+      }
+    });
+
+    it("should not show notification when no templates need updates", () => {
+      const validationData = {
+        outOfDateTemplates: []
+      };
+
+      showVersionDifferenceNotifications(validationData);
+      expect(global.ui.notifications.warn).not.toHaveBeenCalled();
+    });
+
+    it("should show notification when templates need updates", () => {
+      const validationData = {
+        outOfDateTemplates: [
+          { name: "Template 1", author: "Author 1", system: "dnd5e" },
+          { name: "Template 2", author: "Author 2", system: "dnd5e" }
+        ]
+      };
+
+      showVersionDifferenceNotifications(validationData);
+      expect(global.ui.notifications.warn).toHaveBeenCalledTimes(1);
+    });
+
+    it("should only count templates for current system", () => {
+      const validationData = {
+        outOfDateTemplates: [
+          { name: "Template 1", author: "Author 1", system: "dnd5e" },
+          { name: "Template 2", author: "Author 2", system: "pf2e" }, // Different system
+          { name: "Template 3", author: "Author 3", system: "dnd5e" }
+        ]
+      };
+
+      showVersionDifferenceNotifications(validationData);
+      expect(global.ui.notifications.warn).toHaveBeenCalledTimes(1);
+      
+      const notificationCall = global.ui.notifications.warn.mock.calls[0][0];
+      expect(notificationCall).toContain("2"); // Should only count dnd5e templates
+    });
+
+    it("should not show notification when user is not GM", () => {
+      // Set user as non-GM
+      global.game.user.isGM = false;
+
+      const validationData = {
+        outOfDateTemplates: [
+          { name: "Template 1", author: "Author 1", system: "dnd5e" }
+        ]
+      };
+
+      showVersionDifferenceNotifications(validationData);
+      expect(global.ui.notifications.warn).not.toHaveBeenCalled();
+    });
+
+    it("should not show notification when showVersionNotifications setting is disabled", () => {
+      // Disable the setting
+      global.game.settings.get.mockReturnValue(false);
+
+      const validationData = {
+        outOfDateTemplates: [
+          { name: "Template 1", author: "Author 1", system: "dnd5e" }
+        ]
+      };
+
+      showVersionDifferenceNotifications(validationData);
+      expect(global.ui.notifications.warn).not.toHaveBeenCalled();
+    });
+  });
+});
+
+describe("Handlebars Helper Version Logic", () => {
+  beforeEach(() => {
+    setupFoundryMocks({ system: { version: "2.0" } });
+    // Mock the compareSymVer function being available globally
+    global.utils = { compareSymVer };
+  });
+
+  afterEach(() => {
+    cleanupFoundryMocks();
+    delete global.utils;
+  });
+
+  describe("systemVersionInRange helper logic", () => {
+    it("should return true when system version is within range", () => {
+      const currentVersion = "2.0";
+      const minVersion = "1.5";
+      const maxVersion = "2.5";
+
+      const aboveMin = compareSymVer(currentVersion, minVersion) >= 0;
+      const belowMax = !maxVersion || compareSymVer(currentVersion, maxVersion) <= 0;
+      const inRange = aboveMin && belowMax;
+
+      expect(inRange).toBe(true);
+    });
+
+    it("should return false when system version is below minimum", () => {
+      const currentVersion = "1.0";
+      const minVersion = "1.5";
+      const maxVersion = "2.5";
+
+      const aboveMin = compareSymVer(currentVersion, minVersion) >= 0;
+      const belowMax = !maxVersion || compareSymVer(currentVersion, maxVersion) <= 0;
+      const inRange = aboveMin && belowMax;
+
+      expect(inRange).toBe(false);
+    });
+
+    it("should return false when system version is above maximum", () => {
+      const currentVersion = "3.0";
+      const minVersion = "1.5";
+      const maxVersion = "2.5";
+
+      const aboveMin = compareSymVer(currentVersion, minVersion) >= 0;
+      const belowMax = !maxVersion || compareSymVer(currentVersion, maxVersion) <= 0;
+      const inRange = aboveMin && belowMax;
+
+      expect(inRange).toBe(false);
+    });
+
+    it("should return true when no maximum version is specified", () => {
+      const currentVersion = "3.0";
+      const minVersion = "1.5";
+      const maxVersion = null;
+
+      const aboveMin = compareSymVer(currentVersion, minVersion) >= 0;
+      const belowMax = !maxVersion || compareSymVer(currentVersion, maxVersion) <= 0;
+      const inRange = aboveMin && belowMax;
+
+      expect(inRange).toBe(true);
+    });
+  });
+
+  describe("systemVersionAboveMax helper logic", () => {
+    it("should return true when system version is above maximum", () => {
+      const currentVersion = "3.0";
+      const maxVersion = "2.5";
+
+      const aboveMax = compareSymVer(currentVersion, maxVersion) > 0;
+      expect(aboveMax).toBe(true);
+    });
+
+    it("should return false when system version is at maximum", () => {
+      const currentVersion = "2.5";
+      const maxVersion = "2.5";
+
+      const aboveMax = compareSymVer(currentVersion, maxVersion) > 0;
+      expect(aboveMax).toBe(false);
+    });
+
+    it("should return false when system version is below maximum", () => {
+      const currentVersion = "2.0";
+      const maxVersion = "2.5";
+
+      const aboveMax = compareSymVer(currentVersion, maxVersion) > 0;
+      expect(aboveMax).toBe(false);
+    });
+
+    it("should return false when no maximum version is specified", () => {
+      const currentVersion = "3.0";
+      const maxVersion = null;
+
+      const aboveMax = maxVersion ? compareSymVer(currentVersion, maxVersion) > 0 : false;
+      expect(aboveMax).toBe(false);
+    });
+  });
+
+  describe("systemVersionBelowMin helper logic", () => {
+    it("should return true when system version is below minimum", () => {
+      const currentVersion = "1.0";
+      const minVersion = "1.5";
+
+      const belowMin = compareSymVer(currentVersion, minVersion) < 0;
+      expect(belowMin).toBe(true);
+    });
+
+    it("should return false when system version is at minimum", () => {
+      const currentVersion = "1.5";
+      const minVersion = "1.5";
+
+      const belowMin = compareSymVer(currentVersion, minVersion) < 0;
+      expect(belowMin).toBe(false);
+    });
+
+    it("should return false when system version is above minimum", () => {
+      const currentVersion = "2.0";
+      const minVersion = "1.5";
+
+      const belowMin = compareSymVer(currentVersion, minVersion) < 0;
+      expect(belowMin).toBe(false);
+    });
   });
 });

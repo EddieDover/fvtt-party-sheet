@@ -2,7 +2,9 @@
  * Tests for the new parser architecture
  */
 // @jest-environment jsdom
+import { jest } from '@jest/globals';
 import { ParserFactory } from "../src/module/parsing/parser-factory.js";
+import { createConsoleMocks } from './test-mocks.js';
 
 describe("Parser Architecture", () => {
   // Set up global Handlebars mock for the processors
@@ -249,6 +251,18 @@ describe("Parser Architecture", () => {
   });
 
   describe("Error Handling", () => {
+    let consoleMocks;
+
+    beforeEach(() => {
+      // Use shared console mocking utilities
+      consoleMocks = createConsoleMocks();
+    });
+
+    afterEach(() => {
+      // Restore console methods after each test
+      consoleMocks.restore();
+    });
+
     test("should throw error for unknown processor type", () => {
       expect(() => {
         parserEngine.process(mockCharacter, "unknown-type", "test");
