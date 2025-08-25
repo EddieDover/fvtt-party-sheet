@@ -1,4 +1,4 @@
-import { jest } from '@jest/globals';
+import { jest } from "@jest/globals";
 
 /**
  * Shared mock utilities for Jest tests
@@ -11,15 +11,15 @@ import { jest } from '@jest/globals';
  */
 export function createMockGame(overrides = {}) {
   const defaultMock = {
-    system: { 
-      id: "dnd5e", 
-      version: "2.0" 
+    system: {
+      id: "dnd5e",
+      version: "2.0",
     },
-    user: { 
-      isGM: true 
+    user: {
+      isGM: true,
     },
     settings: {
-      get: jest.fn().mockReturnValue(true)
+      get: jest.fn().mockReturnValue(true),
     },
     i18n: {
       format: jest.fn().mockImplementation((key, data = {}) => {
@@ -29,8 +29,8 @@ export function createMockGame(overrides = {}) {
         }
         return key;
       }),
-      localize: jest.fn().mockImplementation((key) => key)
-    }
+      localize: jest.fn().mockImplementation((key) => key),
+    },
   };
 
   return { ...defaultMock, ...overrides };
@@ -46,8 +46,8 @@ export function createMockUI() {
       info: jest.fn(),
       warn: jest.fn(),
       error: jest.fn(),
-      notify: jest.fn()
-    }
+      notify: jest.fn(),
+    },
   };
 }
 
@@ -76,17 +76,17 @@ export function cleanupFoundryMocks() {
  */
 export function createConsoleMocks() {
   return {
-    errorSpy: jest.spyOn(console, 'error').mockImplementation(() => {}),
-    warnSpy: jest.spyOn(console, 'warn').mockImplementation(() => {}),
-    logSpy: jest.spyOn(console, 'log').mockImplementation(() => {}),
-    infoSpy: jest.spyOn(console, 'info').mockImplementation(() => {}),
-    
+    errorSpy: jest.spyOn(console, "error").mockImplementation(() => {}),
+    warnSpy: jest.spyOn(console, "warn").mockImplementation(() => {}),
+    logSpy: jest.spyOn(console, "log").mockImplementation(() => {}),
+    infoSpy: jest.spyOn(console, "info").mockImplementation(() => {}),
+
     restore() {
       this.errorSpy.mockRestore();
       this.warnSpy.mockRestore();
       this.logSpy.mockRestore();
       this.infoSpy.mockRestore();
-    }
+    },
   };
 }
 
@@ -99,36 +99,36 @@ export const mockTemplateData = {
     author: "Author 2",
     system: "dnd5e",
     version: "1.0.0",
-    minimumSystemVersion: "1.5"
+    minimumSystemVersion: "1.5",
     // No maximumSystemVersion
   },
-  
+
   withMaxVersion: {
     name: "Template A",
     author: "Author 1",
     system: "dnd5e",
     version: "1.0.0",
     minimumSystemVersion: "1.0",
-    maximumSystemVersion: "2.0"
+    maximumSystemVersion: "2.0",
   },
-  
+
   highRequirements: {
     name: "Template C",
     author: "Author 3",
-    system: "dnd5e", 
+    system: "dnd5e",
     version: "1.0.0",
     minimumSystemVersion: "2.5",
-    maximumSystemVersion: "3.0"
+    maximumSystemVersion: "3.0",
   },
-  
+
   outOfDate: {
     name: "Old Template",
     author: "Test Author",
     system: "dnd5e",
     version: "1.0.0",
     minimumSystemVersion: "1.0",
-    installedVersion: "0.9.0"
-  }
+    installedVersion: "0.9.0",
+  },
 };
 
 /**
@@ -138,20 +138,20 @@ export const versionTestCases = {
   identical: [
     ["1.0.0", "1.0.0", 0],
     ["2.3.5", "2.3.5", 0],
-    ["1.0", "1.0", 0]
+    ["1.0", "1.0", 0],
   ],
-  
+
   firstLower: [
     ["1.0.0", "1.0.1", -1],
     ["1.0.0", "1.1.0", -1],
     ["1.0.0", "2.0.0", -1],
-    ["1.0", "1.1", -1]
+    ["1.0", "1.1", -1],
   ],
-  
+
   firstHigher: [
     ["1.0.1", "1.0.0", 1],
     ["1.1.0", "1.0.0", 1],
     ["2.0.0", "1.0.0", 1],
-    ["1.1", "1.0", 1]
-  ]
+    ["1.1", "1.0", 1],
+  ],
 };

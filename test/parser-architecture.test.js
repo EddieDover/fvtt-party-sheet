@@ -2,9 +2,9 @@
  * Tests for the new parser architecture
  */
 // @jest-environment jsdom
-import { jest } from '@jest/globals';
+import { jest } from "@jest/globals";
 import { ParserFactory } from "../src/module/parsing/parser-factory.js";
-import { createConsoleMocks } from './test-mocks.js';
+import { createConsoleMocks } from "./test-mocks.js";
 
 describe("Parser Architecture", () => {
   // Set up global Handlebars mock for the processors

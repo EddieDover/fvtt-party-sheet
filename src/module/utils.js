@@ -126,28 +126,32 @@ export async function loadSystemTemplate(path) {
 export async function getAllSystemVersions() {
   const systemVersions = [];
 
-  let assetPrefix = "data";
+  try {
+    let assetPrefix = "data";
 
-  if (isForgeVTT()) {
-    console.log("Detected ForgeVTT");
-    // @ts-ignore
-    // eslint-disable-next-line no-undef
-    assetPrefix = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId()) + "/";
-  }
-
-  // @ts-ignore
-  const systemFolder = await FilePicker.browse(assetPrefix, "systems"); // `modules/${MODULE_NAME}/templates`);
-  for (var folder of systemFolder.dirs) {
-    // @ts-ignore
-    const pathFolder = await FilePicker.browse(assetPrefix, folder);
-    // @ts-ignore
-    for (var file of pathFolder.files.filter((f) => f.endsWith("system.json"))) {
-      const data = JSON.parse(await fetch(file).then((r) => r.text()));
-      systemVersions.push({
-        system: data.id,
-        version: data.version,
-      });
+    if (isForgeVTT()) {
+      console.log("Detected ForgeVTT");
+      // @ts-ignore
+      // eslint-disable-next-line no-undef
+      assetPrefix = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId()) + "/";
     }
+
+    // @ts-ignore
+    const systemFolder = await FilePicker.browse(assetPrefix, "systems"); // `modules/${MODULE_NAME}/templates`);
+    for (var folder of systemFolder.dirs) {
+      // @ts-ignore
+      const pathFolder = await FilePicker.browse(assetPrefix, folder);
+      // @ts-ignore
+      for (var file of pathFolder.files.filter((f) => f.endsWith("system.json"))) {
+        const data = JSON.parse(await fetch(file).then((r) => r.text()));
+        systemVersions.push({
+          system: data.id,
+          version: data.version,
+        });
+      }
+    }
+  } catch (e) {
+    console.error("Failed to get system versions:", e);
   }
 
   return systemVersions;
@@ -366,7 +370,7 @@ export function getSelectedTemplate() {
 
 /**
  * Adds a custom system to the list of systems.
- * @param {*} system - The custom system to add.
+ * @param {TemplateData} system - The custom system to add.
  */
 export function addCustomTemplate(system) {
   customTemplates.push(system);
@@ -381,7 +385,7 @@ export function clearCustomTemplates() {
 
 /**
  * Retrieves the list of custom systems.
- * @returns {*} - The list of custom systems.
+ * @returns {TemplateData[]} - The list of custom systems.
  */
 export function getCustomTemplates() {
   return customTemplates;
@@ -423,8 +427,8 @@ export function extractPropertyByString(obj, path) {
 
 /**
  * Takes a JSON object and trims the strings for value, else, and match.
- * @param {*} item - The item to trim.
- * @returns {*}  - The item with trimmed strings.
+ * @param {DirectComplexTextObject} item - The item to trim.
+ * @returns {DirectComplexTextObject}  - The item with trimmed strings.
  */
 export function trimIfString(item) {
   if (item.text && typeof item.text === "string") {
@@ -489,6 +493,11 @@ export function parseExtras(value, isSafeStringNeeded = false) {
   if (value.indexOf("{s}") > -1) {
     isSafeStringNeeded = true;
     value = value.replaceAll("{s}", "&nbsp;");
+  }
+
+  if (value.indexOf("{degree}") > -1) {
+    isSafeStringNeeded = true;
+    value = value.replaceAll("{degree}", "°");
   }
 
   ({ value, isSafeStringNeeded } = parseFontAwesome(value, isSafeStringNeeded));
@@ -581,7 +590,7 @@ export function parseNewlines(value, isSafeStringNeeded) {
 
 /**
  * Get the Foundry version
- * @returns {{ major: number, minor: number, patch: number, full: string }} version
+ * @returns {{ major: number, minor: number, full: string }} version
  */
 export function getFoundryVersion() {
   // @ts-ignore
@@ -589,13 +598,11 @@ export function getFoundryVersion() {
   const versionInfo = version.split(".");
   const major = Number.parseInt(versionInfo[0]);
   const minor = Number.parseInt(versionInfo[1]);
-  const patch = Number.parseInt(versionInfo[2]);
   const full = version;
 
   return {
     major,
     minor,
-    patch,
     full,
   };
 }
