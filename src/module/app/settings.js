@@ -64,6 +64,16 @@ export const registerSettings = () => {
   });
 
   // @ts-ignore
+  game.settings.register("fvtt-party-sheet", "showVersionNotifications", {
+    "name": "fvtt-party-sheet.settings.show-version-notifications.name",
+    "hint": "fvtt-party-sheet.settings.show-version-notifications.hint",
+    "scope": "world",
+    "config": true,
+    "default": true,
+    "type": Boolean,
+  });
+
+  // @ts-ignore
   game.settings.registerMenu("fvtt-party-sheet", "configureHiddenCharacters", {
     "name": "",
     "label": "fvtt-party-sheet.hide-sheet.button",

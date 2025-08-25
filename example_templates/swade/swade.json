@@ -2,10 +2,9 @@
   "name": "Savage Worlds",
   "system": "swade",
   "author": "Mestre Digital",
-  "offline_excludes": [
-    "npc",
-    "vehicle"
-  ],
+  "version": "1.1.0",
+  "minimumSystemVersion": "4.4.2",
+  "offline_excludes": ["npc", "vehicle"],
   "rows": [
     [
       {
@@ -21,7 +20,7 @@
         "align": "center",
         "header": "show",
         "maxwidth": 200,
-        "text": "name {newline} system.advances.rank"
+        "text": "{name} {newline} {system.advances.rank}"
       },
       {
         "name": "Wounds",
@@ -29,7 +28,7 @@
         "align": "center",
         "header": "show",
         "minwidth": 60,
-        "text": "system.wounds.value {s0} / {s0} system.wounds.max"
+        "text": "{system.wounds.value}/{system.wounds.max}"
       },
       {
         "name": "Fatigue",
@@ -37,7 +36,7 @@
         "align": "center",
         "header": "show",
         "minwidth": 60,
-        "text": "system.fatigue.value {s0} / {s0} system.fatigue.max"
+        "text": "{system.fatigue.value}/{system.fatigue.max}"
       },
       {
         "name": "Bennies",
@@ -45,7 +44,7 @@
         "align": "center",
         "header": "show",
         "minwidth": 60,
-        "text": "system.bennies.value {s0} / {s0} system.bennies.max"
+        "text": "{system.bennies.value}/{system.bennies.max}"
       },
       {
         "name": "Pace",
@@ -53,7 +52,7 @@
         "align": "center",
         "header": "show",
         "minwidth": 75,
-        "text": "system.stats.speed.value | D{s0} system.stats.speed.runningDie ( {s0} system.stats.speed.runningMod {s0} )"
+        "text": "{system.pace.ground} | D{system.pace.running.die} ({system.pace.running.mod})"
       },
       {
         "name": "Parry",
@@ -61,7 +60,7 @@
         "align": "center",
         "header": "show",
         "minwidth": 60,
-        "text": "system.stats.parry.value"
+        "text": "{system.stats.parry.value}"
       },
       {
         "name": "Toughness",
@@ -69,7 +68,7 @@
         "align": "center",
         "header": "show",
         "minwidth": 70,
-        "text": "system.stats.toughness.value ( {s0} system.stats.toughness.armor {s0} )"
+        "text": "{system.stats.toughness.value} ({system.stats.toughness.armor})"
       },
       {
         "name": "PP",
@@ -77,7 +76,7 @@
         "align": "center",
         "header": "show",
         "minwidth": 60,
-        "text": "system.powerPoints.general.value {s0} / {s0} system.powerPoints.general.max"
+        "text": "{system.powerPoints.general.value}/{system.powerPoints.general.max}"
       },
       {
         "name": "Attributes",
@@ -85,7 +84,7 @@
         "align": "right",
         "header": "show",
         "minwidth": 90,
-        "text": "{b}Agility:{/b} D{s0} system.attributes.agility.die.sides {newline} {b}Smarts:{/b} D{s0} system.attributes.smarts.die.sides {newline} {b}Spirit:{/b} D{s0} system.attributes.spirit.die.sides {newline} {b}Strength:{/b} D{s0} system.attributes.strength.die.sides {newline} {b}Vigor:{/b} D{s0} system.attributes.vigor.die.sides"
+        "text": "{b}Agility:{/b} D{system.attributes.agility.die.sides} {newline} {b}Smarts:{/b} D{system.attributes.smarts.die.sides} {newline} {b}Spirit:{/b} D{system.attributes.spirit.die.sides} {newline} {b}Strength:{/b} D{system.attributes.strength.die.sides} {newline} {b}Vigor:{/b} D{system.attributes.vigor.die.sides}"
       },
       {
         "name": "Status",

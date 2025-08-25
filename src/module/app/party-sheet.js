@@ -6,13 +6,17 @@ import {
   getCustomTemplates,
   getModuleTemplates,
   getSelectedTemplate,
+  log,
   parseExtras,
   parsePluses,
   TemplateProcessError,
   trimIfString,
   updateSelectedTemplate,
 } from "../utils.js";
+import { sanitizeHTML } from "../utils/dompurify-sanitizer.js";
 import { HiddenCharactersSettings } from "./hidden-characters-settings.js";
+import { ParserFactory } from "../parsing/parser-factory.js";
+import { TemplateProcessor } from "../parsing/template-processor.js";
 
 const FEEDBACK_URL = "https://github.com/EddieDover/fvtt-party-sheet/issues/new/choose";
 const BUGREPORT_URL =
@@ -22,13 +26,15 @@ const DISCORD_URL = "https://discord.gg/mvMdc7bH2d";
 const DEFAULT_EXCLUDES = ["npc"];
 
 let generated_dropdowns = 0;
-// @ts-ignore
+
 export class PartySheetForm extends FormApplication {
-  constructor(postInstallCallback = async () => {}) {
+  constructor(options = {}, postInstallCallback = async () => {}) {
     super();
     this._postInstallCallback = postInstallCallback;
-    this.showInstaller = false;
     this.savedOptions = undefined;
+    this.showInstaller = options.showInstaller ?? false;
+
+    this.parserEngine = ParserFactory.createParserEngine();
   }
 
   /**
@@ -120,6 +126,7 @@ export class PartySheetForm extends FormApplication {
                   maxwidth: colobj.maxwidth,
                   minwidth: colobj.minwidth,
                   header: colobj.header,
+                  showTotal: colobj.showTotal,
                 },
               };
             });
@@ -153,7 +160,12 @@ export class PartySheetForm extends FormApplication {
    * @memberof PartySheetForm
    */
   cleanString(str) {
-    return str.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+    if (typeof str !== "string") {
+      return str;
+    }
+
+    // Use DOMPurify for robust HTML sanitization
+    return sanitizeHTML(str);
   }
 
   /**
@@ -178,13 +190,8 @@ export class PartySheetForm extends FormApplication {
 
     value = this.cleanString(value);
 
-    //Parse out normal data
-    for (const m of value.split(" ")) {
-      const fValue = extractPropertyByString(character, m);
-      if (fValue !== undefined) {
-        value = value.replace(m, fValue);
-      }
-    }
+    // Use TemplateProcessor to handle property replacement with brace notation
+    value = TemplateProcessor.processTemplate(value, character);
 
     if (value.indexOf("{charactersheet}") > -1) {
       isSafeStringNeeded = true;
@@ -567,33 +574,13 @@ export class PartySheetForm extends FormApplication {
    */
   getCustomData(character, type, value, options = {}) {
     try {
-      switch (type) {
-        case "direct":
-          return this.processDirect(character, type, value, options);
-        case "direct-complex":
-          return this.processDirectComplex(character, type, value, options);
-        case "charactersheet":
-          // @ts-ignore
-          return new Handlebars.SafeString(
-            `<input type="image" name="fvtt-party-sheet-actorimage" data-actorid="${
-              character.uuid
-            }" class="token-image" src="${character.prototypeToken.texture.src}" title="${
-              character.prototypeToken.name
-            }" width="36" height="36" style="transform: rotate(${character.prototypeToken.rotation ?? 0}deg);"/>`,
-          );
-        case "array-string-builder":
-          return this.processArrayStringBuilder(character, type, value);
-        case "string":
-          return value;
-        case "object-loop":
-          return this.processObjectLoop(character, type, value);
-        case "largest-from-array":
-          return this.processLargestFromArray(character, type, value);
-        case "smallest-from-array":
-          return this.processSmallestFromArray(character, type, value);
-        default:
-          return "";
+      if (this.parserEngine.hasProcessor(type)) {
+        return this.parserEngine.process(character, type, value, options);
       }
+
+      // Fallback for any unregistered types
+      console.warn(`No processor registered for type: ${type}. Returning empty string.`);
+      return "";
     } catch (ex) {
       console.log(ex);
       throw new TemplateProcessError(ex);
@@ -634,12 +621,24 @@ export class PartySheetForm extends FormApplication {
 
     const customTemplates = getCustomTemplates();
     const applicableTemplates = customTemplates.filter((data) => {
-      return (
+      // @ts-ignore
+      const systemMatch = data.system === game.system.id;
+      // @ts-ignore
+      const minVersionOk = compareSymVer(data.minimumSystemVersion, game.system.version) <= 0;
+      // @ts-ignore
+      const maxVersionOk =
         // @ts-ignore
-        data.system === game.system.id &&
+        !data.maximumSystemVersion || compareSymVer(game.system.version, data.maximumSystemVersion) <= 0;
+
+      if (systemMatch && !maxVersionOk) {
         // @ts-ignore
-        compareSymVer(data.minimumSystemVersion, game.system.version) <= 0
-      );
+        log(
+          // @ts-ignore
+          `Template "${data.name}" by ${data.author} filtered out: Current system v${game.system.version} exceeds maximum v${data.maximumSystemVersion}`,
+        );
+      }
+
+      return systemMatch && minVersionOk && maxVersionOk;
     });
     const selectedTemplate = this.updateSelectedTemplateIndex(applicableTemplates);
 
@@ -700,6 +699,8 @@ export class PartySheetForm extends FormApplication {
       invalidTemplateError,
       showInstaller: doShowInstaller,
       // @ts-ignore
+      currentSystemVersion: game.system.version,
+      // @ts-ignore
       overrides: this.overrides,
     });
   }
@@ -709,7 +710,8 @@ export class PartySheetForm extends FormApplication {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: "fvtt-party-sheet-party-sheet",
       classes: ["form"],
-      title: "Party Sheet",
+      // @ts-ignore
+      title: game.i18n.localize("fvtt-party-sheet.section-title"),
       // resizable: true,
       template: "modules/fvtt-party-sheet/templates/party-sheet.hbs",
       // @ts-ignore

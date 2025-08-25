@@ -19,6 +19,15 @@ Please unfold any entry to see a screenshot.
 
 <summary>dnd5e_modified.json - Michael Card (Emo Cthulhu)</summary></details>
 
+<details>
+
+![DnD5e Template Feature Showcase](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/dnd5e/dnd5e_showcase.jpg)
+
+<summary>
+dnd5e_showcase.json (Eddie Dover)
+</summary>
+</details>
+
 ## Alien RPG "alienrpg"
 
 <details>
@@ -112,7 +121,15 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <details>
 
-![Pathfinder 1e Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/pf1/pf1.png)
+![Pathfinder 1e Condensed](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/pf1/pf1-condensed.png)
+
+<summary>pf1-condensed.json - Rexinath</summary>
+
+</details>
+
+<details>
+
+![Pathfinder 1e Screenshot](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/pf1/pf1-template.png)
 
 <summary>pf1-template.json - LeCuay (Chechu)</summary>
 

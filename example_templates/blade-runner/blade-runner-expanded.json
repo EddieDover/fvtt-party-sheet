@@ -2,12 +2,10 @@
   "name": "Blade Runner: The Roleplaying Game - Expanded",
   "system": "blade-runner",
   "author": "Michael Card (EmoCthulhu)",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minimumSystemVersion": "12.0.1",
   "offline_includes_property": "system.subtype",
-  "offline_includes": [
-    "pc"
-  ],
+  "offline_includes": ["pc"],
   "rows": [
     [
       {
@@ -22,7 +20,7 @@
         "type": "direct",
         "align": "left",
         "header": "show",
-        "text": "{b} name {/b} {nl} Archetype: system.archetype {nl} Nature: {i} system.nature {/i}"
+        "text": "{b} {name} {/b} {nl} Archetype: {system.archetype} {nl} Nature: {i} {system.nature} {/i}"
       },
       {
         "name": "Health & Resolve",
@@ -31,7 +29,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "H: {b} system.health.value {/b} / system.health.max {nl} R: {b} system.resolve.value {/b} / system.resolve.max"
+        "text": "H: {b} {system.health.value} {/b} / {system.health.max} {nl} R: {b} {system.resolve.value} {/b} / {system.resolve.max}"
       },
       {
         "name": "STR Group",
@@ -1108,7 +1106,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.metaCurrencies.chinyen"
+        "text": "{system.metaCurrencies.chinyen}"
       },
       {
         "name": "Hum",
@@ -1116,7 +1114,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.metaCurrencies.humanity"
+        "text": "{system.metaCurrencies.humanity}"
       },
       {
         "name": "Promo",
@@ -1124,7 +1122,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.metaCurrencies.promotion"
+        "text": "{system.metaCurrencies.promotion}"
       }
     ]
   ]

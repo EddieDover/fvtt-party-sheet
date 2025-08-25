@@ -1,170 +1,166 @@
 {
-    "name": "Fallout 2d20 - v2",
-    "system": "fallout",
-    "author": "Michael Card (EmoCthulhu)",
-    "version": "1.0.0",
-    "minimumSystemVersion": "11.12.2",
-    "offline_excludes": [
-        "npc",
-        "base",
-        "creature"
+  "name": "Fallout 2d20 - v2",
+  "system": "fallout",
+  "author": "Michael Card (EmoCthulhu)",
+  "version": "1.0.1",
+  "minimumSystemVersion": "11.12.2",
+  "offline_excludes": ["npc", "base", "creature"],
+  "rows": [
+    [
+      {
+        "name": "Character",
+        "type": "direct",
+        "align": "center",
+        "header": "hide",
+        "text": "{charactersheet}"
+      },
+      {
+        "name": "Details",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "maxwidth": 110,
+        "header": "show",
+        "text": "{b} {name} {/b}{nl}Level: {b} {system.level} {/b}"
+      },
+      {
+        "name": "Health",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "minwidth": 60,
+        "header": "show",
+        "text": "{b} {system.health.value} {/b} / {u} {system.health.max} {/u}{nl}{nl} Rads: {b} {system.radiation} {/b}"
+      },
+      {
+        "name": "Luck",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "minwidth": 40,
+        "header": "show",
+        "text": "{b} {system.attributes.luc} {/b}"
+      },
+      {
+        "name": "Init",
+        "type": "direct",
+        "minwidth": 60,
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "{system.initiative}"
+      },
+      {
+        "name": "Move",
+        "type": "direct",
+        "minwidth": 60,
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "{system.unofficialSpeed}"
+      },
+      {
+        "name": "Wealth",
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": "{u}Caps:{/u}{s}{b} {system.currency.caps} {/b}{nl}{nl} Other: {system.currency.other}"
+      },
+      {
+        "name": "Statuses",
+        "type": "array-string-builder",
+        "align": "left",
+        "valign": "top",
+        "maxwidth": 80,
+        "header": "show",
+        "text": "statuses => value, "
+      },
+      {
+        "name": "Traits",
+        "type": "object-loop",
+        "filter": "type",
+        "align": "left",
+        "valign": "top",
+        "maxwidth": 200,
+        "header": "show",
+        "text": "items{trait} => {name} {nl}"
+      }
     ],
-    "rows": [
-        [
-            {
-                "name": "Character",
-                "type": "direct",
-                "align": "center",
-                "header": "hide",
-                "text": "{charactersheet}"
-            },
-            {
-                "name": "Details",
-                "type": "direct",
-                "align": "center",
-                "valign": "top",
-                "maxwidth": 110,
-                "header": "show",
-                "text": "{b} name {/b}{nl}Level: {b} system.level {/b}"
-            },
-            {
-                "name": "Health",
-                "type": "direct",
-                "align": "center",
-                "valign": "top",
-                "minwidth": 60,
-                "header": "show",
-                "text": "{b} system.health.value {/b} / {u} system.health.max {/u}{nl}{nl} Rads: {b} system.radiation {/b}"
-            },
-            {
-                "name": "Luck",
-                "type": "direct",
-                "align": "center",
-                "valign": "top",
-                "minwidth": 40,
-                "header": "show",
-                "text": "{b} system.attributes.luc {/b}"
-            },
-            {
-                "name": "Init",
-                "type": "direct",
-                "minwidth": 60,
-                "align": "center",
-                "valign": "top",
-                "header": "show",
-                "text": "system.initiative"
-            },
-            {
-                "name": "Move",
-                "type": "direct",
-                "minwidth": 60,
-                "align": "center",
-                "valign": "top",
-                "header": "show",
-                "text": "system.unofficalSpeed"
-            },
-            {
-                "name": "Wealth",
-                "type": "direct",
-                "align": "left",
-                "valign": "top",
-                "header": "show",
-                "text": "{u}Caps:{/u}{s}{b} system.currency.caps {/b}{nl}{nl} Other: system.currency.other"
-            },
-            {
-                "name": "Statuses",
-                "type": "array-string-builder",
-                "align": "left",
-                "valign": "top",
-                "maxwidth": 80,
-                "header": "show",
-                "text": "statuses => value, "
-            },
-            {
-                "name": "Traits",
-                "type": "object-loop",
-                "filter": "type",
-                "align": "left",
-                "valign": "top",
-                "maxwidth": 200,
-                "header": "show",
-                "text": "items{trait} => name {nl}"
-            }
-        ],
-        [
-            {
-                "name": "blank1",
-                "type": "direct",
-                "header": "hide",
-                "text": ""
-            },
-            {
-                "name": "Details2",
-                "type": "direct",
-                "align": "center",
-                "valign": "top",
-                "maxwidth": 110,
-                "header": "hide",
-                "text": "{u}{b}Origin{/b}{/u}{s2}{i} system.origin {/i}{nl}{u}{b}Type{/b}{/u}{s2}{i} type {/i}"
-            },
-            {
-                "name": "Head",
-                "type": "direct",
-                "align": "center",
-                "valign": "top",
-                "header": "show",
-                "text": "system.body_parts.head.injuries"
-            },
-            {
-                "name": "ArmL/Arm1",
-                "type": "direct",
-                "align": "center",
-                "valign": "top",
-                "header": "show",
-                "text": "system.body_parts.armL.injuries"
-            },
-            {
-                "name": "ArmR/Arm2",
-                "type": "direct",
-                "align": "center",
-                "valign": "top",
-                "header": "show",
-                "text": "system.body_parts.armR.injuries"
-            },
-            {
-                "name": "Torso",
-                "type": "direct",
-                "align": "center",
-                "valign": "top",
-                "header": "show",
-                "text": "system.body_parts.torso.injuries"
-            },
-            {
-                "name": "LegL/Arm3",
-                "type": "direct",
-                "align": "center",
-                "valign": "top",
-                "header": "show",
-                "text": "system.body_parts.legL.injuries"
-            },
-            {
-                "name": "LegR/Arm4",
-                "type": "direct",
-                "align": "center",
-                "valign": "top",
-                "header": "show",
-                "text": "system.body_parts.legR.injuries"
-            },
-            {
-                "name": "Perks",
-                "type": "object-loop",
-                "filter": "type",
-                "align": "left",
-                "valign": "top",
-                "maxwidth": 200,
-                "header": "show",
-                "text": "items{perk} => name {b} system.rank {/b} : "
-            }
-        ]
+    [
+      {
+        "name": "blank1",
+        "type": "direct",
+        "header": "hide",
+        "text": ""
+      },
+      {
+        "name": "Details2",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "maxwidth": 110,
+        "header": "hide",
+        "text": "{u}{b}Origin{/b}{/u}{s2}{i} {system.origin} {/i}{nl}{u}{b}Type{/b}{/u}{s2}{i} {type} {/i}"
+      },
+      {
+        "name": "Head",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "{system.body_parts.head.injuries}"
+      },
+      {
+        "name": "ArmL/Arm1",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "{system.body_parts.armL.injuries}"
+      },
+      {
+        "name": "ArmR/Arm2",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "{system.body_parts.armR.injuries}"
+      },
+      {
+        "name": "Torso",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "{system.body_parts.torso.injuries}"
+      },
+      {
+        "name": "LegL/Arm3",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "{system.body_parts.legL.injuries}"
+      },
+      {
+        "name": "LegR/Arm4",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "{system.body_parts.legR.injuries}"
+      },
+      {
+        "name": "Perks",
+        "type": "object-loop",
+        "filter": "type",
+        "align": "left",
+        "valign": "top",
+        "maxwidth": 200,
+        "header": "show",
+        "text": "items{perk} => {name} {b} {system.rank} {/b} : "
+      }
     ]
+  ]
 }

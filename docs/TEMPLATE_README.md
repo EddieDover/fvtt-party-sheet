@@ -13,11 +13,37 @@ If using The Forge, this module will create a folder at the top level of your As
   "name": "<YOUR_TEMPLATE_NAME>",
   "system": "<YOUR_TEMPLATE_SYSTEM>",
   "author": "<YOUR_NAME>",
+  "version": "<TEMPLATE_VERSION>",
+  "minimumSystemVersion": "<MINIMUM_SYSTEM_VERSION>",
+  "maximumSystemVersion": "<MAXIMUM_SYSTEM_VERSION>", // Optional
   "rows": [] // See Below Section For Details
 }
 ```
 
 **Note: Templates will be displayed to the user as 'YOUR_TEMPLATE_NAME - YOUR_NAME' and only if the system matches the current system in use.**
+
+**Required Properties:**
+- **name** - The display name for your template
+- **system** - The exact game system ID this template is designed for (e.g., dnd5e, pf1e, pf2e, sfrpg, alienrpg)
+- **author** - The author or creator of this template
+- **version** - Template version using semantic versioning (e.g., "1.0.0", "1.2.1")
+- **minimumSystemVersion** - Minimum version of the game system required. Use the system's versioning format: MAJOR.MINOR (e.g., "2.4") or MAJOR.MINOR.PATCH (e.g., "1.0.12")
+  **maximumSystemVersion** - string - This is optional. When specified, defines the maximum version of the game system that this template supports. Use the system's versioning format: MAJOR.MINOR (e.g., "2.4") or MAJOR.MINOR.PATCH (e.g., "1.0.12").
+- **rows** - Array of template row data (see below section for details)
+
+Templates will only be shown to users when their current system version is within the range defined by `minimumSystemVersion` and `maximumSystemVersion`. Example:
+
+  ```json
+  {
+    "name": "<YOUR_TEMPLATE_NAME>",
+    "system": "<YOUR_TEMPLATE_SYSTEM>",
+    "author": "<YOUR_NAME>",
+    "version": "<TEMPLATE_VERSION>",
+    "minimumSystemVersion": "2.0",
+    "maximumSystemVersion": "2.4",
+    "rows": [] // See Below Section For Details
+  }
+  ```
 
 ### Optional Top Level Properties
 
@@ -161,6 +187,7 @@ Note that even empty columns need unique names. Feel free to be as descriptive a
 * **smallest-from-array** - This will accept a **text** property of an array and return the largest numeric item from it. See examples below for more information
 * **object-loop** - This will accept a **text** property in the following format: **<optional_dropdown> <block_prefix> <object_with_subobjects> => <sub_property_string>**. Multiple object-loops may be performed, by splitting each with a double-pipe `||`. See examples below for more information
 * **charactersheet** - This will display the character sheet in the column, ignoring anything in the **text** property.
+* **span** - This element will mark an individual td as a spannable cell, allowing a column setup as 'rowspan'
 
 **header** - This property controls if the column text is displayed as a header in the generated table. It accepts either 'show' or 'skip'.
 
@@ -173,32 +200,58 @@ Note that even empty columns need unique names. Feel free to be as descriptive a
 
 **valign** - This _optional_ property controls the vertical alignment of the cells. It only accepts 'top' and 'bottom'. If left out, or if an improper value is used, the setting will be ignored and will use whatever css the game system provides, since as some systems already override the table css and set the whole table to top, or middle. However, if your system has css code to set valign on table properties, using valign should override the system's value.
 
+**showSign** - This _optional_ property, when used on a _direct_ or _direct-complex_ object, will show a `+` sign if displaying a numeric value above zero. (Useful for ability modifier display: `5` becomes `+5`)
+
+**rowspan** - This _optional_ property controls the row span of the cells in the column. If this is set, you **MUST** also place a corresponding empty row (or rows) below the main row in your template, and use the **type** of **span** (see the **span** element above).
+
+**colspan** - This _optional_ property controls the column span of the cells. If this is set, the cell will span across the specified number of columns. You **MUST** ensure that subsequent columns in the same row account for this spanning by having fewer total columns, or the table layout may break.
+
+**showTotal** - This _optional_ property, when set to `true`, will display a total sum for that column in a footer row. The column must contain numeric values for the total to be calculated. Non-numeric values will be ignored in the calculation. Example: `"showTotal": true`
+
 **text** - This property is either a **string**, **boolean**, or an **array** of objects based on if you're using **direct-complex** or not. See examples below.
 
 ### Text - accepted values
 
 * boolean - Quotes are not needed, simply use `false`, or `true`, i.e. `"match": true,`
 * numbers - Always examine your systems values to see if they are strings or plain numbers, if they are plain numbers do not include quotes around the value, i.e. `"match": 23,` If they are actually strings, then you will need to surround the number with quotes to make it a string as well, i.e. `"match:" "23",`
-* string:  You can include arbitrary text in your output values. Simply make sure they are within the quotes for the text you are creating, i.e. `"text": "name has system.criticalInjury.time days left before system.criticalInjury.name heals.`
-* Due to the way things are parsed by the plugin there are a few very important caveats you must keep in mind:
-  1. If you are using a data string like "system.attributes.str", or a keyword (see below) like `{newline}`, along with custom text, such as `STR: system.attributes.str` as an output, there **must** be spaces around the data string,
-      * INCORRECT - `STR:system.attributes.str/system.attributes.maxstr`
-      * CORRECT     - `STR: system.attributes.str / system.attributes.maxstr`
-  * The more astute among you may notice that in the example templates, `.value` is often left out. To save your poor typing muscles, even if the value you find for a piece of character data is `system.attributes.str.value` the module parses data in the following way. Entering `system.attributes.str` will make the module look for `system.attributes.str.value` and display that if it finds it. If not found, it will display `system.attributes.str` as is.
+* string:  You can include arbitrary text in your output values. Simply make sure they are within the quotes for the text you are creating, i.e. `"text": "{name} has {system.criticalInjury.time} days left before {system.criticalInjury.name} heals.`
+
+#### **IMPORTANT: Property Reference Format**
+
+**All property references must be wrapped in braces `{}`** to be processed as dynamic values. Properties not wrapped in braces will be treated as literal text.
+
+* **CORRECT** - `"text": "STR: {system.attributes.str.value}"`
+* **CORRECT** - `"text": "Character {name} has {system.attributes.str.value} STR"`  
+* **INCORRECT** - `"text": "STR: system.attributes.str.value"` (will display as literal text)
+
+**The more astute among you may notice that in the example templates, `.value` is often left out. To save your poor typing muscles, even if the value you find for a piece of character data is `system.attributes.str.value` the module parses data in the following way. Entering `{system.attributes.str}` will make the module look for `system.attributes.str.value` and display that if it finds it. If not found, it will display `system.attributes.str` as is.**
 
 ### Text - Special Keywords
 
-There are a few special keywords that must be surrounded by { } marks, to allow easier formatting, note that they must be surrounded by spaces unless they are next to the opening or closing quotes. They are as follows:
+There are a few special keywords that must be surrounded by { } marks, to allow easier formatting. **Note: These are different from property references - special keywords are predefined formatting commands, while property references access character data.**
 
 * {newline} - Adds a line break to the text rendered.
 * {charactersheet} - Inserts a clickable image of the character that will open their character sheet.
-* {+} - Adds the values of two objects and outputs the result, i.e. `system.attributes.str {+} system.attributes.wis` will output the character's str and wis added together.
+* {+} - Adds the values of two objects and outputs the result, i.e. `{system.attributes.str} {+} {system.attributes.wis}` will output the character's str and wis added together.
 * {s} adds a space
 * {s#} adds multiple spaces where # is the amount of spaces desired.
-* {s0} will remove all spaces between it's preceeding and succeeding elements. E.g. `D{s0} system.attributes.str` becomes `D8`
+* {s0} will remove all spaces between it's preceeding and succeeding elements. E.g. `D{s0}{system.attributes.str}` becomes `D8`
 * {i} & {/i} - Anything between these tags will be displayed in _italics_
 * {b} & {/b} - Anything between these tags will be displayed in **bold**
 * {u} & {/u} - Anything between these tags will be displayed as <u>underlined</u>
+* {fa fa-XXX fa-XXX} - Elements also support embedding Font Awesome icons via {fa fa-XXX fa-XXX} where `fa-XXX` are the classes normally used for [Font Awesome](https://www.fontawesome.com/) embeddings.
+    For example:
+
+    ```json
+      {
+        "name": "STR Mod",
+        "type": "direct",
+        "header": "hide",
+        "text": "{fa fa-solid fa-hand-fist} {system.abilities.str.mod}"
+      },
+    ```
+
+would result in a solid fist icon being shown next to the STR modifier value
 
 ### Direct-Complex Object
 
@@ -213,8 +266,8 @@ A direct complex object has three properties:
       {
         "type": "exists",
         "value": "system.attribute.isplayersick",
-        "text": "Player is sick with system.attribute.sickness",
-        "else": "Healthy for system.attribute.daysSinceSick days"
+        "text": "Player is sick with {system.attribute.sickness}",
+        "else": "Healthy for {system.attribute.daysSinceSick} days"
       },
   ```
 
@@ -232,27 +285,27 @@ A direct complex object has three properties:
     {
       "type": "exists",
       "value": "system.attributes.senses.darkvision",
-      "text": "Darkvision: system.attributes.senses.darkvision"
+      "text": "Darkvision: {system.attributes.senses.darkvision}"
     },
     {
       "type": "exists",
       "value": "system.attributes.senses.blindsight",
-      "text": "Blindsight: system.attributes.senses.blindsight"
+      "text": "Blindsight: {system.attributes.senses.blindsight}"
     },
     {
       "type": "exists",
       "value": "system.attributes.senses.tremorsense",
-      "text": "Tremorsense: system.attributes.senses.tremorsense"
+      "text": "Tremorsense: {system.attributes.senses.tremorsense}"
     },
     {
       "type": "exists",
       "value": "system.attributes.senses.truesight",
-      "text": "Truesight: system.attributes.senses.truesight"
+      "text": "Truesight: {system.attributes.senses.truesight}"
     },
     {
       "type": "exists",
       "value": "system.attributes.senses.special",
-      "text": "Special: system.attributes.senses.special"
+      "text": "Special: {system.attributes.senses.special}"
     }
   ]
 }
@@ -314,11 +367,13 @@ Code:
   "name": "Statuses",
   "type": "array-string-builder",
   "header": "show",
-  "text": "statuses => value, "
+  "text": "statuses => {value}, "
 }, // No comma if last item in the row
 ```
 
 This example is used to display Active Status Effects on a character, such as burning, bleeding, prone, etc. They are stored by Foundry under the actor as `.statuses`, and the value is an array of strings. To display an array of values with no definite end or number of values or even empty sometimes, array-string-builder is your weapon of choice.
+
+**Note:** The array-string-builder type uses a special syntax `arrayname => {property}` where properties within the `=>` section are automatically processed with brace notation.
 
 ### Example of object-loop
 
@@ -329,7 +384,7 @@ Code:
   "name": "Classes",
   "type": "object-loop",
   "header":"show",
-  "text": "classes => {i} name {/i} {b} level {/b} {newline}"
+  "text": "classes => {i}{name}{/i} {b}{level}{/b} {newline}"
 }
 ```
 
@@ -356,6 +411,8 @@ and produce:
 &nbsp;&nbsp;<u>Cleric</u> - **1**
 &nbsp;&nbsp;<u>Rogue</u> - **1**
 
+**Note:** The object-loop type uses a special syntax `objectname => {property}` where properties within the `=>` section are automatically processed with brace notation.
+
 Code:
 
 ```json
@@ -363,7 +420,7 @@ Code:
       "name": "Talents/Equipment",
       "type": "object-loop",
       "header": "show",
-      "text": "{u}Talents:{/u}{nl} items{talent} => name {nl} || {u}Weapons:{/u}{nl} items{starshipweapon} => name Damage: {b} system.damage {/b}{nl} || {u}Other Cargo:{/u}{nl} items{item} => name {nl}"
+      "text": "{u}Talents:{/u}{nl} items{talent} => {name} {nl} || {u}Weapons:{/u}{nl} items{starshipweapon} => {name} Damage: {b}{system.damage}{/b}{nl} || {u}Other Cargo:{/u}{nl} items{item} => {name} {nl}"
   }
 ```
 
@@ -386,8 +443,8 @@ ItemOne
 ItemTwo
 ```
 
-If this takes more up space than desired, simply prefix the entire text string with `{dropdown}` (note the extra space at the end), and the resulting output will feature a dropdown box that allows you to select one of the available filters to view, while hiding the rest.
-Ex: `"text": "{dropdown} {u}Talents:{/u}{nl} items{talent} => name {nl} || {u}Weapons:{/u}{nl} items{starshipweapon} => name Damage: {b} system.damage {/b}{nl} || {u}Other Cargo:{/u}{nl} items{item} => name {nl}"`
+If this takes more up space than desired, simply prefix the entire text string with `{dropdown}` and the resulting output will feature a dropdown box that allows you to select one of the available filters to view, while hiding the rest.
+Ex: `"text": "{dropdown} {u}Talents:{/u}{nl} items{talent} => {name} {nl} || {u}Weapons:{/u}{nl} items{starshipweapon} => {name} Damage: {b}{system.damage}{/b}{nl} || {u}Other Cargo:{/u}{nl} items{item} => {name} {nl}"`
 
 ### Example of largest-from-array and smallest-from-array
 
@@ -416,6 +473,100 @@ the result would be
 
 ![Largest and Smallest Results](doc_images/ls_results.png)
 
+### Example of colspan
+
+Code:
+
+```json
+[
+  {
+    "name": "Character Name", 
+    "type": "direct",
+    "header": "show",
+    "text": "{name}",
+    "options": {
+      "colspan": 2
+    }
+  },
+  {
+    "name": "Level",
+    "type": "direct", 
+    "header": "show",
+    "text": "{system.details.level}"
+  }
+]
+```
+
+This example shows a character name cell that spans across 2 columns. The "Level" column will be positioned after the spanned cell. The table will automatically adjust to account for the spanning.
+
+### Example of showTotal
+
+Code:
+
+```json
+[
+  {
+    "name": "Character Name",
+    "type": "direct",
+    "header": "show", 
+    "text": "{name}"
+  },
+  {
+    "name": "Gold",
+    "type": "direct",
+    "header": "show",
+    "text": "{system.currency.gp}",
+    "options": {
+      "showTotal": true
+    }
+  }
+]
+```
+
+This example shows a Gold column that will display individual character gold amounts and automatically calculate a total sum at the bottom of the table in a footer row. The total will only appear if the column contains numeric values.
+
+### Example of rowspan with span cells
+
+Code:
+
+```json
+[
+  [
+    {
+      "name": "Character Name",
+      "type": "direct", 
+      "header": "show",
+      "text": "{name}",
+      "options": {
+        "rowspan": 2
+      }
+    },
+    {
+      "name": "STR",
+      "type": "direct",
+      "header": "show", 
+      "text": "{system.abilities.str.value}"
+    }
+  ],
+  [
+    {
+      "name": "",
+      "type": "span",
+      "header": "skip",
+      "text": ""
+    },
+    {
+      "name": "DEX", 
+      "type": "direct",
+      "header": "skip",
+      "text": "{system.abilities.dex.value}"
+    }
+  ]
+]
+```
+
+This example shows a character name that spans 2 rows vertically. Note the empty span cell in the second row that acts as a placeholder for the spanned cell above it.
+
 ### Extremely Basic File Example
 
 Code:
@@ -425,13 +576,15 @@ Code:
     "name": "Test Person's DND 5E Template",
     "system": "dnd5e",
     "author": "Test Person",
+    "version": "1.0.0",
+    "minimumSystemVersion": "2.4",
     "rows" : [
         [
             {
                 "name": "Name",
                 "type": "direct",
                 "header": "show",
-                "text": "{charactersheet} name {newline} system.details.race"
+                "text": "{charactersheet} {name} {newline} {system.details.race}"
             }
         ]
     ]
@@ -490,6 +643,8 @@ One row:
     "name": "Some System - 1 Row",
     "system": "some-system",
     "author": "Your Name Here",
+    "version": "1.0.0",
+    "minimumSystemVersion": "1.0",
     "offline_excludes": [
         "npc",
         "base"
@@ -508,7 +663,7 @@ One row:
                 "type": "direct",
                 "align": "center",
                 "header": "show",
-                "text": "name"
+                "text": "{name}"
             }
         ]
     ]
@@ -522,6 +677,8 @@ Two Rows:
     "name": "Some System - Two Rows",
     "system": "some-system",
     "author": "Your Name Here",
+    "version": "1.0.0",
+    "minimumSystemVersion": "1.0",
     "offline_excludes": [
         "npc",
         "base"
@@ -540,7 +697,7 @@ Two Rows:
                 "type": "direct",
                 "align": "center",
                 "header": "show",
-                "text": "name"
+                "text": "{name}"
             }
         ],
         [
