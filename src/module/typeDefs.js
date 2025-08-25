@@ -112,8 +112,10 @@ class FormApplication {
 /**
  * @typedef DirectComplexTextObject
  * @property {string} type - The type of the object.
+ * @property {string} value - The value of the object.
  * @property {string} ifdata - The ifdata condition.
  * @property {string} matches - The matches condition.
  * @property {string} text - The text to display.
  * @property {string} [else] - The text to display if the condition is not met.
+ * @property {string} [match] - The match condition property
  */

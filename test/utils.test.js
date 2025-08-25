@@ -798,13 +798,13 @@ describe("Template Loading and Management Functions", () => {
     beforeEach(() => {
       setupFoundryMocks();
       consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-      
+
       // Mock FilePicker for getAllSystemVersions tests
       global.FilePicker = {
         browse: jest.fn().mockResolvedValue({
           dirs: [],
-          files: []
-        })
+          files: [],
+        }),
       };
       global.fetch = jest.fn();
     });
@@ -1042,13 +1042,13 @@ describe("Async Template Loading Functions", () => {
     setupFoundryMocks();
     global.fetch = jest.fn();
     consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-    
+
     // Mock FilePicker for all async template loading tests
     global.FilePicker = {
       browse: jest.fn().mockResolvedValue({
         dirs: [],
-        files: []
-      })
+        files: [],
+      }),
     };
   });
 
@@ -1124,10 +1124,7 @@ describe("Async Template Loading Functions", () => {
       global.FilePicker.browse = jest
         .fn()
         .mockResolvedValueOnce({
-          dirs: [
-            "modules/fvtt-party-sheet/example_templates/dnd5e",
-            "modules/fvtt-party-sheet/example_templates/pf2e",
-          ],
+          dirs: ["modules/fvtt-party-sheet/example_templates/dnd5e", "modules/fvtt-party-sheet/example_templates/pf2e"],
         })
         .mockResolvedValueOnce({
           files: ["modules/fvtt-party-sheet/example_templates/dnd5e/template1.json"],
