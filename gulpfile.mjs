@@ -6,7 +6,6 @@
 import fs from "fs-extra";
 import gulp from "gulp";
 import { deleteAsync } from "del";
-import sass from "gulp-dart-sass";
 import markdown from "gulp-markdown";
 import sourcemaps from "gulp-sourcemaps";
 import path from "node:path";
@@ -14,12 +13,11 @@ import buffer from "vinyl-buffer";
 import source from "vinyl-source-stream";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-
 import rollupStream from "@rollup/stream";
-
 import rollupConfig from "./rollup.config.mjs";
 import zip from "gulp-zip";
-
+import dartSass from "sass";
+import gulpSass from "gulp-sass";
 /********************/
 /*  CONFIGURATION   */
 /********************/
@@ -31,6 +29,7 @@ const stylesDirectory = `${sourceDirectory}/styles`;
 const stylesExtension = "scss";
 const sourceFileExtension = "js";
 const staticFiles = ["assets", "fonts", "lang", "packs", "templates", "module.json"];
+const sass = gulpSass(dartSass);
 
 //*******************/
 /*      BUILD       */
@@ -200,11 +199,7 @@ export async function link() {
     path.resolve(dataPath, "Data", destinationDirectory, packageId),
   );
 
-  const argv = yargs(hideBin(process.argv)).option("clean", {
-    "alias": "c",
-    "type": "boolean",
-    "default": false,
-  }).argv;
+  const argv = yargs(hideBin(process.argv)).option("clean", { "alias": "c", "type": "boolean", "default": false }).argv;
   const cclean = argv.c;
 
   for (const linkDirectory of linkDirectories) {
