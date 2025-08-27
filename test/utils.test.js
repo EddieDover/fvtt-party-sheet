@@ -30,7 +30,6 @@ import {
   isVersionAtLeast,
   TemplateProcessError,
 } from "../src/module/utils";
-import { PlusParser, MinusParser } from "../src/module/parsing/text-parsers";
 import { setupFoundryMocks, cleanupFoundryMocks, mockTemplateData, versionTestCases } from "./test-mocks.js";
 import { text } from "stream/consumers";
 

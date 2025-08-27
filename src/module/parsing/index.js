@@ -7,6 +7,9 @@ export { ParserFactory } from "./parser-factory.js";
 export {
   TextParser,
   PlusParser,
+  MinusParser,
+  MultiplyParser,
+  DivideParser,
   FormattingParser,
   FontAwesomeParser,
   SpacingParser,

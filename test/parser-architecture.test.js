@@ -5,7 +5,7 @@
 import { jest } from "@jest/globals";
 import { ParserFactory } from "../src/module/parsing/parser-factory.js";
 import { createConsoleMocks } from "./test-mocks.js";
-import { PlusParser, MinusParser } from "../src/module/parsing/text-parsers";
+import { PlusParser, MinusParser, MultiplyParser, DivideParser } from "../src/module/parsing/text-parsers";
 
 describe("Parser Architecture", () => {
   // Set up global Handlebars mock for the processors
@@ -109,6 +109,16 @@ describe("Parser Architecture", () => {
       expect(result.toString()).toBe("8");
     });
 
+    test("should handle multiply operations", () => {
+      const result = parserEngine.process(mockCharacter, "direct", "5 {*} 3");
+      expect(result.toString()).toBe("15");
+    });
+
+    test("should handle divide operations", () => {
+      const result = parserEngine.process(mockCharacter, "direct", "15 {/} 3");
+      expect(result.toString()).toBe("5");
+    });
+
     test("should handle multiple properties with braces", () => {
       const result = parserEngine.process(mockCharacter, "direct", "{name} has {system.attributes.str.value} STR");
       expect(result.toString()).toBe("Test Character has 16 STR");
@@ -126,6 +136,18 @@ describe("Parser Architecture", () => {
       const [isSafe, result] = parserEngine.parseText("Result: 5 {+} 3");
       expect(isSafe).toBe(false);
       expect(result).toBe("Result: 8");
+    });
+
+    test("should parse multiply operations", () => {
+      const [isSafe, result] = parserEngine.parseText("Result: 5 {*} 3");
+      expect(isSafe).toBe(false);
+      expect(result).toBe("Result: 15");
+    });
+
+    test("should parse divide operations", () => {
+      const [isSafe, result] = parserEngine.parseText("Result: 15 {/} 3");
+      expect(isSafe).toBe(false);
+      expect(result).toBe("Result: 5");
     });
 
     test("should parse newlines", () => {
@@ -356,6 +378,97 @@ describe("Parser Architecture", () => {
       it("will handle negative results", () => {
         const [, result] = minusParser.doParse("3 {-} 5", false);
         expect(result).toEqual("-2");
+      });
+    });
+
+    describe("Multiply parsing", () => {
+      let multiplyParser;
+
+      beforeEach(() => {
+        multiplyParser = new MultiplyParser();
+      });
+
+      it("will parse a simple request", () => {
+        const [, result] = multiplyParser.doParse("5 {*} 2", false);
+        expect(result).toEqual("10");
+      });
+
+      it("will parse a simple request without spaces", () => {
+        const [, result] = multiplyParser.doParse("3{*}4", false);
+        expect(result).toEqual("12");
+      });
+
+      it("will parse a complex request", () => {
+        const [, result] = multiplyParser.doParse("2 {*} 3 {*} 4", false);
+        expect(result).toEqual("24");
+      });
+
+      it("will fail a complex request", () => {
+        const [, result] = multiplyParser.doParse("2 {*} 3 {*} 4 {*}", false);
+        expect(result).toEqual("24 {*}");
+      });
+
+      it("will fail a complex request again", () => {
+        const [, result] = multiplyParser.doParse("2 {*} 3 {*} 4 {*} text", false);
+        expect(result).toEqual("24 {*} text");
+      });
+
+      it("will parse a complex request again", () => {
+        const [, result] = multiplyParser.doParse("2 {*} 3 {*} 4 {*} 2", false);
+        expect(result).toEqual("48");
+      });
+
+      it("will handle multiplication by zero", () => {
+        const [, result] = multiplyParser.doParse("5 {*} 0", false);
+        expect(result).toEqual("0");
+      });
+    });
+
+    describe("Divide parsing", () => {
+      let divideParser;
+
+      beforeEach(() => {
+        divideParser = new DivideParser();
+      });
+
+      it("will parse a simple request", () => {
+        const [, result] = divideParser.doParse("10 {/} 2", false);
+        expect(result).toEqual("5");
+      });
+
+      it("will parse a simple request without spaces", () => {
+        const [, result] = divideParser.doParse("12{/}3", false);
+        expect(result).toEqual("4");
+      });
+
+      it("will parse a complex request", () => {
+        const [, result] = divideParser.doParse("24 {/} 2 {/} 3", false);
+        expect(result).toEqual("4");
+      });
+
+      it("will fail a complex request", () => {
+        const [, result] = divideParser.doParse("10 {/} 2 {/} 5 {/}", false);
+        expect(result).toEqual("1 {/}");
+      });
+
+      it("will fail a complex request again", () => {
+        const [, result] = divideParser.doParse("10 {/} 2 {/} 5 {/} text", false);
+        expect(result).toEqual("1 {/} text");
+      });
+
+      it("will parse a complex request again", () => {
+        const [, result] = divideParser.doParse("24 {/} 2 {/} 3 {/} 2", false);
+        expect(result).toEqual("2");
+      });
+
+      it("will handle division by zero", () => {
+        const [, result] = divideParser.doParse("5 {/} 0", false);
+        expect(result).toEqual("5 {/} 0");
+      });
+
+      it("will handle decimal results", () => {
+        const [, result] = divideParser.doParse("10 {/} 3", false);
+        expect(result).toEqual("3.3333333333333335");
       });
     });
   });

@@ -99,6 +99,64 @@ export class MinusParser extends TextParser {
 }
 
 /**
+ * Parser for handling multiply operations ({*})
+ */
+export class MultiplyParser extends TextParser {
+  /**
+   * @param {string} value - The text value to parse
+   * @param {boolean} isSafeStringNeeded - Whether a SafeString is needed
+   * @returns {[boolean, string]} Tuple of [isSafeStringNeeded, parsedValue]
+   */
+  doParse(value, isSafeStringNeeded) {
+    // Match patterns with optional spaces around {*}
+    let match = value.match(/(\d+)\s*\{\*\}\s*(\d+)|\d+\{\*\}\d+/);
+    if (!match) {
+      return /** @type {[boolean, string]} */ ([isSafeStringNeeded, value]);
+    }
+
+    let parsedValue = value;
+    do {
+      const numbers = match[0].trim().split("{*}").map(Number);
+      const result = numbers[0] * numbers[1];
+      parsedValue = parsedValue.replace(match[0], result.toString());
+    } while ((match = parsedValue.match(/(\d+)\s*\{\*\}\s*(\d+)|\d+\{\*\}\d+/)));
+
+    return /** @type {[boolean, string]} */ ([isSafeStringNeeded, parsedValue]);
+  }
+}
+
+/**
+ * Parser for handling divide operations ({/})
+ */
+export class DivideParser extends TextParser {
+  /**
+   * @param {string} value - The text value to parse
+   * @param {boolean} isSafeStringNeeded - Whether a SafeString is needed
+   * @returns {[boolean, string]} Tuple of [isSafeStringNeeded, parsedValue]
+   */
+  doParse(value, isSafeStringNeeded) {
+    // Match patterns with optional spaces around {/}
+    let match = value.match(/(\d+)\s*\{\/\}\s*(\d+)|\d+\{\/\}\d+/);
+    if (!match) {
+      return /** @type {[boolean, string]} */ ([isSafeStringNeeded, value]);
+    }
+
+    let parsedValue = value;
+    do {
+      const numbers = match[0].trim().split("{/}").map(Number);
+      // Handle division by zero
+      if (numbers[1] === 0) {
+        break; // Stop processing if division by zero is encountered
+      }
+      const result = numbers[0] / numbers[1];
+      parsedValue = parsedValue.replace(match[0], result.toString());
+    } while ((match = parsedValue.match(/(\d+)\s*\{\/\}\s*(\d+)|\d+\{\/\}\d+/)));
+
+    return /** @type {[boolean, string]} */ ([isSafeStringNeeded, parsedValue]);
+  }
+}
+
+/**
  * Parser for handling formatting tags ({i}, {b}, {u}, {s})
  */
 export class FormattingParser extends TextParser {
@@ -221,6 +279,8 @@ export class TextParserChain {
   static create() {
     const plusParser = new PlusParser();
     const minusParser = new MinusParser();
+    const multiplyParser = new MultiplyParser();
+    const divideParser = new DivideParser();
     const formattingParser = new FormattingParser();
     const fontAwesomeParser = new FontAwesomeParser();
     const spacingParser = new SpacingParser();
@@ -229,6 +289,8 @@ export class TextParserChain {
     // Chain the parsers together
     plusParser
       .setNext(minusParser)
+      .setNext(multiplyParser)
+      .setNext(divideParser)
       .setNext(formattingParser)
       .setNext(fontAwesomeParser)
       .setNext(spacingParser)
