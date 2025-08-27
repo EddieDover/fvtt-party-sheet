@@ -5,6 +5,7 @@
 import { jest } from "@jest/globals";
 import { ParserFactory } from "../src/module/parsing/parser-factory.js";
 import { createConsoleMocks } from "./test-mocks.js";
+import { PlusParser, MinusParser } from "../src/module/parsing/text-parsers";
 
 describe("Parser Architecture", () => {
   // Set up global Handlebars mock for the processors
@@ -273,6 +274,89 @@ describe("Parser Architecture", () => {
       expect(() => {
         parserEngine.process(null, "string", "test");
       }).toThrow("Character parameter is required");
+    });
+  });
+
+  describe("Text Parsers", () => {
+    describe("Plus parsing", () => {
+      let plusParser;
+
+      beforeEach(() => {
+        plusParser = new PlusParser();
+      });
+
+      it("will parse a simple request", () => {
+        const [, result] = plusParser.doParse("1 {+} 2", false);
+        expect(result).toEqual("3");
+      });
+
+      it("will parse a simple request without spaces", () => {
+        const [, result] = plusParser.doParse("1{+}2", false);
+        expect(result).toEqual("3");
+      });
+
+      it("will parse a complex request", () => {
+        const [, result] = plusParser.doParse("1 {+} 2 {+} 3", false);
+        expect(result).toEqual("6");
+      });
+
+      it("will fail a complex request", () => {
+        const [, result] = plusParser.doParse("1 {+} 2 {+} 3 {+}", false);
+        expect(result).toEqual("6 {+}");
+      });
+
+      it("will fail a complex request again", () => {
+        const [, result] = plusParser.doParse("1 {+} 2 {+} 3 {+} text", false);
+        expect(result).toEqual("6 {+} text");
+      });
+
+      it("will parse a complex request again", () => {
+        const [, result] = plusParser.doParse("1 {+} 2 {+} 3 {+} 10", false);
+        expect(result).toEqual("16");
+      });
+    });
+
+    describe("Minus parsing", () => {
+      let minusParser;
+
+      beforeEach(() => {
+        minusParser = new MinusParser();
+      });
+
+      it("will parse a simple request", () => {
+        const [, result] = minusParser.doParse("5 {-} 2", false);
+        expect(result).toEqual("3");
+      });
+
+      it("will parse a simple request without spaces", () => {
+        const [, result] = minusParser.doParse("10{-}3", false);
+        expect(result).toEqual("7");
+      });
+
+      it("will parse a complex request", () => {
+        const [, result] = minusParser.doParse("10 {-} 3 {-} 2", false);
+        expect(result).toEqual("5");
+      });
+
+      it("will fail a complex request", () => {
+        const [, result] = minusParser.doParse("10 {-} 3 {-} 2 {-}", false);
+        expect(result).toEqual("5 {-}");
+      });
+
+      it("will fail a complex request again", () => {
+        const [, result] = minusParser.doParse("10 {-} 3 {-} 2 {-} text", false);
+        expect(result).toEqual("5 {-} text");
+      });
+
+      it("will parse a complex request again", () => {
+        const [, result] = minusParser.doParse("20 {-} 5 {-} 3 {-} 2", false);
+        expect(result).toEqual("10");
+      });
+
+      it("will handle negative results", () => {
+        const [, result] = minusParser.doParse("3 {-} 5", false);
+        expect(result).toEqual("-2");
+      });
     });
   });
 });
