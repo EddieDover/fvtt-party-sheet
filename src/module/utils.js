@@ -445,26 +445,6 @@ export function trimIfString(item) {
 }
 
 /**
- * Parses out plus sumbols and adds values together.
- * @param {*} value - The value to parse.
- * @returns {*} - The value with the pluses parsed out.
- */
-export function parsePluses(value) {
-  // Match patterns with optional spaces around {+}
-  let match = value.match(/(\d+)\s*\{\+\}\s*(\d+)|\d+\{\+\}\d+/);
-  if (!match) {
-    return value;
-  }
-  do {
-    const numbers = match[0].trim().split("{+}").map(Number);
-    const result = numbers[0] + numbers[1];
-    value = value.replace(match[0], result.toString());
-  } while ((match = value.match(/(\d+)\s*\{\+\}\s*(\d+)|\d+\{\+\}\d+/)));
-
-  return value;
-}
-
-/**
  * Parse underline, bold, and italics from a string.
  * @param {string} value - The value to parse.
  * @param {boolean} isSafeStringNeeded - A boolean indicating if a SafeString is needed.

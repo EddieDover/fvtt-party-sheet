@@ -8,7 +8,6 @@ import {
   getSelectedTemplate,
   log,
   parseExtras,
-  parsePluses,
   TemplateProcessError,
   trimIfString,
   updateSelectedTemplate,
@@ -179,40 +178,6 @@ export class PartySheetForm extends FormApplication {
   }
 
   /**
-   * Parse a direct string.
-   * @param {*} character - The character to parse
-   * @param {*} value - The value to parse
-   * @param {{}} options - The options for the value
-   * @returns {[boolean, string]} Whether a safe string is needed and the value
-   */
-  parseDirect(character, value, options) {
-    let isSafeStringNeeded = false;
-
-    value = this.cleanString(value);
-
-    // Use TemplateProcessor to handle property replacement with brace notation
-    value = TemplateProcessor.processTemplate(value, character);
-
-    if (value.indexOf("{charactersheet}") > -1) {
-      isSafeStringNeeded = true;
-      value = value.replaceAll(
-        "{charactersheet}",
-        `<input type="image" name="fvtt-party-sheet-actorimage" data-actorid="${
-          character.uuid
-        }" class="token-image" src="${character.prototypeToken.texture.src}" title="${
-          character.prototypeToken.name
-        }" width="36" height="36" style="transform: rotate(${character.prototypeToken.rotation ?? 0}deg);"/>`,
-      );
-    }
-
-    value = parsePluses(value);
-    value = this.processOptions(value, options);
-    [isSafeStringNeeded, value] = parseExtras(value, isSafeStringNeeded);
-
-    return [isSafeStringNeeded, value];
-  }
-
-  /**
    * Process options for a value.
    * @param {*} value - The value to process
    * @param {*} options - The options for the value
@@ -224,96 +189,6 @@ export class PartySheetForm extends FormApplication {
       value = addSign(value);
     }
     return value;
-  }
-
-  /**
-   * Process a "direct" type
-   * @param {*} character - The character to process
-   * @param {*} type - The type of data to process
-   * @param {*} value - The value to process
-   * @param {{}} options - The options for the data
-   * @returns {string} The text to render
-   */
-  processDirect(character, type, value, options = {}) {
-    let isSafeStringNeeded = false;
-    [isSafeStringNeeded, value] = this.parseDirect(character, value, options);
-
-    //Finally detect if a safe string cast is needed.
-    if (isSafeStringNeeded) {
-      // @ts-ignore
-      return new Handlebars.SafeString(value);
-    }
-    return value;
-  }
-
-  /**
-   * Process a "direct-complex" type
-   * @param {*} character - The character to process
-   * @param {*} type - The type of data to process
-   * @param {*} value - The value to process
-   * @param {{}} options - The options for the data
-   * @returns {string} The text to render
-   */
-  processDirectComplex(character, type, value, options = {}) {
-    // Call .trim() on item.value but only if it's a string
-    let outputText = "";
-    for (let item of value) {
-      const trimmedItem = trimIfString(item);
-      if (trimmedItem.type === "exists") {
-        const eValue = extractPropertyByString(character, trimmedItem.value);
-        if (eValue) {
-          outputText += trimmedItem.text.replaceAll(trimmedItem.value, eValue);
-        } else {
-          if (trimmedItem.else) {
-            const nValue = extractPropertyByString(character, trimmedItem.else);
-            if (nValue) {
-              outputText += nValue;
-            } else {
-              outputText += trimmedItem.else;
-            }
-          }
-        }
-      } else if (trimmedItem.type === "match") {
-        const mValue = extractPropertyByString(character, trimmedItem.ifdata);
-        const match_value = extractPropertyByString(character, trimmedItem.matches) ?? trimmedItem.matches;
-        if (mValue === match_value) {
-          outputText += extractPropertyByString(character, trimmedItem.text) ?? trimmedItem.text;
-        } else {
-          if (trimmedItem.else) {
-            const mnValue = extractPropertyByString(character, trimmedItem.else);
-            if (mnValue) {
-              outputText += mnValue;
-            } else {
-              outputText += trimmedItem.else;
-            }
-          }
-        }
-      } else if (trimmedItem.type === "match-any") {
-        const maValues = (Array.isArray(trimmedItem.text) ? trimmedItem.text : [trimmedItem.text]).map((val) =>
-          extractPropertyByString(character, val),
-        );
-        const matchValue = extractPropertyByString(character, trimmedItem.match) ?? trimmedItem.match;
-
-        for (const maVal of maValues) {
-          if (maVal === matchValue) {
-            outputText += extractPropertyByString(character, trimmedItem.text) ?? trimmedItem.text;
-          } else {
-            if (trimmedItem.else) {
-              const manValue = extractPropertyByString(character, trimmedItem.else);
-              if (manValue) {
-                outputText += manValue;
-              } else {
-                outputText += trimmedItem.else;
-              }
-            }
-          }
-        }
-      }
-    }
-    let isSafeStringNeeded = false;
-    [isSafeStringNeeded, outputText] = this.parseDirect(character, outputText, options);
-    // @ts-ignore
-    return isSafeStringNeeded ? new Handlebars.SafeString(outputText) : outputText;
   }
 
   /**
