@@ -89,6 +89,16 @@ alienrpg.json - Michael Card (Emo Cthulhu)</summary>
 
 <summary>cyberpunk-red-v2.json - Michael Card (Emo Cthulhu)</summary></details>
 
+## Daggerheart "daggerheart"
+
+<details>
+
+![Daggerheart by Gensokian](https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/daggerheart/daggerheart_gensokian.jpg)
+
+<summary>
+daggerheart_gensokian.json - James / Gensokian</summary>
+</details>
+
 ## Dragonbane "dragonbane"
 
 <details>
