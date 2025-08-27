@@ -25,6 +25,7 @@ Handlebars.registerPartial(
   "installer",
   `
 <div style="display:flex;flex-direction:row;flex-wrap:wrap">
+{{#ifCond moduleSystemTemplates.length '>' 0}}
 {{#each moduleSystemTemplates as |template|}}
     <div style="display:flex;flex-direction:row;flex-wrap:nowrap;padding: 3px;border: 1px solid black;border-radius: 5px;margin: 5px;">
         <div class="fvtt-party-sheet-ps-system-name" style="display:flex;flex-direction:column;flex-wrap:nowrap;width:200px;max-height:300px;">
@@ -115,6 +116,13 @@ Handlebars.registerPartial(
         </div>
     </div>
 {{/each}}
+{{else}}
+  <div>
+    There are currently no community created templates available for your system.
+    <br/>
+    Visit <a href='https://github.com/EddieDover/fvtt-party-sheet/blob/main/TEMPLATE_README.md'>TEMPLATE_README.md</a> for more information on how to create your own.
+  </div>
+{{/ifCond}}
 </div>
 `,
 );
