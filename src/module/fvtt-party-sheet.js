@@ -584,82 +584,6 @@ const showSettingsButton = () => {
   }
 };
 
-const showButton = () => {
-  if (areTemplatesLoaded()) {
-    let v13AndUp = false;
-    let controls = null;
-
-    // @ts-ignore
-    const version = game.version.split(".").map((v) => parseInt(v, 10));
-    const majorVersion = version[0];
-
-    if (majorVersion >= 13) {
-      // @ts-ignore
-      controls = $("#scene-controls-tools");
-      v13AndUp = true;
-    } else {
-      // @ts-ignore
-      controls = $("#tools-panel-token");
-    }
-
-    if (v13AndUp) {
-      const newli = document.createElement("li");
-      const newbutton = document.createElement("button");
-      newbutton.setAttribute("type", "button");
-      newbutton.setAttribute("class", "control ui-control tool icon toggle fas fa-users");
-      // @ts-ignore
-      newbutton.setAttribute("data-tool", game.i18n.localize("fvtt-party-sheet.section-title"));
-      // @ts-ignore
-      newbutton.setAttribute("aria-label", game.i18n.localize("fvtt-party-sheet.section-title"));
-      newbutton.setAttribute("aria-pressed", "false");
-      newbutton.setAttribute(
-        "data-tooltip-html",
-        // @ts-ignore
-        `<div class="toolclip themed theme-dark"><h4>${game.i18n.localize(
-          "fvtt-party-sheet.section-title",
-          // @ts-ignore
-        )}</h4><p>${game.i18n.localize("fvtt-party-sheet.section-title-tooltip")}</p></div>`,
-      );
-      newbutton.addEventListener("click", () => togglePartySheet());
-      newli.appendChild(newbutton);
-      if (controls.find(".control[data-tool='PartySheet']").length === 0) {
-        controls.append(newli);
-      }
-    } else {
-      // @ts-ignore
-      const button = $(`<li class="control-tool "
-      data-tool="PartySheet"
-      aria-label="${
-        // @ts-ignore
-        game.i18n.localize("fvtt-party-sheet.show-section-title")
-      }"
-      role="button"
-      data-tooltip="${
-        // @ts-ignore
-        game.i18n.localize("fvtt-party-sheet.section-title-tooltip")
-      }">
-      <i class="fas fa-users"></i>
-    </li>`);
-      button.click(() => togglePartySheet());
-
-      if (controls.find(".control-tool[data-tool='PartySheet']").length === 0) {
-        controls.append(button);
-      }
-    }
-  }
-};
-
-const hideButton = () => {
-  // @ts-ignore
-  const control_parent = $("#tools-panel-token");
-  const controls = control_parent.find(".control-tool[data-tool='PartySheet']");
-  if (controls.length > 0) {
-    for (const control of controls) {
-      control.remove();
-    }
-  }
-};
-
 /**
  * Register the API
  */
@@ -705,14 +629,11 @@ Hooks.on("ready", async () => {
     registerAPI();
   }
   await ReloadTemplates(true);
-  showButton();
 });
 
 const ReloadTemplates = async (fullReload = false) => {
   // @ts-ignore
   if (game.user.isGM) {
-    hideButton();
-
     if (fullReload) {
       clearCustomTemplates();
     }
@@ -746,6 +667,31 @@ Hooks.on("renderPlayerList", () => {
 
 // @ts-ignore
 Hooks.on("renderSceneControls", () => {
-  showButton();
   showSettingsButton();
+});
+
+// @ts-ignore
+Hooks.on("getSceneControlButtons", (controls) => {
+  const v13andUp = isVersionAtLeast(13);
+  const button = {
+    name: "partysheet",
+    // @ts-ignore
+    title: game.i18n.localize("fvtt-party-sheet.section-title"),
+    icon: "fas fa-users",
+    visible: true,
+    onClick: () => togglePartySheet(),
+    onChange: v13andUp ? () => {} : undefined,
+    button: true,
+  };
+
+  // @ts-ignore
+  if (!game.user.isGM) {
+    return;
+  }
+
+  if (v13andUp) {
+    controls.tokens.tools["partysheet"] = button;
+  } else {
+    controls.find((c) => c.name === "token").tools.push(button);
+  }
 });
