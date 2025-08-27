@@ -697,6 +697,7 @@ Hooks.on("ready", async () => {
     registerAPI();
   }
   await ReloadTemplates(true);
+  showButton();
 });
 
 const ReloadTemplates = async (fullReload = false) => {
@@ -718,8 +719,6 @@ const ReloadTemplates = async (fullReload = false) => {
       // Show notification banners for version differences
       showVersionDifferenceNotifications(template_validation);
     }
-
-    showButton();
   }
 };
 
