@@ -28,8 +28,9 @@ body:
   - type: markdown
     attributes:
       value: "### Screenshot"
-  - type: markdown:
-    attributes: "Please include a screenshot of your template, open in the party sheet window"
+  - type: markdown
+    attributes: 
+      value: "Please include a screenshot of your template, open in the party sheet window"
   - type: input
     id: contact
     attributes:
