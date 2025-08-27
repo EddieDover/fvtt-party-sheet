@@ -25,6 +25,11 @@ body:
       description: Just copy and paste in your template code
     validations:
       required: true
+  - type: markdown
+    attributes:
+      value: "### Screenshot"
+  - type: markdown:
+    attributes: "Please include a screenshot of your template, open in the party sheet window"
   - type: input
     id: contact
     attributes:
