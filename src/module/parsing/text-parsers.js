@@ -193,6 +193,17 @@ export class FormattingParser extends TextParser {
       parsedValue = parsedValue.replaceAll("{s}", "&nbsp;");
     }
 
+    const progressRegex = /\{progress\s+(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)(?:\s+([#\w]+))?\}/g;
+
+    if (progressRegex.test(value)) {
+      needsSafe = true;
+      parsedValue = parsedValue.replace(progressRegex, (match, current, max, color = "#4CAF50") => {
+        const currentNum = parseFloat(current);
+        const maxNum = parseFloat(max);
+        return `<progress value="${currentNum}" max="${maxNum}" style="accent-color: ${color}; width: 100px; height: 16px;">${currentNum}/${maxNum}</progress>`;
+      });
+    }
+
     return /** @type {[boolean, string]} */ ([needsSafe, parsedValue]);
   }
 }

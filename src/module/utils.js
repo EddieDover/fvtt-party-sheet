@@ -445,53 +445,6 @@ export function trimIfString(item) {
 }
 
 /**
- * Parse underline, bold, and italics from a string.
- * @param {string} value - The value to parse.
- * @param {boolean} isSafeStringNeeded - A boolean indicating if a SafeString is needed.
- * @returns {[boolean, string]} - A tuple with the first value being a boolean indicating if a SafeString is needed and the second value being the parsed string.
- */
-export function parseExtras(value, isSafeStringNeeded = false) {
-  // Detect if any text is surrounded with "{i} and {/i}" and replace with <i> tags
-  if (value.indexOf("{i}") > -1 || value.indexOf("{/i}") > -1) {
-    isSafeStringNeeded = true;
-    value = value.replaceAll("{i}", "<i>").replaceAll("{/i}", "</i>");
-  }
-
-  // Detect if any text is surrounded with "{b} and {/b}" and replace with <b> tags
-  if (value.indexOf("{b}") > -1 || value.indexOf("{/b}") > -1) {
-    isSafeStringNeeded = true;
-    value = value.replaceAll("{b}", "<b>").replaceAll("{/b}", "</b>");
-  }
-
-  // Detect if any text is surrounded with "{u} and {/u}" and replace with <b> tags
-  if (value.indexOf("{u}") > -1 || value.indexOf("{/u}") > -1) {
-    isSafeStringNeeded = true;
-    value = value.replaceAll("{u}", "<u>").replaceAll("{/u}", "</u>");
-  }
-
-  // Detect if any text is surrounded with "{u} and {/u}" and replace with <b> tags
-  if (value.indexOf("{s}") > -1) {
-    isSafeStringNeeded = true;
-    value = value.replaceAll("{s}", "&nbsp;");
-  }
-
-  if (value.indexOf("{degree}") > -1) {
-    isSafeStringNeeded = true;
-    value = value.replaceAll("{degree}", "°");
-  }
-
-  ({ value, isSafeStringNeeded } = parseFontAwesome(value, isSafeStringNeeded));
-
-  // Detect if the value contains {sX} where x is a digit and insert that many &nbsp; marks
-  ({ value, isSafeStringNeeded } = parseSpacing(value, isSafeStringNeeded));
-
-  //Parse out newline elements
-  ({ value, isSafeStringNeeded } = parseNewlines(value, isSafeStringNeeded));
-
-  return [isSafeStringNeeded, value];
-}
-
-/**
  * Add a sign to a value.
  * @param {string|number} value - The value to add a sign to
  * @returns {string} The value with a sign
