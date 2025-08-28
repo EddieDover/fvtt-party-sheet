@@ -16,9 +16,15 @@ class FormApplication {
   close() {}
 
   /**
+   * @typedef v13options
+   * @property {boolean} force - Whether to force re-rendering the form.
+   * @property {boolean} focus - Whether to focus the form after rendering.
+   */
+
+  /**
    * Renders the form application
-   * @param {boolean} force - Whether to force re-rendering the form.
-   * @param {object} options - The options for rendering the form.
+   * @param {boolean|v13options} force - Whether to force re-rendering the form, or a v13options object containing render options.
+   * @param {object} [options] - The options for rendering the form (when first parameter is boolean).
    * @returns {void}
    */
   // eslint-disable-next-line no-unused-vars

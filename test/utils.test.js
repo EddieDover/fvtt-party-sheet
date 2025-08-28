@@ -1,7 +1,6 @@
 import { jest } from "@jest/globals";
 import {
   parseSpacing,
-  parseExtras,
   parseNewlines,
   extractPropertyByString,
   addSign,
@@ -213,50 +212,6 @@ describe("Utils testing", () => {
     });
   });
 
-  describe("Extras parsing", () => {
-    it("will parse a simple request with italics", () => {
-      const result = parseExtras("Hello {i}World{/i}", false);
-      expect(result[0]).toEqual(true);
-      expect(result[1]).toEqual("Hello <i>World</i>");
-    });
-
-    it("will parse a simple request with bold", () => {
-      const result = parseExtras("Hello {b}World{/b}", false);
-      expect(result[0]).toEqual(true);
-      expect(result[1]).toEqual("Hello <b>World</b>");
-    });
-
-    it("will parse a simple request with underline", () => {
-      const result = parseExtras("Hello {u}World{/u}", false);
-      expect(result[0]).toEqual(true);
-      expect(result[1]).toEqual("Hello <u>World</u>");
-    });
-
-    it("will parse a complex request", () => {
-      const result = parseExtras("Hello {i}beautiful {b}World{/b}{/i}", false);
-      expect(result[0]).toEqual(true);
-      expect(result[1]).toEqual("Hello <i>beautiful <b>World</b></i>");
-    });
-
-    it("will parse a request with multiple extras", () => {
-      const result = parseExtras("Hello {i}beautiful {b}World{/b}{/i} with {u}underline{/u}", false);
-      expect(result[0]).toEqual(true);
-      expect(result[1]).toEqual("Hello <i>beautiful <b>World</b></i> with <u>underline</u>");
-    });
-
-    it("will parse a request with a font awesome icon", () => {
-      const result = parseExtras("Hello {fa fa-solid fa-star} World", false);
-      expect(result[0]).toEqual(true);
-      expect(result[1]).toEqual('Hello <i class="fa fa-solid fa-star"></i> World');
-    });
-
-    it("will parse a request with no extras", () => {
-      const result = parseExtras("Hello World", false);
-      expect(result[0]).toEqual(false);
-      expect(result[1]).toEqual("Hello World");
-    });
-  });
-});
 describe("extractPropertyByString testing", () => {
   it("should return the property value when the path is valid", () => {
     const obj = {
@@ -993,31 +948,6 @@ describe("Utility Functions", () => {
         text: 123,
       };
       expect(trimIfString(badComplexObject)).toBe(badComplexObject);
-    });
-  });
-
-  describe("parseExtras", () => {
-    it("should parse {degree} tags", () => {
-      const result = parseExtras("Temperature: 25{degree}", false);
-      expect(result[1]).toBe("Temperature: 25°");
-      expect(result[0]).toBe(true);
-    });
-
-    it("should handle multiple {degree} tags", () => {
-      const result = parseExtras("From 0{degree} to 100{degree}", false);
-      expect(result[1]).toBe("From 0° to 100°");
-      expect(result[0]).toBe(true);
-    });
-
-    it("should return original value when no tags found", () => {
-      const result = parseExtras("No special tags", false);
-      expect(result[1]).toBe("No special tags");
-      expect(result[0]).toBe(false);
-    });
-
-    it("should preserve existing isSafeStringNeeded flag", () => {
-      const result = parseExtras("No tags", true);
-      expect(result[0]).toBe(true);
     });
   });
 

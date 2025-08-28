@@ -449,7 +449,7 @@ function togglePartySheet(options = {}) {
   } else {
     currentPartySheet = new PartySheetForm(options, afterInstall);
     // @ts-ignore
-    currentPartySheet.render(true);
+    currentPartySheet.doRender(true);
 
     // @ts-ignore
     const refreshRate = game.settings.get("fvtt-party-sheet", "refreshRate");
@@ -468,9 +468,7 @@ function togglePartySheet(options = {}) {
  */
 function refreshSheet() {
   if (currentPartySheet?.rendered) {
-    currentPartySheet.render(false, {
-      focus: false,
-    });
+    currentPartySheet.doRender(false, false);
   } else {
     clearInterval(currentRefreshInterval);
   }
@@ -485,7 +483,7 @@ function toggleTemplateStatusForm() {
   } else {
     currentTemplateStatusForm = new TemplateStatusForm();
     // @ts-ignore
-    currentTemplateStatusForm.render(true);
+    currentTemplateStatusForm.doRender(true);
   }
 }
 
@@ -661,7 +659,7 @@ Hooks.on("renderPlayerList", () => {
     return;
   }
   if (currentPartySheet?.rendered) {
-    currentPartySheet.render(true);
+    currentPartySheet.doRender(true);
   }
 });
 

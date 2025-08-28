@@ -6,10 +6,9 @@ import {
   getCustomTemplates,
   getModuleTemplates,
   getSelectedTemplate,
+  isVersionAtLeast,
   log,
-  parseExtras,
   TemplateProcessError,
-  trimIfString,
   updateSelectedTemplate,
 } from "../utils.js";
 import { sanitizeHTML } from "../utils/dompurify-sanitizer.js";
@@ -26,12 +25,15 @@ const DEFAULT_EXCLUDES = ["npc"];
 
 let generated_dropdowns = 0;
 
+const RERENDER_TIME_IN_SECONDS = 5;
+
 export class PartySheetForm extends FormApplication {
   constructor(options = {}, postInstallCallback = async () => {}) {
     super();
     this._postInstallCallback = postInstallCallback;
     this.savedOptions = undefined;
     this.showInstaller = options.showInstaller ?? false;
+    this.refreshTimer = null;
 
     this.parserEngine = ParserFactory.createParserEngine();
   }
@@ -189,199 +191,6 @@ export class PartySheetForm extends FormApplication {
       value = addSign(value);
     }
     return value;
-  }
-
-  /**
-   * Process an "array-string-builder" type
-   * @param {*} character - The character to process
-   * @param {*} type - The type of data to process
-   * @param {*} value - The value to process
-   * @returns {string} The text to rendera
-   */
-  processArrayStringBuilder(character, type, value) {
-    const objName = value.split("=>")[0].trim();
-    let outStrTemplate = value.split("=>")[1];
-    let finalStr = "";
-
-    let objData = extractPropertyByString(character, objName);
-
-    if (!Array.isArray(objData) && objData instanceof Set === false) {
-      objData = Object.keys(objData).map((key) => {
-        return objData[key];
-      });
-    }
-
-    const regValue = /(\{[^}]*\})|((?:\*\.|[\w.]+)+)/g;
-    const reg = new RegExp(regValue);
-    const allMatches = Array.from(outStrTemplate.matchAll(reg), (match) => match[0]).filter(
-      (m) => !m.startsWith("{") && !m.endsWith("}"),
-    );
-
-    let outStr = "";
-    if (objData.size ?? objData.length !== 0) {
-      let subCount = 0;
-      for (const objSubData of objData) {
-        let templateCopy = outStrTemplate;
-        for (const m of allMatches) {
-          if (m === "value") {
-            finalStr += outStrTemplate.replace(m, objSubData);
-            continue;
-          }
-          templateCopy = templateCopy.replace(m, extractPropertyByString(objSubData, m));
-        }
-        outStr += templateCopy + (subCount > 0 ? "\n" : "");
-        subCount += 1;
-      }
-    } else {
-      return "";
-    }
-    if (finalStr === "") {
-      finalStr = outStr;
-    }
-    finalStr = finalStr.trim();
-    finalStr = this.cleanString(finalStr);
-    finalStr = this.removeTrailingComma(finalStr);
-    finalStr = finalStr === value ? "" : finalStr;
-
-    const [isSafeStringNeeded, outputText] = parseExtras(finalStr);
-
-    // @ts-ignore
-    return isSafeStringNeeded ? new Handlebars.SafeString(outputText) : outputText;
-  }
-
-  /**
-   * Process an "object-loop" type
-   * @param {*} character - The character to process
-   * @param {*} type - The type of data to process
-   * @param {*} value - The value to process
-   * @returns {string} The text to render
-   */
-  processObjectLoop(character, type, value) {
-    const isDropdown = value.trim().startsWith("{dropdown} ");
-    const dropdownKeys = [];
-
-    if (isDropdown) {
-      value = value.replace("{dropdown} ", "");
-      generated_dropdowns += 1;
-    }
-    const chunks = value.split("||").map((thing) => thing.trim());
-    let finStr = "";
-    let finStrs = [];
-    let outputText = "";
-    let validDropdownSections = 0;
-
-    chunks.forEach((chunk) => {
-      let outStr = "";
-      let prefix = "";
-      let objName = chunk.split("=>")[0].trim();
-      const findPrefixMatches = objName.match(/^(.*)\s/);
-
-      if (findPrefixMatches?.length) {
-        prefix = findPrefixMatches[1].trim();
-
-        objName = objName.replace(prefix, "").trim();
-      }
-
-      let objFilter = null;
-
-      const filterMatches = objName.match(/(?<=.)\{([^}]+)\}(?=$)/);
-
-      if (filterMatches?.length) {
-        objFilter = filterMatches[1];
-        objName = objName.replace(`{${objFilter}}`, "");
-      }
-
-      if (isDropdown) {
-        dropdownKeys.push(objFilter || objName);
-        validDropdownSections += 1;
-      }
-
-      const actualValue = chunk.split("=>")[1];
-
-      const objData = extractPropertyByString(character, objName);
-
-      let loopData = [];
-      const objKeys = Object.keys(objData);
-      if (
-        objKeys.length == 6 &&
-        objKeys[0] == "documentClass" &&
-        objKeys[1] == "name" &&
-        objKeys[2] == "model" &&
-        objKeys[3] == "_initialized" &&
-        objKeys[4] == "_source" &&
-        objKeys[5] == "invalidDocumentIds"
-      ) {
-        loopData = Object.keys(objData._source).map((key) => {
-          return objData._source[key];
-        });
-      } else {
-        loopData = Object.keys(objData).map((key) => {
-          return objData[key];
-        });
-      }
-
-      if (objFilter) {
-        loopData = loopData.filter((data) => data.type === objFilter);
-      }
-
-      if (loopData.length === 0) {
-        if (isDropdown) {
-          dropdownKeys.pop();
-          validDropdownSections -= 1;
-        }
-      }
-
-      const regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+\s(?!})/g;
-      const reg = new RegExp(regValue);
-      const allMatches = Array.from(actualValue.matchAll(reg), (match) => match[0].trim());
-
-      if (loopData.length ?? loopData.length !== 0) {
-        for (const objSubData of loopData) {
-          let tempLine = actualValue;
-          for (const m of allMatches) {
-            tempLine = tempLine.replace(m, extractPropertyByString(objSubData, m));
-          }
-          outStr += tempLine;
-        }
-      } else {
-        return "";
-      }
-      if (outStr) {
-        finStrs.push(prefix + outStr);
-      }
-    });
-
-    let dropdownString = "";
-    let isSafeStringNeeded = false;
-
-    if (isDropdown && dropdownKeys.length === validDropdownSections && validDropdownSections > 1) {
-      isSafeStringNeeded = true;
-      dropdownString = `<select class='fvtt-party-sheet-dropdown' data-dropdownsection='${generated_dropdowns}' >`;
-      for (let i = 0; i < finStrs.length; i++) {
-        dropdownString += `<option value="${i}">${dropdownKeys[i]}</option>`;
-      }
-      dropdownString += "</select><br/>";
-    }
-    if (isDropdown) {
-      const dd_section_start = (idx) =>
-        `<div data-dropdownsection='${generated_dropdowns}' data-dropdownoption='${idx}' ${
-          idx != 0 ? 'style="display: none;"' : ""
-        } >`;
-      const dd_section_end = "</div>";
-      finStrs = finStrs.map((str, idx) => dd_section_start(idx) + this.cleanString(str) + dd_section_end);
-      finStr = finStrs.join("");
-    } else {
-      finStr = finStrs.join(chunks?.length > 0 ? "" : ", ");
-      finStr = finStr.trim();
-      finStr = this.cleanString(finStr);
-    }
-
-    [isSafeStringNeeded, outputText] = parseExtras(finStr);
-
-    return isSafeStringNeeded
-      ? // @ts-ignore
-        new Handlebars.SafeString((dropdownString || "") + outputText)
-      : outputText;
   }
 
   /**
@@ -595,13 +404,61 @@ export class PartySheetForm extends FormApplication {
     });
   }
 
+  /**
+   * Render the sheet
+   * @memberof PartySheetForm
+   * @param {boolean} [force] - Whether to force re-rendering the form.
+   * @param {boolean} [focus] - Whether to focus the form after rendering.
+   */
+  doRender(force = false, focus = false) {
+    const v13andUp = isVersionAtLeast(13);
+    if (v13andUp) {
+      this.render({
+        force,
+        focus,
+      });
+    } else {
+      this.render(force, { focus });
+    }
+  }
+
+  /**
+   * Start the refresh timer for periodic updates
+   * @memberof PartySheetForm
+   */
+  startRefreshTimer() {
+    // Clear any existing timer
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+    }
+
+    // Set up new timer to refresh every RERENDER_TIME_IN_SECONDS seconds
+    this.refreshTimer = setInterval(() => {
+      this.doRender(true, false); // Force update but don't give focus
+    }, RERENDER_TIME_IN_SECONDS * 1000);
+  }
+
+  /**
+   * Override close method to ensure timer cleanup
+   * @returns {Promise<void>}
+   * @memberof PartySheetForm
+   */
+  async close() {
+    // Clear the refresh timer when closing
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+      this.refreshTimer = null;
+    }
+    return super.close();
+  }
+
   openOptions(event) {
     event.preventDefault();
     const overrides = {
       onexit: () => {
         setTimeout(() => {
           // @ts-ignore
-          this.render(true);
+          this.doRender();
         }, 350);
       },
     };
@@ -611,6 +468,11 @@ export class PartySheetForm extends FormApplication {
   }
 
   closeWindow() {
+    // Clear the refresh timer when closing the window
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+      this.refreshTimer = null;
+    }
     // @ts-ignore
     this.close();
   }
@@ -635,11 +497,14 @@ export class PartySheetForm extends FormApplication {
       updateSelectedTemplate(getCustomTemplates()[selectedIndex]);
     }
     // @ts-ignore
-    this.render(true);
+    this.doRender(true);
   }
 
   activateListeners(html) {
     super.activateListeners(html);
+
+    // Start the refresh timer for periodic updates
+    this.startRefreshTimer();
 
     // @ts-ignore
     $('button[name="fvtt-party-sheet-options"]', html).click(this.openOptions.bind(this));
@@ -722,6 +587,6 @@ export class PartySheetForm extends FormApplication {
     event.preventDefault();
     this.showInstaller = true;
     // @ts-ignore
-    this.render(true);
+    this.doRender(true);
   }
 }
