@@ -111,7 +111,7 @@ export async function loadSystemTemplate(path) {
         addCustomTemplate(template);
       }
     } else {
-      console.log(`${path} - Bad Template`);
+      console.error(`${path} - Bad Template`);
     }
   } catch (e) {
     console.log(`${path} - Failed to Load. See error below.`);
