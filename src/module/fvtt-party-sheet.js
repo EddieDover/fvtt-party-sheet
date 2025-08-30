@@ -19,16 +19,15 @@ import { TemplateStatusForm } from "./app/template-status.js";
 let currentPartySheet = null;
 let currentRefreshInterval = null;
 let currentTemplateStatusForm = null;
-
 // @ts-ignore
 Handlebars.registerPartial(
   "installer",
   `
-<div style="display:flex;flex-direction:row;flex-wrap:wrap">
+<div style="display:flex;flex-direction:row;flex-wrap:wrap;width:100%;min-width:600px;">
 {{#ifCond moduleSystemTemplates.length '>' 0}}
 {{#each moduleSystemTemplates as |template|}}
     <div style="display:flex;flex-direction:row;flex-wrap:nowrap;padding: 3px;border: 1px solid black;border-radius: 5px;margin: 5px;">
-        <div class="fvtt-party-sheet-ps-system-name" style="display:flex;flex-direction:column;flex-wrap:nowrap;width:200px;max-height:300px;">
+        <div class="fvtt-party-sheet-ps-system-name" style="display:flex;flex-direction:column;flex-wrap:nowrap;width:200px;height:100%;max-height:400px;">
         <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-name"}}:</div>
         <div style="padding-bottom:3px;">{{template.name}}</div>
         <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.author"}}:</div>
@@ -67,6 +66,7 @@ Handlebars.registerPartial(
         {{/if}}
         {{#if template.installedVersion}}
               {{#compVersion template.installedVersion template.version}}
+              {{#systemVersionInRange template.minimumSystemVersion template.maximumSystemVersion}}
               <button
                   type="button"
                   class="fvtt-party-sheet-module-install-button"
@@ -75,6 +75,19 @@ Handlebars.registerPartial(
                   {{localize "fvtt-party-sheet.reinstall"}}
               </button>
               {{else}}
+              <button
+                  type="button"
+                  class="fvtt-party-sheet-module-install-button"
+                  data-modulepath="{{template.path}}"
+                  disabled
+                  style="opacity:0.5;cursor:not-allowed;"
+                  title="System version {{../currentSystemVersion}} is incompatible with this template (requires {{template.minimumSystemVersion}}{{#if template.maximumSystemVersion}} - {{template.maximumSystemVersion}}{{/if}})"
+              >
+                  {{localize "fvtt-party-sheet.reinstall"}}
+              </button>
+              {{/systemVersionInRange}}
+              {{else}}
+                  {{#systemVersionInRange template.minimumSystemVersion template.maximumSystemVersion}}
                   <button
                   type="button"
                   style="background-color:#29b125"
@@ -83,6 +96,18 @@ Handlebars.registerPartial(
               >
                 {{localize "fvtt-party-sheet.update"}}
               </button>
+                  {{else}}
+                  <button
+                  type="button"
+                  style="background-color:#666;opacity:0.5;cursor:not-allowed;"
+                  class="fvtt-party-sheet-module-install-button"
+                  data-modulepath="{{template.path}}"
+                  disabled
+                  title="System version {{../currentSystemVersion}} is incompatible with this template (requires {{template.minimumSystemVersion}}{{#if template.maximumSystemVersion}} - {{template.maximumSystemVersion}}{{/if}})"
+              >
+                {{localize "fvtt-party-sheet.update"}}
+              </button>
+                  {{/systemVersionInRange}}
               {{/compVersion}}
         {{else}}
           {{#if template.version}}
@@ -94,6 +119,7 @@ Handlebars.registerPartial(
                 {{localize "fvtt-party-sheet.preview"}}
             </button>
             {{#if template.installed}}
+              {{#systemVersionInRange template.minimumSystemVersion template.maximumSystemVersion}}
               <button
                   type="button"
                   style="background-color:#29b125"
@@ -102,7 +128,20 @@ Handlebars.registerPartial(
                 >
                 {{localize "fvtt-party-sheet.update"}}
               </button>
+              {{else}}
+              <button
+                  type="button"
+                  style="background-color:#666;opacity:0.5;cursor:not-allowed;"
+                  class="fvtt-party-sheet-module-install-button"
+                  data-modulepath="{{template.path}}"
+                  disabled
+                  title="System version {{../currentSystemVersion}} is incompatible with this template (requires {{template.minimumSystemVersion}}{{#if template.maximumSystemVersion}} - {{template.maximumSystemVersion}}{{/if}})"
+                >
+                {{localize "fvtt-party-sheet.update"}}
+              </button>
+              {{/systemVersionInRange}}
             {{else}}
+              {{#systemVersionInRange template.minimumSystemVersion template.maximumSystemVersion}}
               <button
                 type="button"
                 class="fvtt-party-sheet-module-install-button"
@@ -110,6 +149,18 @@ Handlebars.registerPartial(
               >
               {{localize "fvtt-party-sheet.install"}}
             </button>
+              {{else}}
+              <button
+                type="button"
+                class="fvtt-party-sheet-module-install-button"
+                data-modulepath="{{template.path}}"
+                disabled
+                style="opacity:0.5;cursor:not-allowed;"
+                title="System version {{../currentSystemVersion}} is incompatible with this template (requires {{template.minimumSystemVersion}}{{#if template.maximumSystemVersion}} - {{template.maximumSystemVersion}}{{/if}})"
+              >
+              {{localize "fvtt-party-sheet.install"}}
+            </button>
+              {{/systemVersionInRange}}
             {{/if}}
           {{/if}}
         {{/if}}
@@ -458,6 +509,7 @@ function togglePartySheet(options = {}) {
     } else {
       if (currentRefreshInterval) {
         clearInterval(currentRefreshInterval);
+        currentRefreshInterval = null;
       }
     }
   }
@@ -468,9 +520,17 @@ function togglePartySheet(options = {}) {
  */
 function refreshSheet() {
   if (currentPartySheet?.rendered) {
-    currentPartySheet.doRender(false, false);
+    try {
+      currentPartySheet.doRender(false, false);
+    } catch (error) {
+      console.warn("fvtt-party-sheet | Error during auto-refresh:", error);
+    }
   } else {
-    clearInterval(currentRefreshInterval);
+    // Party sheet is not rendered, cleanup the timer
+    if (currentRefreshInterval) {
+      clearInterval(currentRefreshInterval);
+      currentRefreshInterval = null;
+    }
   }
 }
 
@@ -483,7 +543,7 @@ function toggleTemplateStatusForm() {
   } else {
     currentTemplateStatusForm = new TemplateStatusForm();
     // @ts-ignore
-    currentTemplateStatusForm.doRender(true);
+    currentTemplateStatusForm.render(true);
   }
 }
 
@@ -499,9 +559,11 @@ function makeSibling(element, sibling) {
 const showSettingsButton = () => {
   const v13andUp = isVersionAtLeast(13);
   let button = document.querySelector("#PartySheet");
-  let settingsArea = document.querySelector("#settings-fvtt-party-sheet"); //V12
+  const v12SettingsAreaName = "settings-fvtt-party-sheet";
+  const v13SettingsAreaName = "fvtt-party-sheet-settings";
+  let settingsArea = document.querySelector(`#${v12SettingsAreaName}`); //V12
   if (v13andUp) {
-    settingsArea = document.querySelector(".fvtt-player-party-sheet-settings");
+    settingsArea = document.querySelector(`.${v13SettingsAreaName}`);
   }
 
   if (!button) {
@@ -509,7 +571,7 @@ const showSettingsButton = () => {
       const sidebarSettings = document.querySelector("section.settings.flexcol");
       if (sidebarSettings && !settingsArea) {
         const settingsAreaSection = document.createElement("section");
-        settingsAreaSection.classList.add("fvtt-player-party-sheet-settings", "flexcol");
+        settingsAreaSection.classList.add(v13SettingsAreaName, "flexcol");
         const settingsAreaHeader = document.createElement("h4");
         settingsAreaHeader.classList.add("divider");
         // @ts-ignore
@@ -554,7 +616,7 @@ const showSettingsButton = () => {
       makeSibling(sidebarSettings, settingsAreaHeader);
 
       const settingsAreaDiv = document.createElement("div");
-      settingsAreaDiv.id = "settings-fvtt-player-party-sheet";
+      settingsAreaDiv.id = v12SettingsAreaName;
       let settingsButton = document.createElement("button");
       settingsButton.classList.add("settings-button");
       // @ts-ignore
@@ -626,6 +688,8 @@ Hooks.on("ready", async () => {
   if (game.user.isGM) {
     registerAPI();
   }
+  showSettingsButton();
+
   await ReloadTemplates(true);
 });
 
@@ -661,11 +725,6 @@ Hooks.on("renderPlayerList", () => {
   if (currentPartySheet?.rendered) {
     currentPartySheet.doRender(true);
   }
-});
-
-// @ts-ignore
-Hooks.on("renderSceneControls", () => {
-  showSettingsButton();
 });
 
 // @ts-ignore

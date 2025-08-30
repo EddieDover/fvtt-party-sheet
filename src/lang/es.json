@@ -50,10 +50,12 @@
       "current-version": "Versión actual",
       "module-version": "Versión de módulo",
       "newer-required-system": "Las siguientes plantillas necesitan sistemas más nuevos instalados",
+      "older-required-system": "Las siguientes plantillas necesitan sistemas más antiguos instalados",
       "no-version-information": "Las siguientes plantillas no tienen información de versión",
       "no-system-information": "Las siguientes plantillas no tienen información del sistema",
       "current-system-version": "Versión actual del sistema",
-      "required-system-version": "Versión del sistema requerida"
+      "required-system-version": "Versión del sistema requerida",
+      "maximum-system-version": "Versión máxima del sistema"
     },
     "notifications": {
       "template-update-available": "¡Actualizaciones de plantillas disponibles! {count} plantilla(s) instalada(s) tienen versiones más nuevas disponibles. Consulte el diálogo de Estado de Plantillas o use el Instalador para actualizar."

@@ -3,7 +3,7 @@
   <p>{{valid.length}} loaded templates are valid and have no issues.</p>
   <div style="display:flex; flex-direction:row; flex-wrap:nowrap">
 
-    <div style="display: grid;grid-template-columns: repeat(2, 1fr);grid-template-rows: repeat(2, 1fr);grid-column-gap: 5px;grid-row-gap: 5px;">
+    <div style="display: grid;grid-template-columns: repeat(3, 1fr);grid-template-rows: repeat(2, 1fr);grid-column-gap: 5px;grid-row-gap: 5px;">
         <div style="display:flex; flex-direction:column; flex-wrap:nowrap;flex-grow:1;">
             <p>{{localize "fvtt-party-sheet.template-status.out-of-date"}}:</p>
             {{#if outOfDateTemplates.length}}
@@ -30,6 +30,24 @@
                     <div>
                         {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
                         {{localize "fvtt-party-sheet.template-status.required-system-version"}}:  <span style="color:#00ff00;background-color:#000000;;border-radius:5px;padding:2px;">{{this.minimumSystemVersion}}</span>
+                        {{localize "fvtt-party-sheet.template-status.current-system-version"}}: <span style="color:#ff6666;background-color:#000000;;border-radius:5px;padding:2px;">{{this.ownedSystemVersion}}</span><br/>
+                    </div>
+                {{/each}}
+                </div>
+            {{else}}
+                <div style="background-color:#ffffff;flex-grow:1;padding:5px;">
+                    N/A
+                </div>
+            {{/if}}
+        </div>
+        <div style="display:flex; flex-direction:column; flex-wrap:nowrap;flex-grow:1;">
+            <p>{{localize "fvtt-party-sheet.template-status.older-required-system"}}:</p>
+            {{#if tooNewSystems.length}}
+                <div style="background-color:#ffffff;flex-grow:1;padding:5px;">
+                {{#each tooNewSystems}}
+                    <div>
+                        {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
+                        {{localize "fvtt-party-sheet.template-status.maximum-system-version"}}:  <span style="color:#00ff00;background-color:#000000;;border-radius:5px;padding:2px;">{{this.maximumSystemVersion}}</span>
                         {{localize "fvtt-party-sheet.template-status.current-system-version"}}: <span style="color:#ff6666;background-color:#000000;;border-radius:5px;padding:2px;">{{this.ownedSystemVersion}}</span><br/>
                     </div>
                 {{/each}}

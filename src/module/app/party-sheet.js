@@ -25,8 +25,6 @@ const DEFAULT_EXCLUDES = ["npc"];
 
 let generated_dropdowns = 0;
 
-const RERENDER_TIME_IN_SECONDS = 5;
-
 export class PartySheetForm extends FormApplication {
   constructor(options = {}, postInstallCallback = async () => {}) {
     super();
@@ -34,6 +32,11 @@ export class PartySheetForm extends FormApplication {
     this.savedOptions = undefined;
     this.showInstaller = options.showInstaller ?? false;
     this.refreshTimer = null;
+
+    // If the form is being opened directly with installer, set the opening flag
+    if (this.showInstaller) {
+      this._openingInstaller = true;
+    }
 
     this.parserEngine = ParserFactory.createParserEngine();
   }
@@ -349,7 +352,16 @@ export class PartySheetForm extends FormApplication {
     }
 
     const doShowInstaller = this.showInstaller;
-    this.showInstaller = false;
+
+    // Only reset showInstaller on user-initiated actions, not auto-refresh
+    // Exception: Don't reset if we're opening the installer
+    if (this._isUserAction && !this._openingInstaller) {
+      this.showInstaller = false;
+    }
+
+    // Clean up the flags
+    this._isUserAction = undefined;
+    this._openingInstaller = undefined;
 
     /** @typedef {TemplateData & {installedVersion?:string, installed:boolean}} InstalledTemplateData */
     /** @type {InstalledTemplateData[]} */
@@ -412,6 +424,10 @@ export class PartySheetForm extends FormApplication {
    */
   doRender(force = false, focus = false) {
     const v13andUp = isVersionAtLeast(13);
+
+    // Set a flag to indicate if this is a user-initiated action (force=true) or auto-refresh (force=false)
+    this._isUserAction = force;
+
     if (v13andUp) {
       this.render({
         force,
@@ -419,6 +435,36 @@ export class PartySheetForm extends FormApplication {
       });
     } else {
       this.render(force, { focus });
+    }
+
+    // If installer is showing, ensure adequate window width after render
+    if (this.showInstaller) {
+      setTimeout(() => {
+        this._ensureInstallerWidth();
+      }, 50);
+    }
+  }
+
+  /**
+   * Ensures adequate width for installer layout
+   * @memberof PartySheetForm
+   */
+  _ensureInstallerWidth() {
+    if (!this.rendered || !this.showInstaller) return;
+
+    try {
+      // @ts-ignore - Access current position
+      const currentPos = this.position;
+      const minRequiredWidth = 700; // Minimum width needed for row layout
+
+      if (currentPos.width < minRequiredWidth) {
+        // @ts-ignore - FormApplication has setPosition method
+        this.setPosition({
+          width: minRequiredWidth,
+        });
+      }
+    } catch (error) {
+      // Silently ignore width adjustment errors
     }
   }
 
@@ -430,12 +476,8 @@ export class PartySheetForm extends FormApplication {
     // Clear any existing timer
     if (this.refreshTimer) {
       clearInterval(this.refreshTimer);
+      this.refreshTimer = null;
     }
-
-    // Set up new timer to refresh every RERENDER_TIME_IN_SECONDS seconds
-    this.refreshTimer = setInterval(() => {
-      this.doRender(true, false); // Force update but don't give focus
-    }, RERENDER_TIME_IN_SECONDS * 1000);
   }
 
   /**
@@ -457,8 +499,7 @@ export class PartySheetForm extends FormApplication {
     const overrides = {
       onexit: () => {
         setTimeout(() => {
-          // @ts-ignore
-          this.doRender();
+          this.doRender(true, false);
         }, 350);
       },
     };
@@ -496,8 +537,8 @@ export class PartySheetForm extends FormApplication {
     if (selectedIndex != -1) {
       updateSelectedTemplate(getCustomTemplates()[selectedIndex]);
     }
-    // @ts-ignore
-    this.doRender(true);
+
+    this.doRender(true, false);
   }
 
   activateListeners(html) {
@@ -536,6 +577,11 @@ export class PartySheetForm extends FormApplication {
     });
     // @ts-ignore
     $('button[class="fvtt-party-sheet-module-install-button"]').click(async (event) => {
+      // Check if the button is disabled
+      if (event.currentTarget.disabled) {
+        return;
+      }
+
       const dataModuleTemplatePath = event.currentTarget.dataset.modulepath;
       const dataModuleTemplateFilename = dataModuleTemplatePath.split("/").pop();
       const dataModuleTemplateFolder = dataModuleTemplatePath.split("/").slice(0, -1).join("/") + "/";
@@ -586,7 +632,8 @@ export class PartySheetForm extends FormApplication {
   onInstaller(event) {
     event.preventDefault();
     this.showInstaller = true;
-    // @ts-ignore
-    this.doRender(true);
+    this._openingInstaller = true; // Flag to prevent immediate closure
+
+    this.doRender(true, false);
   }
 }

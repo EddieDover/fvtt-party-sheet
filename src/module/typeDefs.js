@@ -99,7 +99,8 @@ class FormApplication {
  * @typedef TemplateValidityReturnData
  * @property { TemplateValidityData[] } valid - The valid templates.
  * @property { TemplateValidityData[] } outOfDateTemplates - The out of date templates.
- * @property { TemplateValidityData[] } outOfDateSystems - The out of date systems.
+ * @property { TemplateValidityData[] } outOfDateSystems - The systems that are too old for templates.
+ * @property { TemplateValidityData[] } tooNewSystems - The systems that are too new for templates.
  * @property { TemplateValidityData[] } noSystemInformation - The templates that have no system information.
  * @property { TemplateValidityData[] } noVersionInformation - The templates that have no version information.
  */

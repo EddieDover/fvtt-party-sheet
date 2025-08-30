@@ -29,6 +29,8 @@
         <option value="{{template.name}}___{{template.author}}" {{#ifCond template.name '==' ../selectedName}} {{#ifCond template.author '==' ../selectedAuthor }}selected{{/ifCond}}{{/ifCond}}>{{template.name}} - {{template.author}}</option>
         {{/each}}
       </select>
+      {{else}}
+        <div style="text-align:center">Template: {{applicableTemplates.[0].name}} - {{applicableTemplates.[0].author}}</div>
       {{/hcifgte}}
       {{#if players}}
       <table id='fvtt-party-sheet-ps-table'>

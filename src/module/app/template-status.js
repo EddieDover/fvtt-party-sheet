@@ -11,6 +11,7 @@ export class TemplateStatusForm extends FormApplication {
     return foundry.utils.mergeObject(super.getData(options), {
       outOfDateTemplates: this.template_validation.outOfDateTemplates,
       outOfDateSystems: this.template_validation.outOfDateSystems,
+      tooNewSystems: this.template_validation.tooNewSystems,
       noVersionInformation: this.template_validation.noVersionInformation,
       noSystemInformation: this.template_validation.noSystemInformation,
       valid: this.template_validation.valid,

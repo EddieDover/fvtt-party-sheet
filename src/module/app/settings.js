@@ -29,7 +29,7 @@ export const registerSettings = () => {
     "hint": "fvtt-party-sheet.settings.refresh-rate.hint",
     "scope": "world",
     "config": true,
-    "default": 0,
+    "default": 5,
     "type": Number,
   });
 

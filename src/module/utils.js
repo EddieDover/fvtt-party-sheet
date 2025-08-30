@@ -238,6 +238,7 @@ export async function validateSystemTemplates() {
   let output = {
     valid: [],
     outOfDateSystems: [],
+    tooNewSystems: [],
     outOfDateTemplates: [],
     noVersionInformation: [],
     noSystemInformation: [],
@@ -294,17 +295,18 @@ export async function validateSystemTemplates() {
     }
 
     if (templateData.ownedSystemVersion !== "-") {
+      // Check if system is too old (below minimum required version)
       if (compareSymVer(templateData.ownedSystemVersion, templateData.minimumSystemVersion) < 0) {
         output.outOfDateSystems.push(templateData);
         err = true;
       }
 
-      // Check if current system version exceeds maximum supported version
+      // Check if current system version exceeds maximum supported version (system too new)
       if (
         template.maximumSystemVersion &&
         compareSymVer(templateData.ownedSystemVersion, template.maximumSystemVersion) > 0
       ) {
-        output.outOfDateSystems.push(templateData);
+        output.tooNewSystems.push(templateData);
         err = true;
       }
     }

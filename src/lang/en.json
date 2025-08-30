@@ -50,10 +50,12 @@
       "current-version": "Current Version",
       "module-version": "Module Version",
       "newer-required-system": "The following templates need newer systems installed",
+      "older-required-system": "The following templates need older systems installed",
       "no-version-information": "The following templates have no version information",
       "no-system-information": "The following templates have no system information",
       "current-system-version": "Current System Version",
-      "required-system-version": "Required System Version"
+      "required-system-version": "Required System Version",
+      "maximum-system-version": "Maximum System Version"
     },
     "notifications": {
       "template-update-available": "Template updates available! {count} installed template(s) have newer versions available. Check the Template Status dialog or use the Installer to update."
