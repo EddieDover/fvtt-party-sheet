@@ -4,6 +4,7 @@
   "author": "EmoCthulhu (edits)",
   "version": "1.0.2",
   "minimumSystemVersion": "3.3.1",
+  "maximumSystemVersion": "4.4.4",
   "offline_excludes": ["npc", "base", "vehicle", "group"],
   "rows": [
     [
