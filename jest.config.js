@@ -5,5 +5,11 @@ export default {
     "/node_modules/",
     "src/module/vendor/dompurify.es.js",
     "src/module/utils/dompurify-sanitizer.js",
+    "index.js",
   ],
+  coverageThreshold: {
+    global: {
+      lines: 80,
+    },
+  },
 };

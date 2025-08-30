@@ -692,7 +692,8 @@ describe("Utils testing", () => {
           author: "Test Author",
           system: "dnd5e",
           version: "1.0.0",
-          minimumSystemVersion: "1.0",
+          minimumSystemVersion: "1.0.0",
+          maximumSystemVersion: "2.0.0",
           rows: [],
         };
 
