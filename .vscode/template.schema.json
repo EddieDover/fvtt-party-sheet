@@ -2,10 +2,10 @@
   "title": "FVTT Party Sheet Template",
   "description": "Schema for creating and managing party sheet templates.",
   "type": "object",
-  "required": ["name", "system", "author", "rows"],
+  "required": ["name", "system", "author", "version", "minimumSystemVersion", "rows"],
   "properties": {
     "name": {
-      "description": "Name that will be displayed in the party sheet for this tempalte.",
+      "description": "Name that will be displayed in the party sheet for this template.",
       "type": "string"
     },
     "system": {
@@ -84,9 +84,9 @@
               ]
             },
             "header": {
-              "description": "Whether to show the header or not.",
+              "description": "Whether to show, hide, or skip the column header.",
               "type": "string",
-              "enum": ["show", "hide"]
+              "enum": ["show", "hide", "skip"]
             },
             "maxwidth": {
               "description": "The maximum width in pixels of the row.",
@@ -95,6 +95,11 @@
             "minwidth": {
               "description": "The minimum width in pixels of the row.",
               "type": "number"
+            },
+            "align": {
+              "description": "Horizontal alignment of the cells.",
+              "type": "string",
+              "enum": ["left", "center", "right"]
             },
             "valign": {
               "description": "Vertical alignment of the cells.",
@@ -107,6 +112,10 @@
             },
             "rowspan": {
               "description": "Controls the row span of the cells in the column. You need also the corresponding empty rows and type 'span'.",
+              "type": "number"
+            },
+            "colspan": {
+              "description": "Controls the column span of the cells in the column.",
               "type": "number"
             },
             "showTotal": {
