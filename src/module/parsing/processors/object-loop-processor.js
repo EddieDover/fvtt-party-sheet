@@ -9,6 +9,7 @@ export class ObjectLoopProcessor extends DataProcessor {
   constructor(parserEngine) {
     super();
     this.parserEngine = parserEngine;
+    this.generated_dropdowns_count = 0;
   }
 
   /**
@@ -28,12 +29,7 @@ export class ObjectLoopProcessor extends DataProcessor {
     let processValue = value;
     if (isDropdown) {
       processValue = processValue.replace("{dropdown} ", "");
-      // Increment global dropdown counter (maintaining original behavior)
-      // eslint-disable-next-line no-undef
-      if (typeof generated_dropdowns !== "undefined") {
-        // eslint-disable-next-line no-undef, no-global-assign
-        generated_dropdowns += 1;
-      }
+      this.generated_dropdowns_count += 1;
     }
 
     const chunks = processValue.split("||").map((chunk) => chunk.trim());
@@ -55,7 +51,7 @@ export class ObjectLoopProcessor extends DataProcessor {
 
     if (isDropdown && dropdownKeys.length === validDropdownSections && validDropdownSections > 1) {
       isSafeStringNeeded = true;
-      outputText = this.createDropdown(dropdownKeys, finStrs);
+      outputText = this.createDropdown(this.generated_dropdowns_count, dropdownKeys, finStrs);
     } else {
       outputText = finStrs.join("");
     }
@@ -143,14 +139,9 @@ export class ObjectLoopProcessor extends DataProcessor {
    * @param {Array} finStrs - The processed strings
    * @returns {string} Dropdown HTML
    */
-  createDropdown(dropdownKeys, finStrs) {
+  createDropdown(dropdownIndex, dropdownKeys, finStrs) {
     // Simplified dropdown creation - maintaining essential functionality
-    let dropdownId = "party-sheet-dropdown";
-    // eslint-disable-next-line no-undef
-    if (typeof generated_dropdowns !== "undefined") {
-      // eslint-disable-next-line no-undef
-      dropdownId += `-${generated_dropdowns}`;
-    }
+    const dropdownId = `party-sheet-dropdown-${dropdownIndex}`;
 
     let options = "";
     for (let i = 0; i < dropdownKeys.length; i++) {

@@ -24,16 +24,12 @@ describe("ObjectLoopProcessor", () => {
 
     processor = new ObjectLoopProcessor(mockParserEngine);
 
-    // Mock global dropdown counter
-    global.generated_dropdowns = 0;
-
     jest.clearAllMocks();
   });
 
   afterEach(() => {
     cleanupFoundryMocks();
     consoleMocks.restore();
-    delete global.generated_dropdowns;
   });
 
   describe("basic object loop processing", () => {
@@ -81,7 +77,6 @@ describe("ObjectLoopProcessor", () => {
 
       const result = processor.process(character, "{dropdown} spells => {name}");
 
-      expect(global.generated_dropdowns).toBe(1);
       expect(result).toBe("parsed_text");
     });
 

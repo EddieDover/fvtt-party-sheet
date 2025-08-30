@@ -23,8 +23,6 @@ const DISCORD_URL = "https://discord.gg/mvMdc7bH2d";
 
 const DEFAULT_EXCLUDES = ["npc"];
 
-let generated_dropdowns = 0;
-
 export class PartySheetForm extends FormApplication {
   constructor(options = {}, postInstallCallback = async () => {}) {
     super();
