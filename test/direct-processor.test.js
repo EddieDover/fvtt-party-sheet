@@ -16,12 +16,12 @@ describe("DirectProcessor", () => {
   beforeEach(() => {
     setupFoundryMocks();
     consoleMocks = createConsoleMocks();
-    
+
     // Mock parser engine
     mockParserEngine = {
       parseText: jest.fn().mockReturnValue([false, "parsed_text"]),
     };
-    
+
     processor = new DirectProcessor(mockParserEngine);
     jest.clearAllMocks();
   });
@@ -48,8 +48,8 @@ describe("DirectProcessor", () => {
         prototypeToken: {
           texture: { src: "path/to/token.png" },
           name: "Test Token",
-          rotation: 45
-        }
+          rotation: 45,
+        },
       };
 
       mockParserEngine.parseText.mockReturnValue([true, "<input>token</input>"]);
@@ -65,9 +65,9 @@ describe("DirectProcessor", () => {
         uuid: "Actor.456",
         prototypeToken: {
           texture: { src: "path/to/token.png" },
-          name: "Test Token"
+          name: "Test Token",
           // rotation is undefined
-        }
+        },
       };
 
       const result = processor.process(character, "{charactersheet}");
@@ -130,7 +130,7 @@ describe("DirectProcessor", () => {
 
     it("should handle SafeString creation when Handlebars is undefined", () => {
       const character = { name: "Test" };
-      
+
       // Temporarily remove Handlebars
       const originalHandlebars = global.Handlebars;
       delete global.Handlebars;
@@ -151,30 +151,30 @@ describe("DirectProcessor", () => {
   describe("string cleaning", () => {
     it("should clean string values using sanitizer", () => {
       const dirtyString = "<script>alert('xss')</script>";
-      
+
       const result = processor.cleanString(dirtyString);
-      
+
       // The actual sanitizer removes dangerous content
       expect(result).toBe("");
     });
 
     it("should not clean non-string values", () => {
       const numberValue = 42;
-      
+
       const result = processor.cleanString(numberValue);
-      
+
       expect(result).toBe(42);
     });
 
     it("should handle null values", () => {
       const result = processor.cleanString(null);
-      
+
       expect(result).toBeNull();
     });
 
     it("should handle undefined values", () => {
       const result = processor.cleanString(undefined);
-      
+
       expect(result).toBeUndefined();
     });
   });
@@ -200,8 +200,8 @@ describe("DirectProcessor", () => {
         prototypeToken: {
           texture: { src: "token.png" },
           name: "Test",
-          rotation: 0
-        }
+          rotation: 0,
+        },
       };
 
       const result = processor.process(character, "{charactersheet} and {charactersheet}");
@@ -216,8 +216,8 @@ describe("DirectProcessor", () => {
         prototypeToken: {
           texture: { src: "token.png" },
           name: "Hero Token",
-          rotation: 90
-        }
+          rotation: 90,
+        },
       };
 
       mockParserEngine.parseText.mockReturnValue([true, "Hero <input>token</input>"]);

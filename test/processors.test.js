@@ -285,20 +285,20 @@ describe("Data Processors", () => {
     it("should handle null/undefined inputs and return empty string", () => {
       const result1 = processor.process(null, null, null);
       const result2 = processor.process(undefined, undefined, undefined);
-      
+
       expect(result1).toBe("");
       expect(result2).toBe("");
     });
 
     it("should handle complex objects and return empty string", () => {
-      const character = { 
-        complex: { 
-          nested: { 
-            deep: "value" 
-          } 
-        } 
+      const character = {
+        complex: {
+          nested: {
+            deep: "value",
+          },
+        },
       };
-      
+
       const result = processor.process(character, { complex: "object" }, { many: "options" });
 
       expect(result).toBe("");

@@ -16,12 +16,12 @@ describe("DirectComplexProcessor", () => {
   beforeEach(() => {
     setupFoundryMocks();
     consoleMocks = createConsoleMocks();
-    
+
     // Mock parser engine
     mockParserEngine = {
       parseText: jest.fn().mockReturnValue([false, "parsed_text"]),
     };
-    
+
     processor = new DirectComplexProcessor(mockParserEngine);
     jest.clearAllMocks();
   });
@@ -62,16 +62,18 @@ describe("DirectComplexProcessor", () => {
 
   describe("exists conditional type", () => {
     it("should return text when property exists and is truthy", () => {
-      const character = { 
+      const character = {
         name: "Hero",
-        hasSpells: true
+        hasSpells: true,
       };
 
-      const conditionalItems = [{
-        type: "exists",
-        value: "hasSpells",
-        text: "Character: {name}"
-      }];
+      const conditionalItems = [
+        {
+          type: "exists",
+          value: "hasSpells",
+          text: "Character: {name}",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -82,11 +84,13 @@ describe("DirectComplexProcessor", () => {
     it("should return empty string when property does not exist", () => {
       const character = { name: "Hero" };
 
-      const conditionalItems = [{
-        type: "exists",
-        value: "nonexistent",
-        text: "Should not appear"
-      }];
+      const conditionalItems = [
+        {
+          type: "exists",
+          value: "nonexistent",
+          text: "Should not appear",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -94,16 +98,18 @@ describe("DirectComplexProcessor", () => {
     });
 
     it("should return empty string when property is falsy", () => {
-      const character = { 
+      const character = {
         name: "Hero",
-        hasSpells: false
+        hasSpells: false,
       };
 
-      const conditionalItems = [{
-        type: "exists",
-        value: "hasSpells",
-        text: "Should not appear"
-      }];
+      const conditionalItems = [
+        {
+          type: "exists",
+          value: "hasSpells",
+          text: "Should not appear",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -113,12 +119,14 @@ describe("DirectComplexProcessor", () => {
     it("should use else clause when property does not exist", () => {
       const character = { name: "Hero" };
 
-      const conditionalItems = [{
-        type: "exists",
-        value: "nonexistent",
-        text: "Should not appear",
-        else: "Fallback text for {name}"
-      }];
+      const conditionalItems = [
+        {
+          type: "exists",
+          value: "nonexistent",
+          text: "Should not appear",
+          else: "Fallback text for {name}",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -126,17 +134,19 @@ describe("DirectComplexProcessor", () => {
     });
 
     it("should extract else value from character if it's a property path", () => {
-      const character = { 
+      const character = {
         name: "Hero",
-        fallbackText: "Backup message"
+        fallbackText: "Backup message",
       };
 
-      const conditionalItems = [{
-        type: "exists",
-        value: "nonexistent",
-        text: "Should not appear",
-        else: "fallbackText"
-      }];
+      const conditionalItems = [
+        {
+          type: "exists",
+          value: "nonexistent",
+          text: "Should not appear",
+          else: "fallbackText",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -146,17 +156,19 @@ describe("DirectComplexProcessor", () => {
 
   describe("match conditional type", () => {
     it("should return text when values match exactly", () => {
-      const character = { 
+      const character = {
         name: "Hero",
-        class: "Fighter"
+        class: "Fighter",
       };
 
-      const conditionalItems = [{
-        type: "match",
-        ifdata: "class",
-        matches: "Fighter",
-        text: "{name} is a {class}"
-      }];
+      const conditionalItems = [
+        {
+          type: "match",
+          ifdata: "class",
+          matches: "Fighter",
+          text: "{name} is a {class}",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -164,17 +176,19 @@ describe("DirectComplexProcessor", () => {
     });
 
     it("should handle string/number comparison", () => {
-      const character = { 
+      const character = {
         name: "Hero",
-        level: 5
+        level: 5,
       };
 
-      const conditionalItems = [{
-        type: "match",
-        ifdata: "level",
-        matches: "5", // String "5" should match number 5
-        text: "{name} is level {level}"
-      }];
+      const conditionalItems = [
+        {
+          type: "match",
+          ifdata: "level",
+          matches: "5", // String "5" should match number 5
+          text: "{name} is level {level}",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -182,17 +196,19 @@ describe("DirectComplexProcessor", () => {
     });
 
     it("should return empty string when values don't match", () => {
-      const character = { 
+      const character = {
         name: "Hero",
-        class: "Fighter"
+        class: "Fighter",
       };
 
-      const conditionalItems = [{
-        type: "match",
-        ifdata: "class",
-        matches: "Wizard",
-        text: "Should not appear"
-      }];
+      const conditionalItems = [
+        {
+          type: "match",
+          ifdata: "class",
+          matches: "Wizard",
+          text: "Should not appear",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -200,18 +216,20 @@ describe("DirectComplexProcessor", () => {
     });
 
     it("should use else clause when values don't match", () => {
-      const character = { 
+      const character = {
         name: "Hero",
-        class: "Fighter"
+        class: "Fighter",
       };
 
-      const conditionalItems = [{
-        type: "match",
-        ifdata: "class",
-        matches: "Wizard",
-        text: "Should not appear",
-        else: "{name} is not a wizard"
-      }];
+      const conditionalItems = [
+        {
+          type: "match",
+          ifdata: "class",
+          matches: "Wizard",
+          text: "Should not appear",
+          else: "{name} is not a wizard",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -219,18 +237,20 @@ describe("DirectComplexProcessor", () => {
     });
 
     it("should extract matches value from character", () => {
-      const character = { 
+      const character = {
         name: "Hero",
         class: "Fighter",
-        expectedClass: "Fighter"
+        expectedClass: "Fighter",
       };
 
-      const conditionalItems = [{
-        type: "match",
-        ifdata: "class",
-        matches: "expectedClass", // Should extract from character
-        text: "{name} has expected class"
-      }];
+      const conditionalItems = [
+        {
+          type: "match",
+          ifdata: "class",
+          matches: "expectedClass", // Should extract from character
+          text: "{name} has expected class",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -240,16 +260,18 @@ describe("DirectComplexProcessor", () => {
 
   describe("match-any conditional type", () => {
     it("should match single value", () => {
-      const character = { 
+      const character = {
         name: "Hero",
-        alignment: "Lawful Good"
+        alignment: "Lawful Good",
       };
 
-      const conditionalItems = [{
-        type: "match-any",
-        text: "alignment",
-        match: "Lawful Good"
-      }];
+      const conditionalItems = [
+        {
+          type: "match-any",
+          text: "alignment",
+          match: "Lawful Good",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -257,16 +279,18 @@ describe("DirectComplexProcessor", () => {
     });
 
     it("should match from array of values", () => {
-      const character = { 
+      const character = {
         name: "Hero",
-        skills: ["Athletics", "Perception", "Stealth"]
+        skills: ["Athletics", "Perception", "Stealth"],
       };
 
-      const conditionalItems = [{
-        type: "match-any",
-        text: ["skills[0]", "skills[1]", "skills[2]"], // Should match "Athletics"
-        match: "Athletics"
-      }];
+      const conditionalItems = [
+        {
+          type: "match-any",
+          text: ["skills[0]", "skills[1]", "skills[2]"], // Should match "Athletics"
+          match: "Athletics",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -274,16 +298,18 @@ describe("DirectComplexProcessor", () => {
     });
 
     it("should return empty string when no match found", () => {
-      const character = { 
+      const character = {
         name: "Hero",
-        alignment: "Chaotic Evil"
+        alignment: "Chaotic Evil",
       };
 
-      const conditionalItems = [{
-        type: "match-any",
-        text: "alignment",
-        match: "Lawful Good"
-      }];
+      const conditionalItems = [
+        {
+          type: "match-any",
+          text: "alignment",
+          match: "Lawful Good",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -291,17 +317,19 @@ describe("DirectComplexProcessor", () => {
     });
 
     it("should use else clause when no match found", () => {
-      const character = { 
+      const character = {
         name: "Hero",
-        alignment: "Chaotic Evil"
+        alignment: "Chaotic Evil",
       };
 
-      const conditionalItems = [{
-        type: "match-any",
-        text: "alignment",
-        match: "Lawful Good",
-        else: "{name} is not lawful good"
-      }];
+      const conditionalItems = [
+        {
+          type: "match-any",
+          text: "alignment",
+          match: "Lawful Good",
+          else: "{name} is not lawful good",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -309,17 +337,19 @@ describe("DirectComplexProcessor", () => {
     });
 
     it("should extract match value from character", () => {
-      const character = { 
+      const character = {
         name: "Hero",
         favoriteSkill: "Athletics",
-        primarySkill: "Athletics"
+        primarySkill: "Athletics",
       };
 
-      const conditionalItems = [{
-        type: "match-any",
-        text: "primarySkill",
-        match: "favoriteSkill" // Should extract from character
-      }];
+      const conditionalItems = [
+        {
+          type: "match-any",
+          text: "primarySkill",
+          match: "favoriteSkill", // Should extract from character
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -329,24 +359,24 @@ describe("DirectComplexProcessor", () => {
 
   describe("multiple conditional items", () => {
     it("should process multiple items and concatenate results", () => {
-      const character = { 
+      const character = {
         name: "Hero",
         class: "Fighter",
-        level: 5
+        level: 5,
       };
 
       const conditionalItems = [
         {
           type: "exists",
           value: "name",
-          text: "Name: {name} "
+          text: "Name: {name} ",
         },
         {
           type: "match",
           ifdata: "class",
           matches: "Fighter",
-          text: "Class: {class} "
-        }
+          text: "Class: {class} ",
+        },
       ];
 
       const result = processor.process(character, conditionalItems);
@@ -364,15 +394,17 @@ describe("DirectComplexProcessor", () => {
         prototypeToken: {
           texture: { src: "token.png" },
           name: "Hero Token",
-          rotation: 0
-        }
+          rotation: 0,
+        },
       };
 
-      const conditionalItems = [{
-        type: "exists",
-        value: "name",
-        text: "{name}: {charactersheet}"
-      }];
+      const conditionalItems = [
+        {
+          type: "exists",
+          value: "name",
+          text: "{name}: {charactersheet}",
+        },
+      ];
 
       mockParserEngine.parseText.mockReturnValue([true, "Hero: <input>token</input>"]);
 
@@ -385,16 +417,18 @@ describe("DirectComplexProcessor", () => {
 
   describe("options processing", () => {
     it("should handle showSign option", () => {
-      const character = { 
+      const character = {
         name: "Hero",
-        bonus: 3
+        bonus: 3,
       };
 
-      const conditionalItems = [{
-        type: "exists",
-        value: "bonus",
-        text: "Bonus: {bonus}"
-      }];
+      const conditionalItems = [
+        {
+          type: "exists",
+          value: "bonus",
+          text: "Bonus: {bonus}",
+        },
+      ];
 
       const options = { showSign: true };
 
@@ -408,11 +442,13 @@ describe("DirectComplexProcessor", () => {
     it("should handle unknown conditional types", () => {
       const character = { name: "Hero" };
 
-      const conditionalItems = [{
-        type: "unknown-type",
-        value: "name",
-        text: "Should not appear"
-      }];
+      const conditionalItems = [
+        {
+          type: "unknown-type",
+          value: "name",
+          text: "Should not appear",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -436,54 +472,56 @@ describe("DirectComplexProcessor", () => {
   describe("utility methods", () => {
     it("should clean strings", () => {
       const dirtyString = "<script>alert('xss')</script><p>Safe content</p>";
-      
+
       const result = processor.cleanString(dirtyString);
-      
+
       // Should sanitize and remove dangerous content
       expect(result).toBe("<p>Safe content</p>");
     });
 
     it("should handle non-string values in cleanString", () => {
       const numberValue = 42;
-      
+
       const result = processor.cleanString(numberValue);
-      
+
       expect(result).toBe(42);
     });
 
     it("should process options correctly", () => {
       const options = { showSign: true };
-      
+
       const result = processor.processOptions(5, options);
-      
+
       // Should add sign to positive numbers
       expect(result).toBe("+5");
     });
 
     it("should not modify value when showSign is false", () => {
       const options = { showSign: false };
-      
+
       const result = processor.processOptions(5, options);
-      
+
       expect(result).toBe(5);
     });
   });
 
   describe("edge cases", () => {
     it("should handle nested property paths in conditions", () => {
-      const character = { 
+      const character = {
         system: {
           attributes: {
-            str: { value: 16 }
-          }
-        }
+            str: { value: 16 },
+          },
+        },
       };
 
-      const conditionalItems = [{
-        type: "exists",
-        value: "system.attributes.str.value",
-        text: "Strength: {system.attributes.str.value}"
-      }];
+      const conditionalItems = [
+        {
+          type: "exists",
+          value: "system.attributes.str.value",
+          text: "Strength: {system.attributes.str.value}",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -493,11 +531,13 @@ describe("DirectComplexProcessor", () => {
     it("should handle empty text values", () => {
       const character = { hasFeature: true };
 
-      const conditionalItems = [{
-        type: "exists",
-        value: "hasFeature",
-        text: ""
-      }];
+      const conditionalItems = [
+        {
+          type: "exists",
+          value: "hasFeature",
+          text: "",
+        },
+      ];
 
       const result = processor.process(character, conditionalItems);
 
@@ -522,7 +562,7 @@ describe("DirectComplexProcessor", () => {
         {
           type: "exists",
           value: "name",
-          text: "Character: {name}"
+          text: "Character: {name}",
         },
         // Skip null items in practice - this tests actual valid behavior
       ];

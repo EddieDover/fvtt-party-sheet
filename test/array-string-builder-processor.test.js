@@ -16,12 +16,12 @@ describe("ArrayStringBuilderProcessor", () => {
   beforeEach(() => {
     setupFoundryMocks();
     consoleMocks = createConsoleMocks();
-    
+
     // Mock parser engine
     mockParserEngine = {
       parseText: jest.fn().mockReturnValue([false, "parsed_text"]),
     };
-    
+
     processor = new ArrayStringBuilderProcessor(mockParserEngine);
     jest.clearAllMocks();
   });
@@ -34,14 +34,14 @@ describe("ArrayStringBuilderProcessor", () => {
   describe("basic array processing", () => {
     it("should process simple array with template", () => {
       const character = {
-        items: ["sword", "shield", "potion"]
+        items: ["sword", "shield", "potion"],
       };
 
       const result = processor.process(character, "items => {value}");
 
       expect(result).toBe("parsed_text");
       expect(mockParserEngine.parseText).toHaveBeenCalled();
-      
+
       // The processor should have attempted to process the template
       const callArgs = mockParserEngine.parseText.mock.calls[0][0];
       expect(callArgs).toContain("{value}");
@@ -51,15 +51,15 @@ describe("ArrayStringBuilderProcessor", () => {
       const character = {
         weapons: [
           { name: "Sword", damage: "1d8" },
-          { name: "Bow", damage: "1d6" }
-        ]
+          { name: "Bow", damage: "1d6" },
+        ],
       };
 
       const result = processor.process(character, "weapons => {name}: {damage}");
 
       expect(result).toBe("parsed_text");
       expect(mockParserEngine.parseText).toHaveBeenCalled();
-      
+
       // The processor should have attempted to process the template
       const callArgs = mockParserEngine.parseText.mock.calls[0][0];
       expect(callArgs).toContain("{name}");
@@ -70,11 +70,9 @@ describe("ArrayStringBuilderProcessor", () => {
       const character = {
         system: {
           inventory: {
-            weapons: [
-              { name: "Longsword", stats: { damage: "1d8+2" } }
-            ]
-          }
-        }
+            weapons: [{ name: "Longsword", stats: { damage: "1d8+2" } }],
+          },
+        },
       };
 
       const result = processor.process(character, "system.inventory.weapons => {name} deals {stats.damage}");
@@ -87,7 +85,7 @@ describe("ArrayStringBuilderProcessor", () => {
   describe("edge cases", () => {
     it("should return empty string for null data", () => {
       const character = {
-        items: null
+        items: null,
       };
 
       const result = processor.process(character, "items => {value}");
@@ -106,7 +104,7 @@ describe("ArrayStringBuilderProcessor", () => {
 
     it("should handle empty array", () => {
       const character = {
-        items: []
+        items: [],
       };
 
       const result = processor.process(character, "items => {value}");
@@ -116,7 +114,7 @@ describe("ArrayStringBuilderProcessor", () => {
 
     it("should handle empty Set", () => {
       const character = {
-        items: new Set()
+        items: new Set(),
       };
 
       const result = processor.process(character, "items => {value}");
@@ -129,8 +127,8 @@ describe("ArrayStringBuilderProcessor", () => {
         stats: {
           str: 16,
           dex: 14,
-          con: 15
-        }
+          con: 15,
+        },
       };
 
       const result = processor.process(character, "stats => {value}");
@@ -141,7 +139,7 @@ describe("ArrayStringBuilderProcessor", () => {
 
     it("should handle empty object", () => {
       const character = {
-        emptyObj: {}
+        emptyObj: {},
       };
 
       const result = processor.process(character, "emptyObj => {value}");
@@ -151,7 +149,7 @@ describe("ArrayStringBuilderProcessor", () => {
 
     it("should wrap primitives in arrays", () => {
       const character = {
-        singleValue: "test"
+        singleValue: "test",
       };
 
       const result = processor.process(character, "singleValue => Value: {value}");
@@ -166,8 +164,8 @@ describe("ArrayStringBuilderProcessor", () => {
       const character = {
         spells: [
           { name: "Fireball", level: 3, school: "Evocation" },
-          { name: "Shield", level: 1, school: "Abjuration" }
-        ]
+          { name: "Shield", level: 1, school: "Abjuration" },
+        ],
       };
 
       const result = processor.process(character, "spells => {name} (Level {level}, {school})");
@@ -178,7 +176,7 @@ describe("ArrayStringBuilderProcessor", () => {
 
     it("should handle Set iteration", () => {
       const character = {
-        tags: new Set(["magic", "rare", "weapon"])
+        tags: new Set(["magic", "rare", "weapon"]),
       };
 
       const result = processor.process(character, "tags => [{value}]");
@@ -190,13 +188,13 @@ describe("ArrayStringBuilderProcessor", () => {
     it("should handle complex nested properties", () => {
       const character = {
         items: [
-          { 
-            name: "Magic Sword", 
-            properties: { 
-              enchantments: ["sharp", "glowing"] 
-            } 
-          }
-        ]
+          {
+            name: "Magic Sword",
+            properties: {
+              enchantments: ["sharp", "glowing"],
+            },
+          },
+        ],
       };
 
       const result = processor.process(character, "items => {name}: {properties.enchantments}");
@@ -208,7 +206,7 @@ describe("ArrayStringBuilderProcessor", () => {
   describe("string processing and cleaning", () => {
     it("should remove trailing commas", () => {
       const character = {
-        items: ["sword", "shield"]
+        items: ["sword", "shield"],
       };
 
       // Mock parseText to return text with trailing comma
@@ -221,7 +219,7 @@ describe("ArrayStringBuilderProcessor", () => {
 
     it("should handle SafeString output when needed", () => {
       const character = {
-        items: ["sword"]
+        items: ["sword"],
       };
 
       mockParserEngine.parseText.mockReturnValue([true, "<b>sword</b>"]);
@@ -234,7 +232,7 @@ describe("ArrayStringBuilderProcessor", () => {
 
     it("should return empty string when output equals input", () => {
       const character = {
-        items: []
+        items: [],
       };
 
       // Mock to simulate case where final string equals original value
@@ -250,7 +248,7 @@ describe("ArrayStringBuilderProcessor", () => {
   describe("error handling", () => {
     it("should handle iteration errors gracefully", () => {
       const character = {
-        items: ["test1", "test2"]
+        items: ["test1", "test2"],
       };
 
       // Test basic functionality - the processor should handle normal arrays
@@ -261,7 +259,7 @@ describe("ArrayStringBuilderProcessor", () => {
 
     it("should handle malformed templates", () => {
       const character = {
-        items: ["test"]
+        items: ["test"],
       };
 
       const result = processor.process(character, "invalid_template_without_arrow");
@@ -288,18 +286,18 @@ describe("ArrayStringBuilderProcessor", () => {
   describe("utility methods", () => {
     it("should clean strings using sanitizer", () => {
       const dirtyString = "<script>alert('xss')</script><p>clean text</p>";
-      
+
       const result = processor.cleanString(dirtyString);
-      
+
       // The actual sanitizer removes the script tag
       expect(result).toBe("<p>clean text</p>");
     });
 
     it("should handle non-string values in cleanString", () => {
       const numberValue = 42;
-      
+
       const result = processor.cleanString(numberValue);
-      
+
       expect(result).toBe(42);
     });
 

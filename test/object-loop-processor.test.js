@@ -16,17 +16,17 @@ describe("ObjectLoopProcessor", () => {
   beforeEach(() => {
     setupFoundryMocks();
     consoleMocks = createConsoleMocks();
-    
+
     // Mock parser engine
     mockParserEngine = {
       parseText: jest.fn().mockReturnValue([false, "parsed_text"]),
     };
-    
+
     processor = new ObjectLoopProcessor(mockParserEngine);
-    
+
     // Mock global dropdown counter
     global.generated_dropdowns = 0;
-    
+
     jest.clearAllMocks();
   });
 
@@ -41,8 +41,8 @@ describe("ObjectLoopProcessor", () => {
       const character = {
         spells: [
           { name: "Fireball", level: 3 },
-          { name: "Shield", level: 1 }
-        ]
+          { name: "Shield", level: 1 },
+        ],
       };
 
       const result = processor.process(character, "spells => {name} (Level {level})");
@@ -54,7 +54,7 @@ describe("ObjectLoopProcessor", () => {
     it("should handle multiple chunks separated by ||", () => {
       const character = {
         weapons: [{ name: "Sword" }],
-        armor: [{ name: "Shield" }]
+        armor: [{ name: "Shield" }],
       };
 
       const result = processor.process(character, "weapons => {name} || armor => {name}");
@@ -64,7 +64,7 @@ describe("ObjectLoopProcessor", () => {
 
     it("should process chunks with prefixes", () => {
       const character = {
-        spells: [{ name: "Fireball" }]
+        spells: [{ name: "Fireball" }],
       };
 
       const result = processor.process(character, "[Spells] spells => {name}");
@@ -76,7 +76,7 @@ describe("ObjectLoopProcessor", () => {
   describe("dropdown functionality", () => {
     it("should detect dropdown syntax", () => {
       const character = {
-        spells: [{ name: "Fireball" }]
+        spells: [{ name: "Fireball" }],
       };
 
       const result = processor.process(character, "{dropdown} spells => {name}");
@@ -88,7 +88,7 @@ describe("ObjectLoopProcessor", () => {
     it("should create dropdown with multiple valid sections", () => {
       const character = {
         weapons: [{ name: "Sword" }],
-        armor: [{ name: "Shield" }]
+        armor: [{ name: "Shield" }],
       };
 
       // Mock to return SafeString for dropdown
@@ -103,7 +103,7 @@ describe("ObjectLoopProcessor", () => {
     it("should not create dropdown with only one valid section", () => {
       const character = {
         weapons: [{ name: "Sword" }],
-        emptyArray: []
+        emptyArray: [],
       };
 
       const result = processor.process(character, "{dropdown} weapons => {name} || emptyArray => {name}");
@@ -115,7 +115,7 @@ describe("ObjectLoopProcessor", () => {
   describe("chunk processing", () => {
     it("should handle empty arrays in chunks", () => {
       const character = {
-        emptySpells: []
+        emptySpells: [],
       };
 
       const result = processor.process(character, "emptySpells => {name}");
@@ -125,7 +125,7 @@ describe("ObjectLoopProcessor", () => {
 
     it("should handle null/undefined data in chunks", () => {
       const character = {
-        nullData: null
+        nullData: null,
       };
 
       const result = processor.process(character, "nullData => {name}");
@@ -137,8 +137,8 @@ describe("ObjectLoopProcessor", () => {
       const character = {
         spells: [
           { name: "Fireball", level: 3, prepared: true },
-          { name: "Shield", level: 1, prepared: false }
-        ]
+          { name: "Shield", level: 1, prepared: false },
+        ],
       };
 
       const result = processor.process(character, "spells[prepared:true] => {name}");
@@ -151,8 +151,8 @@ describe("ObjectLoopProcessor", () => {
         items: [
           { name: "Sword", type: "weapon", equipped: true },
           { name: "Bow", type: "weapon", equipped: false },
-          { name: "Shield", type: "armor", equipped: true }
-        ]
+          { name: "Shield", type: "armor", equipped: true },
+        ],
       };
 
       const result = processor.process(character, "items[type:weapon,equipped:true] => {name}");
@@ -165,14 +165,14 @@ describe("ObjectLoopProcessor", () => {
     it("should handle nested property access", () => {
       const character = {
         spells: [
-          { 
-            name: "Fireball", 
-            damage: { 
-              dice: "8d6", 
-              type: "fire" 
-            } 
-          }
-        ]
+          {
+            name: "Fireball",
+            damage: {
+              dice: "8d6",
+              type: "fire",
+            },
+          },
+        ],
       };
 
       const result = processor.process(character, "spells => {name}: {damage.dice} {damage.type}");
@@ -183,9 +183,9 @@ describe("ObjectLoopProcessor", () => {
     it("should handle missing properties gracefully", () => {
       const character = {
         spells: [
-          { name: "Fireball" }
+          { name: "Fireball" },
           // missing level property
-        ]
+        ],
       };
 
       const result = processor.process(character, "spells => {name} (Level {level})");
@@ -199,8 +199,8 @@ describe("ObjectLoopProcessor", () => {
       const character = {
         spells: [
           { name: "Fireball", prepared: true },
-          { name: "Shield", prepared: false }
-        ]
+          { name: "Shield", prepared: false },
+        ],
       };
 
       const result = processor.process(character, "spells[prepared:true] => {name}");
@@ -212,8 +212,8 @@ describe("ObjectLoopProcessor", () => {
       const character = {
         items: [
           { name: "Sword", type: "weapon" },
-          { name: "Potion", type: "consumable" }
-        ]
+          { name: "Potion", type: "consumable" },
+        ],
       };
 
       const result = processor.process(character, "items[type:weapon] => {name}");
@@ -226,8 +226,8 @@ describe("ObjectLoopProcessor", () => {
         spells: [
           { name: "Fireball", level: 3 },
           { name: "Shield", level: 1 },
-          { name: "Wish", level: 9 }
-        ]
+          { name: "Wish", level: 9 },
+        ],
       };
 
       const result = processor.process(character, "spells[level:3] => {name}");
@@ -240,8 +240,8 @@ describe("ObjectLoopProcessor", () => {
         items: [
           { name: "Magic Sword", type: "weapon", rarity: "rare" },
           { name: "Iron Sword", type: "weapon", rarity: "common" },
-          { name: "Magic Shield", type: "armor", rarity: "rare" }
-        ]
+          { name: "Magic Shield", type: "armor", rarity: "rare" },
+        ],
       };
 
       const result = processor.process(character, "items[type:weapon,rarity:rare] => {name}");
@@ -265,7 +265,7 @@ describe("ObjectLoopProcessor", () => {
 
     it("should handle malformed filter syntax", () => {
       const character = {
-        spells: [{ name: "Fireball" }]
+        spells: [{ name: "Fireball" }],
       };
 
       const result = processor.process(character, "spells[invalid filter syntax => {name}");
@@ -285,7 +285,7 @@ describe("ObjectLoopProcessor", () => {
   describe("SafeString handling", () => {
     it("should return SafeString when parser indicates it", () => {
       const character = {
-        spells: [{ name: "Fireball" }]
+        spells: [{ name: "Fireball" }],
       };
 
       mockParserEngine.parseText.mockReturnValue([true, "<b>Fireball</b>"]);
@@ -298,7 +298,7 @@ describe("ObjectLoopProcessor", () => {
 
     it("should return plain text when SafeString not needed", () => {
       const character = {
-        spells: [{ name: "Fireball" }]
+        spells: [{ name: "Fireball" }],
       };
 
       mockParserEngine.parseText.mockReturnValue([false, "Fireball"]);
@@ -313,7 +313,7 @@ describe("ObjectLoopProcessor", () => {
   describe("edge cases", () => {
     it("should handle empty template strings", () => {
       const character = {
-        spells: [{ name: "Fireball" }]
+        spells: [{ name: "Fireball" }],
       };
 
       const result = processor.process(character, "spells => ");
@@ -323,7 +323,7 @@ describe("ObjectLoopProcessor", () => {
 
     it("should handle templates without property replacements", () => {
       const character = {
-        spells: [{ name: "Fireball" }]
+        spells: [{ name: "Fireball" }],
       };
 
       const result = processor.process(character, "spells => Static Text");
@@ -339,14 +339,17 @@ describe("ObjectLoopProcessor", () => {
               {
                 name: "Rage",
                 uses: { value: 3, max: 3 },
-                description: "Bonus damage and resistance"
-              }
-            ]
-          }
-        }
+                description: "Bonus damage and resistance",
+              },
+            ],
+          },
+        },
       };
 
-      const result = processor.process(character, "character.class.features => {name} ({uses.value}/{uses.max}): {description}");
+      const result = processor.process(
+        character,
+        "character.class.features => {name} ({uses.value}/{uses.max}): {description}",
+      );
 
       expect(result).toBe("parsed_text");
     });
