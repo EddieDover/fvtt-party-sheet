@@ -557,78 +557,39 @@ function makeSibling(element, sibling) {
 }
 
 const showSettingsButton = () => {
-  const v13andUp = isVersionAtLeast(13);
-  let button = document.querySelector("#PartySheet");
-  const v12SettingsAreaName = "settings-fvtt-party-sheet";
+  const button = document.querySelector("#PartySheet");
   const v13SettingsAreaName = "fvtt-party-sheet-settings";
-  let settingsArea = document.querySelector(`#${v12SettingsAreaName}`); // V12
-  if (v13andUp) {
-    settingsArea = document.querySelector(`.${v13SettingsAreaName}`);
-  }
+  const settingsArea = document.querySelector(`.${v13SettingsAreaName}`);
 
   if (!button) {
-    if (v13andUp) {
-      const sidebarSettings = document.querySelector("section.settings.flexcol");
-      if (sidebarSettings && !settingsArea) {
-        const settingsAreaSection = document.createElement("section");
-        settingsAreaSection.classList.add(v13SettingsAreaName, "flexcol");
-        const settingsAreaHeader = document.createElement("h4");
-        settingsAreaHeader.classList.add("divider");
-        // @ts-ignore
-        settingsAreaHeader.textContent = game.i18n.localize("fvtt-party-sheet.section-title");
-        settingsAreaSection.append(settingsAreaHeader);
-
-        makeSibling(sidebarSettings, settingsAreaSection);
-
-        let settingsButton = document.createElement("button");
-        settingsButton.classList.add("settings-button");
-        settingsButton.dataset.action = "openApp";
-        settingsButton.type = "button";
-        // @ts-ignore
-        let localizedLabel = game.i18n.localize("fvtt-party-sheet.template-status.template-status");
-        settingsButton.innerHTML = `<i class='fas fa-download'></i> ${localizedLabel}`;
-        settingsButton.addEventListener("click", () => {
-          toggleTemplateStatusForm();
-        });
-        makeSibling(settingsAreaHeader, settingsButton);
-
-        settingsButton = document.createElement("button");
-        settingsButton.classList.add("settings-button");
-        settingsButton.dataset.action = "openApp";
-        settingsButton.type = "button";
-        // @ts-ignore
-        localizedLabel = game.i18n.localize("fvtt-party-sheet.installer");
-        settingsButton.innerHTML = `<i class='fas fa-download'></i> ${localizedLabel}`;
-        settingsButton.addEventListener("click", () => {
-          togglePartySheet({
-            showInstaller: true,
-          });
-        });
-        makeSibling(settingsAreaHeader, settingsButton);
-      }
-    } else {
-      const sidebarSettings = document.querySelector("#settings-game");
-
-      const settingsAreaHeader = document.createElement("h2");
+    const sidebarSettings = document.querySelector("section.settings.flexcol");
+    if (sidebarSettings && !settingsArea) {
+      const settingsAreaSection = document.createElement("section");
+      settingsAreaSection.classList.add(v13SettingsAreaName, "flexcol");
+      const settingsAreaHeader = document.createElement("h4");
+      settingsAreaHeader.classList.add("divider");
       // @ts-ignore
       settingsAreaHeader.textContent = game.i18n.localize("fvtt-party-sheet.section-title");
+      settingsAreaSection.append(settingsAreaHeader);
 
-      makeSibling(sidebarSettings, settingsAreaHeader);
+      makeSibling(sidebarSettings, settingsAreaSection);
 
-      const settingsAreaDiv = document.createElement("div");
-      settingsAreaDiv.id = v12SettingsAreaName;
       let settingsButton = document.createElement("button");
       settingsButton.classList.add("settings-button");
+      settingsButton.dataset.action = "openApp";
+      settingsButton.type = "button";
       // @ts-ignore
       let localizedLabel = game.i18n.localize("fvtt-party-sheet.template-status.template-status");
       settingsButton.innerHTML = `<i class='fas fa-download'></i> ${localizedLabel}`;
       settingsButton.addEventListener("click", () => {
         toggleTemplateStatusForm();
       });
-      settingsAreaDiv.append(settingsButton);
+      makeSibling(settingsAreaHeader, settingsButton);
 
       settingsButton = document.createElement("button");
       settingsButton.classList.add("settings-button");
+      settingsButton.dataset.action = "openApp";
+      settingsButton.type = "button";
       // @ts-ignore
       localizedLabel = game.i18n.localize("fvtt-party-sheet.installer");
       settingsButton.innerHTML = `<i class='fas fa-download'></i> ${localizedLabel}`;
@@ -637,9 +598,7 @@ const showSettingsButton = () => {
           showInstaller: true,
         });
       });
-      settingsAreaDiv.append(settingsButton);
-
-      makeSibling(settingsAreaHeader, settingsAreaDiv);
+      makeSibling(settingsAreaHeader, settingsButton);
     }
   }
 };
@@ -729,15 +688,14 @@ Hooks.on("renderPlayerList", () => {
 
 // @ts-ignore
 Hooks.on("getSceneControlButtons", (controls) => {
-  const v13andUp = isVersionAtLeast(13);
   const button = {
     name: "partysheet",
     // @ts-ignore
     title: game.i18n.localize("fvtt-party-sheet.section-title"),
     icon: "fas fa-users",
     visible: true,
-    onClick: () => togglePartySheet(),
-    onChange: v13andUp ? () => {} : undefined,
+    // onClick: () => togglePartySheet(),
+    onChange: () => togglePartySheet(),
     button: true,
   };
 
@@ -746,9 +704,5 @@ Hooks.on("getSceneControlButtons", (controls) => {
     return;
   }
 
-  if (v13andUp) {
-    controls.tokens.tools["partysheet"] = button;
-  } else {
-    controls.find((c) => c.name === "token").tools.push(button);
-  }
+  controls.tokens.tools["partysheet"] = button;
 });

@@ -137,10 +137,10 @@ export async function getAllSystemVersions() {
     }
 
     // @ts-ignore
-    const systemFolder = await FilePicker.browse(assetPrefix, "systems"); // `modules/${MODULE_NAME}/templates`);
+    const systemFolder = await foundry.applications.apps.FilePicker.implementation.browse(assetPrefix, "systems"); // `modules/${MODULE_NAME}/templates`);
     for (var folder of systemFolder.dirs) {
       // @ts-ignore
-      const pathFolder = await FilePicker.browse(assetPrefix, folder);
+      const pathFolder = await foundry.applications.apps.FilePicker.implementation.browse(assetPrefix, folder);
       // @ts-ignore
       for (var file of pathFolder.files.filter((f) => f.endsWith("system.json"))) {
         const data = JSON.parse(await fetch(file).then((r) => r.text()));
@@ -176,13 +176,13 @@ export async function loadSystemTemplates() {
 
   try {
     // @ts-ignore
-    await FilePicker.createDirectory(assetPrefix, "partysheets"); //, { bucket: "public" }
+    await foundry.applications.apps.FilePicker.implementation.createDirectory(assetPrefix, "partysheets"); //, { bucket: "public" }
   } catch (e) {
     console.log("Failed creating PartySheets directory. It probably already exists.");
   }
 
   // @ts-ignore
-  const templateFiles = await FilePicker.browse(assetPrefix, "partysheets"); // `modules/${MODULE_NAME}/templates`);
+  const templateFiles = await foundry.applications.apps.FilePicker.implementation.browse(assetPrefix, "partysheets"); // `modules/${MODULE_NAME}/templates`);
 
   templateFiles.files.forEach((file) => {
     if (file.endsWith(".json")) {
@@ -207,10 +207,13 @@ export async function loadModuleTemplates() {
   // @ts-ignore
 
   // @ts-ignore
-  const templateFolders = await FilePicker.browse("data", "/modules/fvtt-party-sheet/example_templates/");
+  const templateFolders = await foundry.applications.apps.FilePicker.implementation.browse(
+    "data",
+    "/modules/fvtt-party-sheet/example_templates/",
+  );
   for (const folder of templateFolders.dirs) {
     // @ts-ignore
-    const templateFiles = await FilePicker.browse("data", folder);
+    const templateFiles = await foundry.applications.apps.FilePicker.implementation.browse("data", folder);
 
     for (const file of templateFiles.files) {
       if (file.endsWith(".json")) {
