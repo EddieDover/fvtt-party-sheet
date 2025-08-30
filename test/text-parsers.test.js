@@ -9,7 +9,7 @@ import {
   FontAwesomeParser,
   SpacingParser,
   NewlineParser,
-  TextParserChain
+  TextParserChain,
 } from "../src/module/parsing/text-parsers.js";
 import { setupFoundryMocks, cleanupFoundryMocks, createConsoleMocks } from "./test-mocks.js";
 
@@ -36,9 +36,9 @@ describe("Text Parsers", () => {
     it("should set next parser and return it", () => {
       const parser1 = new TextParser();
       const parser2 = new TextParser();
-      
+
       const result = parser1.setNext(parser2);
-      
+
       expect(parser1.nextParser).toBe(parser2);
       expect(result).toBe(parser2);
     });
@@ -46,15 +46,15 @@ describe("Text Parsers", () => {
     it("should parse through chain", () => {
       const parser1 = new TextParser();
       const parser2 = new TextParser();
-      
+
       // Mock the doParse methods
       parser1.doParse = jest.fn().mockReturnValue([false, "modified1"]);
       parser2.doParse = jest.fn().mockReturnValue([true, "modified2"]);
-      
+
       parser1.setNext(parser2);
-      
+
       const result = parser1.parse("test", false);
-      
+
       expect(parser1.doParse).toHaveBeenCalledWith("test", false);
       expect(parser2.doParse).toHaveBeenCalledWith("modified1", false);
       expect(result).toEqual([true, "modified2"]);
@@ -63,9 +63,9 @@ describe("Text Parsers", () => {
     it("should return result when no next parser", () => {
       const parser = new TextParser();
       parser.doParse = jest.fn().mockReturnValue([true, "result"]);
-      
+
       const result = parser.parse("test", false);
-      
+
       expect(result).toEqual([true, "result"]);
     });
   });
@@ -232,7 +232,7 @@ describe("Text Parsers", () => {
         const [isSafe, result] = parser.doParse("{progress 50 100}", false);
         expect(isSafe).toBe(true);
         expect(result).toContain('<progress value="50" max="100"');
-        expect(result).toContain('50/100</progress>');
+        expect(result).toContain("50/100</progress>");
       });
 
       it("should create progress bar with custom color", () => {
@@ -240,7 +240,7 @@ describe("Text Parsers", () => {
         expect(isSafe).toBe(true);
         expect(result).toContain('<progress value="75" max="100"');
         expect(result).toContain('style="accent-color: #FF5722;');
-        expect(result).toContain('75/100</progress>');
+        expect(result).toContain("75/100</progress>");
       });
 
       it("should create progress bar with named color", () => {
@@ -253,7 +253,7 @@ describe("Text Parsers", () => {
         const [isSafe, result] = parser.doParse("{progress 33.5 100}", false);
         expect(isSafe).toBe(true);
         expect(result).toContain('<progress value="33.5" max="100"');
-        expect(result).toContain('33.5/100</progress>');
+        expect(result).toContain("33.5/100</progress>");
       });
 
       it("should handle multiple progress bars", () => {
@@ -270,14 +270,14 @@ describe("Text Parsers", () => {
         const [isSafe, result] = parser.doParse("{meter 75 0 100}", false);
         expect(isSafe).toBe(true);
         expect(result).toContain('<meter min="0" max="100" value="75"');
-        expect(result).toContain('75</meter>');
+        expect(result).toContain("75</meter>");
       });
 
       it("should create meter with low threshold", () => {
         const [isSafe, result] = parser.doParse("{meter 25 0 100 30}", false);
         expect(isSafe).toBe(true);
         expect(result).toContain('<meter min="0" max="100" value="25" low="30"');
-        expect(result).toContain('25</meter>');
+        expect(result).toContain("25</meter>");
       });
 
       it("should create meter with low and high thresholds", () => {
@@ -290,7 +290,7 @@ describe("Text Parsers", () => {
         const [isSafe, result] = parser.doParse("{meter 60 0 100 25 75 65}", false);
         expect(isSafe).toBe(true);
         expect(result).toContain('<meter min="0" max="100" value="60" low="25" high="75" optimum="65"');
-        expect(result).toContain('60</meter>');
+        expect(result).toContain("60</meter>");
       });
 
       it("should handle decimal values in meter", () => {
@@ -320,7 +320,7 @@ describe("Text Parsers", () => {
         const mathParser = new PlusParser();
         const [, mathResult] = mathParser.doParse("{progress 25 {+} 25 100}", false);
         const [isSafe, result] = parser.doParse(mathResult, false);
-        
+
         expect(isSafe).toBe(true);
         expect(result).toContain('<progress value="50" max="100"');
       });
@@ -329,7 +329,7 @@ describe("Text Parsers", () => {
         const divideParser = new DivideParser();
         const [, mathResult] = divideParser.doParse("{meter 75 0 100 100 {/} 4}", false);
         const [isSafe, result] = parser.doParse(mathResult, false);
-        
+
         expect(isSafe).toBe(true);
         expect(result).toContain('<meter min="0" max="100" value="75" low="25"');
       });
@@ -424,15 +424,15 @@ describe("Text Parsers", () => {
     it("should parse complex text with multiple features", () => {
       const [isSafe, result] = TextParserChain.parse("HP: {progress 75 100 red} - STR: {b}5 {+} 3{/b}", false);
       expect(isSafe).toBe(true);
-      expect(result).toContain('<progress');
-      expect(result).toContain('<b>8</b>'); // Math should be processed first
+      expect(result).toContain("<progress");
+      expect(result).toContain("<b>8</b>"); // Math should be processed first
       expect(result).toContain('style="accent-color: red;');
     });
 
     it("should handle meter with math operations", () => {
       const [isSafe, result] = TextParserChain.parse("Status: {meter 75 0 100 100 {/} 4}", false);
       expect(isSafe).toBe(true);
-      expect(result).toContain('<meter');
+      expect(result).toContain("<meter");
       expect(result).toContain('low="25"'); // 100/4 = 25
     });
 
