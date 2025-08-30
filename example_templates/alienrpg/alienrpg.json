@@ -2,10 +2,9 @@
   "name": "Alien: The Roleplaying Game",
   "system": "alienrpg",
   "author": "Michael Card (EmoCthulhu)",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "minimumSystemVersion": "3.2.1",
   "offline_includes_property": "system.header.npc",
-  "offline_includes": [false],
   "rows": [
     [
       {

@@ -2,7 +2,7 @@
   "name": "Star Trek Adventures - v1",
   "system": "sta",
   "author": "Michael Card (Emo Cthulhu)",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "minimumSystemVersion": "1.2.8",
   "offline_excludes": ["npc", "base", "starship", "extendedtask", "smallcraft"],
   "rows": [

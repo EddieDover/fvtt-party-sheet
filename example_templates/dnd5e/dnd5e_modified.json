@@ -2,7 +2,7 @@
   "name": "dnd5e - with status effects",
   "system": "dnd5e",
   "author": "EmoCthulhu (edits)",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "minimumSystemVersion": "3.3.1",
   "maximumSystemVersion": "4.4.4",
   "offline_excludes": ["npc", "base", "vehicle", "group"],

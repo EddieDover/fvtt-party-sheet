@@ -2,7 +2,7 @@
   "name": "PF1e Sheet Condensed",
   "system": "pf1",
   "author": "Rexinath",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "minimumSystemVersion": "11.8",
   "offline_excludes": ["npc", "trap", "vehicle", "basic", "haunt"],
   "rows": [

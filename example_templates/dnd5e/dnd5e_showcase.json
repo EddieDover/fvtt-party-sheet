@@ -2,7 +2,7 @@
   "name": "dnd5e Template Feature Showcase",
   "system": "dnd5e",
   "author": "EddieDover",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "minimumSystemVersion": "5.0.4",
   "offline_excludes": ["npc", "base", "vehicle", "group"],
   "rows": [

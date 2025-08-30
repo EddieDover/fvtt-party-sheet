@@ -2,7 +2,7 @@
   "name": "Coriolis - Compact",
   "system": "yzecoriolis",
   "author": "Michael Card (EmoCthulhu)",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "minimumSystemVersion": "3.9.1",
   "offline_excludes": ["npc", "base", "ship"],
   "rows": [

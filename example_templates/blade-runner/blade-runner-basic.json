@@ -2,7 +2,7 @@
   "name": "Blade Runner: The Roleplaying Game - Basic",
   "system": "blade-runner",
   "author": "Michael Card (EmoCthulhu)",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "minimumSystemVersion": "12.0.1",
   "offline_includes_property": "system.subtype",
   "offline_includes": ["pc"],

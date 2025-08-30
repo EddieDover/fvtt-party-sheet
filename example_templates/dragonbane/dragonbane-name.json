@@ -2,7 +2,7 @@
   "name": "Dragonbane - With Name",
   "system": "dragonbane",
   "author": "Michael Card (EmoCthulhu)",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "minimumSystemVersion": "1.9.1",
   "offline_excludes": ["npc", "base", "monster"],
   "rows": [
