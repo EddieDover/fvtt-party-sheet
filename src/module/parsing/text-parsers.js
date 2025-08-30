@@ -54,18 +54,19 @@ export class PlusParser extends TextParser {
    * @returns {[boolean, string]} Tuple of [isSafeStringNeeded, parsedValue]
    */
   doParse(value, isSafeStringNeeded) {
-    // Match patterns with optional spaces around {+}
-    let match = value.match(/(\d+)\s*\{\+\}\s*(\d+)|\d+\{\+\}\d+/);
+    // Match patterns with optional spaces around {+}, supporting decimals and negatives
+    let match = value.match(/(-?\d+(?:\.\d+)?)\s*\{\+\}\s*(-?\d+(?:\.\d+)?)/);
     if (!match) {
       return /** @type {[boolean, string]} */ ([isSafeStringNeeded, value]);
     }
 
     let parsedValue = value;
     do {
-      const numbers = match[0].trim().split("{+}").map(Number);
-      const result = numbers[0] + numbers[1];
+      const num1 = parseFloat(match[1]);
+      const num2 = parseFloat(match[2]);
+      const result = num1 + num2;
       parsedValue = parsedValue.replace(match[0], result.toString());
-    } while ((match = parsedValue.match(/(\d+)\s*\{\+\}\s*(\d+)|\d+\{\+\}\d+/)));
+    } while ((match = parsedValue.match(/(-?\d+(?:\.\d+)?)\s*\{\+\}\s*(-?\d+(?:\.\d+)?)/)));
 
     return /** @type {[boolean, string]} */ ([isSafeStringNeeded, parsedValue]);
   }
@@ -81,18 +82,19 @@ export class MinusParser extends TextParser {
    * @returns {[boolean, string]} Tuple of [isSafeStringNeeded, parsedValue]
    */
   doParse(value, isSafeStringNeeded) {
-    // Match patterns with optional spaces around {-}
-    let match = value.match(/(\d+)\s*\{-\}\s*(\d+)|\d+\{-\}\d+/);
+    // Match patterns with optional spaces around {-}, supporting decimals and negatives
+    let match = value.match(/(-?\d+(?:\.\d+)?)\s*\{-\}\s*(-?\d+(?:\.\d+)?)/);
     if (!match) {
       return /** @type {[boolean, string]} */ ([isSafeStringNeeded, value]);
     }
 
     let parsedValue = value;
     do {
-      const numbers = match[0].trim().split("{-}").map(Number);
-      const result = numbers[0] - numbers[1];
+      const num1 = parseFloat(match[1]);
+      const num2 = parseFloat(match[2]);
+      const result = num1 - num2;
       parsedValue = parsedValue.replace(match[0], result.toString());
-    } while ((match = parsedValue.match(/(\d+)\s*\{-\}\s*(\d+)|\d+\{-\}\d+/)));
+    } while ((match = parsedValue.match(/(-?\d+(?:\.\d+)?)\s*\{-\}\s*(-?\d+(?:\.\d+)?)/)));
 
     return /** @type {[boolean, string]} */ ([isSafeStringNeeded, parsedValue]);
   }
@@ -108,18 +110,19 @@ export class MultiplyParser extends TextParser {
    * @returns {[boolean, string]} Tuple of [isSafeStringNeeded, parsedValue]
    */
   doParse(value, isSafeStringNeeded) {
-    // Match patterns with optional spaces around {*}
-    let match = value.match(/(\d+)\s*\{\*\}\s*(\d+)|\d+\{\*\}\d+/);
+    // Match patterns with optional spaces around {*}, supporting decimals and negatives
+    let match = value.match(/(-?\d+(?:\.\d+)?)\s*\{\*\}\s*(-?\d+(?:\.\d+)?)/);
     if (!match) {
       return /** @type {[boolean, string]} */ ([isSafeStringNeeded, value]);
     }
 
     let parsedValue = value;
     do {
-      const numbers = match[0].trim().split("{*}").map(Number);
-      const result = numbers[0] * numbers[1];
+      const num1 = parseFloat(match[1]);
+      const num2 = parseFloat(match[2]);
+      const result = num1 * num2;
       parsedValue = parsedValue.replace(match[0], result.toString());
-    } while ((match = parsedValue.match(/(\d+)\s*\{\*\}\s*(\d+)|\d+\{\*\}\d+/)));
+    } while ((match = parsedValue.match(/(-?\d+(?:\.\d+)?)\s*\{\*\}\s*(-?\d+(?:\.\d+)?)/)));
 
     return /** @type {[boolean, string]} */ ([isSafeStringNeeded, parsedValue]);
   }
@@ -135,22 +138,23 @@ export class DivideParser extends TextParser {
    * @returns {[boolean, string]} Tuple of [isSafeStringNeeded, parsedValue]
    */
   doParse(value, isSafeStringNeeded) {
-    // Match patterns with optional spaces around {/}
-    let match = value.match(/(\d+)\s*\{\/\}\s*(\d+)|\d+\{\/\}\d+/);
+    // Match patterns with optional spaces around {/}, supporting decimals and negatives
+    let match = value.match(/(-?\d+(?:\.\d+)?)\s*\{\/\}\s*(-?\d+(?:\.\d+)?)/);
     if (!match) {
       return /** @type {[boolean, string]} */ ([isSafeStringNeeded, value]);
     }
 
     let parsedValue = value;
     do {
-      const numbers = match[0].trim().split("{/}").map(Number);
+      const num1 = parseFloat(match[1]);
+      const num2 = parseFloat(match[2]);
       // Handle division by zero
-      if (numbers[1] === 0) {
+      if (num2 === 0) {
         break; // Stop processing if division by zero is encountered
       }
-      const result = numbers[0] / numbers[1];
+      const result = num1 / num2;
       parsedValue = parsedValue.replace(match[0], result.toString());
-    } while ((match = parsedValue.match(/(\d+)\s*\{\/\}\s*(\d+)|\d+\{\/\}\d+/)));
+    } while ((match = parsedValue.match(/(-?\d+(?:\.\d+)?)\s*\{\/\}\s*(-?\d+(?:\.\d+)?)/)));
 
     return /** @type {[boolean, string]} */ ([isSafeStringNeeded, parsedValue]);
   }
@@ -193,7 +197,7 @@ export class FormattingParser extends TextParser {
       parsedValue = parsedValue.replaceAll("{s}", "&nbsp;");
     }
 
-    const progressRegex = /\{progress\s+(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)(?:\s+([#\w]+))?\}/g;
+    const progressRegex = /\{progress\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)(?:\s+([#\w]+))?\}/g;
 
     if (progressRegex.test(value)) {
       needsSafe = true;
@@ -201,6 +205,37 @@ export class FormattingParser extends TextParser {
         const currentNum = parseFloat(current);
         const maxNum = parseFloat(max);
         return `<progress value="${currentNum}" max="${maxNum}" style="accent-color: ${color}; width: 100px; height: 16px;">${currentNum}/${maxNum}</progress>`;
+      });
+    }
+
+    // Handle meter tags with syntax: {meter value minimum maximum [low] [high] [optimum]}
+    const meterRegex =
+      /\{meter\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)(?:\s+(-?\d+(?:\.\d+)?))?(?:\s+(-?\d+(?:\.\d+)?))?(?:\s+(-?\d+(?:\.\d+)?))?\}/g;
+
+    if (meterRegex.test(value)) {
+      needsSafe = true;
+      parsedValue = parsedValue.replace(meterRegex, (match, value, minimum, maximum, low, high, optimum) => {
+        const valueNum = parseFloat(value);
+        const minNum = parseFloat(minimum);
+        const maxNum = parseFloat(maximum);
+
+        let meterHtml = `<meter min="${minNum}" max="${maxNum}" value="${valueNum}"`;
+
+        if (low !== undefined) {
+          meterHtml += ` low="${parseFloat(low)}"`;
+        }
+
+        if (high !== undefined) {
+          meterHtml += ` high="${parseFloat(high)}"`;
+        }
+
+        if (optimum !== undefined) {
+          meterHtml += ` optimum="${parseFloat(optimum)}"`;
+        }
+
+        meterHtml += ` style="width: 100px;">${valueNum}</meter>`;
+
+        return meterHtml;
       });
     }
 

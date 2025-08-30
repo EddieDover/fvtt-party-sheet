@@ -240,6 +240,25 @@ There are a few special keywords that must be surrounded by { } marks, to allow 
 * {b} & {/b} - Anything between these tags will be displayed in **bold**
 * {u} & {/u} - Anything between these tags will be displayed as <u>underlined</u>
 * {progress CURRENT MAX} - Creates a progress bar from 0 to MAX with the current value of CURRENT. You may embed values like this: `{progress {system.resources.hitPoints.value} {system.resources.hitPoints.max}}`.
+* {progress CURRENT MAX COLOR} - Same as above but with a custom color. For example: `{progress 75 100 #FF5722}` or `{progress 75 100 red}`.
+* {meter VALUE MINIMUM MAXIMUM [LOW] [HIGH] [OPTIMUM]} - Creates an HTML meter element for scalar measurements within a known range. Unlike progress bars, meters show where a value falls within defined thresholds:
+  * **VALUE** (required) - The current value to display
+  * **MINIMUM** (required) - The minimum value of the range
+  * **MAXIMUM** (required) - The maximum value of the range  
+  * **LOW** (optional) - The low threshold value (values below this are considered "low")
+  * **HIGH** (optional) - The high threshold value (values above this are considered "high")
+  * **OPTIMUM** (optional) - The optimum value (the preferred value within the range)
+  
+  **Examples:**
+  * Basic meter: `{meter 75 0 100}` - Shows value 75 in a 0-100 range
+  * With thresholds: `{meter 25 0 100 30 70 50}` - Value 25 is below the low threshold (30), optimum is 50
+  * Embedded values: `{meter {system.resources.hitPoints.value} 0 {system.resources.hitPoints.max} 10 90 {system.resources.hitPoints.max}}`
+  * Using math operations: `{meter {system.attributes.hp.value} 0 {system.attributes.hp.max} {system.attributes.hp.max} {/} 4}` - Uses quarter of max HP as low threshold
+  * Complex calculations: `{meter {system.temp} 0 100 {system.minSafe} {+} 5 {system.maxSafe} {-} 10 {system.optimal}}`
+  
+  **Note:** All meter parameters support embedded values and math operations ({+}, {-}, {*}, {/}), allowing for dynamic threshold calculations.
+  
+  Meters are useful for displaying health, stamina, temperature, or any measurement where thresholds matter.
 * {fa fa-XXX fa-XXX} - Elements also support embedding Font Awesome icons via {fa fa-XXX fa-XXX} where `fa-XXX` are the classes normally used for [Font Awesome](https://www.fontawesome.com/) embeddings.
     For example:
 
