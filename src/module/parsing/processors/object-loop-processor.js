@@ -13,6 +13,14 @@ export class ObjectLoopProcessor extends DataProcessor {
   }
 
   /**
+   * Reset dropdown counter for a new render cycle
+   * @memberof ObjectLoopProcessor
+   */
+  resetDropdownCounter() {
+    this.generated_dropdowns_count = 0;
+  }
+
+  /**
    * Process object loop with complex dropdown and filtering logic
    * @param {any} character - The character object to extract data from
    * @param {string} value - The template value configuration
@@ -140,17 +148,40 @@ export class ObjectLoopProcessor extends DataProcessor {
    * @returns {string} Dropdown HTML
    */
   createDropdown(dropdownIndex, dropdownKeys, finStrs) {
+    // Create a more stable identifier based on content
+    const contentHash = dropdownKeys
+      .join("-")
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .substring(0, 20);
+    const stableId = `dropdown-${dropdownIndex}-${contentHash}`;
+
     const dropdownId = `party-sheet-dropdown-${dropdownIndex}`;
-    const dropdownSection = `dropdown-${dropdownIndex}`;
+    const dropdownSection = stableId;
+
+    // Check if there's a saved state for this dropdown to avoid flicker
+    let savedValue = null;
+    if (this.parserEngine && this.parserEngine.getSavedDropdownState) {
+      savedValue = this.parserEngine.getSavedDropdownState(dropdownSection);
+    }
 
     let options = "";
     let contentDivs = "";
 
     for (let i = 0; i < dropdownKeys.length; i++) {
       const key = dropdownKeys[i];
-      options += `<option value="${key}">${key}</option>`;
 
-      const isVisible = i === 0 ? "block" : "none";
+      // Mark the option as selected if it matches the saved state
+      const selected = (savedValue && key === savedValue) || (!savedValue && i === 0) ? ' selected="selected"' : "";
+      options += `<option value="${key}"${selected}>${key}</option>`;
+
+      // Use saved state if available, otherwise default to first option
+      let isVisible = "none";
+      if (savedValue && key === savedValue) {
+        isVisible = "block";
+      } else if (!savedValue && i === 0) {
+        isVisible = "block";
+      }
+
       contentDivs += `<div data-dropdownsection="${dropdownSection}" data-dropdownoption="${key}" style="display: ${isVisible};">${finStrs[i] || ""}</div>`;
     }
 

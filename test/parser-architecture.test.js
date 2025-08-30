@@ -55,6 +55,148 @@ describe("Parser Architecture", () => {
       expect(parserEngine.hasProcessor("direct")).toBe(true);
       expect(parserEngine.hasProcessor("nonexistent")).toBe(false);
     });
+
+    describe("Dropdown State Management", () => {
+      test("should initialize with null dropdown states provider", () => {
+        expect(parserEngine.dropdownStatesProvider).toBeNull();
+      });
+
+      test("should set dropdown states provider", () => {
+        const mockProvider = { dropdownStates: new Map() };
+        parserEngine.setDropdownStatesProvider(mockProvider);
+        expect(parserEngine.dropdownStatesProvider).toBe(mockProvider);
+      });
+
+      test("should get saved dropdown state when provider is set", () => {
+        const mockProvider = {
+          dropdownStates: new Map([
+            ["dropdown-1-test", "option1"],
+            ["dropdown-2-example", "option2"]
+          ])
+        };
+        parserEngine.setDropdownStatesProvider(mockProvider);
+
+        expect(parserEngine.getSavedDropdownState("dropdown-1-test")).toBe("option1");
+        expect(parserEngine.getSavedDropdownState("dropdown-2-example")).toBe("option2");
+        expect(parserEngine.getSavedDropdownState("nonexistent")).toBeNull();
+      });
+
+      test("should return null when no provider is set", () => {
+        expect(parserEngine.getSavedDropdownState("any-dropdown")).toBeNull();
+      });
+
+      test("should return null when provider has no dropdownStates", () => {
+        const mockProvider = {};
+        parserEngine.setDropdownStatesProvider(mockProvider);
+        expect(parserEngine.getSavedDropdownState("any-dropdown")).toBeNull();
+      });
+
+      test("should return null when provider dropdownStates is null", () => {
+        const mockProvider = { dropdownStates: null };
+        parserEngine.setDropdownStatesProvider(mockProvider);
+        expect(parserEngine.getSavedDropdownState("any-dropdown")).toBeNull();
+      });
+    });
+
+    describe("Dropdown Counter Reset", () => {
+      test("should call resetDropdownCounter on processors that have it", () => {
+        const mockProcessor1 = {
+          resetDropdownCounter: jest.fn(),
+          validate: jest.fn(),
+          process: jest.fn()
+        };
+        const mockProcessor2 = {
+          validate: jest.fn(),
+          process: jest.fn()
+          // No resetDropdownCounter method
+        };
+        const mockProcessor3 = {
+          resetDropdownCounter: jest.fn(),
+          validate: jest.fn(),
+          process: jest.fn()
+        };
+
+        // Create a new engine to avoid conflicts with other tests
+        const testEngine = ParserFactory.createParserEngine();
+        testEngine.clearProcessors();
+        
+        // Mock the instanceof check for DataProcessor
+        Object.setPrototypeOf(mockProcessor1, Object.getPrototypeOf(testEngine.processors.values().next().value || {}));
+        Object.setPrototypeOf(mockProcessor2, Object.getPrototypeOf(testEngine.processors.values().next().value || {}));
+        Object.setPrototypeOf(mockProcessor3, Object.getPrototypeOf(testEngine.processors.values().next().value || {}));
+
+        // Register mock processors
+        testEngine.processors.set("test1", mockProcessor1);
+        testEngine.processors.set("test2", mockProcessor2);
+        testEngine.processors.set("test3", mockProcessor3);
+
+        testEngine.resetDropdownCounters();
+
+        expect(mockProcessor1.resetDropdownCounter).toHaveBeenCalledTimes(1);
+        expect(mockProcessor3.resetDropdownCounter).toHaveBeenCalledTimes(1);
+      });
+
+      test("should handle empty processors map", () => {
+        const testEngine = ParserFactory.createParserEngine();
+        testEngine.clearProcessors();
+        
+        // Should not throw an error
+        expect(() => testEngine.resetDropdownCounters()).not.toThrow();
+      });
+    });
+
+    describe("Error Handling", () => {
+      test("should throw error for unregistered processor type", () => {
+        expect(() => {
+          parserEngine.process(mockCharacter, "nonexistent", "value");
+        }).toThrow("No processor registered for type: nonexistent");
+      });
+
+      test("should re-throw processor errors after logging", () => {
+        // Create a mock console.error to capture the log
+        const originalConsoleError = console.error;
+        const mockConsoleError = jest.fn();
+        console.error = mockConsoleError;
+
+        try {
+          // Mock a processor that throws an error
+          const mockProcessor = {
+            validate: jest.fn(),
+            process: jest.fn(() => {
+              throw new Error("Test processor error");
+            })
+          };
+
+          const testEngine = ParserFactory.createParserEngine();
+          testEngine.clearProcessors();
+          testEngine.processors.set("error-test", mockProcessor);
+
+          expect(() => {
+            testEngine.process(mockCharacter, "error-test", "value");
+          }).toThrow("Test processor error");
+
+          expect(mockConsoleError).toHaveBeenCalledWith(
+            'Error processing type "error-test":',
+            expect.any(Error)
+          );
+        } finally {
+          console.error = originalConsoleError;
+        }
+      });
+    });
+
+    describe("Text Parsing", () => {
+      test("should parse text using text parser chain", () => {
+        const result = parserEngine.parseText("simple text", false);
+        expect(result).toEqual([false, "simple text"]);
+      });
+
+      test("should handle SafeString requirement", () => {
+        const result = parserEngine.parseText("text with special chars", true);
+        expect(result[0]).toBe(true); // isSafeStringNeeded should be preserved or updated
+        expect(typeof result[1]).toBe("string");
+      });
+    });
   });
 
   describe("String Processor", () => {

@@ -30,6 +30,8 @@ export class PartySheetForm extends FormApplication {
     this.savedOptions = undefined;
     this.showInstaller = options.showInstaller ?? false;
     this.refreshTimer = null;
+    this.dropdownStates = new Map(); // Store dropdown selection states
+    this.isDropdownInteracting = false; // Track if user is interacting with dropdowns
 
     // If the form is being opened directly with installer, set the opening flag
     if (this.showInstaller) {
@@ -37,6 +39,8 @@ export class PartySheetForm extends FormApplication {
     }
 
     this.parserEngine = ParserFactory.createParserEngine();
+    // Set this instance as the dropdown states provider for the parser engine
+    this.parserEngine.setDropdownStatesProvider(this);
   }
 
   /**
@@ -291,6 +295,11 @@ export class PartySheetForm extends FormApplication {
   }
 
   getData(options) {
+    // Reset dropdown counters at the beginning of each render cycle
+    if (this.parserEngine && this.parserEngine.resetDropdownCounters) {
+      this.parserEngine.resetDropdownCounters();
+    }
+
     if (options) {
       this.savedOptions = options;
     } else if (this.savedOptions) {
@@ -426,6 +435,13 @@ export class PartySheetForm extends FormApplication {
     // Set a flag to indicate if this is a user-initiated action (force=true) or auto-refresh (force=false)
     this._isUserAction = force;
 
+    // Save dropdown states before rendering (if this is a re-render)
+    // @ts-ignore
+    if (this.rendered && this.element) {
+      // @ts-ignore
+      this.saveDropdownStates(this.element);
+    }
+
     if (v13andUp) {
       this.render({
         force,
@@ -476,6 +492,111 @@ export class PartySheetForm extends FormApplication {
       clearInterval(this.refreshTimer);
       this.refreshTimer = null;
     }
+  }
+
+  /**
+   * Save the current state of all dropdowns
+   * @memberof PartySheetForm
+   */
+  saveDropdownStates(html) {
+    // @ts-ignore
+    if (!html && this.element) html = this.element;
+    if (!html) return;
+
+    // @ts-ignore
+    const dropdowns = html.find('select[class="fvtt-party-sheet-dropdown"]');
+
+    dropdowns.each((index, dropdown) => {
+      // @ts-ignore
+      const $dropdown = $(dropdown);
+      const section = $dropdown.data("dropdownsection");
+      const value = $dropdown.val();
+
+      if (section && value !== undefined && value !== null && value !== "") {
+        console.log(`fvtt-party-sheet | Saving dropdown state: ${section} = ${value}`);
+        this.dropdownStates.set(section, value);
+      }
+    });
+  }
+
+  /**
+   * Restore the saved state of all dropdowns
+   * @memberof PartySheetForm
+   */
+  restoreDropdownStates(html) {
+    // @ts-ignore
+    if (!html && this.element) html = this.element;
+    if (!html) return;
+
+    // @ts-ignore
+    const dropdowns = html.find('select[class="fvtt-party-sheet-dropdown"]');
+
+    dropdowns.each((index, dropdown) => {
+      // @ts-ignore
+      const $dropdown = $(dropdown);
+      const section = $dropdown.data("dropdownsection");
+
+      if (section && this.dropdownStates.has(section)) {
+        const savedValue = this.dropdownStates.get(section);
+
+        // Check all available options
+        const availableOptions = [];
+        $dropdown.find("option").each((i, option) => {
+          availableOptions.push($(option).val());
+        });
+
+        // Only restore if the saved value exists as an option
+        if ($dropdown.find(`option[value="${savedValue}"]`).length > 0) {
+          $dropdown.val(savedValue);
+
+          // Manually trigger the UI update without triggering interaction tracking
+          const dropdownSection = section;
+          const dropdownValue = savedValue;
+
+          // @ts-ignore
+          $(`div[data-dropdownsection="${dropdownSection}"]`).hide();
+          // @ts-ignore
+          $(`div[data-dropdownsection="${dropdownSection}"][data-dropdownoption="${dropdownValue}"]`).show();
+        }
+      }
+    });
+  }
+
+  /**
+   * Check if the user is currently interacting with dropdowns
+   * @returns {boolean}
+   * @memberof PartySheetForm
+   */
+  isUserInteractingWithDropdowns() {
+    return this.isDropdownInteracting;
+  }
+
+  /**
+   * Ensure dropdown select elements have the correct values set
+   * @memberof PartySheetForm
+   */
+  ensureDropdownSelectValues(html) {
+    // @ts-ignore
+    if (!html && this.element) html = this.element;
+    if (!html) return;
+
+    // @ts-ignore
+    const dropdowns = html.find('select[class="fvtt-party-sheet-dropdown"]');
+
+    dropdowns.each((index, dropdown) => {
+      // @ts-ignore
+      const $dropdown = $(dropdown);
+      const section = $dropdown.data("dropdownsection");
+
+      if (section && this.dropdownStates.has(section)) {
+        const savedValue = this.dropdownStates.get(section);
+
+        // Only set the select value if it differs from current value and the option exists
+        if ($dropdown.val() !== savedValue && $dropdown.find(`option[value="${savedValue}"]`).length > 0) {
+          $dropdown.val(savedValue);
+        }
+      }
+    });
   }
 
   /**
@@ -597,16 +718,39 @@ export class PartySheetForm extends FormApplication {
     });
 
     // @ts-ignore
-    $('select[class="fvtt-party-sheet-dropdown"]', html).change((event) => {
-      const dropdownSection = event.currentTarget.dataset.dropdownsection;
-      const dropdownValue = event.currentTarget.value;
+    $('select[class="fvtt-party-sheet-dropdown"]', html)
+      .on("mousedown", (event) => {
+        // User is starting to interact with dropdown (opening it)
+        console.log("fvtt-party-sheet | Dropdown interaction started");
+        this.isDropdownInteracting = true;
+      })
+      .on("change", (event) => {
+        const dropdownSection = event.currentTarget.dataset.dropdownsection;
+        const dropdownValue = event.currentTarget.value;
 
-      // @ts-ignore
-      $(`div[data-dropdownsection="${dropdownSection}"]`).hide();
+        // Save the new selection immediately to our state map
+        if (dropdownSection && dropdownValue) {
+          this.dropdownStates.set(dropdownSection, dropdownValue);
+        }
 
-      // @ts-ignore
-      $(`div[data-dropdownsection="${dropdownSection}"][data-dropdownoption="${dropdownValue}"]`).show();
-    });
+        // @ts-ignore
+        $(`div[data-dropdownsection="${dropdownSection}"]`).hide();
+
+        // @ts-ignore
+        $(`div[data-dropdownsection="${dropdownSection}"][data-dropdownoption="${dropdownValue}"]`).show();
+
+        // User made a selection, they're done interacting
+        // Small delay to allow the selection to complete
+        setTimeout(() => {
+          this.isDropdownInteracting = false;
+        }, 50);
+      })
+      .on("blur", (event) => {
+        // Dropdown lost focus without selection (clicked elsewhere)
+        setTimeout(() => {
+          this.isDropdownInteracting = false;
+        }, 50);
+      });
   }
 
   onFeedback(event) {
