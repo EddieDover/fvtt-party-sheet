@@ -140,16 +140,20 @@ export class ObjectLoopProcessor extends DataProcessor {
    * @returns {string} Dropdown HTML
    */
   createDropdown(dropdownIndex, dropdownKeys, finStrs) {
-    // Simplified dropdown creation - maintaining essential functionality
     const dropdownId = `party-sheet-dropdown-${dropdownIndex}`;
+    const dropdownSection = `dropdown-${dropdownIndex}`;
 
     let options = "";
+    let contentDivs = "";
+
     for (let i = 0; i < dropdownKeys.length; i++) {
-      options += `<option value="${dropdownKeys[i]}">${dropdownKeys[i]}</option>`;
+      const key = dropdownKeys[i];
+      options += `<option value="${key}">${key}</option>`;
+
+      const isVisible = i === 0 ? "block" : "none";
+      contentDivs += `<div data-dropdownsection="${dropdownSection}" data-dropdownoption="${key}" style="display: ${isVisible};">${finStrs[i] || ""}</div>`;
     }
 
-    return `<select id="${dropdownId}" class="party-sheet-dropdown">${options}</select><div class="party-sheet-dropdown-content">${finStrs.join(
-      "",
-    )}</div>`;
+    return `<select id="${dropdownId}" class="fvtt-party-sheet-dropdown" data-dropdownsection="${dropdownSection}">${options}</select>${contentDivs}`;
   }
 }
