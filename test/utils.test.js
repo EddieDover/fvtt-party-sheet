@@ -1371,10 +1371,10 @@ describe("Utils testing", () => {
 
         const result = await validateSystemTemplates();
 
-        expect(result.outOfDateSystems).toHaveLength(1);
-        expect(result.outOfDateSystems[0].name).toBe("Max Version Template");
-        expect(result.outOfDateSystems[0].ownedSystemVersion).toBe("2.0.0");
-        expect(result.outOfDateSystems[0].maximumSystemVersion).toBe("1.5.0");
+        expect(result.tooNewSystems).toHaveLength(1);
+        expect(result.tooNewSystems[0].name).toBe("Max Version Template");
+        expect(result.tooNewSystems[0].ownedSystemVersion).toBe("2.0.0");
+        expect(result.tooNewSystems[0].maximumSystemVersion).toBe("1.5.0");
       });
 
       it("should identify templates requiring newer system versions", async () => {
