@@ -561,7 +561,7 @@ const showSettingsButton = () => {
   let button = document.querySelector("#PartySheet");
   const v12SettingsAreaName = "settings-fvtt-party-sheet";
   const v13SettingsAreaName = "fvtt-party-sheet-settings";
-  let settingsArea = document.querySelector(`#${v12SettingsAreaName}`); //V12
+  let settingsArea = document.querySelector(`#${v12SettingsAreaName}`); // V12
   if (v13andUp) {
     settingsArea = document.querySelector(`.${v13SettingsAreaName}`);
   }
