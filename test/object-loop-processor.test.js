@@ -210,6 +210,62 @@ describe("ObjectLoopProcessor", () => {
 
       expect(result).toBe("parsed_text");
     });
+
+    it("should handle failed middle section in dropdown (bug fix)", () => {
+      // Mock character with weapons and feats, but no spells
+      const character = {
+        items: [
+          { type: "weapon", name: "Sword" },
+          { type: "weapon", name: "Bow" },
+          { type: "feat", name: "Power Attack" },
+          { type: "feat", name: "Cleave" },
+        ],
+      };
+
+      // Mock to return SafeString for dropdown
+      mockParserEngine.parseText.mockReturnValue([true, "<select>dropdown with weapon and feat options</select>"]);
+
+      const result = processor.process(
+        character,
+        "{dropdown} items{weapon} => {name} || items{spell} => {name} || items{feat} => {name}",
+      );
+
+      // Result should be a SafeString (indicating dropdown was created)
+      expect(result.__isSafeString).toBe(true);
+      expect(mockSafeString).toHaveBeenCalled();
+    });
+
+    it("should not create dropdown when all sections fail", () => {
+      // Mock character with no items
+      const character = {
+        items: [],
+      };
+
+      const result = processor.process(
+        character,
+        "{dropdown} items{weapon} => {name} || items{spell} => {name} || items{feat} => {name}",
+      );
+
+      // Result should be parsed empty string (no dropdown created, finStrs is empty)
+      expect(result).toBe("parsed_text");
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith("", false);
+    });
+
+    it("should not create dropdown with only one successful section", () => {
+      // Mock character with only weapons
+      const character = {
+        items: [{ type: "weapon", name: "Sword" }],
+      };
+
+      const result = processor.process(
+        character,
+        "{dropdown} items{weapon} => {name} || items{spell} => {name} || items{feat} => {name}",
+      );
+
+      // Result should be plain text (not a dropdown, since validDropdownSections = 1)
+      expect(typeof result).toBe("string");
+      expect(result).toBe("parsed_text");
+    });
   });
 
   describe("chunk processing", () => {

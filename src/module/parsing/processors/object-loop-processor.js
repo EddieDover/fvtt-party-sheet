@@ -45,11 +45,30 @@ export class ObjectLoopProcessor extends DataProcessor {
     let validDropdownSections = 0;
 
     for (const chunk of chunks) {
-      const result = this.processChunk(character, chunk, isDropdown, dropdownKeys);
+      const result = this.processChunk(character, chunk, false, []); // Don't populate dropdownKeys in processChunk
       if (result.success) {
         validDropdownSections += 1;
         if (result.output) {
           finStrs.push(result.prefix + result.output);
+        }
+
+        // Only add to dropdownKeys for successful chunks
+        if (isDropdown) {
+          // Extract filter for successful chunks only
+          let objName = chunk.split("=>")[0].trim();
+          const findPrefixMatches = objName.match(/^(.*)\s/);
+          if (findPrefixMatches?.length) {
+            objName = objName.replace(findPrefixMatches[1].trim(), "").trim();
+          }
+
+          let objFilter = null;
+          const filterMatches = objName.match(/(?<=.)\{([^}]+)\}(?=$)/);
+          if (filterMatches?.length) {
+            objFilter = filterMatches[1];
+            objName = objName.replace(`{${objFilter}}`, "");
+          }
+
+          dropdownKeys.push(objFilter || objName);
         }
       }
     }
@@ -95,10 +114,6 @@ export class ObjectLoopProcessor extends DataProcessor {
     if (filterMatches?.length) {
       objFilter = filterMatches[1];
       objName = objName.replace(`{${objFilter}}`, "");
-    }
-
-    if (isDropdown) {
-      dropdownKeys.push(objFilter || objName);
     }
 
     const actualValue = chunk.split("=>")[1];
