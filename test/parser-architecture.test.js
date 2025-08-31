@@ -71,8 +71,8 @@ describe("Parser Architecture", () => {
         const mockProvider = {
           dropdownStates: new Map([
             ["dropdown-1-test", "option1"],
-            ["dropdown-2-example", "option2"]
-          ])
+            ["dropdown-2-example", "option2"],
+          ]),
         };
         parserEngine.setDropdownStatesProvider(mockProvider);
 
@@ -103,23 +103,23 @@ describe("Parser Architecture", () => {
         const mockProcessor1 = {
           resetDropdownCounter: jest.fn(),
           validate: jest.fn(),
-          process: jest.fn()
+          process: jest.fn(),
         };
         const mockProcessor2 = {
           validate: jest.fn(),
-          process: jest.fn()
+          process: jest.fn(),
           // No resetDropdownCounter method
         };
         const mockProcessor3 = {
           resetDropdownCounter: jest.fn(),
           validate: jest.fn(),
-          process: jest.fn()
+          process: jest.fn(),
         };
 
         // Create a new engine to avoid conflicts with other tests
         const testEngine = ParserFactory.createParserEngine();
         testEngine.clearProcessors();
-        
+
         // Mock the instanceof check for DataProcessor
         Object.setPrototypeOf(mockProcessor1, Object.getPrototypeOf(testEngine.processors.values().next().value || {}));
         Object.setPrototypeOf(mockProcessor2, Object.getPrototypeOf(testEngine.processors.values().next().value || {}));
@@ -139,7 +139,7 @@ describe("Parser Architecture", () => {
       test("should handle empty processors map", () => {
         const testEngine = ParserFactory.createParserEngine();
         testEngine.clearProcessors();
-        
+
         // Should not throw an error
         expect(() => testEngine.resetDropdownCounters()).not.toThrow();
       });
@@ -164,7 +164,7 @@ describe("Parser Architecture", () => {
             validate: jest.fn(),
             process: jest.fn(() => {
               throw new Error("Test processor error");
-            })
+            }),
           };
 
           const testEngine = ParserFactory.createParserEngine();
@@ -175,10 +175,7 @@ describe("Parser Architecture", () => {
             testEngine.process(mockCharacter, "error-test", "value");
           }).toThrow("Test processor error");
 
-          expect(mockConsoleError).toHaveBeenCalledWith(
-            'Error processing type "error-test":',
-            expect.any(Error)
-          );
+          expect(mockConsoleError).toHaveBeenCalledWith('Error processing type "error-test":', expect.any(Error));
         } finally {
           console.error = originalConsoleError;
         }

@@ -76,9 +76,9 @@ describe("ObjectLoopProcessor", () => {
     it("should create dropdown without state provider", () => {
       const keys = ["option1", "option2"];
       const strings = ["content1", "content2"];
-      
+
       const result = processor.createDropdown(1, keys, strings);
-      
+
       expect(result).toContain('data-dropdownsection="dropdown-1-option1option2"');
       expect(result).toContain('<option value="option1" selected="selected">option1</option>'); // First option selected by default
       expect(result).toContain('<option value="option2">option2</option>');
@@ -89,16 +89,16 @@ describe("ObjectLoopProcessor", () => {
     it("should create dropdown with saved state", () => {
       // Mock a state provider
       const mockStateProvider = {
-        dropdownStates: new Map([["dropdown-1-option1option2", "option2"]])
+        dropdownStates: new Map([["dropdown-1-option1option2", "option2"]]),
       };
-      
+
       mockParserEngine.getSavedDropdownState = jest.fn().mockReturnValue("option2");
-      
+
       const keys = ["option1", "option2"];
       const strings = ["content1", "content2"];
-      
+
       const result = processor.createDropdown(1, keys, strings);
-      
+
       expect(result).toContain('<option value="option1">option1</option>');
       expect(result).toContain('<option value="option2" selected="selected">option2</option>');
       // The saved option should be visible
@@ -108,12 +108,12 @@ describe("ObjectLoopProcessor", () => {
 
     it("should fallback to first option when saved state not found", () => {
       mockParserEngine.getSavedDropdownState = jest.fn().mockReturnValue(null);
-      
+
       const keys = ["option1", "option2"];
       const strings = ["content1", "content2"];
-      
+
       const result = processor.createDropdown(1, keys, strings);
-      
+
       expect(result).toContain('<option value="option1" selected="selected">option1</option>'); // First option selected when no saved state
       expect(result).toContain('<option value="option2">option2</option>');
       expect(result).toContain('data-dropdownoption="option1" style="display: block;"');
@@ -123,15 +123,15 @@ describe("ObjectLoopProcessor", () => {
       const keys1 = ["talent", "focus"];
       const keys2 = ["talent", "focus"]; // Same content
       const keys3 = ["skill", "feat"]; // Different content
-      
+
       const result1 = processor.createDropdown(1, keys1, ["content1", "content2"]);
       const result2 = processor.createDropdown(1, keys2, ["content1", "content2"]);
       const result3 = processor.createDropdown(1, keys3, ["content1", "content2"]);
-      
+
       // Same content should generate same dropdown section ID
       expect(result1).toContain('data-dropdownsection="dropdown-1-talentfocus"');
       expect(result2).toContain('data-dropdownsection="dropdown-1-talentfocus"');
-      
+
       // Different content should generate different ID
       expect(result3).toContain('data-dropdownsection="dropdown-1-skillfeat"');
     });
