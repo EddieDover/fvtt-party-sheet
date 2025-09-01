@@ -9,6 +9,27 @@ export class ParserEngine {
     /** @type {Map<string, DataProcessor>} */
     this.processors = new Map();
     this.textParser = TextParserChain;
+    this.dropdownStatesProvider = null; // Will be set by the party sheet
+  }
+
+  /**
+   * Set the dropdown states provider (usually the PartySheetForm instance)
+   * @param {*} provider - Object that has a dropdownStates Map
+   */
+  setDropdownStatesProvider(provider) {
+    this.dropdownStatesProvider = provider;
+  }
+
+  /**
+   * Get saved state for a dropdown section
+   * @param {string} dropdownSection - The dropdown section ID
+   * @returns {string|null} The saved value or null
+   */
+  getSavedDropdownState(dropdownSection) {
+    if (this.dropdownStatesProvider && this.dropdownStatesProvider.dropdownStates) {
+      return this.dropdownStatesProvider.dropdownStates.get(dropdownSection) || null;
+    }
+    return null;
   }
 
   /**
@@ -21,6 +42,18 @@ export class ParserEngine {
       throw new Error("Processor must extend DataProcessor class");
     }
     this.processors.set(type, processor);
+  }
+
+  /**
+   * Reset dropdown counters for all processors that have them
+   * This should be called at the beginning of each render cycle
+   */
+  resetDropdownCounters() {
+    for (const processor of this.processors.values()) {
+      if (typeof processor.resetDropdownCounter === "function") {
+        processor.resetDropdownCounter();
+      }
+    }
   }
 
   /**
