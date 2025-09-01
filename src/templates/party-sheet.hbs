@@ -1,20 +1,20 @@
-<form autocomplete="off" class="fvtt-party-sheet-hc-psform">
+<form autocomplete="off" class="fvtt-party-sheet-hc-psform" class="standard-form">
   <div class="fvtt-party-sheet-toprow">
     {{#unless enableOnlyOnline}}
-    <button class="fvtt-party-sheet-options" name="fvtt-party-sheet-options"><i class="fas fa-cog"></i>{{localize "fvtt-party-sheet.hide-sheet.button" }}</button>
+    <button data-action="onOpenOptions"  class="fvtt-party-sheet-options" name="fvtt-party-sheet-options"><i class="fas fa-cog"></i>{{localize "fvtt-party-sheet.hide-sheet.button" }}</button>
     {{/unless}}
     <div style="flex-grow:1"></div>
-    <button type="button" class="btn btn--primary" style="max-width:50px" name="installer" title="{{localize "fvtt-party-sheet.installer"}}">
+    <button data-action="onInstaller"  type="button" class="btn btn--primary" style="max-width:50px" name="installer" title="{{localize "fvtt-party-sheet.installer"}}">
       <i class="fas fa-download"></i>
     </button>
     {{#unless minimalView}}
-    <button type="button" class="btn btn--primary" style="max-width:50px" name="feedback" title="{{localize "fvtt-party-sheet.party-sheet.feedback"}}">
+    <button data-action="onFeedback"  type="button" class="btn btn--primary" style="max-width:50px" name="feedback" title="{{localize "fvtt-party-sheet.party-sheet.feedback"}}">
       <i class="fas fa-comment"></i>
     </button>
-    <button type="button" class="btn btn--primary" style="max-width:50px" name="bugreport" title="{{localize "fvtt-party-sheet.party-sheet.bugreport"}}">
+    <button data-action="onBugReport"  type="button" class="btn btn--primary" style="max-width:50px" name="bugreport" title="{{localize "fvtt-party-sheet.party-sheet.bugreport"}}">
       <i class="fas fa-bug"></i>
     </button>
-    <button type="button" class="btn btn--primary" style="max-width:50px" name="discord" title={{localize "fvtt-party-sheet.party-sheet.discord"}}>
+    <button data-action="onDiscord"  type="button" class="btn btn--primary" style="max-width:50px" name="discord" title={{localize "fvtt-party-sheet.party-sheet.discord"}}>
       <i class="fab fa-discord"></i>
     </button>
     {{/unless}}
@@ -136,5 +136,5 @@
       </div>
     {{/if}}
   {{/if}}
-  <button name="fvtt-party-sheet-close" class="fvtt-party-sheet-close"><i class="fas fa-times"></i>Close</button>
+  <button type="button" data-action="onCloseWindow" name="fvtt-party-sheet-close" class="fvtt-party-sheet-close"><i class="fas fa-times"></i>Close</button>
 </form>

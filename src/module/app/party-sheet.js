@@ -28,7 +28,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     tag: "form",
     form: {
       handler: PartySheetForm.formHandler,
-      submitOnChange: true,
+      submitOnChange: false,
       closeOnSubmit: false,
     },
     window: {
