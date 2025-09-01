@@ -41,7 +41,6 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
       onOpenOptions: PartySheetForm.onOpenOptions,
       onCloseWindow: PartySheetForm.onCloseWindow,
       onOpenActorSheet: PartySheetForm.onOpenActorSheet,
-      onChangeSystem: PartySheetForm.onChangeSystem,
       onFeedback: PartySheetForm.onFeedback,
       onBugReport: PartySheetForm.onBugReport,
       onDiscord: PartySheetForm.onDiscord,
@@ -594,6 +593,10 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Start the refresh timer for periodic updates
     this.startRefreshTimer();
+
+    document
+      .querySelector('select[name="fvtt-party-sheet-system"]')
+      .addEventListener("change", PartySheetForm.onChangeSystem);
 
     document.querySelectorAll('button[class="fvtt-party-sheet-feedback-button"]').forEach((button) => {
       button.addEventListener("click", PartySheetForm.onFeedback);
