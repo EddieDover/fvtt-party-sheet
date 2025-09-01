@@ -26,7 +26,7 @@ export class ArrayStringBuilderProcessor extends DataProcessor {
     const outStrTemplate = value.split("=>")[1];
     let finalStr = "";
 
-    let objData = extractPropertyByString(character, objName);
+    let objData = this.extractDataWithFiltering(character, objName);
 
     // Handle null/undefined data
     if (objData == null) {
@@ -92,6 +92,54 @@ export class ArrayStringBuilderProcessor extends DataProcessor {
 
     // @ts-ignore
     return isSafeStringNeeded ? new Handlebars.SafeString(outputText) : outputText;
+  }
+
+  /**
+   * Extract data with support for items{filter} syntax
+   * @param {any} character - The character object
+   * @param {string} objName - The object path, potentially with filter syntax
+   * @returns {any} The extracted data
+   */
+  extractDataWithFiltering(character, objName) {
+    // Check if this uses the items{filter} syntax
+    const filterMatch = objName.match(/^items\{([^}]+)\}\.(.+)$/);
+
+    if (filterMatch) {
+      // Handle items{filter}.property syntax
+      const [, filterType, propertyPath] = filterMatch;
+
+      const items = extractPropertyByString(character, "items");
+
+      if (!items) {
+        return null;
+      }
+
+      // Normalize items to array format (similar to object-loop processor)
+      let itemsArray;
+      const itemKeys = Object.keys(items);
+
+      // Handle special FoundryVTT document structure
+      if (itemKeys.length === 6 && itemKeys.includes("documentClass") && itemKeys.includes("_source")) {
+        itemsArray = Object.keys(items._source).map((key) => items._source[key]);
+      } else {
+        itemsArray = Object.keys(items).map((key) => items[key]);
+      }
+
+      // Filter items by type
+      const filteredItems = itemsArray.filter((item) => item.type === filterType);
+
+      if (filteredItems.length === 0) {
+        return null;
+      }
+
+      // Extract the property from the first matching item
+      const targetItem = filteredItems[0];
+      const result = extractPropertyByString(targetItem, propertyPath);
+      return result;
+    }
+
+    // Fallback to regular property extraction
+    return extractPropertyByString(character, objName);
   }
 
   /**

@@ -203,101 +203,6 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /**
-   * Clean a string of html injection.
-   * @param {string} str - The string to clean
-   * @returns {string} The cleaned string
-   * @memberof PartySheetForm
-   */
-  cleanString(str) {
-    if (typeof str !== "string") {
-      return str;
-    }
-
-    // Use DOMPurify for robust HTML sanitization
-    return sanitizeHTML(str);
-  }
-
-  /**
-   * Remove trailing commas from a string.
-   * @param {string} str - The string to remove trailing commas from
-   * @returns {string} The string without trailing commas
-   * @memberof PartySheetForm
-   */
-  removeTrailingComma(str) {
-    return str.replace(/,\s*$/, "");
-  }
-
-  /**
-   * Process options for a value.
-   * @param {*} value - The value to process
-   * @param {*} options - The options for the value
-   * @returns {*} - The processed value
-   * @memberof PartySheetForm
-   */
-  processOptions(value, options) {
-    if (options.showSign) {
-      value = addSign(value);
-    }
-    return value;
-  }
-
-  /**
-   * Process the largest value from an array.
-   * @param {*} character - The character to process
-   * @param {*} type - The type of data to process
-   * @param {*} value - The value to process
-   * @returns {string} The text to render
-   */
-  // @ts-ignore
-  processLargestFromArray(character, type, value) {
-    let lArr = extractPropertyByString(character, value);
-
-    if (!Array.isArray(lArr) && lArr instanceof Set === false) {
-      lArr = Object.keys(lArr).map((key) => {
-        if (typeof lArr[key] !== "object") {
-          return lArr[key];
-        } else if (lArr[key].value) {
-          return lArr[key].value;
-        } else return "";
-      });
-    } else return "";
-
-    if (lArr.length ?? lArr.length !== 0) {
-      return lArr.reduce((a, b) => (a > b ? a : b));
-    } else {
-      return "";
-    }
-  }
-
-  /**
-   * Process the smallest value from an array.
-   * @param {*} character - The character to process
-   * @param {*} type - The type of data to process
-   * @param {*} value - The value to process
-   * @returns {string} The text to render
-   */
-  // @ts-ignore
-  processSmallestFromArray(character, type, value) {
-    let sArr = extractPropertyByString(character, value);
-
-    if (!Array.isArray(sArr) && sArr instanceof Set === false) {
-      sArr = Object.keys(sArr).map((key) => {
-        if (typeof sArr[key] !== "object") {
-          return sArr[key];
-        } else if (sArr[key].value) {
-          return sArr[key].value;
-        } else return "";
-      });
-    } else return "";
-
-    if (sArr.length ?? sArr.length !== 0) {
-      return sArr.reduce((a, b) => (a < b ? a : b));
-    } else {
-      return "";
-    }
-  }
-
-  /**
    * Get the custom data for a character.
    * @param {*} character - The character to get the data for
    * @param {*} type - The type of data to get
@@ -565,7 +470,8 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
         // Check all available options
         const availableOptions = [];
         $dropdown.find("option").each((i, option) => {
-          availableOptions.push(option.value);
+          // @ts-ignore
+          availableOptions.push($(option).val());
         });
 
         // Only restore if the saved value exists as an option

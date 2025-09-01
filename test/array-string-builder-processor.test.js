@@ -308,4 +308,71 @@ describe("ArrayStringBuilderProcessor", () => {
       expect(processor.removeTrailingComma("single,")).toBe("single");
     });
   });
+
+  describe("enhanced filtering functionality", () => {
+    it("should process items{filter}.property syntax", () => {
+      const character = {
+        items: {
+          item1: { type: "race", name: "Human", languages: ["Common", "Bonus Language"] },
+          item2: { type: "class", name: "Fighter" },
+          item3: { type: "race", name: "Elf", languages: ["Common", "Elvish"] },
+        },
+      };
+
+      const result = processor.process(character, "items{race}.languages => value, ");
+
+      expect(result).toBe("parsed_text");
+      expect(mockParserEngine.parseText).toHaveBeenCalled();
+
+      // Verify that the processor extracted the languages array from the race item
+      const callArgs = mockParserEngine.parseText.mock.calls[0][0];
+      expect(callArgs).toContain("Common");
+      expect(callArgs).toContain("Bonus Language");
+    });
+
+    it("should handle FoundryVTT document structure for items filtering", () => {
+      const character = {
+        items: {
+          documentClass: "Item",
+          _source: {
+            item1: { type: "race", name: "Dwarf", languages: ["Common", "Dwarven"] },
+            item2: { type: "weapon", name: "Axe" },
+          },
+          size: 2,
+          contents: [],
+          apps: {},
+          _sheet: null,
+        },
+      };
+
+      const result = processor.process(character, "items{race}.languages => value, ");
+
+      expect(result).toBe("parsed_text");
+      expect(mockParserEngine.parseText).toHaveBeenCalled();
+    });
+
+    it("should return empty string when no items match filter", () => {
+      const character = {
+        items: {
+          item1: { type: "weapon", name: "Sword" },
+          item2: { type: "armor", name: "Shield" },
+        },
+      };
+
+      const result = processor.process(character, "items{race}.languages => value, ");
+
+      expect(result).toBe("");
+    });
+
+    it("should fallback to regular extraction for non-filter syntax", () => {
+      const character = {
+        regularArray: ["item1", "item2", "item3"],
+      };
+
+      const result = processor.process(character, "regularArray => value, ");
+
+      expect(result).toBe("parsed_text");
+      expect(mockParserEngine.parseText).toHaveBeenCalled();
+    });
+  });
 });
