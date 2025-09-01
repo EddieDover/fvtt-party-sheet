@@ -561,7 +561,6 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
       clearInterval(this.refreshTimer);
       this.refreshTimer = null;
     }
-    // @ts-ignore
     this.close();
   }
 
@@ -596,10 +595,10 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
     document
       .querySelector('select[name="fvtt-party-sheet-system"]')
-      .addEventListener("change", PartySheetForm.onChangeSystem);
+      ?.addEventListener("change", PartySheetForm.onChangeSystem.bind(this));
 
     document.querySelectorAll('button[class="fvtt-party-sheet-feedback-button"]').forEach((button) => {
-      button.addEventListener("click", PartySheetForm.onFeedback);
+      button.addEventListener("click", PartySheetForm.onFeedback.bind(this));
     });
 
     document.querySelectorAll('button[class="fvtt-party-sheet-module-preview-button"]').forEach((button) => {
