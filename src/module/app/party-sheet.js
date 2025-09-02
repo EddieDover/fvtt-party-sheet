@@ -565,6 +565,12 @@ export class PartySheetForm extends FormApplication {
       updateSelectedTemplate(getCustomTemplates()[selectedIndex]);
     }
 
+    // User made a template selection, they're done interacting
+    // Small delay to allow the selection to complete
+    setTimeout(() => {
+      this.isDropdownInteracting = false;
+    }, 50);
+
     this.doRender(true, false);
   }
 
@@ -581,7 +587,19 @@ export class PartySheetForm extends FormApplication {
     // @ts-ignore
     $('input[name="fvtt-party-sheet-actorimage"]', html).click(this.openActorSheet.bind(this));
     // @ts-ignore
-    $('select[name="fvtt-party-sheet-system"]', html).change(this.changeSystem.bind(this));
+    $('select[name="fvtt-party-sheet-system"]', html)
+      .on("mousedown", (event) => {
+        // User is starting to interact with template dropdown (opening it)
+        console.log("fvtt-party-sheet | Template selector interaction started");
+        this.isDropdownInteracting = true;
+      })
+      .on("change", this.changeSystem.bind(this))
+      .on("blur", (event) => {
+        // Template selector lost focus without selection (clicked elsewhere)
+        setTimeout(() => {
+          this.isDropdownInteracting = false;
+        }, 50);
+      });
     // @ts-ignore
     $('button[name="feedback"]', html).click(this.onFeedback.bind(this));
     // @ts-ignore
