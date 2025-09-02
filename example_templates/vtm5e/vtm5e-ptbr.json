@@ -2,6 +2,8 @@
   "name": "vtm5e",
   "system": "vtm5e",
   "author": "Arboreal",
+  "version": "1.1.0",
+  "minimumSystemVersion": "5.0.11",
   "offline_excludes": ["npc"],
   "rows": [
     [
@@ -17,21 +19,21 @@
         "type": "direct",
         "align": "center",
         "header": "show",
-        "text": "name"
+        "text": "{name}"
       },
       {
         "name": "Vitalidade",
         "type": "direct",
         "align": "center",
         "header": "show",
-        "text": "system.health.value"
+        "text": "{system.health.value}"
       },
       {
         "name": "Força de Vontade",
         "type": "direct",
         "align": "center",
         "header": "show",
-        "text": "system.willpower.value"
+        "text": "{system.willpower.value}"
       },
       {
         "name": "Fome / Fúria",
@@ -42,13 +44,13 @@
           {
             "type": "exists",
             "value": "system.hunger.value",
-            "text": "Fome: system.hunger.value",
+            "text": "Fome: {system.hunger.value}",
             "else": " Fome: não possui"
           },
           {
             "type": "exists",
             "value": "system.rage.value",
-            "text": "{newline}Fúria: system.rage.value",
+            "text": "{newline}Fúria: {system.rage.value}",
             "else": "{newline} Fúria: não possui"
           }
         ]
@@ -58,14 +60,14 @@
         "type": "direct",
         "align": "center",
         "header": "show",
-        "text": "system.headers.ambition"
+        "text": "{system.headers.ambition}"
       },
       {
         "name": "Desejo",
         "type": "direct",
         "align": "center",
         "header": "show",
-        "text": "system.headers.desire"
+        "text": "{system.headers.desire}"
       }
     ]
   ]

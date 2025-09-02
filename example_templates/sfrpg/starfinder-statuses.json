@@ -2,18 +2,9 @@
   "name": "Starfinder - With Statuses",
   "system": "sfrpg",
   "author": "Michael Card (EmoCthulhu)",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "minimumSystemVersion": "0.25.3",
-  "offline_excludes": [
-    "npc",
-    "npc2",
-    "base",
-    "creature",
-    "drone",
-    "hazard",
-    "vehicle",
-    "starship"
-  ],
+  "offline_excludes": ["npc", "npc2", "base", "creature", "drone", "hazard", "vehicle", "starship"],
   "rows": [
     [
       {
@@ -28,7 +19,7 @@
         "type": "direct",
         "align": "left",
         "header": "show",
-        "text": "{b} name {/b} {newline} Theme: system.details.theme {newline} Race: {i} system.details.race {/i} {newline} Size: system.traits.size"
+        "text": "{b} {name} {/b} {newline} Theme: {system.details.theme} {newline} Race: {i} {system.details.race} {/i} {newline} Size: {system.traits.size}"
       },
       {
         "name": "STR",
@@ -36,7 +27,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.abilities.str {newline} {b} system.abilities.str.mod {/b}"
+        "text": "{system.abilities.str} {newline} {b} {system.abilities.str.mod} {/b}"
       },
       {
         "name": "DEX",
@@ -44,7 +35,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.abilities.dex {newline} {b} system.abilities.dex.mod {/b}"
+        "text": "{system.abilities.dex} {newline} {b} {system.abilities.dex.mod} {/b}"
       },
       {
         "name": "CON",
@@ -52,7 +43,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.abilities.con {newline} {b} system.abilities.con.mod {/b}"
+        "text": "{system.abilities.con} {newline} {b} {system.abilities.con.mod} {/b}"
       },
       {
         "name": "INT",
@@ -60,7 +51,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.abilities.int {newline} {b} system.abilities.int.mod {/b}"
+        "text": "{system.abilities.int} {newline} {b} {system.abilities.int.mod} {/b}"
       },
       {
         "name": "WIS",
@@ -68,7 +59,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.abilities.wis {newline} {b} system.abilities.wis.mod {/b}"
+        "text": "{system.abilities.wis} {newline} {b} {system.abilities.wis.mod} {/b}"
       },
       {
         "name": "CHA",
@@ -76,7 +67,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.abilities.cha {newline} {b} system.abilities.cha.mod {/b}"
+        "text": "{system.abilities.cha} {newline} {b} {system.abilities.cha.mod} {/b}"
       },
       {
         "name": "HP/SP",
@@ -84,7 +75,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "HP: {b} system.attributes.hp.value {/b} / system.attributes.hp.max {newline} SP: {b} system.attributes.sp.value {/b} / system.attributes.sp.max"
+        "text": "HP: {b} {system.attributes.hp.value} {/b} / {system.attributes.hp.max} {newline} SP: {b} {system.attributes.sp.value} {/b} / {system.attributes.sp.max}"
       },
       {
         "name": "EAC",
@@ -92,7 +83,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.attributes.eac"
+        "text": "{system.attributes.eac}"
       },
       {
         "name": "BAB",
@@ -100,7 +91,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.attributes.baseAttackBonus"
+        "text": "{system.attributes.baseAttackBonus}"
       },
       {
         "name": "Main Move",
@@ -108,7 +99,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "Type: system.attributes.speed.mainMovement"
+        "text": "Type: {system.attributes.speed.mainMovement}"
       },
       {
         "name": "Fort",
@@ -116,7 +107,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.attributes.fort.bonus"
+        "text": "{system.attributes.fort.bonus}"
       },
       {
         "name": "Reflex",
@@ -124,7 +115,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.attributes.reflex.bonus"
+        "text": "{system.attributes.reflex.bonus}"
       },
       {
         "name": "Will",
@@ -132,7 +123,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.attributes.will.bonus"
+        "text": "{system.attributes.will.bonus}"
       },
       {
         "name": "Align",
@@ -263,7 +254,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "Credits: system.currency.credit"
+        "text": "Credits: {system.currency.credit}"
       },
       {
         "name": "Senses",
@@ -272,7 +263,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "system.traits.senses"
+        "text": "{system.traits.senses}"
       },
       {
         "name": "Statuses",
@@ -300,57 +291,57 @@
           {
             "type": "exists",
             "value": "system.details.level",
-            "text": "Level: system.details.level {newline}"
+            "text": "Level: {system.details.level} {newline}"
           },
           {
             "type": "exists",
             "value": "system.classes.solarian.levels",
-            "text": "Solarian system.classes.solarian.levels {newline}"
+            "text": "Solarian {system.classes.solarian.levels} {newline}"
           },
           {
             "type": "exists",
             "value": "system.classes.soldier.levels",
-            "text": "Soldier system.classes.soldier.levels {newline}"
+            "text": "Soldier {system.classes.soldier.levels} {newline}"
           },
           {
             "type": "exists",
             "value": "system.classes.operative.levels",
-            "text": "Operative system.classes.operative.levels {newline}"
+            "text": "Operative {system.classes.operative.levels} {newline}"
           },
           {
             "type": "exists",
             "value": "system.classes.mechanic.levels",
-            "text": "Mechanic system.classes.mechanic.levels {newline}"
+            "text": "Mechanic {system.classes.mechanic.levels} {newline}"
           },
           {
             "type": "exists",
             "value": "system.classes.mystic.levels",
-            "text": "Mystic system.classes.mystic.levels {newline}"
+            "text": "Mystic {system.classes.mystic.levels} {newline}"
           },
           {
             "type": "exists",
             "value": "system.classes.technomancer.levels",
-            "text": "Technomancer system.classes.technomancer.levels {newline}"
+            "text": "Technomancer {system.classes.technomancer.levels} {newline}"
           },
           {
             "type": "exists",
             "value": "system.classes.envoy.levels",
-            "text": "Envoy system.classes.envoy.levels {newline}"
+            "text": "Envoy {system.classes.envoy.levels} {newline}"
           },
           {
             "type": "exists",
             "value": "system.classes.witchwarper.levels",
-            "text": "Witchwarper system.classes.witchwarper.levels {newline}"
+            "text": "Witchwarper {system.classes.witchwarper.levels} {newline}"
           },
           {
             "type": "exists",
             "value": "system.classes.vanguard.levels",
-            "text": "Vanguard system.classes.vanguard.levels {newline}"
+            "text": "Vanguard {system.classes.vanguard.levels} {newline}"
           },
           {
             "type": "exists",
             "value": "system.classes.biohacker.levels",
-            "text": "Biohacker system.classes.biohacker.levels"
+            "text": "Biohacker {system.classes.biohacker.levels}"
           }
         ]
       },
@@ -450,7 +441,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "RP: {b} system.attributes.rp.value {/b} / system.attributes.rp.max"
+        "text": "RP: {b} {system.attributes.rp.value} {/b} / {system.attributes.rp.max}"
       },
       {
         "name": "KAC/CMD",
@@ -458,7 +449,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.attributes.kac {newline} system.attributes.cmd"
+        "text": "{system.attributes.kac} {newline} {system.attributes.cmd}"
       },
       {
         "name": "Init",
@@ -466,7 +457,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.attributes.init.total"
+        "text": "{system.attributes.init.total}"
       },
       {
         "name": "Movement",
@@ -480,35 +471,35 @@
             "ifdata": "system.attributes.speed.climbing.base",
             "matches": 0,
             "text": "",
-            "else": "Climbing: system.attributes.speed.climbing.value {newline}"
+            "else": "Climbing: {system.attributes.speed.climbing.value} {newline}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.speed.flying.base",
             "matches": 0,
             "text": "",
-            "else": "Flying: system.attributes.speed.flying.value {newline}"
+            "else": "Flying: {system.attributes.speed.flying.value} {newline}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.speed.burrowing.base",
             "matches": 0,
             "text": "",
-            "else": "Burrow: system.attributes.speed.burrowing.value {newline}"
+            "else": "Burrow: {system.attributes.speed.burrowing.value} {newline}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.speed.swimming.base",
             "matches": 0,
             "text": "",
-            "else": "Swimming: system.attributes.speed.swimming.value {newline}"
+            "else": "Swimming: {system.attributes.speed.swimming.value} {newline}"
           },
           {
             "type": "match",
             "ifdata": "system.attributes.speed.land",
             "matches": 0,
             "text": "",
-            "else": "Land: system.attributes.speed.land.value"
+            "else": "Land: {system.attributes.speed.land.value}"
           }
         ]
       },
@@ -518,7 +509,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.attributes.reach"
+        "text": "{system.attributes.reach}"
       },
       {
         "name": "Space",
@@ -526,7 +517,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.attributes.space"
+        "text": "{system.attributes.space}"
       },
       {
         "name": "Arms",
@@ -534,7 +525,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.attributes.arms"
+        "text": "{system.attributes.arms}"
       },
       {
         "name": "Deity",
@@ -542,7 +533,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.details.biography.deity"
+        "text": "{system.details.biography.deity}"
       },
       {
         "name": "CurrencyUPB",
@@ -550,7 +541,7 @@
         "align": "center",
         "valign": "top",
         "header": "hide",
-        "text": "UPBs: system.currency.upb"
+        "text": "UPBs: {system.currency.upb}"
       },
       {
         "name": "Languages",

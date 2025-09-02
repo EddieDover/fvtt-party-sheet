@@ -29,6 +29,8 @@
         <option value="{{template.name}}___{{template.author}}" {{#ifCond template.name '==' ../selectedName}} {{#ifCond template.author '==' ../selectedAuthor }}selected{{/ifCond}}{{/ifCond}}>{{template.name}} - {{template.author}}</option>
         {{/each}}
       </select>
+      {{else}}
+        <div style="text-align:center">Template: {{applicableTemplates.[0].name}} - {{applicableTemplates.[0].author}}</div>
       {{/hcifgte}}
       {{#if players}}
       <table id='fvtt-party-sheet-ps-table'>
@@ -37,14 +39,18 @@
             {{#each player_data as |row|}}
             <tr>
               {{#getKeys row}}
-                {{#hcifhidden row key=this}}
-                  <th></th>
+                {{#shouldSkipForColspan row this}}
+                  <!-- Skip this header - it's covered by a previous header's colspan -->
                 {{else}}
-                  <th
-                    colspan="{{getColSpan row this}}"
-                    style="max-width:{{getMaxWidth row this}};min-width:{{getMinWidth row this}};"
-                  >{{this}}</th>
-                {{/hcifhidden}}
+                  {{#hcifhidden row key=this}}
+                    <th></th>
+                  {{else}}
+                    <th
+                      colspan="{{getColSpan row this}}"
+                      style="max-width:{{getMaxWidth row this}};min-width:{{getMinWidth row this}};"
+                    >{{this}}</th>
+                  {{/hcifhidden}}
+                {{/shouldSkipForColspan}}
               {{/getKeys}}
             </tr>
             {{/each}}
@@ -60,19 +66,57 @@
             {{/checkIndex}}
           >
             {{#getKeys player_row}}
-              {{#isSpanOver player_row this}}
-              <td
-              class="fvtt-party-sheet-dc"
-              rowspan="{{getRowSpan player_row this}}"
-              style="text-align:{{getAlignment player_row this}};vertical-align:{{getVAlignment player_row this}};max-width:{{getMaxWidth player_row this}};min-width:{{getMinWidth player_row this}};"
-              >
-                {{getData player_row this}}
-              </td>
-              {{/isSpanOver}}
+              {{#shouldSkipForColspan player_row this}}
+                <!-- Skip this cell - it's covered by a previous cell's colspan -->
+              {{else}}
+                {{#isSpanOver player_row this}}
+                <td
+                class="fvtt-party-sheet-dc"
+                colspan="{{getColSpan player_row this}}"
+                rowspan="{{getRowSpan player_row this}}"
+                style="text-align:{{getAlignment player_row this}};vertical-align:{{getVAlignment player_row this}};max-width:{{getMaxWidth player_row this}};min-width:{{getMinWidth player_row this}};"
+                >
+                  {{getData player_row this}}
+                </td>
+                {{/isSpanOver}}
+              {{/shouldSkipForColspan}}
             {{/getKeys}}
           </tr>
           {{/each}}
         {{/each}}
+
+        <!-- Totals Footer Row -->
+        {{#with players as |allPlayers|}}
+        <tr class="fvtt-party-sheet-totals-row dark" style="border-top: 2px solid #555; font-weight: bold; background-color: rgba(0, 0, 0, 0.1);">
+          {{#with allPlayers.[0].[0] as |first_row|}}
+            {{#getKeys first_row}}
+              {{#shouldSkipForColspan first_row this}}
+                <!-- Skip this cell - it's covered by a previous cell's colspan -->
+              {{else}}
+                {{#if (shouldShowTotal first_row this)}}
+                  <td 
+                    class="fvtt-party-sheet-dc"
+                    colspan="{{getColSpan first_row this}}"
+                    style="text-align:{{getAlignment first_row this}};font-weight:bold;"
+                  >
+                    Total: {{getColumnTotal allPlayers this 0}}
+                  </td>
+                {{else}}
+                  <td 
+                    class="fvtt-party-sheet-dc"
+                    colspan="{{getColSpan first_row this}}"
+                    style="text-align:{{getAlignment first_row this}};"
+                  >
+                    {{#if (eq this "Character Sheet")}}
+                      <!-- Empty for character sheet column -->
+                    {{/if}}
+                  </td>
+                {{/if}}
+              {{/shouldSkipForColspan}}
+            {{/getKeys}}
+          {{/with}}
+        </tr>
+        {{/with}}
 
         </tbody>
       </table>
