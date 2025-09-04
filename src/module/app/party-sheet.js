@@ -584,6 +584,12 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
       updateSelectedTemplate(getCustomTemplates()[selectedIndex]);
     }
 
+    // User made a template selection, they're done interacting
+    // Small delay to allow the selection to complete
+    setTimeout(() => {
+      this.isDropdownInteracting = false;
+    }, 50);
+
     this.doRender(true, false);
   }
 
