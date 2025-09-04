@@ -59,6 +59,17 @@ export function createMockUI() {
 export function setupFoundryMocks(gameOverrides = {}, uiOverrides = {}) {
   global.game = createMockGame(gameOverrides);
   global.ui = { ...createMockUI(), ...uiOverrides };
+  global.foundry = {
+    applications: {
+      apps: {
+        FilePicker: {
+          implementation: {
+            browse: jest.fn().mockResolvedValueOnce({ dirs: [], files: [] }),
+          },
+        },
+      },
+    },
+  };
 }
 
 /**

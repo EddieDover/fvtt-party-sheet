@@ -1,99 +1,102 @@
-<form autocomplete="off" class="fvtt-party-sheet-template-status-dialog">
+<form autocomplete="off" class="fvtt-party-sheet-template-status-dialog standard-form">
   <p>{{localize "fvtt-party-sheet.template-status.template-status"}}</p>
   <p>{{valid.length}} loaded templates are valid and have no issues.</p>
-  <div style="display:flex; flex-direction:row; flex-wrap:nowrap">
-
-    <div style="display: grid;grid-template-columns: repeat(3, 1fr);grid-template-rows: repeat(2, 1fr);grid-column-gap: 5px;grid-row-gap: 5px;">
-        <div style="display:flex; flex-direction:column; flex-wrap:nowrap;flex-grow:1;">
-            <p>{{localize "fvtt-party-sheet.template-status.out-of-date"}}:</p>
-            {{#if outOfDateTemplates.length}}
-                <div style="background-color:#ffffff;flex-grow:1;padding:5px;">
-                {{#each outOfDateTemplates}}
-                    <div>
-                        {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
-                        {{localize "fvtt-party-sheet.template-status.current-version"}}:  <span style="color:#ff6666;background-color:#000000;border-radius:5px;padding:2px;">{{this.version}}</span>
-                        {{localize "fvtt-party-sheet.template-status.module-version"}}: <span style="color:#00ff00;background-color:#000000;;border-radius:5px;padding:2px;">{{this.providedVersion}}</span><br/>
-                    </div>
-                {{/each}}
-                </div>
-            {{else}}
-                <div style="background-color:#ffffff;flex-grow:1;padding:5px;">
-                    N/A
-                </div>
-            {{/if}}
+  
+  <div class="template-status-grid">
+    <div class="template-status-section">
+      <p>{{localize "fvtt-party-sheet.template-status.out-of-date"}}:</p>
+      {{#if outOfDateTemplates.length}}
+        <div class="template-status-content">
+          {{#each outOfDateTemplates}}
+            <div class="template-item">
+              {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
+              {{localize "fvtt-party-sheet.template-status.current-version"}}: <span class="version-badge current-version">{{this.version}}</span>
+              {{localize "fvtt-party-sheet.template-status.module-version"}}: <span class="version-badge required-version">{{this.providedVersion}}</span><br/>
+            </div>
+          {{/each}}
         </div>
-        <div style="display:flex; flex-direction:column; flex-wrap:nowrap;flex-grow:1;">
-            <p>{{localize "fvtt-party-sheet.template-status.newer-required-system"}}:</p>
-            {{#if outOfDateSystems.length}}
-                <div style="background-color:#ffffff;flex-grow:1;padding:5px;">
-                {{#each outOfDateSystems}}
-                    <div>
-                        {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
-                        {{localize "fvtt-party-sheet.template-status.required-system-version"}}:  <span style="color:#00ff00;background-color:#000000;;border-radius:5px;padding:2px;">{{this.minimumSystemVersion}}</span>
-                        {{localize "fvtt-party-sheet.template-status.current-system-version"}}: <span style="color:#ff6666;background-color:#000000;;border-radius:5px;padding:2px;">{{this.ownedSystemVersion}}</span><br/>
-                    </div>
-                {{/each}}
-                </div>
-            {{else}}
-                <div style="background-color:#ffffff;flex-grow:1;padding:5px;">
-                    N/A
-                </div>
-            {{/if}}
+      {{else}}
+        <div class="template-status-content empty-state">
+          N/A
         </div>
-        <div style="display:flex; flex-direction:column; flex-wrap:nowrap;flex-grow:1;">
-            <p>{{localize "fvtt-party-sheet.template-status.older-required-system"}}:</p>
-            {{#if tooNewSystems.length}}
-                <div style="background-color:#ffffff;flex-grow:1;padding:5px;">
-                {{#each tooNewSystems}}
-                    <div>
-                        {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
-                        {{localize "fvtt-party-sheet.template-status.maximum-system-version"}}:  <span style="color:#00ff00;background-color:#000000;;border-radius:5px;padding:2px;">{{this.maximumSystemVersion}}</span>
-                        {{localize "fvtt-party-sheet.template-status.current-system-version"}}: <span style="color:#ff6666;background-color:#000000;;border-radius:5px;padding:2px;">{{this.ownedSystemVersion}}</span><br/>
-                    </div>
-                {{/each}}
-                </div>
-            {{else}}
-                <div style="background-color:#ffffff;flex-grow:1;padding:5px;">
-                    N/A
-                </div>
-            {{/if}}
-        </div>
-        <div style="display:flex; flex-direction:column; flex-wrap:nowrap;flex-grow:1;">
-            <p>{{localize "fvtt-party-sheet.template-status.no-version-information"}}:</p>
-            {{#if noVersionInformation.length}}
-                <div style="background-color:#ffffff;flex-grow:1;padding:5px;">
-                {{#each noVersionInformation}}
-                    <div>
-                        {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
-                    </div>
-                    {{/each}}
-                </div>
-            {{else}}
-                <div style="background-color:#ffffff;flex-grow:1;padding:5px;">
-                    N/A
-                </div>
-            {{/if}}
-        </div>
-        <div style="display:flex; flex-direction:column; flex-wrap:nowrap;flex-grow:1;">
-            <p>{{localize "fvtt-party-sheet.template-status.no-system-information"}}:</p>
-            {{#if noSystemInformation.length}}
-                <div style="background-color:#ffffff;flex-grow:1;padding:5px;">
-                {{#each noSystemInformation}}
-                    <div>
-                        {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
-                    </div>
-                {{/each}}
-                </div>
-            {{else}}
-                <div style="background-color:#ffffff;flex-grow:1;padding:5px;">
-                    N/A
-                </div>
-            {{/if}}
-        </div>
+      {{/if}}
     </div>
-
+    
+    <div class="template-status-section">
+      <p>{{localize "fvtt-party-sheet.template-status.newer-required-system"}}:</p>
+      {{#if outOfDateSystems.length}}
+        <div class="template-status-content">
+          {{#each outOfDateSystems}}
+            <div class="template-item">
+              {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
+              {{localize "fvtt-party-sheet.template-status.required-system-version"}}: <span class="version-badge required-version">{{this.minimumSystemVersion}}</span>
+              {{localize "fvtt-party-sheet.template-status.current-system-version"}}: <span class="version-badge current-version">{{this.ownedSystemVersion}}</span><br/>
+            </div>
+          {{/each}}
+        </div>
+      {{else}}
+        <div class="template-status-content empty-state">
+          N/A
+        </div>
+      {{/if}}
+    </div>
+    
+    <div class="template-status-section">
+      <p>{{localize "fvtt-party-sheet.template-status.older-required-system"}}:</p>
+      {{#if tooNewSystems.length}}
+        <div class="template-status-content">
+          {{#each tooNewSystems}}
+            <div class="template-item">
+              {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
+              {{localize "fvtt-party-sheet.template-status.maximum-system-version"}}: <span class="version-badge required-version">{{this.maximumSystemVersion}}</span>
+              {{localize "fvtt-party-sheet.template-status.current-system-version"}}: <span class="version-badge current-version">{{this.ownedSystemVersion}}</span><br/>
+            </div>
+          {{/each}}
+        </div>
+      {{else}}
+        <div class="template-status-content empty-state">
+          N/A
+        </div>
+      {{/if}}
+    </div>
   </div>
-  <button type="button" id="fvtt-party-sheet-template-ok-btn" name="fvtt-party-sheet-template-ok-btn">
+  
+  <div class="template-status-grid">
+    <div class="template-status-section">
+      <p>{{localize "fvtt-party-sheet.template-status.no-version-information"}}:</p>
+      {{#if noVersionInformation.length}}
+        <div class="template-status-content">
+          {{#each noVersionInformation}}
+            <div class="template-item">
+              {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
+            </div>
+          {{/each}}
+        </div>
+      {{else}}
+        <div class="template-status-content empty-state">
+          N/A
+        </div>
+      {{/if}}
+    </div>
+    
+    <div class="template-status-section">
+      <p>{{localize "fvtt-party-sheet.template-status.no-system-information"}}:</p>
+      {{#if noSystemInformation.length}}
+        <div class="template-status-content">
+          {{#each noSystemInformation}}
+            <div class="template-item">
+              {{this.name}} {{localize "fvtt-party-sheet.template-status.by"}} {{this.author}}<br/>
+            </div>
+          {{/each}}
+        </div>
+      {{else}}
+        <div class="template-status-content empty-state">
+          N/A
+        </div>
+      {{/if}}
+    </div>
+  </div>
+  <button type="button" id="fvtt-party-sheet-template-ok-btn" name="fvtt-party-sheet-template-ok-btn" data-action="onCloseSheet">
     {{localize "fvtt-party-sheet.close"}}
   </button>
 </form>

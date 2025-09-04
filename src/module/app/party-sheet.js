@@ -550,7 +550,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
         }, 350);
       },
     };
-    const hcs = new HiddenCharactersSettings(overrides);
+    const hcs = HiddenCharactersSettings.getInstance(overrides);
     // @ts-ignore
     hcs.render(true);
   }
@@ -601,13 +601,13 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     const sheetSelectDropdown = document.querySelector('select[name="fvtt-party-sheet-system"]');
 
     sheetSelectDropdown?.addEventListener("change", PartySheetForm.onChangeSystem.bind(this));
-    sheetSelectDropdown.addEventListener("blur", (event) => {
+    sheetSelectDropdown?.addEventListener("blur", (event) => {
       // Template selector lost focus without selection (clicked elsewhere)
       setTimeout(() => {
         this.isDropdownInteracting = false;
       }, 50);
     });
-    sheetSelectDropdown.addEventListener("mousedown", (event) => {
+    sheetSelectDropdown?.addEventListener("mousedown", (event) => {
       // User is starting to interact with template dropdown (opening it)
       console.log("fvtt-party-sheet | Template selector interaction started");
       this.isDropdownInteracting = true;
@@ -724,9 +724,15 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static onInstaller(event) {
     event.preventDefault();
-    this.showInstaller = true;
-    this._openingInstaller = true; // Flag to prevent immediate closure
 
+    // In ApplicationV2, 'this' in static action handlers refers to the instance
+    // Toggle the installer view - if it's showing, hide it; if hidden, show it
+    // @ts-ignore
+    this.showInstaller = !this.showInstaller;
+    // @ts-ignore
+    this._openingInstaller = this.showInstaller; // Only flag as opening if we're showing it
+
+    // @ts-ignore
     this.doRender(true, false);
   }
 }

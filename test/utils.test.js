@@ -746,19 +746,27 @@ describe("Utils testing", () => {
           .mockResolvedValueOnce({ text: () => Promise.resolve(JSON.stringify(mockSystemData1)) })
           .mockResolvedValueOnce({ text: () => Promise.resolve(JSON.stringify(mockSystemData2)) });
 
-        // Override the default FilePicker mock for this specific test
-        global.FilePicker.browse = jest
-          .fn()
-          .mockResolvedValueOnce({
-            dirs: ["systems/dnd5e", "systems/pf2e"],
-          })
-          .mockResolvedValueOnce({
-            files: ["systems/dnd5e/system.json"],
-          })
-          .mockResolvedValueOnce({
-            files: ["systems/pf2e/system.json"],
-          });
-
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest
+                    .fn()
+                    .mockResolvedValueOnce({
+                      dirs: ["systems/dnd5e", "systems/pf2e"],
+                    })
+                    .mockResolvedValueOnce({
+                      files: ["systems/dnd5e/system.json"],
+                    })
+                    .mockResolvedValueOnce({
+                      files: ["systems/pf2e/system.json"],
+                    }),
+                },
+              },
+            },
+          },
+        };
         const result = await getAllSystemVersions();
         expect(result).toEqual([
           { system: "dnd5e", version: "2.1.5" },
@@ -768,7 +776,18 @@ describe("Utils testing", () => {
 
       it("should return empty array when FilePicker fails", async () => {
         // Override the default FilePicker mock to simulate failure
-        global.FilePicker.browse = jest.fn().mockRejectedValue(new Error("Browse failed"));
+
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest.fn().mockRejectedValue(new Error("Browse failed")),
+                },
+              },
+            },
+          },
+        };
 
         const result = await getAllSystemVersions();
         expect(result).toEqual([]);
@@ -963,9 +982,19 @@ describe("Utils testing", () => {
     describe("loadSystemTemplates", () => {
       it("should load system templates successfully", async () => {
         // Override the default FilePicker mock for this specific test
-        global.FilePicker.browse = jest.fn().mockResolvedValue({
-          files: ["template1.json", "template2.json"],
-        });
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest.fn().mockResolvedValue({
+                    files: ["template1.json", "template2.json"],
+                  }),
+                },
+              },
+            },
+          },
+        };
 
         global.fetch
           .mockResolvedValueOnce({
@@ -1004,10 +1033,19 @@ describe("Utils testing", () => {
 
       it("should load invalid templates gracefully", async () => {
         // Override the default FilePicker mock for this specific test
-        global.FilePicker.browse = jest.fn().mockResolvedValue({
-          files: ["template1.json"],
-        });
-
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest.fn().mockResolvedValue({
+                    files: ["template1.json"],
+                  }),
+                },
+              },
+            },
+          },
+        };
         global.fetch.mockResolvedValueOnce({
           text: () =>
             Promise.resolve(
@@ -1028,9 +1066,19 @@ describe("Utils testing", () => {
 
       it("should handle bad templates", async () => {
         // Override the default FilePicker mock for this specific test
-        global.FilePicker.browse = jest.fn().mockResolvedValue({
-          files: ["template1.json"],
-        });
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest.fn().mockResolvedValue({
+                    files: ["template1.json"],
+                  }),
+                },
+              },
+            },
+          },
+        };
 
         global.fetch.mockResolvedValueOnce({
           text: () =>
@@ -1052,9 +1100,19 @@ describe("Utils testing", () => {
 
       it("should detect duplicate templates", async () => {
         // Override the default FilePicker mock for this specific test
-        global.FilePicker.browse = jest.fn().mockResolvedValue({
-          files: ["template1.json", "template2.json"],
-        });
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest.fn().mockResolvedValue({
+                    files: ["template1.json", "template2.json"],
+                  }),
+                },
+              },
+            },
+          },
+        };
 
         global.fetch
           .mockResolvedValueOnce({
@@ -1090,7 +1148,17 @@ describe("Utils testing", () => {
 
       it("should handle errors in template loading", async () => {
         // Override the default FilePicker mock to simulate failure
-        global.FilePicker.browse = jest.fn().mockRejectedValue(new Error("Browse failed"));
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest.fn().mockRejectedValue(new Error("Browse failed")),
+                },
+              },
+            },
+          },
+        };
 
         await expect(loadSystemTemplates()).rejects.toThrow("Browse failed");
       });
@@ -1108,20 +1176,30 @@ describe("Utils testing", () => {
         };
 
         // Override the default FilePicker mock for this specific test
-        global.FilePicker.browse = jest
-          .fn()
-          .mockResolvedValueOnce({
-            dirs: [
-              "modules/fvtt-party-sheet/example_templates/dnd5e",
-              "modules/fvtt-party-sheet/example_templates/pf2e",
-            ],
-          })
-          .mockResolvedValueOnce({
-            files: ["modules/fvtt-party-sheet/example_templates/dnd5e/template1.json"],
-          })
-          .mockResolvedValueOnce({
-            files: ["modules/fvtt-party-sheet/example_templates/pf2e/template2.json"],
-          });
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest
+                    .fn()
+                    .mockResolvedValueOnce({
+                      dirs: [
+                        "modules/fvtt-party-sheet/example_templates/dnd5e",
+                        "modules/fvtt-party-sheet/example_templates/pf2e",
+                      ],
+                    })
+                    .mockResolvedValueOnce({
+                      files: ["modules/fvtt-party-sheet/example_templates/dnd5e/template1.json"],
+                    })
+                    .mockResolvedValueOnce({
+                      files: ["modules/fvtt-party-sheet/example_templates/pf2e/template2.json"],
+                    }),
+                },
+              },
+            },
+          },
+        };
 
         // Mock multiple fetch calls for different systems
         global.fetch.mockResolvedValue({
@@ -1133,6 +1211,17 @@ describe("Utils testing", () => {
       });
 
       it("should handle individual template loading failures", async () => {
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest.fn().mockResolvedValueOnce({ dirs: [], files: [] }),
+                },
+              },
+            },
+          },
+        };
         global.fetch.mockRejectedValue(new Error("Template not found"));
 
         await expect(loadModuleTemplates()).resolves.not.toThrow();
@@ -1179,11 +1268,21 @@ describe("Utils testing", () => {
         addCustomTemplate(template);
 
         // Mock system versions
-        global.FilePicker.browse = jest
-          .fn()
-          .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
-          .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
-          .mockResolvedValueOnce({ dirs: [], files: [] }); // loadModuleTemplates
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest
+                    .fn()
+                    .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
+                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
+                    .mockResolvedValueOnce({ dirs: [], files: [] }),
+                },
+              },
+            },
+          },
+        };
 
         global.fetch.mockResolvedValueOnce({
           text: () => Promise.resolve(JSON.stringify({ id: "dnd5e", version: "2.0.0" })),
@@ -1216,14 +1315,22 @@ describe("Utils testing", () => {
         };
 
         addCustomTemplate(template);
-
-        // Mock system versions and module templates
-        global.FilePicker.browse = jest
-          .fn()
-          .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
-          .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
-          .mockResolvedValueOnce({ dirs: ["example_templates/dnd5e"] })
-          .mockResolvedValueOnce({ files: ["example_templates/dnd5e/template.json"] });
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest
+                    .fn()
+                    .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
+                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
+                    .mockResolvedValueOnce({ dirs: ["example_templates/dnd5e"] })
+                    .mockResolvedValueOnce({ files: ["example_templates/dnd5e/template.json"] }),
+                },
+              },
+            },
+          },
+        };
 
         global.fetch
           .mockResolvedValueOnce({
@@ -1263,12 +1370,22 @@ describe("Utils testing", () => {
         addCustomTemplate(template);
 
         // Mock system versions and module templates
-        global.FilePicker.browse = jest
-          .fn()
-          .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
-          .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
-          .mockResolvedValueOnce({ dirs: ["example_templates/dnd5e"] })
-          .mockResolvedValueOnce({ files: ["example_templates/dnd5e/template.json"] });
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest
+                    .fn()
+                    .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
+                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
+                    .mockResolvedValueOnce({ dirs: ["example_templates/dnd5e"] })
+                    .mockResolvedValueOnce({ files: ["example_templates/dnd5e/template.json"] }),
+                },
+              },
+            },
+          },
+        };
 
         global.fetch
           .mockResolvedValueOnce({
@@ -1307,12 +1424,22 @@ describe("Utils testing", () => {
         addCustomTemplate(template);
 
         // Mock system versions (older than required)
-        global.FilePicker.browse = jest
-          .fn()
-          .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
-          .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
-          .mockResolvedValueOnce({ dirs: ["example_templates/dnd5e"] })
-          .mockResolvedValueOnce({ files: ["example_templates/dnd5e/template.json"] });
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest
+                    .fn()
+                    .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
+                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
+                    .mockResolvedValueOnce({ dirs: ["example_templates/dnd5e"] })
+                    .mockResolvedValueOnce({ files: ["example_templates/dnd5e/template.json"] }),
+                },
+              },
+            },
+          },
+        };
 
         global.fetch
           .mockResolvedValueOnce({
@@ -1354,12 +1481,22 @@ describe("Utils testing", () => {
         addCustomTemplate(template);
 
         // Mock system versions (higher than maximum)
-        global.FilePicker.browse = jest
-          .fn()
-          .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
-          .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
-          .mockResolvedValueOnce({ dirs: ["example_templates/dnd5e"] })
-          .mockResolvedValueOnce({ files: ["example_templates/dnd5e/template.json"] });
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest
+                    .fn()
+                    .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
+                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
+                    .mockResolvedValueOnce({ dirs: ["example_templates/dnd5e"] })
+                    .mockResolvedValueOnce({ files: ["example_templates/dnd5e/template.json"] }),
+                },
+              },
+            },
+          },
+        };
 
         global.fetch
           .mockResolvedValueOnce({
@@ -1390,11 +1527,21 @@ describe("Utils testing", () => {
         addCustomTemplate(template);
 
         // Mock system versions (older than required)
-        global.FilePicker.browse = jest
-          .fn()
-          .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
-          .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
-          .mockResolvedValueOnce({ dirs: [], files: [] }); // No module templates
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest
+                    .fn()
+                    .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
+                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
+                    .mockResolvedValueOnce({ dirs: [], files: [] }),
+                },
+              },
+            },
+          },
+        };
 
         global.fetch.mockResolvedValueOnce({
           text: () => Promise.resolve(JSON.stringify({ id: "dnd5e", version: "2.0.0" })),
@@ -1424,11 +1571,21 @@ describe("Utils testing", () => {
         addCustomTemplate(template);
 
         // Mock system versions (higher than maximum)
-        global.FilePicker.browse = jest
-          .fn()
-          .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
-          .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
-          .mockResolvedValueOnce({ dirs: [], files: [] }); // No module templates
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest
+                    .fn()
+                    .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
+                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
+                    .mockResolvedValueOnce({ dirs: [], files: [] }), // No module templates
+                },
+              },
+            },
+          },
+        };
 
         global.fetch.mockResolvedValueOnce({
           text: () => Promise.resolve(JSON.stringify({ id: "dnd5e", version: "2.0.0" })),
@@ -1456,11 +1613,21 @@ describe("Utils testing", () => {
         addCustomTemplate(template);
 
         // Mock system versions but no module templates
-        global.FilePicker.browse = jest
-          .fn()
-          .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
-          .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
-          .mockResolvedValueOnce({ dirs: [], files: [] }); // No module templates
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest
+                    .fn()
+                    .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
+                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
+                    .mockResolvedValueOnce({ dirs: [], files: [] }), // No module templates
+                },
+              },
+            },
+          },
+        };
 
         global.fetch.mockResolvedValueOnce({
           text: () => Promise.resolve(JSON.stringify({ id: "dnd5e", version: "2.0.0" })),
@@ -1486,11 +1653,21 @@ describe("Utils testing", () => {
         addCustomTemplate(template);
 
         // Mock no matching system versions
-        global.FilePicker.browse = jest
-          .fn()
-          .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
-          .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
-          .mockResolvedValueOnce({ dirs: [], files: [] }); // No module templates
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest
+                    .fn()
+                    .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
+                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
+                    .mockResolvedValueOnce({ dirs: [], files: [] }), // No module templates
+                },
+              },
+            },
+          },
+        };
 
         global.fetch.mockResolvedValueOnce({
           text: () => Promise.resolve(JSON.stringify({ id: "dnd5e", version: "2.0.0" })),
@@ -1543,12 +1720,22 @@ describe("Utils testing", () => {
         };
 
         // Mock system versions and one module template
-        global.FilePicker.browse = jest
-          .fn()
-          .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
-          .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
-          .mockResolvedValueOnce({ dirs: ["example_templates/dnd5e"] })
-          .mockResolvedValueOnce({ files: ["example_templates/dnd5e/template.json"] });
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest
+                    .fn()
+                    .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
+                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
+                    .mockResolvedValueOnce({ dirs: ["example_templates/dnd5e"] })
+                    .mockResolvedValueOnce({ files: ["example_templates/dnd5e/template.json"] }),
+                },
+              },
+            },
+          },
+        };
 
         global.fetch
           .mockResolvedValueOnce({
@@ -1589,10 +1776,20 @@ describe("Utils testing", () => {
         addCustomTemplate(template);
 
         // Mock empty system list and empty module templates
-        global.FilePicker.browse = jest
-          .fn()
-          .mockResolvedValueOnce({ dirs: [], files: [] }) // getAllSystemVersions returns empty
-          .mockResolvedValueOnce({ dirs: [], files: [] }); // loadModuleTemplates returns empty
+        global.foundry = {
+          applications: {
+            apps: {
+              FilePicker: {
+                implementation: {
+                  browse: jest
+                    .fn()
+                    .mockResolvedValueOnce({ dirs: [], files: [] }) // getAllSystemVersions returns empty
+                    .mockResolvedValueOnce({ dirs: [], files: [] }),
+                },
+              },
+            },
+          },
+        };
 
         const result = await validateSystemTemplates();
 
@@ -1651,6 +1848,17 @@ describe("Utils testing", () => {
     });
 
     it("loadSystemTemplates should handle if using ForgeVTT", async () => {
+      global.foundry = {
+        applications: {
+          apps: {
+            FilePicker: {
+              implementation: {
+                browse: jest.fn().mockResolvedValueOnce({ dirs: [], files: [] }),
+              },
+            },
+          },
+        },
+      };
       await loadSystemTemplates();
       expect(consoleLogSpy).toHaveBeenCalledTimes(2);
       expect(consoleLogSpy).toHaveBeenCalledWith("Detected ForgeVTT");
@@ -1662,16 +1870,20 @@ describe("Utils testing", () => {
         ASSETS_LIBRARY_URL_PREFIX: "",
         getUserId: jest.fn().mockReturnValue(""),
       };
+
       const mockSystemData1 = { id: "dnd5e", version: "2.1.5" };
       global.fetch.mockResolvedValueOnce({ text: () => Promise.resolve(JSON.stringify(mockSystemData1)) });
-      global.FilePicker.browse = jest
-        .fn()
-        .mockResolvedValueOnce({
-          dirs: ["systems/dnd5e"],
-        })
-        .mockResolvedValueOnce({
-          files: ["systems/dnd5e/system.json"],
-        });
+      global.foundry = {
+        applications: {
+          apps: {
+            FilePicker: {
+              implementation: {
+                browse: jest.fn().mockResolvedValueOnce({ dirs: [], files: [] }),
+              },
+            },
+          },
+        },
+      };
       await getAllSystemVersions();
       expect(consoleLogSpy).toHaveBeenCalledTimes(1);
       expect(consoleLogSpy).toHaveBeenCalledWith("Detected ForgeVTT");
