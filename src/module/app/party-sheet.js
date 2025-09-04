@@ -598,10 +598,26 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Start the refresh timer for periodic updates
     this.startRefreshTimer();
+    const sheetSelectDropdown = document.querySelector('select[name="fvtt-party-sheet-system"]');
 
-    document
-      .querySelector('select[name="fvtt-party-sheet-system"]')
-      ?.addEventListener("change", PartySheetForm.onChangeSystem.bind(this));
+    sheetSelectDropdown?.addEventListener("change", PartySheetForm.onChangeSystem.bind(this));
+    sheetSelectDropdown.addEventListener("blur", (event) => {
+      // Template selector lost focus without selection (clicked elsewhere)
+      setTimeout(() => {
+        this.isDropdownInteracting = false;
+      }, 50);
+    });
+    sheetSelectDropdown.addEventListener("mousedown", (event) => {
+      // User is starting to interact with template dropdown (opening it)
+      console.log("fvtt-party-sheet | Template selector interaction started");
+      this.isDropdownInteracting = true;
+    });
+
+    document.querySelector('select[name="fvtt-party-sheet-system"]').addEventListener("mousedown", (event) => {
+      // User is starting to interact with template dropdown (opening it)
+      console.log("fvtt-party-sheet | Template selector interaction started");
+      this.isDropdownInteracting = true;
+    });
 
     document.querySelectorAll('button[class="fvtt-party-sheet-feedback-button"]').forEach((button) => {
       button.addEventListener("click", PartySheetForm.onFeedback.bind(this));
