@@ -37,6 +37,10 @@
       "show-template-status-form": {
         "name": "Show Template Status Form",
         "hint": "This will show you which templates are out of date, which have newer systems installed, and which have no version information."
+      },
+      "show-version-notifications": {
+        "name": "Show Template Update Notifications",
+        "hint": "Display notification banners when installed templates have newer versions available in the module's example templates."
       }
     },
     "template-status": {
@@ -46,10 +50,15 @@
       "current-version": "Current Version",
       "module-version": "Module Version",
       "newer-required-system": "The following templates need newer systems installed",
+      "older-required-system": "The following templates need older systems installed",
       "no-version-information": "The following templates have no version information",
       "no-system-information": "The following templates have no system information",
       "current-system-version": "Current System Version",
-      "required-system-version": "Required System Version"
+      "required-system-version": "Required System Version",
+      "maximum-system-version": "Maximum System Version"
+    },
+    "notifications": {
+      "template-update-available": "Template updates available! {count} installed template(s) have newer versions available. Check the Template Status dialog or use the Installer to update."
     },
     "close": "Close",
     "install": "Install",
@@ -60,7 +69,11 @@
     "preview": "Preview",
     "author": "Author",
     "version": "Version",
+    "section-title": "Party Sheet",
+    "show-section-title": "Show Party Sheet",
+    "section-title-tooltip": "Show the Party Sheet",
     "template-installed-version": "Installed Version",
-    "template-system-version": "System Version"
+    "template-system-version": "Min System Version",
+    "template-max-system-version": "Max System Version"
   }
 }

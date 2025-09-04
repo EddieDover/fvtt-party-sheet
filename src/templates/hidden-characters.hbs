@@ -1,4 +1,4 @@
-<form autocomplete="off" class="fvtt-party-sheet-hc-form">
+<form autocomplete="off" class="fvtt-party-sheet-hc-form standard-form">
   <p>{{localize "fvtt-party-sheet.hide-sheet.tooltip"}}</p>
   <section class="fvtt-party-sheet-hc-section">
     {{#each characters}}
@@ -8,7 +8,7 @@
     </div>
     {{/each}}
   </section>
-  <button type="button" name="submit">
+  <button type="button" name="submit" data-action="onSubmit">
     <i class="fas fa-save"></i> Save
   </button>
 </form>

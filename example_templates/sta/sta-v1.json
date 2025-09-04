@@ -1,161 +1,155 @@
 {
-    "name": "Star Trek Adventures - v1",
-    "system": "sta",
-    "author": "Michael Card (Emo Cthulhu)",
-    "version": "1.0.0",
-    "minimumSystemVersion": "1.2.8",
-    "offline_excludes": [
-        "npc",
-        "base",
-        "starship",
-        "extendedtask",
-        "smallcraft"
-    ],
-    "rows": [
-        [
-            {
-                "name": "Character Sheet",
-                "type": "charactersheet",
-                "align": "center",
-                "header": "hide",
-                "text": ""
-            },
-            {
-                "name": "Details",
-                "type": "direct",
-                "align": "center",
-                "valign": "top",
-                "header": "show",
-                "text": "{b} name {/b} {newline} Species: {i} system.species {/i} {newline} system.assignment {newline} system.rank"
-            },
-            {
-                "name": "Determination",
-                "type": "direct",
-                "align": "center",
-                "valign": "top",
-                "header": "show",
-                "text": "system.determination.value / system.determination.max"
-            },
-            {
-                "name": "Stress",
-                "type": "direct",
-                "align": "center",
-                "valign": "top",
-                "minwidth": 60,
-                "header": "show",
-                "text": "system.stress.value / system.stress.max"
-            },
-            {
-                "name": "Attributes",
-                "type": "direct-complex",
-                "align": "left",
-                "valign": "top",
-                "header": "show",
-                "text": [
-                    {
-                        "type": "match",
-                        "ifdata": "system.attributes.control.selected",
-                        "matches": true,
-                        "text": "{b} Control: system.attributes.control.value {/b} {newline}",
-                        "else": "Control: system.attributes.control.value {newline}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.attributes.daring.selected",
-                        "matches": true,
-                        "text": "{b} Daring: system.attributes.daring.value {/b} {newline}",
-                        "else": "Daring: system.attributes.daring.value {newline}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.attributes.fitness.selected",
-                        "matches": true,
-                        "text": "{b} Fitness: system.attributes.fitness.value {/b} {newline}",
-                        "else": "Fitness: system.attributes.fitness.value {newline}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.attributes.insight.selected",
-                        "matches": true,
-                        "text": "{b} Insight: system.attributes.insight.value {/b} {newline}",
-                        "else": "Insight: system.attributes.insight.value {newline}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.attributes.presence.selected",
-                        "matches": true,
-                        "text": "{b} Presence: system.attributes.presence.value {/b} {newline}",
-                        "else": "Presence: system.attributes.presence.value {newline}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.attributes.reason.selected",
-                        "matches": true,
-                        "text": "{b} Reason: system.attributes.reason.value {/b}",
-                        "else": "Reason: system.attributes.reason.value"
-                    }
-                ]
-            },
-            {
-                "name": "Disciplines",
-                "type": "direct-complex",
-                "align": "left",
-                "valign": "top",
-                "header": "show",
-                "text": [
-                    {
-                        "type": "match",
-                        "ifdata": "system.disciplines.command.selected",
-                        "matches": true,
-                        "text": "{b} Command: system.disciplines.command.value {/b} {newline}",
-                        "else": "Command: system.disciplines.command.value {newline}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.disciplines.conn.selected",
-                        "matches": true,
-                        "text": "{b} Conn: system.disciplines.conn.value {/b} {newline}",
-                        "else": "Conn: system.disciplines.conn.value {newline}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.disciplines.engineering.selected",
-                        "matches": true,
-                        "text": "{b} Engineering: system.disciplines.engineering.value {/b} {newline}",
-                        "else": "Engineering: system.disciplines.engineering.value {newline}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.disciplines.medicine.selected",
-                        "matches": true,
-                        "text": "{b} Medicine: system.disciplines.medicine.value {/b} {newline}",
-                        "else": "Medicine: system.disciplines.medicine.value {newline}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.disciplines.science.selected",
-                        "matches": true,
-                        "text": "{b} Science: system.disciplines.science.value {/b} {newline}",
-                        "else": "Science: system.disciplines.science.value {newline}"
-                    },
-                    {
-                        "type": "match",
-                        "ifdata": "system.disciplines.security.selected",
-                        "matches": true,
-                        "text": "{b} Security: system.disciplines.security.value {/b}",
-                        "else": "Security: system.disciplines.security.value"
-                    }
-                ]
-            },
-            {
-                "name": "Traits",
-                "type": "direct",
-                "align": "left",
-                "valign": "top",
-                "maxwidth": 70,
-                "header": "show",
-                "text": "system.traits"
-            }
+  "name": "Star Trek Adventures - v1",
+  "system": "sta",
+  "author": "Michael Card (Emo Cthulhu)",
+  "version": "1.1.0",
+  "minimumSystemVersion": "1.2.8",
+  "offline_excludes": ["npc", "base", "starship", "extendedtask", "smallcraft"],
+  "rows": [
+    [
+      {
+        "name": "Character Sheet",
+        "type": "charactersheet",
+        "align": "center",
+        "header": "hide",
+        "text": ""
+      },
+      {
+        "name": "Details",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "{b} {name} {/b} {newline} Species: {i} {system.species} {/i} {newline} {system.assignment} {newline} {system.rank}"
+      },
+      {
+        "name": "Determination",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "header": "show",
+        "text": "{system.determination.value} / {system.determination.max}"
+      },
+      {
+        "name": "Stress",
+        "type": "direct",
+        "align": "center",
+        "valign": "top",
+        "minwidth": 60,
+        "header": "show",
+        "text": "{system.stress.value} / {system.stress.max}"
+      },
+      {
+        "name": "Attributes",
+        "type": "direct-complex",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.attributes.control.selected",
+            "matches": true,
+            "text": "{b} Control: {system.attributes.control.value} {/b} {newline}",
+            "else": "Control: {system.attributes.control.value} {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.attributes.daring.selected",
+            "matches": true,
+            "text": "{b} Daring: {system.attributes.daring.value} {/b} {newline}",
+            "else": "Daring: {system.attributes.daring.value} {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.attributes.fitness.selected",
+            "matches": true,
+            "text": "{b} Fitness: {system.attributes.fitness.value} {/b} {newline}",
+            "else": "Fitness: {system.attributes.fitness.value} {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.attributes.insight.selected",
+            "matches": true,
+            "text": "{b} Insight: {system.attributes.insight.value} {/b} {newline}",
+            "else": "Insight: {system.attributes.insight.value} {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.attributes.presence.selected",
+            "matches": true,
+            "text": "{b} Presence: {system.attributes.presence.value} {/b} {newline}",
+            "else": "Presence: {system.attributes.presence.value} {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.attributes.reason.selected",
+            "matches": true,
+            "text": "{b} Reason: {system.attributes.reason.value} {/b}",
+            "else": "Reason: {system.attributes.reason.value}"
+          }
         ]
+      },
+      {
+        "name": "Disciplines",
+        "type": "direct-complex",
+        "align": "left",
+        "valign": "top",
+        "header": "show",
+        "text": [
+          {
+            "type": "match",
+            "ifdata": "system.disciplines.command.selected",
+            "matches": true,
+            "text": "{b} Command: {system.disciplines.command.value} {/b} {newline}",
+            "else": "Command: {system.disciplines.command.value} {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.disciplines.conn.selected",
+            "matches": true,
+            "text": "{b} Conn: {system.disciplines.conn.value} {/b} {newline}",
+            "else": "Conn: {system.disciplines.conn.value} {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.disciplines.engineering.selected",
+            "matches": true,
+            "text": "{b} Engineering: {system.disciplines.engineering.value} {/b} {newline}",
+            "else": "Engineering: {system.disciplines.engineering.value} {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.disciplines.medicine.selected",
+            "matches": true,
+            "text": "{b} Medicine: {system.disciplines.medicine.value} {/b} {newline}",
+            "else": "Medicine: {system.disciplines.medicine.value} {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.disciplines.science.selected",
+            "matches": true,
+            "text": "{b} Science: {system.disciplines.science.value} {/b} {newline}",
+            "else": "Science: {system.disciplines.science.value} {newline}"
+          },
+          {
+            "type": "match",
+            "ifdata": "system.disciplines.security.selected",
+            "matches": true,
+            "text": "{b} Security: {system.disciplines.security.value} {/b}",
+            "else": "Security: {system.disciplines.security.value}"
+          }
+        ]
+      },
+      {
+        "name": "Traits",
+        "type": "direct",
+        "align": "left",
+        "valign": "top",
+        "maxwidth": 70,
+        "header": "show",
+        "text": "{system.traits}"
+      }
     ]
+  ]
 }
