@@ -390,6 +390,13 @@
   box-shadow: 0 0 3px var(--color-shadow-highlight, rgba(74, 158, 255, 0.3));
 }
 
+.metadata-field input[readonly] {
+  background: var(--color-bg-dark, #1e1e1e);
+  color: var(--color-text-light, #ccc);
+  cursor: not-allowed;
+  border-color: var(--color-border-dark, #555);
+}
+
 .json-editor-panel {
   flex: 1;
   display: flex;

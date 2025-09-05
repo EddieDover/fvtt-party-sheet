@@ -73,9 +73,24 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   _prepareContext(options) {
+    let templateData = null;
+
+    // If we have a template loaded, parse it for metadata
+    if (this.currentTemplate) {
+      templateData = this.currentTemplate;
+    } else if (this.monacoEditor) {
+      try {
+        const jsonText = this.monacoEditor.getValue();
+        templateData = JSON.parse(jsonText);
+      } catch (error) {
+        // If JSON is invalid, use default values
+        templateData = null;
+      }
+    }
+
     return {
       overrides: this.overrides,
-      currentTemplate: this.currentTemplate || null,
+      currentTemplate: templateData,
       currentFilename: this.currentFilename || "new-template.json",
       isEditing: !!this.currentTemplate,
     };
@@ -89,6 +104,9 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Set up file input handler
     this._setupFileInput();
+
+    // Set up metadata field listeners
+    this._setupMetadataFields();
   }
 
   async _initializeMonacoEditor() {
@@ -122,7 +140,92 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     this.monacoEditor.onDidChangeModelContent(() => {
       this.isDirty = true;
       this._updateTitle();
+      this._updateMetadataFromJson();
     });
+
+    // Initial sync after editor is created and content is set
+    this._updateMetadataFromJson();
+  }
+
+  _setupMetadataFields() {
+    const nameInput = this.element.querySelector("#template-name");
+    const authorInput = this.element.querySelector("#template-author");
+    const systemInput = this.element.querySelector("#template-system");
+    const versionInput = this.element.querySelector("#template-version");
+
+    // Set the system field to the current system and make it readonly
+    if (systemInput) {
+      // @ts-ignore
+      systemInput.value = game.system.id;
+      systemInput.readOnly = true;
+    }
+
+    // Set up change listeners for metadata fields (excluding system since it's readonly)
+    if (nameInput) {
+      nameInput.addEventListener("input", () => this._updateJsonFromMetadata());
+    }
+    if (authorInput) {
+      authorInput.addEventListener("input", () => this._updateJsonFromMetadata());
+    }
+    if (versionInput) {
+      versionInput.addEventListener("input", () => this._updateJsonFromMetadata());
+    }
+
+    // Note: Initial sync is now handled in _initializeMonacoEditor()
+  }
+
+  _updateMetadataFromJson() {
+    if (!this.monacoEditor) return;
+
+    try {
+      const jsonText = this.monacoEditor.getValue();
+      const template = JSON.parse(jsonText);
+
+      const nameInput = this.element.querySelector("#template-name");
+      const authorInput = this.element.querySelector("#template-author");
+      const systemInput = this.element.querySelector("#template-system");
+      const versionInput = this.element.querySelector("#template-version");
+
+      if (nameInput) nameInput.value = template.name || "";
+      if (authorInput) authorInput.value = template.author || "";
+      if (systemInput) systemInput.value = template.system || "";
+      if (versionInput) versionInput.value = template.version || "";
+    } catch (error) {
+      // Ignore JSON parse errors - they'll be caught by validation
+    }
+  }
+
+  _updateJsonFromMetadata() {
+    if (!this.monacoEditor) return;
+
+    try {
+      const jsonText = this.monacoEditor.getValue();
+      const template = JSON.parse(jsonText);
+
+      const nameInput = this.element.querySelector("#template-name");
+      const authorInput = this.element.querySelector("#template-author");
+      const versionInput = this.element.querySelector("#template-version");
+
+      // Update template object with form values
+      if (nameInput) template.name = nameInput.value;
+      if (authorInput) template.author = authorInput.value;
+      if (versionInput) template.version = versionInput.value;
+
+      // Always set system to current game system
+      // @ts-ignore
+      template.system = game.system.id;
+
+      // Update Monaco editor without triggering change event
+      const newJsonText = JSON.stringify(template, null, 2);
+
+      // Temporarily disable change listener to prevent infinite loop
+      const currentValue = this.monacoEditor.getValue();
+      if (currentValue !== newJsonText) {
+        this.monacoEditor.setValue(newJsonText);
+      }
+    } catch (error) {
+      // Ignore JSON parse errors - they'll be caught by validation
+    }
   }
 
   async _loadMonacoEditor() {
@@ -161,11 +264,12 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       return JSON.stringify(this.currentTemplate, null, 2);
     }
 
-    // Return a starter template
+    // Return a starter template with current system
     return JSON.stringify(
       {
         "name": "New Template",
-        "system": "dnd5e",
+        // @ts-ignore
+        "system": game.system.id,
         "author": "Template Author",
         "version": "1.0.0",
         "minimumSystemVersion": "1.0.0",
@@ -224,10 +328,13 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
         this.monacoEditor.setValue(JSON.stringify(template, null, 2));
       }
 
+      // Update metadata fields
+      this._updateMetadataFromJson();
+
       this._updateTitle();
-      ui.notifications.info(`Template "${file.name}" loaded successfully.`);
+      game.ui.notifications.info(`Template "${file.name}" loaded successfully.`);
     } catch (error) {
-      ui.notifications.error(`Failed to load template: ${error.message}`);
+      game.ui.notifications.error(`Failed to load template: ${error.message}`);
     }
   }
 
@@ -307,8 +414,11 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       this.monacoEditor.setValue(this._getInitialTemplate());
     }
 
+    // Update metadata fields
+    this._updateMetadataFromJson();
+
     this._updateTitle();
-    ui.notifications.info("New template created.");
+    game.ui.notifications.info("New template created.");
   }
 
   async saveTemplate() {
