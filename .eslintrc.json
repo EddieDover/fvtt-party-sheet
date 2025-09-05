@@ -64,9 +64,10 @@
       }
     ],
     "linebreak-style": [
-      "error",
-      "unix"
+      "off"
     ],
+    "unicorn/no-null": "off",
+    // "eslint-plugin-unicorn/no-typeof-undefined": "off",
     // "no-shadow": ["error", { "builtinGlobals": true, "hoist": "all", "allow": ["event"] }],
     // "brace-style": ["error", "1tbs"],
     "require-jsdoc": 2,

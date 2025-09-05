@@ -1,15 +1,13 @@
 /* eslint-disable no-undef */
 
 import { getSymVersion } from "../utils";
+import schemaResponse from "../../template.schema.json";
 
 // @ts-ignore
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   static _instance = null;
-  element = null;
-  options = null;
-
   static DEFAULT_OPTIONS = {
     tag: "form",
     form: {
@@ -48,11 +46,11 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     // Handle form submission logic here if needed
   }
 
-  constructor(overrides) {
-    super();
-    this.overrides = overrides || {};
+  constructor(options = {}) {
+    super(options);
+    this.overrides = options || {};
 
-    // Initialize with current template if provided in overrides
+    // Initialize with current template if provided in options
     this.currentTemplate = this.overrides.currentTemplate || null;
 
     // Set filename based on current template or default to new
@@ -68,14 +66,14 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     TemplateEditor._instance = this;
   }
 
-  static getInstance(overrides) {
+  static getInstance(options) {
     // If an instance exists and is rendered, bring it to focus
     if (TemplateEditor._instance && TemplateEditor._instance.rendered) {
       TemplateEditor._instance.bringToTop();
       return TemplateEditor._instance;
     }
     // Otherwise create a new instance
-    return new TemplateEditor(overrides);
+    return new TemplateEditor(options);
   }
 
   close(options) {
@@ -110,11 +108,14 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     };
   }
 
-  _onRender(context, options) {
-    super._onRender(context, options);
+  async _onRender(context, options) {
+    await super._onRender(context, options);
+
+    // Wait for the next tick to ensure the element is fully rendered
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     // Initialize Monaco Editor
-    this._initializeMonacoEditor();
+    await this._initializeMonacoEditor();
 
     // Set up file input handler
     this._setupFileInput();
@@ -124,8 +125,12 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   async _initializeMonacoEditor() {
+    //@ts-ignore
     const editorContainer = this.element.querySelector("#json-editor");
-    if (!editorContainer) return;
+    if (!editorContainer) {
+      console.warn("TemplateEditor: JSON editor container not found");
+      return;
+    }
 
     // Load Monaco Editor from CDN if not already loaded
     // @ts-ignore
@@ -133,11 +138,19 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       await this._loadMonacoEditor();
     }
 
-    // Create the editor
+    // Configure JSON schema for IntelliSense
+    await this._configureJsonSchema();
+
+    // Create a model with a specific URI to match our schema
+    // @ts-ignore
+    const modelUri = window.monaco.Uri.parse("file:///template.json");
+    // @ts-ignore
+    const model = window.monaco.editor.createModel(this._getInitialTemplate(), "json", modelUri);
+
+    // Create the editor with the model
     // @ts-ignore
     this.monacoEditor = window.monaco.editor.create(editorContainer, {
-      value: this._getInitialTemplate(),
-      language: "json",
+      model: model,
       theme: "vs-dark",
       automaticLayout: true,
       minimap: { enabled: false },
@@ -164,9 +177,13 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   _setupMetadataFields() {
+    //@ts-ignore
     const nameInput = this.element.querySelector("#template-name");
+    //@ts-ignore
     const authorInput = this.element.querySelector("#template-author");
+    //@ts-ignore
     const systemInput = this.element.querySelector("#template-system");
+    //@ts-ignore
     const versionInput = this.element.querySelector("#template-version");
 
     // Set the system field to the current system and make it readonly
@@ -197,9 +214,13 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       const jsonText = this.monacoEditor.getValue();
       const template = JSON.parse(jsonText);
 
+      //@ts-ignore
       const nameInput = this.element.querySelector("#template-name");
+      //@ts-ignore
       const authorInput = this.element.querySelector("#template-author");
+      //@ts-ignore
       const systemInput = this.element.querySelector("#template-system");
+      //@ts-ignore
       const versionInput = this.element.querySelector("#template-version");
 
       if (nameInput) nameInput.value = template.name || "";
@@ -218,8 +239,11 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       const jsonText = this.monacoEditor.getValue();
       const template = JSON.parse(jsonText);
 
+      //@ts-ignore
       const nameInput = this.element.querySelector("#template-name");
+      //@ts-ignore
       const authorInput = this.element.querySelector("#template-author");
+      //@ts-ignore
       const versionInput = this.element.querySelector("#template-version");
 
       // Update template object with form values
@@ -278,6 +302,271 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     });
   }
 
+  async _configureJsonSchema() {
+    try {
+      // Embedded schema - avoids fetch issues in Foundry modules
+      const schema = {
+        "title": "FVTT Party Sheet Template",
+        "description": "Schema for creating and managing party sheet templates.",
+        "type": "object",
+        "required": ["name", "system", "author", "version", "minimumSystemVersion", "rows"],
+        "properties": {
+          "name": {
+            "description": "Name that will be displayed in the party sheet for this template.",
+            "type": "string",
+          },
+          "system": {
+            "description": "The system that this template is associated with.",
+            "type": "string",
+          },
+          "author": {
+            "description": "The author of the template. Will be shown along the name of the template.",
+            "type": "string",
+          },
+          "offline_excludes_property": {
+            "description": "The actor property to do the filtering for (exclude).",
+            "type": "string",
+            "default": "actor.type",
+          },
+          "offline_excludes": {
+            "description": "List of values to exclude from the template. Based on the offline_excludes_property.",
+            "type": "array",
+            "items": {
+              "type": "string",
+            },
+            "default": ["npc"],
+          },
+          "offline_includes_property": {
+            "description":
+              "The actor property to do the filtering for (include). If declared both offline_excludes and offline_excludes_property, will be ignored.",
+            "type": "string",
+          },
+          "offline_includes": {
+            "description": "List of values to include in the template. Based on the offline_includes_property.",
+            "type": "array",
+            "items": {
+              "type": "string",
+            },
+          },
+          "version": {
+            "description": "The version of the template",
+            "type": "string",
+          },
+          "minimumSystemVersion": {
+            "description": "The minimum version of the required system",
+            "type": "string",
+          },
+          "maximumSystemVersion": {
+            "description": "The maximum version of the required system",
+            "type": "string",
+          },
+          "rows": {
+            "description":
+              "The rows of the template. Keep in mind that automatically a row is created per character, this is more for data display.",
+            "type": "array",
+            "items": {
+              "description": "Specific row.",
+              "type": "array",
+              "items": {
+                "description": "The data for a row to display.",
+                "type": "object",
+                "required": ["name", "type", "header", "text"],
+                "properties": {
+                  "name": {
+                    "description": "The name of the row and also the header to display.",
+                    "type": "string",
+                  },
+                  "type": {
+                    "description":
+                      "The type of the row. Each type is parsed in an specific way. You can set an empty string to treat the column as an spacer.",
+                    "type": "string",
+                    "enum": [
+                      "direct",
+                      "direct-complex",
+                      "string",
+                      "array-string-builder",
+                      "largest-from-array",
+                      "smallest-from-array",
+                      "object-loop",
+                      "charactersheet",
+                      "span",
+                      "",
+                    ],
+                  },
+                  "header": {
+                    "description": "Whether to show, hide, or skip the column header.",
+                    "type": "string",
+                    "enum": ["show", "hide", "skip"],
+                  },
+                  "maxwidth": {
+                    "description": "The maximum width in pixels of the row.",
+                    "type": "number",
+                  },
+                  "minwidth": {
+                    "description": "The minimum width in pixels of the row.",
+                    "type": "number",
+                  },
+                  "align": {
+                    "description": "Horizontal alignment of the cells.",
+                    "type": "string",
+                    "enum": ["left", "center", "right"],
+                  },
+                  "valign": {
+                    "description": "Vertical alignment of the cells.",
+                    "type": "string",
+                    "enum": ["top", "bottom"],
+                  },
+                  "showSign": {
+                    "description": "Displays a '+' symbol if the value is above zero.",
+                    "type": "boolean",
+                  },
+                  "rowspan": {
+                    "description":
+                      "Controls the row span of the cells in the column. You need also the corresponding empty rows and type 'span'.",
+                    "type": "number",
+                  },
+                  "colspan": {
+                    "description": "Controls the column span of the cells in the column.",
+                    "type": "number",
+                  },
+                  "showTotal": {
+                    "description": "Shows a total sum for this column in a footer row if values are numeric.",
+                    "type": "boolean",
+                  },
+                  "text": {
+                    "description": "Complex property that will be parsed based on the type.",
+                  },
+                },
+                "if": {
+                  "properties": {
+                    "type": {
+                      "const": "direct-complex",
+                    },
+                  },
+                },
+                "then": {
+                  "properties": {
+                    "text": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["type", "text"],
+                        "properties": {
+                          "type": {
+                            "description": "The type of object.",
+                            "type": "string",
+                            "enum": ["exists", "match", "match-all"],
+                          },
+                          "text": {
+                            "description": "The text that will be displayed if the type passes the check.",
+                            "type": "string",
+                          },
+                          "else": {
+                            "description": "The text that will be displayed if the type fails the check.",
+                            "type": "string",
+                          },
+                        },
+                        "allOf": [
+                          {
+                            "if": {
+                              "properties": {
+                                "type": {
+                                  "const": "exists",
+                                },
+                              },
+                            },
+                            "then": {
+                              "properties": {
+                                "value": {
+                                  "description": "The value that you are checking against.",
+                                  "type": "string",
+                                },
+                              },
+                              "required": ["value"],
+                            },
+                          },
+                          {
+                            "if": {
+                              "properties": {
+                                "type": {
+                                  "enum": ["match", "match-all"],
+                                },
+                              },
+                            },
+                            "then": {
+                              "properties": {
+                                "ifdata": {
+                                  "description": "The data that will be used to validate the check on if.",
+                                  "type": "string",
+                                },
+                                "matches": {
+                                  "description": "The value that ifdata needs to match with.",
+                                  "type": ["string", "number", "boolean"],
+                                },
+                              },
+                              "required": ["ifdata", "matches"],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  },
+                },
+                "else": {
+                  "properties": {
+                    "text": {
+                      "type": ["string", "boolean", "number"],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      };
+
+      console.log("TemplateEditor: Schema loaded successfully", schema);
+
+      // Configure Monaco's JSON language service with the schema
+      // @ts-ignore
+      window.monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+        validate: true,
+        allowComments: false,
+        schemas: [
+          {
+            uri: "http://fvtt-party-sheet/template.schema.json",
+            fileMatch: ["file:///template.json", "*.json"], // Match our specific file and any json
+            schema: schema,
+          },
+        ],
+        enableSchemaRequest: true,
+        schemaRequest: "warning",
+        schemaValidation: "warning",
+        comments: "error",
+        trailingCommas: "error",
+      });
+
+      // Also set completion options for better IntelliSense
+      // @ts-ignore
+      window.monaco.languages.json.jsonDefaults.setModeConfiguration({
+        documentFormattingEdits: true,
+        documentRangeFormattingEdits: true,
+        completionItems: true,
+        hovers: true,
+        documentSymbols: true,
+        tokens: true,
+        colors: true,
+        foldingRanges: true,
+        diagnostics: true,
+        selectionRanges: true,
+      });
+
+      console.log("TemplateEditor: Schema configuration applied successfully");
+    } catch (error) {
+      console.warn("Failed to configure template schema for IntelliSense:", error);
+    }
+  }
+
   _getInitialTemplate() {
     if (this.currentTemplate) {
       return JSON.stringify(this.currentTemplate, null, 2);
@@ -324,10 +613,15 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   _setupFileInput() {
+    //@ts-ignore
     const fileInput = this.element.querySelector("#template-file-input");
     if (fileInput) {
       fileInput.addEventListener("change", (event) => {
-        this.loadTemplateFromFile(event.target.files[0]);
+        //@ts-ignore
+        const target = event.target;
+        if (target.files) {
+          this.loadTemplateFromFile(target.files[0]);
+        }
       });
     }
   }
@@ -361,10 +655,8 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
   _updateTitle() {
     const title = `Template Editor${this.currentFilename ? ` - ${this.currentFilename}` : ""}${this.isDirty ? " *" : ""}`;
-    // Update window title if possible
-    if (this.options && this.options.window) {
-      this.options.window.title = title;
-    }
+    // Note: Window title updates are handled by Foundry's ApplicationV2
+    // The title from DEFAULT_OPTIONS.window.title will be used
   }
 
   // Static action handlers

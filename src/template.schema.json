@@ -1,0 +1,215 @@
+{
+  "title": "FVTT Party Sheet Template",
+  "description": "Schema for creating and managing party sheet templates.",
+  "type": "object",
+  "required": ["name", "system", "author", "version", "minimumSystemVersion", "rows"],
+  "properties": {
+    "name": {
+      "description": "Name that will be displayed in the party sheet for this template.",
+      "type": "string"
+    },
+    "system": {
+      "description": "The system that this template is associated with.",
+      "type": "string"
+    },
+    "author": {
+      "description": "The author of the template. Will be shown along the name of the template.",
+      "type": "string"
+    },
+    "offline_excludes_property": {
+      "description": "The actor property to do the filtering for (exclude).",
+      "type": "string",
+      "default": "actor.type"
+    },
+    "offline_excludes": {
+      "description": "List of values to exclude from the template. Based on the offline_excludes_property.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": ["npc"]
+    },
+    "offline_includes_property": {
+      "description": "The actor property to do the filtering for (include). If declared both offline_excludes and offline_excludes_property, will be ignored.",
+      "type": "string"
+    },
+    "offline_includes": {
+      "description": "List of values to include in the template. Based on the offline_includes_property.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "version": {
+      "description": "The version of the template",
+      "type": "string"
+    },
+    "minimumSystemVersion": {
+      "description": "The minimum version of the required system",
+      "type": "string"
+    },
+    "maximumSystemVersion": {
+      "description": "The maximum version of the required system",
+      "type": "string"
+    },
+    "rows": {
+      "description": "The rows of the template. Keep in mind that automatically a row is created per character, this is more for data display.",
+      "type": "array",
+      "items": {
+        "description": "Specific row.",
+        "type": "array",
+        "items": {
+          "description": "The data for a row to display.",
+          "type": "object",
+          "required": ["name", "type", "header", "text"],
+          "properties": {
+            "name": {
+              "description": "The name of the row and also the header to display.",
+              "type": "string"
+            },
+            "type": {
+              "description": "The type of the row. Each type is parsed in an specific way. You can set an empty string to treat the column as an spacer.",
+              "type": "string",
+              "enum": [
+                "direct",
+                "direct-complex",
+                "string",
+                "array-string-builder",
+                "largest-from-array",
+                "smallest-from-array",
+                "object-loop",
+                "charactersheet",
+                "span",
+                ""
+              ]
+            },
+            "header": {
+              "description": "Whether to show, hide, or skip the column header.",
+              "type": "string",
+              "enum": ["show", "hide", "skip"]
+            },
+            "maxwidth": {
+              "description": "The maximum width in pixels of the row.",
+              "type": "number"
+            },
+            "minwidth": {
+              "description": "The minimum width in pixels of the row.",
+              "type": "number"
+            },
+            "align": {
+              "description": "Horizontal alignment of the cells.",
+              "type": "string",
+              "enum": ["left", "center", "right"]
+            },
+            "valign": {
+              "description": "Vertical alignment of the cells.",
+              "type": "string",
+              "enum": ["top", "bottom"]
+            },
+            "showSign": {
+              "description": "Displays a '+' symbol if the value is above zero.",
+              "type": "boolean"
+            },
+            "rowspan": {
+              "description": "Controls the row span of the cells in the column. You need also the corresponding empty rows and type 'span'.",
+              "type": "number"
+            },
+            "colspan": {
+              "description": "Controls the column span of the cells in the column.",
+              "type": "number"
+            },
+            "showTotal": {
+              "description": "Shows a total sum for this column in a footer row if values are numeric.",
+              "type": "boolean"
+            },
+            "text": {
+              "description": "Complex property that will be parsed based on the type."
+            }
+          },
+          "if": {
+            "properties": {
+              "type": {
+                "const": "direct-complex"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "text": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["type", "text"],
+                  "properties": {
+                    "type": {
+                      "description": "The type of object.",
+                      "type": "string",
+                      "enum": ["exists", "match", "match-all"]
+                    },
+                    "text": {
+                      "description": "The text that will be displayed if the type passes the check.",
+                      "type": "string"
+                    },
+                    "else": {
+                      "description": "The text that will be displayed if the type fails the check.",
+                      "type": "string"
+                    }
+                  },
+                  "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "exists"
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "value": {
+                            "description": "The value that you are checking against.",
+                            "type": "string"
+                          }
+                        },
+                        "required": ["value"]
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "enum": ["match", "match-all"]
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "ifdata": {
+                            "description": "The data that will be used to validate the check on if.",
+                            "type": "string"
+                          },
+                          "matches": {
+                            "description": "The value that ifdata needs to match with.",
+                            "type": ["string", "number", "boolean"]
+                          }
+                        },
+                        "required": ["ifdata", "matches"]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "text": {
+                "type": ["string", "boolean", "number"]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
