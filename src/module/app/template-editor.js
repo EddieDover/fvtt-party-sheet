@@ -7,6 +7,8 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   static _instance = null;
+  element = null;
+  options = null;
 
   static DEFAULT_OPTIONS = {
     tag: "form",
@@ -126,11 +128,13 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!editorContainer) return;
 
     // Load Monaco Editor from CDN if not already loaded
+    // @ts-ignore
     if (!window.monaco) {
       await this._loadMonacoEditor();
     }
 
     // Create the editor
+    // @ts-ignore
     this.monacoEditor = window.monaco.editor.create(editorContainer, {
       value: this._getInitialTemplate(),
       language: "json",
@@ -242,6 +246,7 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
   async _loadMonacoEditor() {
     return new Promise((resolve, reject) => {
+      // @ts-ignore
       if (window.monaco) {
         resolve();
         return;
@@ -251,6 +256,7 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       const loaderScript = document.createElement("script");
       loaderScript.src = "https://unpkg.com/monaco-editor@0.44.0/min/vs/loader.js";
       loaderScript.onload = () => {
+        // @ts-ignore
         window.require.config({
           paths: {
             "vs": "https://unpkg.com/monaco-editor@0.44.0/min/vs",
@@ -259,6 +265,7 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
         window.require(
           ["vs/editor/editor.main"],
+          // @ts-ignore
           () => {
             resolve();
           },
@@ -344,9 +351,11 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       this._updateMetadataFromJson();
 
       this._updateTitle();
-      game.ui.notifications.info(`Template "${file.name}" loaded successfully.`);
+      // @ts-ignore
+      ui.notifications.info(`Template "${file.name}" loaded successfully.`);
     } catch (error) {
-      game.ui.notifications.error(`Failed to load template: ${error.message}`);
+      // @ts-ignore
+      ui.notifications.error(`Failed to load template: ${error.message}`);
     }
   }
 
@@ -430,7 +439,8 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     this._updateMetadataFromJson();
 
     this._updateTitle();
-    game.ui.notifications.info("New template created.");
+    // @ts-ignore
+    ui.notifications.info("New template created.");
   }
 
   async saveTemplate() {
@@ -452,8 +462,10 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       this._downloadTemplate(template, this.currentFilename);
 
       this._updateTitle();
+      // @ts-ignore
       ui.notifications.info(`Template saved as "${this.currentFilename}".`);
     } catch (error) {
+      // @ts-ignore
       ui.notifications.error(`Failed to save template: ${error.message}`);
     }
   }
@@ -504,8 +516,10 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       const formatted = JSON.stringify(template, null, 2);
 
       this.monacoEditor.setValue(formatted);
+      // @ts-ignore
       ui.notifications.info("JSON formatted successfully.");
     } catch (error) {
+      // @ts-ignore
       ui.notifications.error(`Cannot format invalid JSON: ${error.message}`);
     }
   }
@@ -526,6 +540,7 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
   async _promptForFilename() {
     return new Promise((resolve) => {
+      // @ts-ignore
       new Dialog({
         title: "Save Template As",
         content: `
