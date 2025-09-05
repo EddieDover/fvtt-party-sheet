@@ -7,6 +7,7 @@ import {
   getCustomTemplates,
   getModuleTemplates,
   getSelectedTemplate,
+  isInPreviewMode,
   log,
   TemplateProcessError,
   updateSelectedTemplate,
@@ -365,6 +366,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
       currentSystemVersion: game.system.version,
       // @ts-ignore
       overrides: this.overrides,
+      isInPreviewMode: isInPreviewMode(),
     };
 
     return payload;

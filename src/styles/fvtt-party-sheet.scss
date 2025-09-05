@@ -1,3 +1,36 @@
+/* Preview Mode Banner */
+.preview-mode-banner {
+  background: linear-gradient(135deg, #ff9800, #f57c00);
+  border-bottom: 1px solid #e65100;
+  padding: 12px 15px;
+  flex-shrink: 0;
+}
+
+.preview-mode-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.preview-mode-banner i {
+  font-size: 16px;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+}
+
+.preview-mode-text {
+  flex: 1;
+  color: #fff;
+  font-size: 13px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  line-height: 1.3;
+}
+
+.preview-mode-text strong {
+  font-weight: bold;
+}
+
 #fvtt-party-sheet-system-select {
   display: flex;
   margin-top: 0.25rem;

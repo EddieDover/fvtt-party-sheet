@@ -387,12 +387,15 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   async _setupPreviewMode() {
-    // Enable preview mode by default if there are active party sheet instances
+    // Always enable preview mode when template editor is open
+    this.previewMode = true;
+    setPreviewMode(true, this.currentTemplate);
+    console.log("TemplateEditor: Preview mode enabled");
+
+    // Update all active party sheet instances if any exist
     const { PartySheetForm } = await import("./party-sheet.js");
     if (PartySheetForm._activeInstances && PartySheetForm._activeInstances.size > 0) {
-      this.previewMode = true;
-      setPreviewMode(true, this.currentTemplate);
-      console.log("TemplateEditor: Preview mode enabled");
+      PartySheetForm.updateAllInstancesWithPreview(this.currentTemplate);
     }
   }
 

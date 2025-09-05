@@ -22,6 +22,19 @@
     </button>
     {{/unless}}
   </div>
+
+  <!-- Preview Mode Banner -->
+  {{#if isInPreviewMode}}
+  <div class="preview-mode-banner">
+    <div class="preview-mode-content">
+      <i class="fas fa-eye"></i>
+      <span class="preview-mode-text">
+        <strong>Preview Mode Active</strong> - You are currently previewing a template from the Template Editor. Close the Template Editor to return to normal view.
+      </span>
+    </div>
+  </div>
+  {{/if}}
+
   {{#if showInstaller}}
     {{> installer}}
   {{else}}
