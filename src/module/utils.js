@@ -5,6 +5,11 @@ let moduleTemplates = [];
 
 let selectedTemplate = null;
 let templatesLoaded = false;
+
+// Preview mode variables
+let previewTemplate = null;
+let isPreviewMode = false;
+let previewModeCallbacks = [];
 /**
  * Are the templates loaded?
  * @returns {boolean} True if the templates are loaded
@@ -371,7 +376,7 @@ export function toProperCase(inputString) {
 }
 
 /**
- * Updates the selected system.
+ * Updates the selected template.
  * @param {*} template - The system to select.
  */
 export function updateSelectedTemplate(template) {
@@ -383,7 +388,66 @@ export function updateSelectedTemplate(template) {
  * @returns {*} - The selected system.
  */
 export function getSelectedTemplate() {
-  return selectedTemplate;
+  return isPreviewMode ? previewTemplate : selectedTemplate;
+}
+
+/**
+ * Sets preview mode on/off and optionally sets a preview template
+ * @param {boolean} enabled - Whether preview mode is enabled
+ * @param {*} template - The template to preview (optional)
+ */
+export function setPreviewMode(enabled, template = null) {
+  const wasPreviewMode = isPreviewMode;
+  isPreviewMode = enabled;
+
+  if (enabled && template) {
+    previewTemplate = template;
+  } else if (!enabled) {
+    previewTemplate = null;
+  }
+
+  // Notify callbacks if preview mode changed
+  if (wasPreviewMode !== enabled) {
+    previewModeCallbacks.forEach((callback) => callback(enabled, template));
+  }
+}
+
+/**
+ * Updates the preview template and notifies callbacks
+ * @param {*} template - The template to preview
+ */
+export function updatePreviewTemplate(template) {
+  if (isPreviewMode) {
+    previewTemplate = template;
+    previewModeCallbacks.forEach((callback) => callback(true, template));
+  }
+}
+
+/**
+ * Registers a callback for preview mode changes
+ * @param {Function} callback - Function to call when preview mode changes
+ */
+export function registerPreviewCallback(callback) {
+  previewModeCallbacks.push(callback);
+}
+
+/**
+ * Unregisters a preview mode callback
+ * @param {Function} callback - Function to remove from callbacks
+ */
+export function unregisterPreviewCallback(callback) {
+  const index = previewModeCallbacks.indexOf(callback);
+  if (index > -1) {
+    previewModeCallbacks.splice(index, 1);
+  }
+}
+
+/**
+ * Gets the current preview mode status
+ * @returns {boolean} Whether preview mode is active
+ */
+export function isInPreviewMode() {
+  return isPreviewMode;
 }
 
 /**

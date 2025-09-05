@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import {
+  // @ts-ignore
   addSign,
   compareSymVer,
   extractPropertyByString,
@@ -23,6 +24,8 @@ const DISCORD_URL = "https://discord.gg/mvMdc7bH2d";
 const DEFAULT_EXCLUDES = ["npc"];
 
 export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
+  static _activeInstances = new Set();
+
   static DEFAULT_OPTIONS = {
     tag: "form",
     form: {
@@ -54,6 +57,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     },
   };
 
+  // @ts-ignore
   static async formHandler(event, form, formData) {
     event.preventDefault();
     event.stopPropagation();
@@ -74,6 +78,9 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     this.refreshTimer = null;
     this.dropdownStates = new Map(); // Store dropdown selection states
     this.isDropdownInteracting = false; // Track if user is interacting with dropdowns
+
+    // Add this instance to active instances set
+    PartySheetForm._activeInstances.add(this);
 
     // If the form is being opened directly with installer, set the opening flag
     if (this.showInstaller) {
@@ -227,6 +234,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
   // eslint-disable-next-line no-unused-vars
   // @ts-ignore
+  // @ts-ignore
   _updateObject(event, formData) {
     // Don't delete this function or FoundryVTT complains...
   }
@@ -244,6 +252,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     return getSelectedTemplate();
   }
 
+  // @ts-ignore
   // @ts-ignore
   _prepareContext(options, b, c) {
     // Reset dropdown counters at the beginning of each render cycle
@@ -433,6 +442,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     // @ts-ignore
     const dropdowns = html.find('select[class="fvtt-party-sheet-dropdown"]');
 
+    // @ts-ignore
     dropdowns.each((index, dropdown) => {
       // @ts-ignore
       const $dropdown = $(dropdown);
@@ -458,6 +468,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     // @ts-ignore
     const dropdowns = html.find('select[class="fvtt-party-sheet-dropdown"]');
 
+    // @ts-ignore
     dropdowns.each((index, dropdown) => {
       // @ts-ignore
       const $dropdown = $(dropdown);
@@ -468,6 +479,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
         // Check all available options
         const availableOptions = [];
+        // @ts-ignore
         $dropdown.find("option").each((i, option) => {
           // @ts-ignore
           availableOptions.push($(option).val());
@@ -511,6 +523,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     // @ts-ignore
     const dropdowns = html.find('select[class="fvtt-party-sheet-dropdown"]');
 
+    // @ts-ignore
     dropdowns.each((index, dropdown) => {
       // @ts-ignore
       const $dropdown = $(dropdown);
@@ -528,7 +541,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /**
-   * Override close method to ensure timer cleanup
+   * Override close method to ensure timer cleanup and instance tracking
    * @returns {Promise<void>}
    * @memberof PartySheetForm
    */
@@ -538,6 +551,10 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
       clearInterval(this.refreshTimer);
       this.refreshTimer = null;
     }
+
+    // Remove this instance from active tracking
+    PartySheetForm._activeInstances.delete(this);
+
     return super.close();
   }
 
@@ -546,6 +563,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     const overrides = {
       onexit: () => {
         setTimeout(() => {
+          // @ts-ignore
           this.doRender(true, false);
         }, 350);
       },
@@ -558,13 +576,25 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
   static onOpenEditor(event) {
     event.preventDefault();
     const currentTemplate = getSelectedTemplate();
+
+    // Try to find the current party sheet instance
+    // In Foundry ApplicationV2, we can get the instance from the event target
+    const partySheetInstance = event.target.closest(".fvtt-party-sheet")?.application || null;
+
     const overrides = {
       onexit: () => {
         setTimeout(() => {
-          this.doRender(true, false);
+          if (partySheetInstance) {
+            partySheetInstance.render();
+          } else {
+            // Fallback to static method
+            // @ts-ignore
+            this.doRender(true, false);
+          }
         }, 350);
       },
       currentTemplate: currentTemplate,
+      partySheetInstance: partySheetInstance,
     };
     const te = TemplateEditor.getInstance(overrides);
     // @ts-ignore
@@ -577,7 +607,34 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
       clearInterval(this.refreshTimer);
       this.refreshTimer = null;
     }
+    // @ts-ignore
     this.close();
+  }
+
+  /**
+   * Update all active party sheet instances with preview template
+   * @param {Object} previewTemplate - The template data to use for preview
+   */
+  static updateAllInstancesWithPreview(previewTemplate) {
+    for (const instance of PartySheetForm._activeInstances) {
+      // Temporarily set preview template and re-render
+      instance._originalTemplate = instance._originalTemplate || instance.template;
+      instance.template = previewTemplate;
+      instance.render(false); // Refresh without forcing position change
+    }
+  }
+
+  /**
+   * Restore all active party sheet instances to original template
+   */
+  static restoreAllInstances() {
+    for (const instance of PartySheetForm._activeInstances) {
+      if (instance._originalTemplate) {
+        instance.template = instance._originalTemplate;
+        delete instance._originalTemplate;
+        instance.render(false); // Refresh without forcing position change
+      }
+    }
   }
 
   static onOpenActorSheet(event) {
@@ -606,6 +663,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
       this.isDropdownInteracting = false;
     }, 50);
 
+    // @ts-ignore
     this.doRender(true, false);
   }
 
@@ -617,18 +675,21 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     const sheetSelectDropdown = document.querySelector('select[name="fvtt-party-sheet-system"]');
 
     sheetSelectDropdown?.addEventListener("change", PartySheetForm.onChangeSystem.bind(this));
+    // @ts-ignore
     sheetSelectDropdown?.addEventListener("blur", (event) => {
       // Template selector lost focus without selection (clicked elsewhere)
       setTimeout(() => {
         this.isDropdownInteracting = false;
       }, 50);
     });
+    // @ts-ignore
     sheetSelectDropdown?.addEventListener("mousedown", (event) => {
       // User is starting to interact with template dropdown (opening it)
       console.log("fvtt-party-sheet | Template selector interaction started");
       this.isDropdownInteracting = true;
     });
 
+    // @ts-ignore
     document.querySelector('select[name="fvtt-party-sheet-system"]').addEventListener("mousedown", (event) => {
       // User is starting to interact with template dropdown (opening it)
       console.log("fvtt-party-sheet | Template selector interaction started");
@@ -641,6 +702,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
     document.querySelectorAll('button[class="fvtt-party-sheet-module-preview-button"]').forEach((button) => {
       button.addEventListener("click", (event) => {
+        // @ts-ignore
         const modulepath = event.currentTarget.dataset.modulepath;
         // Construct the Application instance
         // @ts-ignore
@@ -658,10 +720,12 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     installButtons.forEach((button) => {
       button.addEventListener("click", async (event) => {
         // Check if the button is disabled
+        // @ts-ignore
         if (event.currentTarget.disabled) {
           return;
         }
 
+        // @ts-ignore
         const dataModuleTemplatePath = event.currentTarget.dataset.modulepath;
         const dataModuleTemplateFilename = dataModuleTemplatePath.split("/").pop();
         const dataModuleTemplateFolder = dataModuleTemplatePath.split("/").slice(0, -1).join("/") + "/";
@@ -681,13 +745,16 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const allDropdowns = document.querySelectorAll('select[class="fvtt-party-sheet-dropdown"]');
     allDropdowns.forEach((dropdown) => {
+      // @ts-ignore
       dropdown.addEventListener("mousedown", (event) => {
         // User is starting to interact with dropdown (opening it)
         console.log("fvtt-party-sheet | Dropdown interaction started");
         this.isDropdownInteracting = true;
       });
       dropdown.addEventListener("change", (event) => {
+        // @ts-ignore
         const dropdownSection = event.currentTarget.dataset.dropdownsection;
+        // @ts-ignore
         const dropdownValue = event.currentTarget.value;
 
         // Save the new selection immediately to our state map
@@ -698,11 +765,13 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
         // @ts-ignore
         document
           .querySelectorAll(`div[data-dropdownsection="${dropdownSection}"]`)
+          // @ts-ignore
           .forEach((div) => (div.style.display = "none"));
 
         // @ts-ignore
         document
           .querySelectorAll(`div[data-dropdownsection="${dropdownSection}"][data-dropdownoption="${dropdownValue}"]`)
+          // @ts-ignore
           .forEach((div) => (div.style.display = "block"));
 
         // User made a selection, they're done interacting
@@ -711,6 +780,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
           this.isDropdownInteracting = false;
         }, 50);
       });
+      // @ts-ignore
       dropdown.addEventListener("blur", (event) => {
         // Dropdown lost focus without selection (clicked elsewhere)
         setTimeout(() => {

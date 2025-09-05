@@ -1,7 +1,14 @@
 /* eslint-disable no-undef */
 
-import { getSymVersion } from "../utils";
-import schemaResponse from "../../template.schema.json";
+import {
+  getSymVersion,
+  setPreviewMode,
+  updatePreviewTemplate,
+  registerPreviewCallback,
+  unregisterPreviewCallback,
+} from "../utils";
+
+import * as templateSchema from "../../template.schema.json";
 
 // @ts-ignore
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -28,7 +35,6 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       onNew: TemplateEditor.onNew,
       onLoad: TemplateEditor.onLoad,
       onSave: TemplateEditor.onSave,
-      onSaveAs: TemplateEditor.onSaveAs,
       onValidate: TemplateEditor.onValidate,
       onFormatJson: TemplateEditor.onFormatJson,
     },
@@ -62,6 +68,12 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
     this.isDirty = false;
     this.monacoEditor = null;
+
+    // Preview mode properties
+    this.previewMode = false;
+    this.partySheetInstance = options.partySheetInstance || null;
+    this.previewUpdateDebounce = null;
+
     // Store reference to this instance
     TemplateEditor._instance = this;
   }
@@ -76,7 +88,26 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     return new TemplateEditor(options);
   }
 
-  close(options) {
+  async close(options) {
+    // Disable preview mode before closing
+    await this._disablePreviewMode();
+
+    // Properly dispose of Monaco Editor and its model
+    if (this.monacoEditor) {
+      const model = this.monacoEditor.getModel();
+      if (model) {
+        model.dispose();
+      }
+      this.monacoEditor.dispose();
+      this.monacoEditor = null;
+    }
+
+    // Clear any pending timeouts
+    if (this.previewUpdateDebounce) {
+      clearTimeout(this.previewUpdateDebounce);
+      this.previewUpdateDebounce = null;
+    }
+
     // Clear the static reference when closing
     if (TemplateEditor._instance === this) {
       TemplateEditor._instance = null;
@@ -122,6 +153,9 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Set up metadata field listeners
     this._setupMetadataFields();
+
+    // Setup preview mode
+    await this._setupPreviewMode();
   }
 
   async _initializeMonacoEditor() {
@@ -144,6 +178,14 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     // Create a model with a specific URI to match our schema
     // @ts-ignore
     const modelUri = window.monaco.Uri.parse("file:///template.json");
+
+    // Check if a model with this URI already exists and dispose it
+    // @ts-ignore
+    const existingModel = window.monaco.editor.getModel(modelUri);
+    if (existingModel) {
+      existingModel.dispose();
+    }
+
     // @ts-ignore
     const model = window.monaco.editor.createModel(this._getInitialTemplate(), "json", modelUri);
 
@@ -170,6 +212,7 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       this.isDirty = true;
       this._updateTitle();
       this._updateMetadataFromJson();
+      this._updatePreviewDebounced();
     });
 
     // Initial sync after editor is created and content is set
@@ -305,225 +348,7 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   async _configureJsonSchema() {
     try {
       // Embedded schema - avoids fetch issues in Foundry modules
-      const schema = {
-        "title": "FVTT Party Sheet Template",
-        "description": "Schema for creating and managing party sheet templates.",
-        "type": "object",
-        "required": ["name", "system", "author", "version", "minimumSystemVersion", "rows"],
-        "properties": {
-          "name": {
-            "description": "Name that will be displayed in the party sheet for this template.",
-            "type": "string",
-          },
-          "system": {
-            "description": "The system that this template is associated with.",
-            "type": "string",
-          },
-          "author": {
-            "description": "The author of the template. Will be shown along the name of the template.",
-            "type": "string",
-          },
-          "offline_excludes_property": {
-            "description": "The actor property to do the filtering for (exclude).",
-            "type": "string",
-            "default": "actor.type",
-          },
-          "offline_excludes": {
-            "description": "List of values to exclude from the template. Based on the offline_excludes_property.",
-            "type": "array",
-            "items": {
-              "type": "string",
-            },
-            "default": ["npc"],
-          },
-          "offline_includes_property": {
-            "description":
-              "The actor property to do the filtering for (include). If declared both offline_excludes and offline_excludes_property, will be ignored.",
-            "type": "string",
-          },
-          "offline_includes": {
-            "description": "List of values to include in the template. Based on the offline_includes_property.",
-            "type": "array",
-            "items": {
-              "type": "string",
-            },
-          },
-          "version": {
-            "description": "The version of the template",
-            "type": "string",
-          },
-          "minimumSystemVersion": {
-            "description": "The minimum version of the required system",
-            "type": "string",
-          },
-          "maximumSystemVersion": {
-            "description": "The maximum version of the required system",
-            "type": "string",
-          },
-          "rows": {
-            "description":
-              "The rows of the template. Keep in mind that automatically a row is created per character, this is more for data display.",
-            "type": "array",
-            "items": {
-              "description": "Specific row.",
-              "type": "array",
-              "items": {
-                "description": "The data for a row to display.",
-                "type": "object",
-                "required": ["name", "type", "header", "text"],
-                "properties": {
-                  "name": {
-                    "description": "The name of the row and also the header to display.",
-                    "type": "string",
-                  },
-                  "type": {
-                    "description":
-                      "The type of the row. Each type is parsed in an specific way. You can set an empty string to treat the column as an spacer.",
-                    "type": "string",
-                    "enum": [
-                      "direct",
-                      "direct-complex",
-                      "string",
-                      "array-string-builder",
-                      "largest-from-array",
-                      "smallest-from-array",
-                      "object-loop",
-                      "charactersheet",
-                      "span",
-                      "",
-                    ],
-                  },
-                  "header": {
-                    "description": "Whether to show, hide, or skip the column header.",
-                    "type": "string",
-                    "enum": ["show", "hide", "skip"],
-                  },
-                  "maxwidth": {
-                    "description": "The maximum width in pixels of the row.",
-                    "type": "number",
-                  },
-                  "minwidth": {
-                    "description": "The minimum width in pixels of the row.",
-                    "type": "number",
-                  },
-                  "align": {
-                    "description": "Horizontal alignment of the cells.",
-                    "type": "string",
-                    "enum": ["left", "center", "right"],
-                  },
-                  "valign": {
-                    "description": "Vertical alignment of the cells.",
-                    "type": "string",
-                    "enum": ["top", "bottom"],
-                  },
-                  "showSign": {
-                    "description": "Displays a '+' symbol if the value is above zero.",
-                    "type": "boolean",
-                  },
-                  "rowspan": {
-                    "description":
-                      "Controls the row span of the cells in the column. You need also the corresponding empty rows and type 'span'.",
-                    "type": "number",
-                  },
-                  "colspan": {
-                    "description": "Controls the column span of the cells in the column.",
-                    "type": "number",
-                  },
-                  "showTotal": {
-                    "description": "Shows a total sum for this column in a footer row if values are numeric.",
-                    "type": "boolean",
-                  },
-                  "text": {
-                    "description": "Complex property that will be parsed based on the type.",
-                  },
-                },
-                "if": {
-                  "properties": {
-                    "type": {
-                      "const": "direct-complex",
-                    },
-                  },
-                },
-                "then": {
-                  "properties": {
-                    "text": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "required": ["type", "text"],
-                        "properties": {
-                          "type": {
-                            "description": "The type of object.",
-                            "type": "string",
-                            "enum": ["exists", "match", "match-all"],
-                          },
-                          "text": {
-                            "description": "The text that will be displayed if the type passes the check.",
-                            "type": "string",
-                          },
-                          "else": {
-                            "description": "The text that will be displayed if the type fails the check.",
-                            "type": "string",
-                          },
-                        },
-                        "allOf": [
-                          {
-                            "if": {
-                              "properties": {
-                                "type": {
-                                  "const": "exists",
-                                },
-                              },
-                            },
-                            "then": {
-                              "properties": {
-                                "value": {
-                                  "description": "The value that you are checking against.",
-                                  "type": "string",
-                                },
-                              },
-                              "required": ["value"],
-                            },
-                          },
-                          {
-                            "if": {
-                              "properties": {
-                                "type": {
-                                  "enum": ["match", "match-all"],
-                                },
-                              },
-                            },
-                            "then": {
-                              "properties": {
-                                "ifdata": {
-                                  "description": "The data that will be used to validate the check on if.",
-                                  "type": "string",
-                                },
-                                "matches": {
-                                  "description": "The value that ifdata needs to match with.",
-                                  "type": ["string", "number", "boolean"],
-                                },
-                              },
-                              "required": ["ifdata", "matches"],
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  },
-                },
-                "else": {
-                  "properties": {
-                    "text": {
-                      "type": ["string", "boolean", "number"],
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      };
+      const schema = templateSchema;
 
       console.log("TemplateEditor: Schema loaded successfully", schema);
 
@@ -564,6 +389,70 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       console.log("TemplateEditor: Schema configuration applied successfully");
     } catch (error) {
       console.warn("Failed to configure template schema for IntelliSense:", error);
+    }
+  }
+
+  async _setupPreviewMode() {
+    // Enable preview mode by default if there are active party sheet instances
+    const { PartySheetForm } = await import("./party-sheet.js");
+    if (PartySheetForm._activeInstances && PartySheetForm._activeInstances.size > 0) {
+      this.previewMode = true;
+      setPreviewMode(true, this.currentTemplate);
+      console.log("TemplateEditor: Preview mode enabled");
+    }
+  }
+
+  _updatePreviewDebounced() {
+    // Clear existing timeout
+    if (this.previewUpdateDebounce) {
+      clearTimeout(this.previewUpdateDebounce);
+    }
+
+    // Set new timeout for debounced update
+    this.previewUpdateDebounce = setTimeout(() => {
+      this._updatePreview();
+    }, 300); // 300ms debounce
+  }
+
+  async _updatePreview() {
+    if (!this.previewMode || !this.monacoEditor) {
+      return;
+    }
+
+    try {
+      const jsonText = this.monacoEditor.getValue();
+      const template = JSON.parse(jsonText);
+
+      // Validate it's a proper template (has required fields)
+      if (template.name && template.author && template.rows) {
+        updatePreviewTemplate(template);
+
+        // Update all active party sheet instances
+        const { PartySheetForm } = await import("./party-sheet.js");
+        PartySheetForm.updateAllInstancesWithPreview(template);
+      }
+    } catch (error) {
+      // Invalid JSON - don't update preview
+      console.debug("TemplateEditor: Invalid JSON, skipping preview update");
+    }
+  }
+
+  async _disablePreviewMode() {
+    if (this.previewMode) {
+      this.previewMode = false;
+      setPreviewMode(false);
+
+      // Clear any pending updates
+      if (this.previewUpdateDebounce) {
+        clearTimeout(this.previewUpdateDebounce);
+        this.previewUpdateDebounce = null;
+      }
+
+      // Restore all party sheet instances to original template
+      const { PartySheetForm } = await import("./party-sheet.js");
+      PartySheetForm.restoreAllInstances();
+
+      console.log("TemplateEditor: Preview mode disabled");
     }
   }
 
@@ -662,47 +551,67 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   // Static action handlers
   static onNew(event, target) {
     event.preventDefault();
-    console.log("Template Editor: New template");
-    // @ts-ignore
-    this.createNewTemplate();
+    console.log("Template Editor: New template static handler called");
+    // Get the active instance and call the method on it
+    const instance = TemplateEditor._instance;
+    if (instance) {
+      instance.createNewTemplate();
+    } else {
+      console.error("TemplateEditor: No active instance found for new template operation");
+    }
   }
 
   static onLoad(event, target) {
     event.preventDefault();
-    console.log("Template Editor: Load template");
-    // @ts-ignore
-    const fileInput = this.element.querySelector("#template-file-input");
-    if (fileInput) {
-      fileInput.click();
+    console.log("Template Editor: Load template static handler called");
+    // Get the active instance and trigger file input
+    const instance = TemplateEditor._instance;
+    if (instance && instance.element) {
+      const fileInput = instance.element.querySelector("#template-file-input");
+      if (fileInput) {
+        fileInput.click();
+      } else {
+        console.error("TemplateEditor: File input not found");
+      }
+    } else {
+      console.error("TemplateEditor: No active instance found for load operation");
     }
   }
 
   static onSave(event, target) {
     event.preventDefault();
-    console.log("Template Editor: Save template");
-    // @ts-ignore
-    this.saveTemplate();
-  }
-
-  static onSaveAs(event, target) {
-    event.preventDefault();
-    console.log("Template Editor: Save template as");
-    // @ts-ignore
-    this.saveTemplateAs();
+    console.log("Template Editor: Copy to clipboard handler called");
+    // Get the active instance and call the method on it
+    const instance = TemplateEditor._instance;
+    if (instance) {
+      instance.copyToClipboard();
+    } else {
+      console.error("TemplateEditor: No active instance found for copy operation");
+    }
   }
 
   static onValidate(event, target) {
     event.preventDefault();
-    console.log("Template Editor: Validate JSON");
-    // @ts-ignore
-    this.validateTemplate();
+    console.log("Template Editor: Validate JSON static handler called");
+    // Get the active instance and call the method on it
+    const instance = TemplateEditor._instance;
+    if (instance) {
+      instance.validateTemplate();
+    } else {
+      console.error("TemplateEditor: No active instance found for validate operation");
+    }
   }
 
   static onFormatJson(event, target) {
     event.preventDefault();
-    console.log("Template Editor: Format JSON");
-    // @ts-ignore
-    this.formatJson();
+    console.log("Template Editor: Format JSON static handler called");
+    // Get the active instance and call the method on it
+    const instance = TemplateEditor._instance;
+    if (instance) {
+      instance.formatJson();
+    } else {
+      console.error("TemplateEditor: No active instance found for format operation");
+    }
   }
 
   static onTest(event) {
@@ -713,8 +622,14 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static onClose(event) {
     event.preventDefault();
-    // @ts-ignore
-    this.close();
+    console.log("Template Editor: Close static handler called");
+    // Get the active instance and call the method on it
+    const instance = TemplateEditor._instance;
+    if (instance) {
+      instance.close();
+    } else {
+      console.error("TemplateEditor: No active instance found for close operation");
+    }
   }
 
   // Instance methods for template operations
@@ -735,70 +650,130 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     ui.notifications.info("New template created.");
   }
 
-  async saveTemplate() {
-    if (!this.monacoEditor) return;
+  async copyToClipboard() {
+    console.log("TemplateEditor: copyToClipboard() called");
+
+    if (!this.monacoEditor) {
+      console.log("TemplateEditor: No Monaco editor found");
+      return;
+    }
 
     try {
       const jsonText = this.monacoEditor.getValue();
       const template = JSON.parse(jsonText);
 
-      // Validate template has required fields
-      if (!template.name) {
-        throw new Error("Template must have a 'name' field");
+      console.log("TemplateEditor: Template parsed successfully", template.name);
+
+      // Validate template before copying (don't show UI notifications, we'll handle that)
+      const validationResult = this.validateTemplate(false);
+      if (!validationResult.isValid) {
+        // @ts-ignore
+        ui.notifications.error(`Cannot copy template: ${validationResult.errors.join(", ")}`);
+        return;
       }
 
       this.currentTemplate = template;
       this.isDirty = false;
 
-      // Download the file
-      this._downloadTemplate(template, this.currentFilename);
+      const jsonString = JSON.stringify(template, null, 2);
+
+      // Try to copy to clipboard
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(jsonString);
+        // @ts-ignore
+        ui.notifications.info("Template copied to clipboard! Paste into a text file and save as .json");
+      } else {
+        // Fallback for older browsers
+        this._showCopyDialog(jsonString, "template.json");
+      }
 
       this._updateTitle();
-      // @ts-ignore
-      ui.notifications.info(`Template saved as "${this.currentFilename}".`);
     } catch (error) {
+      console.error("TemplateEditor: Copy failed:", error);
       // @ts-ignore
-      ui.notifications.error(`Failed to save template: ${error.message}`);
+      ui.notifications.error(`Failed to copy template: ${error.message}`);
     }
   }
 
-  async saveTemplateAs() {
-    if (!this.monacoEditor) return;
-
-    // Create a simple dialog to get the filename
-    const filename = await this._promptForFilename();
-    if (!filename) return;
-
-    this.currentFilename = filename.endsWith(".json") ? filename : `${filename}.json`;
-    await this.saveTemplate();
-  }
-
-  validateTemplate(template) {
-    if (!this.monacoEditor) return;
+  validateTemplate(showNotifications = true) {
+    if (!this.monacoEditor) return { isValid: false, errors: ["No Monaco editor found"] };
 
     try {
       const jsonText = this.monacoEditor.getValue();
       const template = JSON.parse(jsonText);
-      // Basic template validation
+
+      // Comprehensive validation
       const errors = [];
-      if (!template.name) errors.push("Missing 'name' field");
-      if (!template.rows || !Array.isArray(template.rows)) errors.push("Missing or invalid 'rows' field");
 
-      if (!getSymVersion(template.version)) errors.push("Invalid template version. Must be in format 'x.y.z'");
-
-      if (errors.length > 0) {
-        // @ts-ignore
-        ui.notifications.warn(`Template validation warnings: ${errors.join(", ")}`);
-      } else {
-        // @ts-ignore
-        ui.notifications.info("Template JSON is valid!");
+      // Required fields validation
+      if (!template.name || template.name.trim() === "") {
+        errors.push("Template must have a 'name' field");
       }
+
+      if (!template.author || template.author.trim() === "") {
+        errors.push("Template must have an 'author' field");
+      }
+
+      if (!template.system || template.system.trim() === "") {
+        errors.push("Template must have a 'system' field");
+      }
+
+      if (!template.rows || !Array.isArray(template.rows)) {
+        errors.push("Template must have a 'rows' field that is an array");
+      } else if (template.rows.length === 0) {
+        errors.push("Template must have at least one row");
+      }
+
+      // Version validation
+      if (template.version && !getSymVersion(template.version)) {
+        errors.push("Invalid template version. Must be in format 'x.y.z'");
+      }
+
+      // Rows structure validation
+      if (template.rows && Array.isArray(template.rows)) {
+        template.rows.forEach((row, rowIndex) => {
+          if (!Array.isArray(row)) {
+            errors.push(`Row ${rowIndex + 1} must be an array`);
+          } else {
+            row.forEach((cell, cellIndex) => {
+              if (!cell || typeof cell !== "object") {
+                errors.push(`Row ${rowIndex + 1}, Cell ${cellIndex + 1} must be an object`);
+              } else {
+                if (!cell.name || cell.name.trim() === "") {
+                  errors.push(`Row ${rowIndex + 1}, Cell ${cellIndex + 1} must have a 'name' field`);
+                }
+                if (!cell.type || cell.type.trim() === "") {
+                  errors.push(`Row ${rowIndex + 1}, Cell ${cellIndex + 1} must have a 'type' field`);
+                }
+              }
+            });
+          }
+        });
+      }
+
+      const isValid = errors.length === 0;
+
+      // Show notifications only if requested (for manual validation button)
+      if (showNotifications) {
+        if (!isValid) {
+          // @ts-ignore
+          ui.notifications.warn(`Template validation issues: ${errors.join(", ")}`);
+        } else {
+          // @ts-ignore
+          ui.notifications.info("Template JSON is valid!");
+        }
+      }
+
+      return { isValid, errors };
     } catch (error) {
-      // @ts-ignore
-      ui.notifications.error(`Invalid JSON: ${error.message}`);
+      const errorMessage = `Invalid JSON: ${error.message}`;
+      if (showNotifications) {
+        // @ts-ignore
+        ui.notifications.error(errorMessage);
+      }
+      return { isValid: false, errors: [errorMessage] };
     }
   }
-
   formatJson() {
     if (!this.monacoEditor) return;
 
@@ -816,18 +791,40 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
-  _downloadTemplate(template, filename) {
-    const jsonString = JSON.stringify(template, null, 2);
-    const blob = new Blob([jsonString], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+  _showCopyDialog(jsonString, filename) {
+    // @ts-ignore
+    new Dialog(
+      {
+        title: "Copy Template JSON",
+        content: `
+        <div style="margin-bottom: 10px;">
+          <p>Copy the JSON below and save it manually as <strong>${filename}</strong>:</p>
+        </div>
+        <textarea readonly style="width: 100%; height: 300px; font-family: monospace; font-size: 12px;">${jsonString}</textarea>
+      `,
+        buttons: {
+          copy: {
+            label: "Copy to Clipboard",
+            callback: (html) => {
+              const textarea = html.find("textarea")[0];
+              textarea.select();
+              document.execCommand("copy");
+              // @ts-ignore
+              ui.notifications.info("Template JSON copied to clipboard!");
+            },
+          },
+          close: {
+            label: "Close",
+            callback: () => {},
+          },
+        },
+        default: "copy",
+      },
+      {
+        width: 600,
+        height: 450,
+      },
+    ).render(true);
   }
 
   async _promptForFilename() {
