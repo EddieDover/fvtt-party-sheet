@@ -1,4 +1,7 @@
 /* eslint-disable no-undef */
+
+import { getSymVersion } from "../utils";
+
 // @ts-ignore
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -46,8 +49,17 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   constructor(overrides) {
     super();
     this.overrides = overrides || {};
-    this.currentTemplate = null;
-    this.currentFilename = null;
+
+    // Initialize with current template if provided in overrides
+    this.currentTemplate = this.overrides.currentTemplate || null;
+
+    // Set filename based on current template or default to new
+    if (this.currentTemplate) {
+      this.currentFilename = `${this.currentTemplate.name}-${this.currentTemplate.author}.json`;
+    } else {
+      this.currentFilename = "new-template.json";
+    }
+
     this.isDirty = false;
     this.monacoEditor = null;
     // Store reference to this instance
@@ -382,7 +394,7 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     event.preventDefault();
     console.log("Template Editor: Validate JSON");
     // @ts-ignore
-    this.validateJson();
+    this.validateTemplate();
   }
 
   static onFormatJson(event, target) {
@@ -457,24 +469,28 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     await this.saveTemplate();
   }
 
-  validateJson() {
+  validateTemplate(template) {
     if (!this.monacoEditor) return;
 
     try {
       const jsonText = this.monacoEditor.getValue();
       const template = JSON.parse(jsonText);
-
       // Basic template validation
       const errors = [];
       if (!template.name) errors.push("Missing 'name' field");
       if (!template.rows || !Array.isArray(template.rows)) errors.push("Missing or invalid 'rows' field");
 
+      if (!getSymVersion(template.version)) errors.push("Invalid template version. Must be in format 'x.y.z'");
+
       if (errors.length > 0) {
+        // @ts-ignore
         ui.notifications.warn(`Template validation warnings: ${errors.join(", ")}`);
       } else {
+        // @ts-ignore
         ui.notifications.info("Template JSON is valid!");
       }
     } catch (error) {
+      // @ts-ignore
       ui.notifications.error(`Invalid JSON: ${error.message}`);
     }
   }

@@ -345,6 +345,19 @@ export function compareSymVer(a, b) {
 }
 
 /**
+ * Get the SymVer object from a version string.
+ * @param {string} version_text - The version string to convert.
+ * @returns {{ major: number, minor: number, patch: number } | null} - The SymVer object
+ */
+export function getSymVersion(version_text) {
+  if (!version_text || !version_text.includes(".") || version_text.split(".").length !== 3) {
+    return null;
+  }
+  const [major, minor, patch] = version_text.split(".").map(Number);
+  return { major, minor, patch };
+}
+
+/**
  * Converts a string to proper case.
  * @param {string} inputString - The input string to convert.
  * @returns {string} - The converted string in proper case.

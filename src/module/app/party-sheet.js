@@ -557,12 +557,14 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static onOpenEditor(event) {
     event.preventDefault();
+    const currentTemplate = getSelectedTemplate();
     const overrides = {
       onexit: () => {
         setTimeout(() => {
           this.doRender(true, false);
         }, 350);
       },
+      currentTemplate: currentTemplate,
     };
     const te = TemplateEditor.getInstance(overrides);
     // @ts-ignore
