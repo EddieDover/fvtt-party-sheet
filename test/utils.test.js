@@ -2179,7 +2179,7 @@ describe("Utils testing", () => {
           name: "Test",
           author: "Author",
           system: "dnd5e",
-          version: "invalid-version",
+          version: "1.2",
           rows: [
             [
               {
