@@ -71,14 +71,14 @@
     // "brace-style": ["error", "1tbs"],
     "require-jsdoc": 2,
     "require-await": "error",
-    "no-return-await": "error"
+    "no-return-await": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
   },
-  "prettier/prettier": [
-    "error",
-    {
-      "endOfLine": "auto"
-    }
-  ],
   "overrides": [
     {
       "files": [

@@ -6,14 +6,13 @@ import {
   getCustomTemplates,
   getModuleTemplates,
   getSelectedTemplate,
-  isVersionAtLeast,
   log,
   TemplateProcessError,
   updateSelectedTemplate,
 } from "../utils.js";
-import { sanitizeHTML } from "../utils/dompurify-sanitizer.js";
 import { HiddenCharactersSettings } from "./hidden-characters-settings.js";
 import { ParserFactory } from "../parsing/parser-factory.js";
+import { TemplateEditor } from "./template-editor.js";
 // @ts-ignore
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 const FEEDBACK_URL = "https://github.com/EddieDover/fvtt-party-sheet/issues/new/choose";
@@ -45,6 +44,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
       onBugReport: PartySheetForm.onBugReport,
       onDiscord: PartySheetForm.onDiscord,
       onInstaller: PartySheetForm.onInstaller,
+      onOpenEditor: PartySheetForm.onOpenEditor,
     },
   };
 
@@ -553,6 +553,20 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     const hcs = HiddenCharactersSettings.getInstance(overrides);
     // @ts-ignore
     hcs.render(true);
+  }
+
+  static onOpenEditor(event) {
+    event.preventDefault();
+    const overrides = {
+      onexit: () => {
+        setTimeout(() => {
+          this.doRender(true, false);
+        }, 350);
+      },
+    };
+    const te = TemplateEditor.getInstance(overrides);
+    // @ts-ignore
+    te.render(true);
   }
 
   static onCloseWindow() {

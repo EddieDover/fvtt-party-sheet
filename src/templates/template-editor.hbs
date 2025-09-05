@@ -1,0 +1,82 @@
+<form autocomplete="off" class="fvtt-party-sheet-template-editor-form standard-form">
+  <div class="template-editor-container">
+    <!-- Toolbar -->
+    <div class="template-editor-toolbar">
+      <div class="toolbar-section">
+        <button type="button" data-action="onNew" class="btn btn--primary" title="New Template">
+          <i class="fas fa-file"></i> New
+        </button>
+        <button type="button" data-action="onLoad" class="btn btn--secondary" title="Load Template">
+          <i class="fas fa-folder-open"></i> Load
+        </button>
+        <button type="button" data-action="onSave" class="btn btn--secondary" title="Save Template">
+          <i class="fas fa-save"></i> Save
+        </button>
+        <button type="button" data-action="onSaveAs" class="btn btn--secondary" title="Save As">
+          <i class="fas fa-save"></i> Save As
+        </button>
+      </div>
+      
+      <div class="toolbar-section">
+        <button type="button" data-action="onValidate" class="btn btn--tertiary" title="Validate JSON">
+          <i class="fas fa-check-circle"></i> Validate
+        </button>
+        <button type="button" data-action="onFormatJson" class="btn btn--tertiary" title="Format JSON">
+          <i class="fas fa-code"></i> Format
+        </button>
+      </div>
+      
+      <div class="toolbar-section">
+        <button type="button" data-action="onClose" class="btn btn--danger" title="Close Editor">
+          <i class="fas fa-times"></i> Close
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="template-editor-content">
+      <!-- Metadata Panel -->
+      <div class="metadata-panel">
+        <h3>Template Metadata</h3>
+        <div class="form-group metadata-field">
+          <label for="template-name">Name:</label>
+          <input type="text" id="template-name" name="templateName" placeholder="Template name..." />
+        </div>
+        <div class="form-group metadata-field">
+          <label for="template-author">Author:</label>
+          <input type="text" id="template-author" name="templateAuthor" placeholder="Author name..." />
+        </div>
+        <div class="form-group metadata-field">
+          <label for="template-system">System:</label>
+          <select id="template-system" name="templateSystem">
+            <option value="">Select system...</option>
+            <option value="dnd5e">D&D 5e</option>
+            <option value="pf2e">Pathfinder 2e</option>
+            <option value="swade">SWADE</option>
+          </select>
+        </div>
+        <div class="form-group metadata-field">
+          <label for="template-version">Version:</label>
+          <input type="text" id="template-version" name="templateVersion" placeholder="1.0.0" />
+        </div>
+      </div>
+
+      <!-- JSON Editor Panel -->
+      <div class="json-editor-panel">
+        <h3>JSON Editor</h3>
+        <div id="json-editor" class="json-editor-container">
+          <!-- Monaco Editor will be initialized here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="template-editor-statusbar">
+      <span class="status-text">Ready</span>
+      <span class="filename-text">{{currentFilename}}</span>
+    </div>
+
+    <!-- Hidden file input for loading -->
+    <input type="file" id="template-file-input" accept=".json" style="display: none;" />
+  </div>
+</form>
