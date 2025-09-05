@@ -669,3 +669,101 @@ export function showVersionDifferenceNotifications(validationData) {
     log(`${outOfDateCount} template update(s) available for ${currentSystem}`);
   }
 }
+
+/**
+ * Validates a template object structure and content
+ * @param {object} template - The template object to validate
+ * @returns {object} Validation result with isValid boolean and errors array
+ */
+export function validateTemplateStructure(template) {
+  const errors = [];
+
+  // Required fields validation
+  if (!template.name || template.name.trim() === "") {
+    errors.push("Template must have a 'name' field");
+  }
+
+  if (!template.author || template.author.trim() === "") {
+    errors.push("Template must have an 'author' field");
+  }
+
+  if (!template.system || template.system.trim() === "") {
+    errors.push("Template must have a 'system' field");
+  }
+
+  if (!template.rows || !Array.isArray(template.rows)) {
+    errors.push("Template must have a 'rows' field that is an array");
+  } else if (template.rows.length === 0) {
+    errors.push("Template must have at least one row");
+  }
+
+  // Version validation
+  if (template.version && !getSymVersion(template.version)) {
+    errors.push("Invalid template version. Must be in format 'x.y.z'");
+  }
+
+  // Rows structure validation
+  if (template.rows && Array.isArray(template.rows)) {
+    template.rows.forEach((row, rowIndex) => {
+      if (!Array.isArray(row)) {
+        errors.push(`Row ${rowIndex + 1} must be an array`);
+      } else {
+        row.forEach((cell, cellIndex) => {
+          if (!cell || typeof cell !== "object") {
+            errors.push(`Row ${rowIndex + 1}, Cell ${cellIndex + 1} must be an object`);
+          } else {
+            if (!cell.name || cell.name.trim() === "") {
+              errors.push(`Row ${rowIndex + 1}, Cell ${cellIndex + 1} must have a 'name' field`);
+            }
+            if (!cell.type || cell.type.trim() === "") {
+              errors.push(`Row ${rowIndex + 1}, Cell ${cellIndex + 1} must have a 'type' field`);
+            }
+          }
+        });
+      }
+    });
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}
+
+/**
+ * Validates a JSON string as a template
+ * @param {string} jsonText - The JSON string to validate
+ * @returns {object} Validation result with isValid boolean and errors array
+ */
+export function validateTemplateJson(jsonText) {
+  try {
+    const template = JSON.parse(jsonText);
+    return validateTemplateStructure(template);
+  } catch (error) {
+    return {
+      isValid: false,
+      errors: [`Invalid JSON: ${error.message}`],
+    };
+  }
+}
+
+/**
+ * Formats a JSON string with proper indentation
+ * @param {string} jsonText - The JSON string to format
+ * @returns {object} Result with success boolean, formatted string, and optional error
+ */
+export function formatTemplateJson(jsonText) {
+  try {
+    const template = JSON.parse(jsonText);
+    const formatted = JSON.stringify(template, null, 2);
+    return {
+      success: true,
+      formatted,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: `Cannot format invalid JSON: ${error.message}`,
+    };
+  }
+}

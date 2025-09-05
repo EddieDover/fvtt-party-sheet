@@ -1,12 +1,6 @@
 /* eslint-disable no-undef */
 
-import {
-  getSymVersion,
-  setPreviewMode,
-  updatePreviewTemplate,
-  registerPreviewCallback,
-  unregisterPreviewCallback,
-} from "../utils";
+import { setPreviewMode, updatePreviewTemplate, validateTemplateJson, formatTemplateJson } from "../utils";
 
 import * as templateSchema from "../../template.schema.json";
 
@@ -698,96 +692,35 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   validateTemplate(showNotifications = true) {
     if (!this.monacoEditor) return { isValid: false, errors: ["No Monaco editor found"] };
 
-    try {
-      const jsonText = this.monacoEditor.getValue();
-      const template = JSON.parse(jsonText);
+    const jsonText = this.monacoEditor.getValue();
+    const validationResult = validateTemplateJson(jsonText);
 
-      // Comprehensive validation
-      const errors = [];
-
-      // Required fields validation
-      if (!template.name || template.name.trim() === "") {
-        errors.push("Template must have a 'name' field");
-      }
-
-      if (!template.author || template.author.trim() === "") {
-        errors.push("Template must have an 'author' field");
-      }
-
-      if (!template.system || template.system.trim() === "") {
-        errors.push("Template must have a 'system' field");
-      }
-
-      if (!template.rows || !Array.isArray(template.rows)) {
-        errors.push("Template must have a 'rows' field that is an array");
-      } else if (template.rows.length === 0) {
-        errors.push("Template must have at least one row");
-      }
-
-      // Version validation
-      if (template.version && !getSymVersion(template.version)) {
-        errors.push("Invalid template version. Must be in format 'x.y.z'");
-      }
-
-      // Rows structure validation
-      if (template.rows && Array.isArray(template.rows)) {
-        template.rows.forEach((row, rowIndex) => {
-          if (!Array.isArray(row)) {
-            errors.push(`Row ${rowIndex + 1} must be an array`);
-          } else {
-            row.forEach((cell, cellIndex) => {
-              if (!cell || typeof cell !== "object") {
-                errors.push(`Row ${rowIndex + 1}, Cell ${cellIndex + 1} must be an object`);
-              } else {
-                if (!cell.name || cell.name.trim() === "") {
-                  errors.push(`Row ${rowIndex + 1}, Cell ${cellIndex + 1} must have a 'name' field`);
-                }
-                if (!cell.type || cell.type.trim() === "") {
-                  errors.push(`Row ${rowIndex + 1}, Cell ${cellIndex + 1} must have a 'type' field`);
-                }
-              }
-            });
-          }
-        });
-      }
-
-      const isValid = errors.length === 0;
-
-      // Show notifications only if requested (for manual validation button)
-      if (showNotifications) {
-        if (!isValid) {
-          // @ts-ignore
-          ui.notifications.warn(`Template validation issues: ${errors.join(", ")}`);
-        } else {
-          // @ts-ignore
-          ui.notifications.info("Template JSON is valid!");
-        }
-      }
-
-      return { isValid, errors };
-    } catch (error) {
-      const errorMessage = `Invalid JSON: ${error.message}`;
-      if (showNotifications) {
+    // Show notifications only if requested (for manual validation button)
+    if (showNotifications) {
+      if (!validationResult.isValid) {
         // @ts-ignore
-        ui.notifications.error(errorMessage);
+        ui.notifications.warn(`Template validation issues: ${validationResult.errors.join(", ")}`);
+      } else {
+        // @ts-ignore
+        ui.notifications.info("Template JSON is valid!");
       }
-      return { isValid: false, errors: [errorMessage] };
     }
+
+    return validationResult;
   }
   formatJson() {
     if (!this.monacoEditor) return;
 
-    try {
-      const jsonText = this.monacoEditor.getValue();
-      const template = JSON.parse(jsonText);
-      const formatted = JSON.stringify(template, null, 2);
+    const jsonText = this.monacoEditor.getValue();
+    const result = formatTemplateJson(jsonText);
 
-      this.monacoEditor.setValue(formatted);
+    if (result.success) {
+      this.monacoEditor.setValue(result.formatted);
       // @ts-ignore
       ui.notifications.info("JSON formatted successfully.");
-    } catch (error) {
+    } else {
       // @ts-ignore
-      ui.notifications.error(`Cannot format invalid JSON: ${error.message}`);
+      ui.notifications.error(result.error);
     }
   }
 
