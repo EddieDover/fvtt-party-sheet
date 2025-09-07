@@ -169,7 +169,7 @@ export class FoundryTestUtils {
    * Click the Party Sheet button
    */
   async clickPartySheet() {
-    await this.page.getByRole("button", { name: "Party Sheet" }).click();
+    await this.page.getByRole("button", { name: "Party Sheet", exact: true }).click();
   }
 
   /**
@@ -215,7 +215,7 @@ export class FoundryTestUtils {
       await this.page.getByRole("button", { name: " Configure Settings" }).click();
       await this.page.waitForTimeout(1000);
 
-      await this.page.locator('a[data-tab="fvtt-party-sheet"]').click();
+      await this.page.getByRole("button", { name: "Party Sheet [7]" }).click();
       await this.page.waitForTimeout(1000);
     } catch (error) {
       console.error("Failed to open settings panel:", error);
