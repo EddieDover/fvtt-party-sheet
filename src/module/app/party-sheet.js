@@ -657,7 +657,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
           type: "application/json",
         });
         // @ts-ignore
-        await FilePicker.upload("data", "partysheets", fileObject);
+        await foundry.applications.apps.FilePicker.implementation.upload("data", "partysheets", fileObject);
         await this._postInstallCallback();
         this.label = "Installed";
       });
