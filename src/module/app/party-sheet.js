@@ -613,7 +613,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
       this.isDropdownInteracting = true;
     });
 
-    document.querySelector('select[name="fvtt-party-sheet-system"]').addEventListener("mousedown", (event) => {
+    sheetSelectDropdown?.addEventListener("mousedown", (event) => {
       // User is starting to interact with template dropdown (opening it)
       console.log("fvtt-party-sheet | Template selector interaction started");
       this.isDropdownInteracting = true;
@@ -657,7 +657,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
           type: "application/json",
         });
         // @ts-ignore
-        await foundry.applications.app.FilePicker.upload("data", "partysheets", fileObject);
+        await FilePicker.upload("data", "partysheets", fileObject);
         await this._postInstallCallback();
         this.label = "Installed";
       });
