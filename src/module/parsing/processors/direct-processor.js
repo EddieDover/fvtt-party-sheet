@@ -33,7 +33,7 @@ export class DirectProcessor extends DataProcessor {
       isSafeStringNeeded = true;
       processedValue = processedValue.replaceAll(
         "{charactersheet}",
-        `<input type="image" name="fvtt-party-sheet-actorimage" data-actorid="${
+        `<input type="image" data-action="onOpenActorSheet" name="fvtt-party-sheet-actorimage" data-actorid="${
           character.uuid
         }" class="token-image" src="${character.prototypeToken.texture.src}" title="${
           character.prototypeToken.name
