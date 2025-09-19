@@ -211,7 +211,7 @@ describe("Data Processors", () => {
       const result = processor.process(character, "unused");
 
       expect(mockSafeString).toHaveBeenCalledWith(
-        `<input type="image" name="fvtt-party-sheet-actorimage" data-actorid="Actor.123" class="token-image" src="path/to/token.png" title="Test Character" width="36" height="36" style="transform: rotate(0deg);"/>`,
+        `<input type="image" data-action="onOpenActorSheet" name="fvtt-party-sheet-actorimage" data-actorid="Actor.123" class="token-image" src="path/to/token.png" title="Test Character" width="36" height="36" style="transform: rotate(0deg);"/>`,
       );
       expect(result.__isSafeString).toBe(true);
     });
@@ -451,7 +451,7 @@ describe("Data Processors", () => {
       const result = processor.process(character, "unused");
 
       expect(mockSafeString).toHaveBeenCalledWith(
-        `<input type="image" name="fvtt-party-sheet-actorimage" data-actorid="Actor.123" class="token-image" src="path/to/token.png" title="Test Character" width="36" height="36" style="transform: rotate(0deg);"/>`,
+        `<input type="image" data-action="onOpenActorSheet" name="fvtt-party-sheet-actorimage" data-actorid="Actor.123" class="token-image" src="path/to/token.png" title="Test Character" width="36" height="36" style="transform: rotate(0deg);"/>`,
       );
       expect(result.__isSafeString).toBe(true);
     });
