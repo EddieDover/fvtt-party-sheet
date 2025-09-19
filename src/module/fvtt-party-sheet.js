@@ -524,11 +524,9 @@ function refreshSheet() {
       // Check if user is currently interacting with dropdowns
       if (currentPartySheet.isUserInteractingWithDropdowns && currentPartySheet.isUserInteractingWithDropdowns()) {
         // Skip this refresh cycle to avoid interrupting the user
-        console.log("fvtt-party-sheet | Skipping refresh - user is interacting with dropdown");
         return;
       }
 
-      console.log("fvtt-party-sheet | Auto-refreshing party sheet");
       currentPartySheet.doRender(false, false);
     } catch (error) {
       console.warn("fvtt-party-sheet | Error during auto-refresh:", error);
