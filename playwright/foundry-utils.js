@@ -21,8 +21,6 @@ export class FoundryTestUtils {
       },
       { timeout: 30000 },
     );
-
-    console.log("✅ FoundryVTT ready for testing");
   }
 
   /**
@@ -37,93 +35,30 @@ export class FoundryTestUtils {
 
     // Wait for dropdowns to be present (if any)
     await this.page.waitForTimeout(1000); // Allow for dynamic content loading
-
-    console.log("✅ Party Sheet opened");
   }
 
-  /**
-   * Get current refresh rate setting
-   */
-  async getRefreshRate() {
-    return await this.page.evaluate(() => {
+  getRefreshRate() {
+    return this.page.evaluate(() => {
       return window.game?.settings?.get("fvtt-party-sheet", "refreshRate") || 0;
     });
   }
 
-  /**
-   * Set refresh rate for testing
-   */
-  async setRefreshRate(seconds) {
-    await this.page.evaluate((rate) => {
+  setRefreshRate(seconds) {
+    return this.page.evaluate((rate) => {
       window.game.settings.set("fvtt-party-sheet", "refreshRate", rate);
     }, seconds);
-
-    console.log(`✅ Refresh rate set to ${seconds} seconds`);
   }
 
-  /**
-   * Take a proof screenshot with metadata
-   */
-  async takeProofScreenshot(testName, description = "") {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-    const filename = `proof-${testName}-${timestamp}.png`;
-
-    // Add timestamp overlay to screenshot
-    await this.page.addStyleTag({
-      content: `
-        .proof-overlay {
-          position: fixed;
-          top: 10px;
-          right: 10px;
-          background: rgba(0,0,0,0.8);
-          color: white;
-          padding: 8px;
-          border-radius: 4px;
-          font-family: monospace;
-          font-size: 12px;
-          z-index: 10000;
-        }
-      `,
-    });
-
-    await this.page.evaluate((desc) => {
-      const overlay = document.createElement("div");
-      overlay.className = "proof-overlay";
-      overlay.innerHTML = `
-        <div>Test: ${document.title}</div>
-        <div>Time: ${new Date().toLocaleString()}</div>
-        ${desc ? `<div>Note: ${desc}</div>` : ""}
-      `;
-      document.body.appendChild(overlay);
-    }, description);
-
-    await this.page.screenshot({
-      path: `test-results/proof-screenshots/${filename}`,
-      fullPage: true,
-    });
-
-    console.log(`📸 Proof screenshot saved: ${filename}`);
-    return filename;
-  }
-
-  /**
-   * Wait for auto-refresh cycle
-   */
   async waitForAutoRefresh(expectedRefreshRate = null) {
     const refreshRate = expectedRefreshRate || (await this.getRefreshRate());
     if (refreshRate <= 0) {
-      console.log("⚠️  Auto-refresh disabled, skipping wait");
       return;
     }
 
-    console.log(`⏱️  Waiting for auto-refresh cycle (${refreshRate}s)...`);
     await this.page.waitForTimeout((refreshRate + 1) * 1000); // Add 1s buffer
   }
 
-  /**
-   * Monitor console for specific messages
-   */
-  async waitForConsoleMessage(messagePattern, timeout = 10000) {
+  waitForConsoleMessage(messagePattern, timeout = 10000) {
     return new Promise((resolve, reject) => {
       const timeoutId = setTimeout(() => {
         reject(new Error(`Console message "${messagePattern}" not found within ${timeout}ms`));
@@ -141,25 +76,16 @@ export class FoundryTestUtils {
     });
   }
 
-  /**
-   * Get all available dropdowns on the page
-   */
-  async getDropdowns() {
-    return await this.page.$$(".fvtt-party-sheet-dropdown");
+  getDropdowns() {
+    return this.page.$$(".fvtt-party-sheet-dropdown");
   }
 
-  /**
-   * Get dropdown current value
-   */
-  async getDropdownValue(selector) {
-    return await this.page.$eval(selector, (el) => el.value);
+  getDropdownValue(selector) {
+    return this.page.$eval(selector, (el) => el.value);
   }
 
-  /**
-   * Get visible dropdown content
-   */
-  async getVisibleDropdownContent(dropdownSection) {
-    return await this.page.$eval(
+  getVisibleDropdownContent(dropdownSection) {
+    return this.page.$eval(
       `div[data-dropdownsection="${dropdownSection}"][style*="display: block"]`,
       (el) => el.textContent,
     );
