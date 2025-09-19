@@ -275,7 +275,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     const enableOnlyOnline = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
 
     const customTemplates = getCustomTemplates();
-    const applicableTemplates = customTemplates.filter((data) => {
+    let applicableTemplates = customTemplates.filter((data) => {
       // @ts-ignore
       const systemMatch = data.system === game.system.id;
       // @ts-ignore
@@ -295,6 +295,14 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
       return systemMatch && minVersionOk && maxVersionOk;
     });
+
+    // If in preview mode and no applicable templates, create a temporary template list with the preview template
+    const previewModeActive = isInPreviewMode();
+    const currentTemplate = getSelectedTemplate();
+    if (previewModeActive && currentTemplate && applicableTemplates.length === 0) {
+      applicableTemplates = [currentTemplate];
+    }
+
     const selectedTemplate = this.updateSelectedTemplateIndex(applicableTemplates);
 
     let selectedName, selectedAuthor, players, rowcount;
@@ -452,7 +460,6 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
       const value = $dropdown.val();
 
       if (section && value !== undefined && value !== null && value !== "") {
-        console.log(`fvtt-party-sheet | Saving dropdown state: ${section} = ${value}`);
         this.dropdownStates.set(section, value);
       }
     });
@@ -639,9 +646,10 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
-  static onOpenActorSheet(event) {
+  static onOpenActorSheet(event, target) {
     event.preventDefault();
-    const actorId = event.currentTarget.dataset.actorid;
+    const actorId = target.dataset.actorid;
+    console.log(`Opening sheet for actor ID: ${actorId}`);
     // @ts-ignore
     const actor = game.actors.get(actorId.replace("Actor.", ""));
     actor.sheet.render(true);
@@ -704,11 +712,13 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
         // @ts-ignore
         const modulepath = event.currentTarget.dataset.modulepath;
         // Construct the Application instance
-        // @ts-ignore
-        const ip = new ImagePopout(
-          `https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/${modulepath}`,
-        );
 
+        const imageURL = `https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/${modulepath}`;
+        console.log(`Loading image from URL: ${imageURL}`);
+        // @ts-ignore
+        const ip = new ImagePopout({
+          src: imageURL,
+        });
         // Display the image popout
         ip.render(true);
       });
@@ -747,7 +757,6 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
       // @ts-ignore
       dropdown.addEventListener("mousedown", (event) => {
         // User is starting to interact with dropdown (opening it)
-        console.log("fvtt-party-sheet | Dropdown interaction started");
         this.isDropdownInteracting = true;
       });
       dropdown.addEventListener("change", (event) => {

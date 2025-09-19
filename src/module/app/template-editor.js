@@ -344,8 +344,6 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       // Embedded schema - avoids fetch issues in Foundry modules
       const schema = templateSchema;
 
-      console.log("TemplateEditor: Schema loaded successfully", schema);
-
       // Configure Monaco's JSON language service with the schema
       // @ts-ignore
       window.monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
@@ -379,8 +377,6 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
         diagnostics: true,
         selectionRanges: true,
       });
-
-      console.log("TemplateEditor: Schema configuration applied successfully");
     } catch (error) {
       console.warn("Failed to configure template schema for IntelliSense:", error);
     }
@@ -389,13 +385,33 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   async _setupPreviewMode() {
     // Always enable preview mode when template editor is open
     this.previewMode = true;
-    setPreviewMode(true, this.currentTemplate);
-    console.log("TemplateEditor: Preview mode enabled");
+
+    // If no current template, use the default template for preview
+    let previewTemplate = this.currentTemplate;
+
+    if (!previewTemplate) {
+      try {
+        const defaultTemplateJson = this._getInitialTemplate();
+        previewTemplate = JSON.parse(defaultTemplateJson);
+      } catch (error) {
+        previewTemplate = null;
+      }
+    }
+
+    setPreviewMode(true, previewTemplate);
 
     // Update all active party sheet instances if any exist
     const { PartySheetForm } = await import("./party-sheet.js");
     if (PartySheetForm._activeInstances && PartySheetForm._activeInstances.size > 0) {
-      PartySheetForm.updateAllInstancesWithPreview(this.currentTemplate);
+      PartySheetForm.updateAllInstancesWithPreview(previewTemplate);
+    }
+
+    // Force an immediate preview update to ensure the default template is displayed
+    if (!this.currentTemplate && this.monacoEditor) {
+      // Small delay to ensure Monaco editor is fully initialized
+      setTimeout(() => {
+        this._updatePreview();
+      }, 100);
     }
   }
 
@@ -448,8 +464,6 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       // Restore all party sheet instances to original template
       const { PartySheetForm } = await import("./party-sheet.js");
       PartySheetForm.restoreAllInstances();
-
-      console.log("TemplateEditor: Preview mode disabled");
     }
   }
 
@@ -548,7 +562,6 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   // Static action handlers
   static onNew(event, target) {
     event.preventDefault();
-    console.log("Template Editor: New template static handler called");
     // Get the active instance and call the method on it
     const instance = TemplateEditor._instance;
     if (instance) {
@@ -560,7 +573,6 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static onLoad(event, target) {
     event.preventDefault();
-    console.log("Template Editor: Load template static handler called");
     // Get the active instance and trigger file input
     const instance = TemplateEditor._instance;
     if (instance && instance.element) {
@@ -577,7 +589,6 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static onSave(event, target) {
     event.preventDefault();
-    console.log("Template Editor: Copy to clipboard handler called");
     // Get the active instance and call the method on it
     const instance = TemplateEditor._instance;
     if (instance) {
@@ -589,7 +600,6 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static onValidate(event, target) {
     event.preventDefault();
-    console.log("Template Editor: Validate JSON static handler called");
     // Get the active instance and call the method on it
     const instance = TemplateEditor._instance;
     if (instance) {
@@ -601,7 +611,6 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static onFormatJson(event, target) {
     event.preventDefault();
-    console.log("Template Editor: Format JSON static handler called");
     // Get the active instance and call the method on it
     const instance = TemplateEditor._instance;
     if (instance) {
@@ -619,7 +628,6 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static onClose(event) {
     event.preventDefault();
-    console.log("Template Editor: Close static handler called");
     // Get the active instance and call the method on it
     const instance = TemplateEditor._instance;
     if (instance) {
@@ -648,10 +656,7 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   async copyToClipboard() {
-    console.log("TemplateEditor: copyToClipboard() called");
-
     if (!this.monacoEditor) {
-      console.log("TemplateEditor: No Monaco editor found");
       return;
     }
 
