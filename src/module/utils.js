@@ -5,6 +5,11 @@ let moduleTemplates = [];
 
 let selectedTemplate = null;
 let templatesLoaded = false;
+
+// Preview mode variables
+let previewTemplate = null;
+let isPreviewMode = false;
+let previewModeCallbacks = [];
 /**
  * Are the templates loaded?
  * @returns {boolean} True if the templates are loaded
@@ -345,6 +350,19 @@ export function compareSymVer(a, b) {
 }
 
 /**
+ * Get the SymVer object from a version string.
+ * @param {string} version_text - The version string to convert.
+ * @returns {{ major: number, minor: number, patch: number } | null} - The SymVer object
+ */
+export function getSymVersion(version_text) {
+  if (!version_text || !version_text.includes(".") || version_text.split(".").length !== 3) {
+    return null;
+  }
+  const [major, minor, patch] = version_text.split(".").map(Number);
+  return { major, minor, patch };
+}
+
+/**
  * Converts a string to proper case.
  * @param {string} inputString - The input string to convert.
  * @returns {string} - The converted string in proper case.
@@ -358,7 +376,7 @@ export function toProperCase(inputString) {
 }
 
 /**
- * Updates the selected system.
+ * Updates the selected template.
  * @param {*} template - The system to select.
  */
 export function updateSelectedTemplate(template) {
@@ -370,7 +388,66 @@ export function updateSelectedTemplate(template) {
  * @returns {*} - The selected system.
  */
 export function getSelectedTemplate() {
-  return selectedTemplate;
+  return isPreviewMode ? previewTemplate : selectedTemplate;
+}
+
+/**
+ * Sets preview mode on/off and optionally sets a preview template
+ * @param {boolean} enabled - Whether preview mode is enabled
+ * @param {*} template - The template to preview (optional)
+ */
+export function setPreviewMode(enabled, template = null) {
+  const wasPreviewMode = isPreviewMode;
+  isPreviewMode = enabled;
+
+  if (enabled && template) {
+    previewTemplate = template;
+  } else if (!enabled) {
+    previewTemplate = null;
+  }
+
+  // Notify callbacks if preview mode changed
+  if (wasPreviewMode !== enabled) {
+    previewModeCallbacks.forEach((callback) => callback(enabled, template));
+  }
+}
+
+/**
+ * Updates the preview template and notifies callbacks
+ * @param {*} template - The template to preview
+ */
+export function updatePreviewTemplate(template) {
+  if (isPreviewMode) {
+    previewTemplate = template;
+    previewModeCallbacks.forEach((callback) => callback(true, template));
+  }
+}
+
+/**
+ * Registers a callback for preview mode changes
+ * @param {Function} callback - Function to call when preview mode changes
+ */
+export function registerPreviewCallback(callback) {
+  previewModeCallbacks.push(callback);
+}
+
+/**
+ * Unregisters a preview mode callback
+ * @param {Function} callback - Function to remove from callbacks
+ */
+export function unregisterPreviewCallback(callback) {
+  const index = previewModeCallbacks.indexOf(callback);
+  if (index > -1) {
+    previewModeCallbacks.splice(index, 1);
+  }
+}
+
+/**
+ * Gets the current preview mode status
+ * @returns {boolean} Whether preview mode is active
+ */
+export function isInPreviewMode() {
+  return isPreviewMode;
 }
 
 /**
@@ -591,4 +668,112 @@ export function showVersionDifferenceNotifications(validationData) {
     ui.notifications.warn(message, { permanent: false, console: false });
     log(`${outOfDateCount} template update(s) available for ${currentSystem}`);
   }
+}
+
+/**
+ * Validates a template object structure and content
+ * @param {object} template - The template object to validate
+ * @returns {object} Validation result with isValid boolean and errors array
+ */
+export function validateTemplateStructure(template) {
+  const errors = [];
+
+  // Required fields validation
+  if (!template.name || template.name.trim() === "") {
+    errors.push("Template must have a 'name' field");
+  }
+
+  if (!template.author || template.author.trim() === "") {
+    errors.push("Template must have an 'author' field");
+  }
+
+  if (!template.system || template.system.trim() === "") {
+    errors.push("Template must have a 'system' field");
+  }
+
+  if (!template.rows || !Array.isArray(template.rows)) {
+    errors.push("Template must have a 'rows' field that is an array");
+  } else if (template.rows.length === 0) {
+    errors.push("Template must have at least one row");
+  }
+
+  // Version validation
+  if (template.version && !getSymVersion(template.version)) {
+    errors.push("Invalid template version. Must be in format 'x.y.z'");
+  }
+
+  // Rows structure validation
+  if (template.rows && Array.isArray(template.rows)) {
+    template.rows.forEach((row, rowIndex) => {
+      if (!Array.isArray(row)) {
+        errors.push(`Row ${rowIndex + 1} must be an array`);
+      } else {
+        row.forEach((cell, cellIndex) => {
+          if (!cell || typeof cell !== "object") {
+            errors.push(`Row ${rowIndex + 1}, Cell ${cellIndex + 1} must be an object`);
+          } else {
+            if (!cell.name || cell.name.trim() === "") {
+              errors.push(`Row ${rowIndex + 1}, Cell ${cellIndex + 1} must have a 'name' field`);
+            }
+            if (!cell.type || cell.type.trim() === "") {
+              errors.push(`Row ${rowIndex + 1}, Cell ${cellIndex + 1} must have a 'type' field`);
+            }
+          }
+        });
+      }
+    });
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}
+
+/**
+ * Validates a JSON string as a template
+ * @param {string} jsonText - The JSON string to validate
+ * @returns {object} Validation result with isValid boolean and errors array
+ */
+export function validateTemplateJson(jsonText) {
+  try {
+    const template = JSON.parse(jsonText);
+    return validateTemplateStructure(template);
+  } catch (error) {
+    return {
+      isValid: false,
+      errors: [`Invalid JSON: ${error.message}`],
+    };
+  }
+}
+
+/**
+ * Formats a JSON string with proper indentation
+ * @param {string} jsonText - The JSON string to format
+ * @returns {object} Result with success boolean, formatted string, and optional error
+ */
+export function formatTemplateJson(jsonText) {
+  try {
+    const template = JSON.parse(jsonText);
+    const formatted = JSON.stringify(template, null, 2);
+    return {
+      success: true,
+      formatted,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: `Cannot format invalid JSON: ${error.message}`,
+    };
+  }
+}
+
+/**
+ * Generates HTML for a character sheet button given a character object.
+ * @param {*} character - The character object
+ * @returns {string}  HTML for character sheet button
+ */
+export function generateCharacterSheetImageFromCharacter(character) {
+  // @ts-ignore
+  return `<input type="image" data-action="onOpenActorSheet" name="fvtt-party-sheet-actorimage" data-actorid="${character.uuid}" class="token-image" src="${character.img}" title="${character.name}" width="36" height="36" />`;
 }

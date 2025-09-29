@@ -13,7 +13,7 @@ export class HiddenCharactersSettings extends HandlebarsApplicationMixin(Applica
       closeOnSubmit: false,
     },
     window: {
-      title: "Configure Hidden Characters",
+      title: "fvtt-party-sheet.hide-sheet.button",
       width: "auto",
       height: "auto",
     },

@@ -1,5 +1,5 @@
 import { DataProcessor } from "../base-processor.js";
-import { addSign } from "../../utils.js";
+import { addSign, generateCharacterSheetImageFromCharacter } from "../../utils.js";
 import { TemplateProcessor } from "../template-processor.js";
 import { sanitizeHTMLWithStyles } from "../../utils/dompurify-sanitizer.js";
 
@@ -33,11 +33,7 @@ export class DirectProcessor extends DataProcessor {
       isSafeStringNeeded = true;
       processedValue = processedValue.replaceAll(
         "{charactersheet}",
-        `<input type="image" name="fvtt-party-sheet-actorimage" data-actorid="${
-          character.uuid
-        }" class="token-image" src="${character.prototypeToken.texture.src}" title="${
-          character.prototypeToken.name
-        }" width="36" height="36" style="transform: rotate(${character.prototypeToken.rotation ?? 0}deg);"/>`,
+        generateCharacterSheetImageFromCharacter(character),
       );
     }
 

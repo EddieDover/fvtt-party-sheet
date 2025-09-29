@@ -7,6 +7,9 @@
     <button data-action="onInstaller"  type="button" class="btn btn--primary" style="max-width:50px" name="installer" title="{{localize "fvtt-party-sheet.installer"}}">
       <i class="fas fa-download"></i>
     </button>
+    <button data-action="onOpenEditor"  type="button" class="btn btn--primary" style="max-width:50px" name="template-editor" title="Template Editor">
+      <i class="fas fa-edit"></i>
+    </button>
     {{#unless minimalView}}
     <button data-action="onFeedback"  type="button" class="btn btn--primary" style="max-width:50px" name="feedback" title="{{localize "fvtt-party-sheet.party-sheet.feedback"}}">
       <i class="fas fa-comment"></i>
@@ -19,6 +22,19 @@
     </button>
     {{/unless}}
   </div>
+
+  <!-- Preview Mode Banner -->
+  {{#if isInPreviewMode}}
+  <div class="preview-mode-banner">
+    <div class="preview-mode-content">
+      <i class="fas fa-eye"></i>
+      <span class="preview-mode-text">
+        <strong>Preview Mode Active</strong> - You are currently previewing a template from the Template Editor. Close the Template Editor to return to normal view.
+      </span>
+    </div>
+  </div>
+  {{/if}}
+
   {{#if showInstaller}}
     {{> installer}}
   {{else}}

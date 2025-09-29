@@ -1,5 +1,10 @@
 import { DataProcessor } from "../base-processor.js";
-import { extractPropertyByString, trimIfString, addSign } from "../../utils.js";
+import {
+  extractPropertyByString,
+  trimIfString,
+  addSign,
+  generateCharacterSheetImageFromCharacter,
+} from "../../utils.js";
 import { TemplateProcessor } from "../template-processor.js";
 import { sanitizeHTMLWithStyles } from "../../utils/dompurify-sanitizer.js";
 
@@ -145,14 +150,7 @@ export class DirectComplexProcessor extends DataProcessor {
     // Handle special character sheet token
     if (processedText.indexOf("{charactersheet}") > -1) {
       isSafeStringNeeded = true;
-      processedText = processedText.replaceAll(
-        "{charactersheet}",
-        `<input type="image" name="fvtt-party-sheet-actorimage" data-actorid="${
-          character.uuid
-        }" class="token-image" src="${character.prototypeToken.texture.src}" title="${
-          character.prototypeToken.name
-        }" width="36" height="36" style="transform: rotate(${character.prototypeToken.rotation ?? 0}deg);"/>`,
-      );
+      processedText = processedText.replaceAll("{charactersheet}", generateCharacterSheetImageFromCharacter(character));
     }
 
     // Process options

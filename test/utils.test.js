@@ -27,6 +27,14 @@ import {
   getFoundryVersion,
   isVersionAtLeast,
   TemplateProcessError,
+  setPreviewMode,
+  updatePreviewTemplate,
+  registerPreviewCallback,
+  unregisterPreviewCallback,
+  isInPreviewMode,
+  validateTemplateStructure,
+  validateTemplateJson,
+  formatTemplateJson,
 } from "../src/module/utils";
 import { setupFoundryMocks, cleanupFoundryMocks, mockTemplateData, versionTestCases } from "./test-mocks.js";
 
@@ -1887,6 +1895,462 @@ describe("Utils testing", () => {
       await getAllSystemVersions();
       expect(consoleLogSpy).toHaveBeenCalledTimes(1);
       expect(consoleLogSpy).toHaveBeenCalledWith("Detected ForgeVTT");
+    });
+  });
+
+  describe("Preview Mode Functions", () => {
+    beforeEach(() => {
+      // Reset preview mode state before each test
+      setPreviewMode(false);
+    });
+
+    describe("setPreviewMode", () => {
+      it("should enable preview mode with a template", () => {
+        const mockTemplate = { name: "Test Template", author: "Test Author" };
+        const mockCallback = jest.fn();
+
+        registerPreviewCallback(mockCallback);
+        setPreviewMode(true, mockTemplate);
+
+        expect(isInPreviewMode()).toBe(true);
+        expect(getSelectedTemplate()).toBe(mockTemplate);
+        expect(mockCallback).toHaveBeenCalledWith(true, mockTemplate);
+
+        // Cleanup
+        unregisterPreviewCallback(mockCallback);
+      });
+
+      it("should disable preview mode and clear template", () => {
+        const mockTemplate = { name: "Test Template", author: "Test Author" };
+        const mockCallback = jest.fn();
+
+        registerPreviewCallback(mockCallback);
+
+        // First enable preview mode
+        setPreviewMode(true, mockTemplate);
+        expect(isInPreviewMode()).toBe(true);
+
+        // Reset callback call count
+        mockCallback.mockClear();
+
+        // Then disable it
+        setPreviewMode(false);
+
+        expect(isInPreviewMode()).toBe(false);
+        expect(mockCallback).toHaveBeenCalledWith(false, null);
+
+        // Cleanup
+        unregisterPreviewCallback(mockCallback);
+      });
+
+      it("should not trigger callbacks if preview mode state doesn't change", () => {
+        const mockCallback = jest.fn();
+
+        registerPreviewCallback(mockCallback);
+
+        // Set preview mode to false when it's already false
+        setPreviewMode(false);
+        expect(mockCallback).not.toHaveBeenCalled();
+
+        // Enable preview mode
+        setPreviewMode(true);
+        expect(mockCallback).toHaveBeenCalledTimes(1);
+
+        // Reset call count
+        mockCallback.mockClear();
+
+        // Set preview mode to true when it's already true
+        setPreviewMode(true);
+        expect(mockCallback).not.toHaveBeenCalled();
+
+        // Cleanup
+        unregisterPreviewCallback(mockCallback);
+      });
+    });
+
+    describe("updatePreviewTemplate", () => {
+      it("should update preview template and notify callbacks when in preview mode", () => {
+        const mockTemplate1 = { name: "Template 1", author: "Author 1" };
+        const mockTemplate2 = { name: "Template 2", author: "Author 2" };
+        const mockCallback = jest.fn();
+
+        registerPreviewCallback(mockCallback);
+        setPreviewMode(true, mockTemplate1);
+
+        // Reset callback call count to focus on updatePreviewTemplate
+        mockCallback.mockClear();
+
+        updatePreviewTemplate(mockTemplate2);
+
+        expect(getSelectedTemplate()).toBe(mockTemplate2);
+        expect(mockCallback).toHaveBeenCalledWith(true, mockTemplate2);
+
+        // Cleanup
+        unregisterPreviewCallback(mockCallback);
+      });
+
+      it("should not update template or notify callbacks when not in preview mode", () => {
+        const mockTemplate = { name: "Test Template", author: "Test Author" };
+        const mockCallback = jest.fn();
+
+        registerPreviewCallback(mockCallback);
+        setPreviewMode(false); // Ensure preview mode is off
+
+        // Reset callback call count
+        mockCallback.mockClear();
+
+        updatePreviewTemplate(mockTemplate);
+
+        // Should not have been called since preview mode is off
+        expect(mockCallback).not.toHaveBeenCalled();
+
+        // Cleanup
+        unregisterPreviewCallback(mockCallback);
+      });
+    });
+
+    describe("registerPreviewCallback and unregisterPreviewCallback", () => {
+      it("should register and call callbacks on preview mode changes", () => {
+        const mockCallback1 = jest.fn();
+        const mockCallback2 = jest.fn();
+
+        registerPreviewCallback(mockCallback1);
+        registerPreviewCallback(mockCallback2);
+
+        setPreviewMode(true);
+
+        expect(mockCallback1).toHaveBeenCalledWith(true, null);
+        expect(mockCallback2).toHaveBeenCalledWith(true, null);
+
+        // Cleanup
+        unregisterPreviewCallback(mockCallback1);
+        unregisterPreviewCallback(mockCallback2);
+      });
+
+      it("should unregister callbacks correctly", () => {
+        const mockCallback1 = jest.fn();
+        const mockCallback2 = jest.fn();
+
+        registerPreviewCallback(mockCallback1);
+        registerPreviewCallback(mockCallback2);
+
+        // Unregister first callback
+        unregisterPreviewCallback(mockCallback1);
+
+        setPreviewMode(true);
+
+        expect(mockCallback1).not.toHaveBeenCalled();
+        expect(mockCallback2).toHaveBeenCalledWith(true, null);
+
+        // Cleanup
+        unregisterPreviewCallback(mockCallback2);
+      });
+
+      it("should handle unregistering non-existent callbacks gracefully", () => {
+        const mockCallback = jest.fn();
+
+        // Try to unregister a callback that was never registered
+        expect(() => unregisterPreviewCallback(mockCallback)).not.toThrow();
+      });
+    });
+
+    describe("isInPreviewMode", () => {
+      it("should return correct preview mode status", () => {
+        expect(isInPreviewMode()).toBe(false);
+
+        setPreviewMode(true);
+        expect(isInPreviewMode()).toBe(true);
+
+        setPreviewMode(false);
+        expect(isInPreviewMode()).toBe(false);
+      });
+    });
+
+    describe("getSelectedTemplate with preview mode", () => {
+      it("should return preview template when in preview mode", () => {
+        const regularTemplate = { name: "Regular", author: "Regular Author" };
+        const previewTemplate = { name: "Preview", author: "Preview Author" };
+
+        // Set a regular selected template first (this would normally be done elsewhere)
+        updateSelectedTemplate(regularTemplate);
+        expect(getSelectedTemplate()).toBe(regularTemplate);
+
+        // Enable preview mode with a different template
+        setPreviewMode(true, previewTemplate);
+        expect(getSelectedTemplate()).toBe(previewTemplate);
+
+        // Disable preview mode, should return to regular template
+        setPreviewMode(false);
+        expect(getSelectedTemplate()).toBe(regularTemplate);
+      });
+    });
+  });
+
+  describe("Template Validation Functions", () => {
+    describe("validateTemplateStructure", () => {
+      it("should validate a complete valid template", () => {
+        const validTemplate = {
+          name: "Test Template",
+          author: "Test Author",
+          system: "dnd5e",
+          version: "1.0.0",
+          rows: [
+            [
+              {
+                name: "Character Name",
+                type: "direct",
+                text: "{name}",
+              },
+            ],
+          ],
+        };
+
+        const result = validateTemplateStructure(validTemplate);
+
+        expect(result.isValid).toBe(true);
+        expect(result.errors).toHaveLength(0);
+      });
+
+      it("should return validation errors for missing required fields", () => {
+        const invalidTemplate = {
+          // Missing name, author, system
+          rows: [],
+        };
+
+        const result = validateTemplateStructure(invalidTemplate);
+
+        expect(result.isValid).toBe(false);
+        expect(result.errors).toContain("Template must have a 'name' field");
+        expect(result.errors).toContain("Template must have an 'author' field");
+        expect(result.errors).toContain("Template must have a 'system' field");
+        expect(result.errors).toContain("Template must have at least one row");
+      });
+
+      it("should validate empty string fields as invalid", () => {
+        const invalidTemplate = {
+          name: "",
+          author: "   ", // Only whitespace
+          system: "dnd5e",
+          rows: [
+            [
+              {
+                name: "", // Empty name
+                type: "direct",
+              },
+            ],
+          ],
+        };
+
+        const result = validateTemplateStructure(invalidTemplate);
+
+        expect(result.isValid).toBe(false);
+        expect(result.errors).toContain("Template must have a 'name' field");
+        expect(result.errors).toContain("Template must have an 'author' field");
+        expect(result.errors).toContain("Row 1, Cell 1 must have a 'name' field");
+      });
+
+      it("should validate rows structure", () => {
+        const invalidTemplate = {
+          name: "Test",
+          author: "Author",
+          system: "dnd5e",
+          rows: [
+            "invalid row", // Should be an array
+            [
+              "invalid cell", // Should be an object
+              {
+                name: "Valid Cell",
+                // Missing type field
+              },
+            ],
+          ],
+        };
+
+        const result = validateTemplateStructure(invalidTemplate);
+
+        expect(result.isValid).toBe(false);
+        expect(result.errors).toContain("Row 1 must be an array");
+        expect(result.errors).toContain("Row 2, Cell 1 must be an object");
+        expect(result.errors).toContain("Row 2, Cell 2 must have a 'type' field");
+      });
+
+      it("should validate version format", () => {
+        const invalidTemplate = {
+          name: "Test",
+          author: "Author",
+          system: "dnd5e",
+          version: "1.2",
+          rows: [
+            [
+              {
+                name: "Test Cell",
+                type: "direct",
+              },
+            ],
+          ],
+        };
+
+        const result = validateTemplateStructure(invalidTemplate);
+
+        expect(result.isValid).toBe(false);
+        expect(result.errors).toContain("Invalid template version. Must be in format 'x.y.z'");
+      });
+
+      it("should allow valid version formats", () => {
+        const validTemplate = {
+          name: "Test",
+          author: "Author",
+          system: "dnd5e",
+          version: "2.1.0",
+          rows: [
+            [
+              {
+                name: "Test Cell",
+                type: "direct",
+              },
+            ],
+          ],
+        };
+
+        const result = validateTemplateStructure(validTemplate);
+
+        expect(result.isValid).toBe(true);
+        expect(result.errors).toHaveLength(0);
+      });
+
+      it("should allow templates without version field", () => {
+        const validTemplate = {
+          name: "Test",
+          author: "Author",
+          system: "dnd5e",
+          // No version field
+          rows: [
+            [
+              {
+                name: "Test Cell",
+                type: "direct",
+              },
+            ],
+          ],
+        };
+
+        const result = validateTemplateStructure(validTemplate);
+
+        expect(result.isValid).toBe(true);
+        expect(result.errors).toHaveLength(0);
+      });
+    });
+
+    describe("validateTemplateJson", () => {
+      it("should validate valid JSON template", () => {
+        const validTemplate = {
+          name: "Test Template",
+          author: "Test Author",
+          system: "dnd5e",
+          rows: [
+            [
+              {
+                name: "Character Name",
+                type: "direct",
+              },
+            ],
+          ],
+        };
+
+        const result = validateTemplateJson(JSON.stringify(validTemplate));
+
+        expect(result.isValid).toBe(true);
+        expect(result.errors).toHaveLength(0);
+      });
+
+      it("should handle invalid JSON", () => {
+        const result = validateTemplateJson("{ invalid json");
+
+        expect(result.isValid).toBe(false);
+        expect(result.errors.length).toBeGreaterThan(0);
+        expect(result.errors[0]).toContain("Invalid JSON:");
+      });
+
+      it("should validate template structure in JSON", () => {
+        const invalidTemplate = {
+          // Missing required fields
+          rows: [],
+        };
+
+        const result = validateTemplateJson(JSON.stringify(invalidTemplate));
+
+        expect(result.isValid).toBe(false);
+        expect(result.errors).toContain("Template must have a 'name' field");
+        expect(result.errors).toContain("Template must have an 'author' field");
+        expect(result.errors).toContain("Template must have a 'system' field");
+      });
+    });
+
+    describe("formatTemplateJson", () => {
+      it("should format valid JSON", () => {
+        const template = {
+          name: "Test",
+          author: "Author",
+          system: "dnd5e",
+          rows: [[{ name: "Cell", type: "direct" }]],
+        };
+        const compactJson = JSON.stringify(template);
+
+        const result = formatTemplateJson(compactJson);
+
+        expect(result.success).toBe(true);
+        expect(result.formatted).toContain('  "name": "Test"');
+        expect(result.formatted).toContain('  "author": "Author"');
+        expect(result.error).toBeUndefined();
+      });
+
+      it("should handle invalid JSON", () => {
+        const result = formatTemplateJson("{ invalid json");
+
+        expect(result.success).toBe(false);
+        expect(result.formatted).toBeUndefined();
+        expect(result.error).toContain("Cannot format invalid JSON:");
+      });
+
+      it("should format complex nested structures", () => {
+        const template = {
+          name: "Complex Template",
+          author: "Test Author",
+          system: "dnd5e",
+          rows: [
+            [
+              {
+                name: "Character Name",
+                type: "direct",
+                text: "{name}",
+                header: "show",
+              },
+              {
+                name: "Level",
+                type: "direct",
+                text: "{level}",
+                header: "hide",
+              },
+            ],
+            [
+              {
+                name: "Hit Points",
+                type: "direct",
+                text: "{hp.value}/{hp.max}",
+              },
+            ],
+          ],
+        };
+
+        const result = formatTemplateJson(JSON.stringify(template));
+
+        expect(result.success).toBe(true);
+        expect(result.formatted).toContain('"name": "Complex Template"');
+        expect(result.formatted).toContain('"text": "{name}"');
+        expect(result.formatted).toContain('"text": "{hp.value}/{hp.max}"');
+        // Check that it's properly indented
+        expect(result.formatted.split("\n").length).toBeGreaterThan(10);
+      });
     });
   });
 });

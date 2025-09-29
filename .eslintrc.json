@@ -9,7 +9,6 @@
   // ESLint configs are prone to particular choices, so if the first config below doesn't work for you then replace
   // with one that you do prefer. The second config defines globals defined in `foundry.js` for use w/ `no-shadow`.
   "extends": [
-    "plugin:unicorn/recommended",
     // "eslint:recommended",
     "@typhonjs-fvtt/eslint-config-foundry.js/0.8.0",
     "plugin:jest/recommended",
@@ -18,7 +17,6 @@
     "plugin:jsdoc/recommended-typescript-flavor"
   ],
   "plugins": [
-    "unicorn",
     "prettier",
     "jest",
     "jsdoc"
@@ -64,21 +62,18 @@
       }
     ],
     "linebreak-style": [
-      "error",
-      "unix"
+      "off"
     ],
-    // "no-shadow": ["error", { "builtinGlobals": true, "hoist": "all", "allow": ["event"] }],
-    // "brace-style": ["error", "1tbs"],
     "require-jsdoc": 2,
     "require-await": "error",
-    "no-return-await": "error"
+    "no-return-await": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
   },
-  "prettier/prettier": [
-    "error",
-    {
-      "endOfLine": "auto"
-    }
-  ],
   "overrides": [
     {
       "files": [
