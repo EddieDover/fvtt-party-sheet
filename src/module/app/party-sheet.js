@@ -6,13 +6,15 @@ import {
   getCustomTemplates,
   getModuleTemplates,
   getSelectedTemplate,
-  parseExtras,
-  parsePluses,
+  isVersionAtLeast,
+  log,
   TemplateProcessError,
-  trimIfString,
   updateSelectedTemplate,
 } from "../utils.js";
+import { sanitizeHTML } from "../utils/dompurify-sanitizer.js";
 import { HiddenCharactersSettings } from "./hidden-characters-settings.js";
+import { ParserFactory } from "../parsing/parser-factory.js";
+import { TemplateProcessor } from "../parsing/template-processor.js";
 
 const FEEDBACK_URL = "https://github.com/EddieDover/fvtt-party-sheet/issues/new/choose";
 const BUGREPORT_URL =
@@ -21,14 +23,24 @@ const DISCORD_URL = "https://discord.gg/mvMdc7bH2d";
 
 const DEFAULT_EXCLUDES = ["npc"];
 
-let generated_dropdowns = 0;
-// @ts-ignore
 export class PartySheetForm extends FormApplication {
-  constructor(postInstallCallback = async () => {}) {
+  constructor(options = {}, postInstallCallback = async () => {}) {
     super();
     this._postInstallCallback = postInstallCallback;
-    this.showInstaller = false;
     this.savedOptions = undefined;
+    this.showInstaller = options.showInstaller ?? false;
+    this.refreshTimer = null;
+    this.dropdownStates = new Map(); // Store dropdown selection states
+    this.isDropdownInteracting = false; // Track if user is interacting with dropdowns
+
+    // If the form is being opened directly with installer, set the opening flag
+    if (this.showInstaller) {
+      this._openingInstaller = true;
+    }
+
+    this.parserEngine = ParserFactory.createParserEngine();
+    // Set this instance as the dropdown states provider for the parser engine
+    this.parserEngine.setDropdownStatesProvider(this);
   }
 
   /**
@@ -120,6 +132,7 @@ export class PartySheetForm extends FormApplication {
                   maxwidth: colobj.maxwidth,
                   minwidth: colobj.minwidth,
                   header: colobj.header,
+                  showTotal: colobj.showTotal,
                 },
               };
             });
@@ -147,416 +160,6 @@ export class PartySheetForm extends FormApplication {
   }
 
   /**
-   * Clean a string of html injection.
-   * @param {string} str - The string to clean
-   * @returns {string} The cleaned string
-   * @memberof PartySheetForm
-   */
-  cleanString(str) {
-    return str.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-  }
-
-  /**
-   * Remove trailing commas from a string.
-   * @param {string} str - The string to remove trailing commas from
-   * @returns {string} The string without trailing commas
-   * @memberof PartySheetForm
-   */
-  removeTrailingComma(str) {
-    return str.replace(/,\s*$/, "");
-  }
-
-  /**
-   * Parse a direct string.
-   * @param {*} character - The character to parse
-   * @param {*} value - The value to parse
-   * @param {{}} options - The options for the value
-   * @returns {[boolean, string]} Whether a safe string is needed and the value
-   */
-  parseDirect(character, value, options) {
-    let isSafeStringNeeded = false;
-
-    value = this.cleanString(value);
-
-    //Parse out normal data
-    for (const m of value.split(" ")) {
-      const fValue = extractPropertyByString(character, m);
-      if (fValue !== undefined) {
-        value = value.replace(m, fValue);
-      }
-    }
-
-    if (value.indexOf("{charactersheet}") > -1) {
-      isSafeStringNeeded = true;
-      value = value.replaceAll(
-        "{charactersheet}",
-        `<input type="image" name="fvtt-party-sheet-actorimage" data-actorid="${
-          character.uuid
-        }" class="token-image" src="${character.prototypeToken.texture.src}" title="${
-          character.prototypeToken.name
-        }" width="36" height="36" style="transform: rotate(${character.prototypeToken.rotation ?? 0}deg);"/>`,
-      );
-    }
-
-    value = parsePluses(value);
-    value = this.processOptions(value, options);
-    [isSafeStringNeeded, value] = parseExtras(value, isSafeStringNeeded);
-
-    return [isSafeStringNeeded, value];
-  }
-
-  /**
-   * Process options for a value.
-   * @param {*} value - The value to process
-   * @param {*} options - The options for the value
-   * @returns {*} - The processed value
-   * @memberof PartySheetForm
-   */
-  processOptions(value, options) {
-    if (options.showSign) {
-      value = addSign(value);
-    }
-    return value;
-  }
-
-  /**
-   * Process a "direct" type
-   * @param {*} character - The character to process
-   * @param {*} type - The type of data to process
-   * @param {*} value - The value to process
-   * @param {{}} options - The options for the data
-   * @returns {string} The text to render
-   */
-  processDirect(character, type, value, options = {}) {
-    let isSafeStringNeeded = false;
-    [isSafeStringNeeded, value] = this.parseDirect(character, value, options);
-
-    //Finally detect if a safe string cast is needed.
-    if (isSafeStringNeeded) {
-      // @ts-ignore
-      return new Handlebars.SafeString(value);
-    }
-    return value;
-  }
-
-  /**
-   * Process a "direct-complex" type
-   * @param {*} character - The character to process
-   * @param {*} type - The type of data to process
-   * @param {*} value - The value to process
-   * @param {{}} options - The options for the data
-   * @returns {string} The text to render
-   */
-  processDirectComplex(character, type, value, options = {}) {
-    // Call .trim() on item.value but only if it's a string
-    let outputText = "";
-    for (let item of value) {
-      const trimmedItem = trimIfString(item);
-      if (trimmedItem.type === "exists") {
-        const eValue = extractPropertyByString(character, trimmedItem.value);
-        if (eValue) {
-          outputText += trimmedItem.text.replaceAll(trimmedItem.value, eValue);
-        } else {
-          if (trimmedItem.else) {
-            const nValue = extractPropertyByString(character, trimmedItem.else);
-            if (nValue) {
-              outputText += nValue;
-            } else {
-              outputText += trimmedItem.else;
-            }
-          }
-        }
-      } else if (trimmedItem.type === "match") {
-        const mValue = extractPropertyByString(character, trimmedItem.ifdata);
-        const match_value = extractPropertyByString(character, trimmedItem.matches) ?? trimmedItem.matches;
-        if (mValue === match_value) {
-          outputText += extractPropertyByString(character, trimmedItem.text) ?? trimmedItem.text;
-        } else {
-          if (trimmedItem.else) {
-            const mnValue = extractPropertyByString(character, trimmedItem.else);
-            if (mnValue) {
-              outputText += mnValue;
-            } else {
-              outputText += trimmedItem.else;
-            }
-          }
-        }
-      } else if (trimmedItem.type === "match-any") {
-        const maValues = (Array.isArray(trimmedItem.text) ? trimmedItem.text : [trimmedItem.text]).map((val) =>
-          extractPropertyByString(character, val),
-        );
-        const matchValue = extractPropertyByString(character, trimmedItem.match) ?? trimmedItem.match;
-
-        for (const maVal of maValues) {
-          if (maVal === matchValue) {
-            outputText += extractPropertyByString(character, trimmedItem.text) ?? trimmedItem.text;
-          } else {
-            if (trimmedItem.else) {
-              const manValue = extractPropertyByString(character, trimmedItem.else);
-              if (manValue) {
-                outputText += manValue;
-              } else {
-                outputText += trimmedItem.else;
-              }
-            }
-          }
-        }
-      }
-    }
-    let isSafeStringNeeded = false;
-    [isSafeStringNeeded, outputText] = this.parseDirect(character, outputText, options);
-    // @ts-ignore
-    return isSafeStringNeeded ? new Handlebars.SafeString(outputText) : outputText;
-  }
-
-  /**
-   * Process an "array-string-builder" type
-   * @param {*} character - The character to process
-   * @param {*} type - The type of data to process
-   * @param {*} value - The value to process
-   * @returns {string} The text to rendera
-   */
-  processArrayStringBuilder(character, type, value) {
-    const objName = value.split("=>")[0].trim();
-    let outStrTemplate = value.split("=>")[1];
-    let finalStr = "";
-
-    let objData = extractPropertyByString(character, objName);
-
-    if (!Array.isArray(objData) && objData instanceof Set === false) {
-      objData = Object.keys(objData).map((key) => {
-        return objData[key];
-      });
-    }
-
-    const regValue = /(\{[^}]*\})|((?:\*\.|[\w.]+)+)/g;
-    const reg = new RegExp(regValue);
-    const allMatches = Array.from(outStrTemplate.matchAll(reg), (match) => match[0]).filter(
-      (m) => !m.startsWith("{") && !m.endsWith("}"),
-    );
-
-    let outStr = "";
-    if (objData.size ?? objData.length !== 0) {
-      let subCount = 0;
-      for (const objSubData of objData) {
-        let templateCopy = outStrTemplate;
-        for (const m of allMatches) {
-          if (m === "value") {
-            finalStr += outStrTemplate.replace(m, objSubData);
-            continue;
-          }
-          templateCopy = templateCopy.replace(m, extractPropertyByString(objSubData, m));
-        }
-        outStr += templateCopy + (subCount > 0 ? "\n" : "");
-        subCount += 1;
-      }
-    } else {
-      return "";
-    }
-    if (finalStr === "") {
-      finalStr = outStr;
-    }
-    finalStr = finalStr.trim();
-    finalStr = this.cleanString(finalStr);
-    finalStr = this.removeTrailingComma(finalStr);
-    finalStr = finalStr === value ? "" : finalStr;
-
-    const [isSafeStringNeeded, outputText] = parseExtras(finalStr);
-
-    // @ts-ignore
-    return isSafeStringNeeded ? new Handlebars.SafeString(outputText) : outputText;
-  }
-
-  /**
-   * Process an "object-loop" type
-   * @param {*} character - The character to process
-   * @param {*} type - The type of data to process
-   * @param {*} value - The value to process
-   * @returns {string} The text to render
-   */
-  processObjectLoop(character, type, value) {
-    const isDropdown = value.trim().startsWith("{dropdown} ");
-    const dropdownKeys = [];
-
-    if (isDropdown) {
-      value = value.replace("{dropdown} ", "");
-      generated_dropdowns += 1;
-    }
-    const chunks = value.split("||").map((thing) => thing.trim());
-    let finStr = "";
-    let finStrs = [];
-    let outputText = "";
-    let validDropdownSections = 0;
-
-    chunks.forEach((chunk) => {
-      let outStr = "";
-      let prefix = "";
-      let objName = chunk.split("=>")[0].trim();
-      const findPrefixMatches = objName.match(/^(.*)\s/);
-
-      if (findPrefixMatches?.length) {
-        prefix = findPrefixMatches[1].trim();
-
-        objName = objName.replace(prefix, "").trim();
-      }
-
-      let objFilter = null;
-
-      const filterMatches = objName.match(/(?<=.)\{([^}]+)\}(?=$)/);
-
-      if (filterMatches?.length) {
-        objFilter = filterMatches[1];
-        objName = objName.replace(`{${objFilter}}`, "");
-      }
-
-      if (isDropdown) {
-        dropdownKeys.push(objFilter || objName);
-        validDropdownSections += 1;
-      }
-
-      const actualValue = chunk.split("=>")[1];
-
-      const objData = extractPropertyByString(character, objName);
-
-      let loopData = [];
-      const objKeys = Object.keys(objData);
-      if (
-        objKeys.length == 6 &&
-        objKeys[0] == "documentClass" &&
-        objKeys[1] == "name" &&
-        objKeys[2] == "model" &&
-        objKeys[3] == "_initialized" &&
-        objKeys[4] == "_source" &&
-        objKeys[5] == "invalidDocumentIds"
-      ) {
-        loopData = Object.keys(objData._source).map((key) => {
-          return objData._source[key];
-        });
-      } else {
-        loopData = Object.keys(objData).map((key) => {
-          return objData[key];
-        });
-      }
-
-      if (objFilter) {
-        loopData = loopData.filter((data) => data.type === objFilter);
-      }
-
-      if (loopData.length === 0) {
-        if (isDropdown) {
-          dropdownKeys.pop();
-          validDropdownSections -= 1;
-        }
-      }
-
-      const regValue = /(?<!{)\s(?:\w+(?:\.\w+)*)+\s(?!})/g;
-      const reg = new RegExp(regValue);
-      const allMatches = Array.from(actualValue.matchAll(reg), (match) => match[0].trim());
-
-      if (loopData.length ?? loopData.length !== 0) {
-        for (const objSubData of loopData) {
-          let tempLine = actualValue;
-          for (const m of allMatches) {
-            tempLine = tempLine.replace(m, extractPropertyByString(objSubData, m));
-          }
-          outStr += tempLine;
-        }
-      } else {
-        return "";
-      }
-      if (outStr) {
-        finStrs.push(prefix + outStr);
-      }
-    });
-
-    let dropdownString = "";
-    let isSafeStringNeeded = false;
-
-    if (isDropdown && dropdownKeys.length === validDropdownSections && validDropdownSections > 1) {
-      isSafeStringNeeded = true;
-      dropdownString = `<select class='fvtt-party-sheet-dropdown' data-dropdownsection='${generated_dropdowns}' >`;
-      for (let i = 0; i < finStrs.length; i++) {
-        dropdownString += `<option value="${i}">${dropdownKeys[i]}</option>`;
-      }
-      dropdownString += "</select><br/>";
-    }
-    if (isDropdown) {
-      const dd_section_start = (idx) =>
-        `<div data-dropdownsection='${generated_dropdowns}' data-dropdownoption='${idx}' ${
-          idx != 0 ? 'style="display: none;"' : ""
-        } >`;
-      const dd_section_end = "</div>";
-      finStrs = finStrs.map((str, idx) => dd_section_start(idx) + this.cleanString(str) + dd_section_end);
-      finStr = finStrs.join("");
-    } else {
-      finStr = finStrs.join(chunks?.length > 0 ? "" : ", ");
-      finStr = finStr.trim();
-      finStr = this.cleanString(finStr);
-    }
-
-    [isSafeStringNeeded, outputText] = parseExtras(finStr);
-
-    return isSafeStringNeeded
-      ? // @ts-ignore
-        new Handlebars.SafeString((dropdownString || "") + outputText)
-      : outputText;
-  }
-
-  /**
-   * Process the largest value from an array.
-   * @param {*} character - The character to process
-   * @param {*} type - The type of data to process
-   * @param {*} value - The value to process
-   * @returns {string} The text to render
-   */
-  processLargestFromArray(character, type, value) {
-    let lArr = extractPropertyByString(character, value);
-
-    if (!Array.isArray(lArr) && lArr instanceof Set === false) {
-      lArr = Object.keys(lArr).map((key) => {
-        if (typeof lArr[key] !== "object") {
-          return lArr[key];
-        } else if (lArr[key].value) {
-          return lArr[key].value;
-        } else return "";
-      });
-    } else return "";
-
-    if (lArr.length ?? lArr.length !== 0) {
-      return lArr.reduce((a, b) => (a > b ? a : b));
-    } else {
-      return "";
-    }
-  }
-
-  /**
-   * Process the smallest value from an array.
-   * @param {*} character - The character to process
-   * @param {*} type - The type of data to process
-   * @param {*} value - The value to process
-   * @returns {string} The text to render
-   */
-  processSmallestFromArray(character, type, value) {
-    let sArr = extractPropertyByString(character, value);
-
-    if (!Array.isArray(sArr) && sArr instanceof Set === false) {
-      sArr = Object.keys(sArr).map((key) => {
-        if (typeof sArr[key] !== "object") {
-          return sArr[key];
-        } else if (sArr[key].value) {
-          return sArr[key].value;
-        } else return "";
-      });
-    } else return "";
-
-    if (sArr.length ?? sArr.length !== 0) {
-      return sArr.reduce((a, b) => (a < b ? a : b));
-    } else {
-      return "";
-    }
-  }
-
-  /**
    * Get the custom data for a character.
    * @param {*} character - The character to get the data for
    * @param {*} type - The type of data to get
@@ -567,33 +170,13 @@ export class PartySheetForm extends FormApplication {
    */
   getCustomData(character, type, value, options = {}) {
     try {
-      switch (type) {
-        case "direct":
-          return this.processDirect(character, type, value, options);
-        case "direct-complex":
-          return this.processDirectComplex(character, type, value, options);
-        case "charactersheet":
-          // @ts-ignore
-          return new Handlebars.SafeString(
-            `<input type="image" name="fvtt-party-sheet-actorimage" data-actorid="${
-              character.uuid
-            }" class="token-image" src="${character.prototypeToken.texture.src}" title="${
-              character.prototypeToken.name
-            }" width="36" height="36" style="transform: rotate(${character.prototypeToken.rotation ?? 0}deg);"/>`,
-          );
-        case "array-string-builder":
-          return this.processArrayStringBuilder(character, type, value);
-        case "string":
-          return value;
-        case "object-loop":
-          return this.processObjectLoop(character, type, value);
-        case "largest-from-array":
-          return this.processLargestFromArray(character, type, value);
-        case "smallest-from-array":
-          return this.processSmallestFromArray(character, type, value);
-        default:
-          return "";
+      if (this.parserEngine.hasProcessor(type)) {
+        return this.parserEngine.process(character, type, value, options);
       }
+
+      // Fallback for any unregistered types
+      console.warn(`No processor registered for type: ${type}. Returning empty string.`);
+      return "";
     } catch (ex) {
       console.log(ex);
       throw new TemplateProcessError(ex);
@@ -619,6 +202,11 @@ export class PartySheetForm extends FormApplication {
   }
 
   getData(options) {
+    // Reset dropdown counters at the beginning of each render cycle
+    if (this.parserEngine && this.parserEngine.resetDropdownCounters) {
+      this.parserEngine.resetDropdownCounters();
+    }
+
     if (options) {
       this.savedOptions = options;
     } else if (this.savedOptions) {
@@ -634,12 +222,24 @@ export class PartySheetForm extends FormApplication {
 
     const customTemplates = getCustomTemplates();
     const applicableTemplates = customTemplates.filter((data) => {
-      return (
+      // @ts-ignore
+      const systemMatch = data.system === game.system.id;
+      // @ts-ignore
+      const minVersionOk = compareSymVer(data.minimumSystemVersion, game.system.version) <= 0;
+      // @ts-ignore
+      const maxVersionOk =
         // @ts-ignore
-        data.system === game.system.id &&
+        !data.maximumSystemVersion || compareSymVer(game.system.version, data.maximumSystemVersion) <= 0;
+
+      if (systemMatch && !maxVersionOk) {
         // @ts-ignore
-        compareSymVer(data.minimumSystemVersion, game.system.version) <= 0
-      );
+        log(
+          // @ts-ignore
+          `Template "${data.name}" by ${data.author} filtered out: Current system v${game.system.version} exceeds maximum v${data.maximumSystemVersion}`,
+        );
+      }
+
+      return systemMatch && minVersionOk && maxVersionOk;
     });
     const selectedTemplate = this.updateSelectedTemplateIndex(applicableTemplates);
 
@@ -666,7 +266,16 @@ export class PartySheetForm extends FormApplication {
     }
 
     const doShowInstaller = this.showInstaller;
-    this.showInstaller = false;
+
+    // Only reset showInstaller on user-initiated actions, not auto-refresh
+    // Exception: Don't reset if we're opening the installer
+    if (this._isUserAction && !this._openingInstaller) {
+      this.showInstaller = false;
+    }
+
+    // Clean up the flags
+    this._isUserAction = undefined;
+    this._openingInstaller = undefined;
 
     /** @typedef {TemplateData & {installedVersion?:string, installed:boolean}} InstalledTemplateData */
     /** @type {InstalledTemplateData[]} */
@@ -700,6 +309,8 @@ export class PartySheetForm extends FormApplication {
       invalidTemplateError,
       showInstaller: doShowInstaller,
       // @ts-ignore
+      currentSystemVersion: game.system.version,
+      // @ts-ignore
       overrides: this.overrides,
     });
   }
@@ -709,7 +320,8 @@ export class PartySheetForm extends FormApplication {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: "fvtt-party-sheet-party-sheet",
       classes: ["form"],
-      title: "Party Sheet",
+      // @ts-ignore
+      title: game.i18n.localize("fvtt-party-sheet.section-title"),
       // resizable: true,
       template: "modules/fvtt-party-sheet/templates/party-sheet.hbs",
       // @ts-ignore
@@ -718,13 +330,203 @@ export class PartySheetForm extends FormApplication {
     });
   }
 
+  /**
+   * Render the sheet
+   * @memberof PartySheetForm
+   * @param {boolean} [force] - Whether to force re-rendering the form.
+   * @param {boolean} [focus] - Whether to focus the form after rendering.
+   */
+  doRender(force = false, focus = false) {
+    const v13andUp = isVersionAtLeast(13);
+
+    // Set a flag to indicate if this is a user-initiated action (force=true) or auto-refresh (force=false)
+    this._isUserAction = force;
+
+    // Save dropdown states before rendering (if this is a re-render)
+    // @ts-ignore
+    if (this.rendered && this.element) {
+      // @ts-ignore
+      this.saveDropdownStates(this.element);
+    }
+
+    if (v13andUp) {
+      this.render({
+        force,
+        focus,
+      });
+    } else {
+      this.render(force, { focus });
+    }
+
+    // If installer is showing, ensure adequate window width after render
+    if (this.showInstaller) {
+      setTimeout(() => {
+        this._ensureInstallerWidth();
+      }, 50);
+    }
+  }
+
+  /**
+   * Ensures adequate width for installer layout
+   * @memberof PartySheetForm
+   */
+  _ensureInstallerWidth() {
+    if (!this.rendered || !this.showInstaller) return;
+
+    try {
+      // @ts-ignore - Access current position
+      const currentPos = this.position;
+      const minRequiredWidth = 700; // Minimum width needed for row layout
+
+      if (currentPos.width < minRequiredWidth) {
+        // @ts-ignore - FormApplication has setPosition method
+        this.setPosition({
+          width: minRequiredWidth,
+        });
+      }
+    } catch (error) {
+      // Silently ignore width adjustment errors
+    }
+  }
+
+  /**
+   * Start the refresh timer for periodic updates
+   * @memberof PartySheetForm
+   */
+  startRefreshTimer() {
+    // Clear any existing timer
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+      this.refreshTimer = null;
+    }
+  }
+
+  /**
+   * Save the current state of all dropdowns
+   * @memberof PartySheetForm
+   */
+  saveDropdownStates(html) {
+    // @ts-ignore
+    if (!html && this.element) html = this.element;
+    if (!html) return;
+
+    // @ts-ignore
+    const dropdowns = html.find('select[class="fvtt-party-sheet-dropdown"]');
+
+    dropdowns.each((index, dropdown) => {
+      // @ts-ignore
+      const $dropdown = $(dropdown);
+      const section = $dropdown.data("dropdownsection");
+      const value = $dropdown.val();
+
+      if (section && value !== undefined && value !== null && value !== "") {
+        console.log(`fvtt-party-sheet | Saving dropdown state: ${section} = ${value}`);
+        this.dropdownStates.set(section, value);
+      }
+    });
+  }
+
+  /**
+   * Restore the saved state of all dropdowns
+   * @memberof PartySheetForm
+   */
+  restoreDropdownStates(html) {
+    // @ts-ignore
+    if (!html && this.element) html = this.element;
+    if (!html) return;
+
+    // @ts-ignore
+    const dropdowns = html.find('select[class="fvtt-party-sheet-dropdown"]');
+
+    dropdowns.each((index, dropdown) => {
+      // @ts-ignore
+      const $dropdown = $(dropdown);
+      const section = $dropdown.data("dropdownsection");
+
+      if (section && this.dropdownStates.has(section)) {
+        const savedValue = this.dropdownStates.get(section);
+
+        // Check all available options
+        const availableOptions = [];
+        $dropdown.find("option").each((i, option) => {
+          // @ts-ignore
+          availableOptions.push($(option).val());
+        });
+
+        // Only restore if the saved value exists as an option
+        if ($dropdown.find(`option[value="${savedValue}"]`).length > 0) {
+          $dropdown.val(savedValue);
+
+          // Manually trigger the UI update without triggering interaction tracking
+          const dropdownSection = section;
+          const dropdownValue = savedValue;
+
+          // @ts-ignore
+          $(`div[data-dropdownsection="${dropdownSection}"]`).hide();
+          // @ts-ignore
+          $(`div[data-dropdownsection="${dropdownSection}"][data-dropdownoption="${dropdownValue}"]`).show();
+        }
+      }
+    });
+  }
+
+  /**
+   * Check if the user is currently interacting with dropdowns
+   * @returns {boolean}
+   * @memberof PartySheetForm
+   */
+  isUserInteractingWithDropdowns() {
+    return this.isDropdownInteracting;
+  }
+
+  /**
+   * Ensure dropdown select elements have the correct values set
+   * @memberof PartySheetForm
+   */
+  ensureDropdownSelectValues(html) {
+    // @ts-ignore
+    if (!html && this.element) html = this.element;
+    if (!html) return;
+
+    // @ts-ignore
+    const dropdowns = html.find('select[class="fvtt-party-sheet-dropdown"]');
+
+    dropdowns.each((index, dropdown) => {
+      // @ts-ignore
+      const $dropdown = $(dropdown);
+      const section = $dropdown.data("dropdownsection");
+
+      if (section && this.dropdownStates.has(section)) {
+        const savedValue = this.dropdownStates.get(section);
+
+        // Only set the select value if it differs from current value and the option exists
+        if ($dropdown.val() !== savedValue && $dropdown.find(`option[value="${savedValue}"]`).length > 0) {
+          $dropdown.val(savedValue);
+        }
+      }
+    });
+  }
+
+  /**
+   * Override close method to ensure timer cleanup
+   * @returns {Promise<void>}
+   * @memberof PartySheetForm
+   */
+  async close() {
+    // Clear the refresh timer when closing
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+      this.refreshTimer = null;
+    }
+    return super.close();
+  }
+
   openOptions(event) {
     event.preventDefault();
     const overrides = {
       onexit: () => {
         setTimeout(() => {
-          // @ts-ignore
-          this.render(true);
+          this.doRender(true, false);
         }, 350);
       },
     };
@@ -734,6 +536,11 @@ export class PartySheetForm extends FormApplication {
   }
 
   closeWindow() {
+    // Clear the refresh timer when closing the window
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+      this.refreshTimer = null;
+    }
     // @ts-ignore
     this.close();
   }
@@ -757,12 +564,21 @@ export class PartySheetForm extends FormApplication {
     if (selectedIndex != -1) {
       updateSelectedTemplate(getCustomTemplates()[selectedIndex]);
     }
-    // @ts-ignore
-    this.render(true);
+
+    // User made a template selection, they're done interacting
+    // Small delay to allow the selection to complete
+    setTimeout(() => {
+      this.isDropdownInteracting = false;
+    }, 50);
+
+    this.doRender(true, false);
   }
 
   activateListeners(html) {
     super.activateListeners(html);
+
+    // Start the refresh timer for periodic updates
+    this.startRefreshTimer();
 
     // @ts-ignore
     $('button[name="fvtt-party-sheet-options"]', html).click(this.openOptions.bind(this));
@@ -771,7 +587,19 @@ export class PartySheetForm extends FormApplication {
     // @ts-ignore
     $('input[name="fvtt-party-sheet-actorimage"]', html).click(this.openActorSheet.bind(this));
     // @ts-ignore
-    $('select[name="fvtt-party-sheet-system"]', html).change(this.changeSystem.bind(this));
+    $('select[name="fvtt-party-sheet-system"]', html)
+      .on("mousedown", (event) => {
+        // User is starting to interact with template dropdown (opening it)
+        console.log("fvtt-party-sheet | Template selector interaction started");
+        this.isDropdownInteracting = true;
+      })
+      .on("change", this.changeSystem.bind(this))
+      .on("blur", (event) => {
+        // Template selector lost focus without selection (clicked elsewhere)
+        setTimeout(() => {
+          this.isDropdownInteracting = false;
+        }, 50);
+      });
     // @ts-ignore
     $('button[name="feedback"]', html).click(this.onFeedback.bind(this));
     // @ts-ignore
@@ -794,6 +622,11 @@ export class PartySheetForm extends FormApplication {
     });
     // @ts-ignore
     $('button[class="fvtt-party-sheet-module-install-button"]').click(async (event) => {
+      // Check if the button is disabled
+      if (event.currentTarget.disabled) {
+        return;
+      }
+
       const dataModuleTemplatePath = event.currentTarget.dataset.modulepath;
       const dataModuleTemplateFilename = dataModuleTemplatePath.split("/").pop();
       const dataModuleTemplateFolder = dataModuleTemplatePath.split("/").slice(0, -1).join("/") + "/";
@@ -811,16 +644,39 @@ export class PartySheetForm extends FormApplication {
     });
 
     // @ts-ignore
-    $('select[class="fvtt-party-sheet-dropdown"]', html).change((event) => {
-      const dropdownSection = event.currentTarget.dataset.dropdownsection;
-      const dropdownValue = event.currentTarget.value;
+    $('select[class="fvtt-party-sheet-dropdown"]', html)
+      .on("mousedown", (event) => {
+        // User is starting to interact with dropdown (opening it)
+        console.log("fvtt-party-sheet | Dropdown interaction started");
+        this.isDropdownInteracting = true;
+      })
+      .on("change", (event) => {
+        const dropdownSection = event.currentTarget.dataset.dropdownsection;
+        const dropdownValue = event.currentTarget.value;
 
-      // @ts-ignore
-      $(`div[data-dropdownsection="${dropdownSection}"]`).hide();
+        // Save the new selection immediately to our state map
+        if (dropdownSection && dropdownValue) {
+          this.dropdownStates.set(dropdownSection, dropdownValue);
+        }
 
-      // @ts-ignore
-      $(`div[data-dropdownsection="${dropdownSection}"][data-dropdownoption="${dropdownValue}"]`).show();
-    });
+        // @ts-ignore
+        $(`div[data-dropdownsection="${dropdownSection}"]`).hide();
+
+        // @ts-ignore
+        $(`div[data-dropdownsection="${dropdownSection}"][data-dropdownoption="${dropdownValue}"]`).show();
+
+        // User made a selection, they're done interacting
+        // Small delay to allow the selection to complete
+        setTimeout(() => {
+          this.isDropdownInteracting = false;
+        }, 50);
+      })
+      .on("blur", (event) => {
+        // Dropdown lost focus without selection (clicked elsewhere)
+        setTimeout(() => {
+          this.isDropdownInteracting = false;
+        }, 50);
+      });
   }
 
   onFeedback(event) {
@@ -844,7 +700,8 @@ export class PartySheetForm extends FormApplication {
   onInstaller(event) {
     event.preventDefault();
     this.showInstaller = true;
-    // @ts-ignore
-    this.render(true);
+    this._openingInstaller = true; // Flag to prevent immediate closure
+
+    this.doRender(true, false);
   }
 }

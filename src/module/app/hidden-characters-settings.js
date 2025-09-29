@@ -60,7 +60,6 @@ export class HiddenCharactersSettings extends FormApplication {
   }
 
   resetEffects() {
-    // this.effects = game.settings.settings.get('monks-little-details.additional-effects').default;
     // @ts-ignore
     this.refresh();
   }

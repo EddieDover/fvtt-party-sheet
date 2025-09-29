@@ -10,11 +10,19 @@
       "section": "Bug Fixes"
     },
     {
+      "type": "bug",
+      "section": "Bugs Fixes"
+    },
+    {
       "type": "chore",
       "hidden": true
     },
     {
       "type": "docs",
+      "section": "Documentation"
+    },
+    {
+      "type": "doc",
       "section": "Documentation"
     },
     {

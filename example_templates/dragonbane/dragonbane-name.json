@@ -2,13 +2,9 @@
   "name": "Dragonbane - With Name",
   "system": "dragonbane",
   "author": "Michael Card (EmoCthulhu)",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "minimumSystemVersion": "1.9.1",
-  "offline_excludes": [
-    "npc",
-    "base",
-    "monster"
-  ],
+  "offline_excludes": ["npc", "base", "monster"],
   "rows": [
     [
       {
@@ -24,14 +20,14 @@
         "maxwidth": 100,
         "type": "direct",
         "header": "show",
-        "text": "{b} name {/b}"
+        "text": "{b} {name} {/b}"
       },
       {
         "name": "Age & Kin",
         "align": "center",
         "type": "direct",
         "header": "show",
-        "text": "Age: {i} system.age {/i} {newline} Kin: {i} system.kin.name {/i}"
+        "text": "Age: {i} {system.age} {/i} {newline} Kin: {i} {system.kin.name} {/i}"
       },
       {
         "name": "Hit Points",
@@ -39,7 +35,7 @@
         "valign": "bottom",
         "type": "direct",
         "header": "show",
-        "text": "{b} system.hitPoints {/b} / system.hitPoints.max {newline} {newline}"
+        "text": "{b} {system.hitPoints} {/b} / {system.hitPoints.max} {newline} {newline}"
       },
       {
         "name": "STR",
@@ -52,8 +48,8 @@
             "type": "match",
             "ifdata": "system.conditions.str",
             "matches": true,
-            "text": "system.attributes.str {newline} {b}{i} Exhausted {/i}{/b}",
-            "else": "system.attributes.str {newline} {newline}"
+            "text": "{system.attributes.str} {newline} {b}{i} Exhausted {/i}{/b}",
+            "else": "{system.attributes.str} {newline} {newline}"
           }
         ]
       },
@@ -68,8 +64,8 @@
             "type": "match",
             "ifdata": "system.conditions.con",
             "matches": true,
-            "text": "system.attributes.con {newline} {b}{i} Sickly {/i}{/b}",
-            "else": "system.attributes.con {newline} {newline}"
+            "text": "{system.attributes.con} {newline} {b}{i} Sickly {/i}{/b}",
+            "else": "{system.attributes.con} {newline} {newline}"
           }
         ]
       },
@@ -84,8 +80,8 @@
             "type": "match",
             "ifdata": "system.conditions.agl",
             "matches": true,
-            "text": "system.attributes.agl {newline} {b}{i} Dazed {/i}{/b}",
-            "else": "system.attributes.agl {newline} {newline}"
+            "text": "{system.attributes.agl} {newline} {b}{i} Dazed {/i}{/b}",
+            "else": "{system.attributes.agl} {newline} {newline}"
           }
         ]
       },
@@ -100,8 +96,8 @@
             "type": "match",
             "ifdata": "system.conditions.int",
             "matches": true,
-            "text": "system.attributes.int {newline} {b}{i} Angry {/i}{/b}",
-            "else": "system.attributes.int {newline} {newline}"
+            "text": "{system.attributes.int} {newline} {b}{i} Angry {/i}{/b}",
+            "else": "{system.attributes.int} {newline} {newline}"
           }
         ]
       },
@@ -116,8 +112,8 @@
             "type": "match",
             "ifdata": "system.conditions.wil",
             "matches": true,
-            "text": "system.attributes.wil {newline} {b}{i} Scared {/i}{/b}",
-            "else": "system.attributes.wil {newline} {newline}"
+            "text": "{system.attributes.wil} {newline} {b}{i} Scared {/i}{/b}",
+            "else": "{system.attributes.wil} {newline} {newline}"
           }
         ]
       },
@@ -132,8 +128,8 @@
             "type": "match",
             "ifdata": "system.conditions.cha",
             "matches": true,
-            "text": "system.attributes.cha {newline} {b}{i} Disheartened {/i}{/b}",
-            "else": "system.attributes.cha {newline} {newline}"
+            "text": "{system.attributes.cha} {newline} {b}{i} Disheartened {/i}{/b}",
+            "else": "{system.attributes.cha} {newline} {newline}"
           }
         ]
       },
@@ -166,7 +162,7 @@
         "valign": "top",
         "type": "direct",
         "header": "show",
-        "text": "{b} system.profession.name {/b}"
+        "text": "{b} {system.profession.name} {/b}"
       },
       {
         "name": "Will Points",
@@ -174,7 +170,7 @@
         "valign": "top",
         "type": "direct",
         "header": "show",
-        "text": "{b} system.willPoints {/b} / system.willPoints.max"
+        "text": "{b} {system.willPoints} {/b} / {system.willPoints.max}"
       },
       {
         "name": "DB-STR",
@@ -182,7 +178,7 @@
         "valign": "top",
         "type": "direct",
         "header": "show",
-        "text": "system.damageBonus.str"
+        "text": "{system.damageBonus.str}"
       },
       {
         "name": "Move",
@@ -190,7 +186,7 @@
         "valign": "top",
         "type": "direct",
         "header": "show",
-        "text": "system.movement"
+        "text": "{system.movement}"
       },
       {
         "name": "DB-AGL",
@@ -198,7 +194,7 @@
         "valign": "top",
         "type": "direct",
         "header": "show",
-        "text": "system.damageBonus.agl"
+        "text": "{system.damageBonus.agl}"
       },
       {
         "name": "Copper",
@@ -206,7 +202,7 @@
         "valign": "top",
         "type": "direct",
         "header": "show",
-        "text": "system.currency.cc"
+        "text": "{system.currency.cc}"
       },
       {
         "name": "Silver",
@@ -214,7 +210,7 @@
         "valign": "top",
         "type": "direct",
         "header": "show",
-        "text": "system.currency.sc"
+        "text": "{system.currency.sc}"
       },
       {
         "name": "Gold",
@@ -222,7 +218,7 @@
         "valign": "top",
         "type": "direct",
         "header": "show",
-        "text": "system.currency.gc"
+        "text": "{system.currency.gc}"
       },
       {
         "name": "Status",

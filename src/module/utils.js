@@ -100,7 +100,8 @@ export async function loadSystemTemplate(path) {
     const template = JSON.parse(await fetch(path).then((r) => r.text()));
     if (template.name && template.author && template.system && template.rows) {
       if (template.version && template.minimumSystemVersion) {
-        console.log(`${path} - Good Template`);
+        const maxVersionText = template.maximumSystemVersion ? ` (max: ${template.maximumSystemVersion})` : "";
+        console.log(`${path} - Good Template - Min system: ${template.minimumSystemVersion}${maxVersionText}`);
       } else {
         console.warn(`${path} - Missing Version Information`);
       }
@@ -110,7 +111,7 @@ export async function loadSystemTemplate(path) {
         addCustomTemplate(template);
       }
     } else {
-      console.log(`${path} - Bad Template`);
+      console.error(`${path} - Bad Template`);
     }
   } catch (e) {
     console.log(`${path} - Failed to Load. See error below.`);
@@ -125,28 +126,32 @@ export async function loadSystemTemplate(path) {
 export async function getAllSystemVersions() {
   const systemVersions = [];
 
-  let assetPrefix = "data";
+  try {
+    let assetPrefix = "data";
 
-  if (isForgeVTT()) {
-    console.log("Detected ForgeVTT");
-    // @ts-ignore
-    // eslint-disable-next-line no-undef
-    assetPrefix = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId()) + "/";
-  }
-
-  // @ts-ignore
-  const systemFolder = await FilePicker.browse(assetPrefix, "systems"); // `modules/${MODULE_NAME}/templates`);
-  for (var folder of systemFolder.dirs) {
-    // @ts-ignore
-    const pathFolder = await FilePicker.browse(assetPrefix, folder);
-    // @ts-ignore
-    for (var file of pathFolder.files.filter((f) => f.endsWith("system.json"))) {
-      const data = JSON.parse(await fetch(file).then((r) => r.text()));
-      systemVersions.push({
-        system: data.id,
-        version: data.version,
-      });
+    if (isForgeVTT()) {
+      console.log("Detected ForgeVTT");
+      // @ts-ignore
+      // eslint-disable-next-line no-undef
+      assetPrefix = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId()) + "/";
     }
+
+    // @ts-ignore
+    const systemFolder = await FilePicker.browse(assetPrefix, "systems"); // `modules/${MODULE_NAME}/templates`);
+    for (var folder of systemFolder.dirs) {
+      // @ts-ignore
+      const pathFolder = await FilePicker.browse(assetPrefix, folder);
+      // @ts-ignore
+      for (var file of pathFolder.files.filter((f) => f.endsWith("system.json"))) {
+        const data = JSON.parse(await fetch(file).then((r) => r.text()));
+        systemVersions.push({
+          system: data.id,
+          version: data.version,
+        });
+      }
+    }
+  } catch (e) {
+    console.error("Failed to get system versions:", e);
   }
 
   return systemVersions;
@@ -233,6 +238,7 @@ export async function validateSystemTemplates() {
   let output = {
     valid: [],
     outOfDateSystems: [],
+    tooNewSystems: [],
     outOfDateTemplates: [],
     noVersionInformation: [],
     noSystemInformation: [],
@@ -242,7 +248,7 @@ export async function validateSystemTemplates() {
   moduleTemplates = await loadModuleTemplates();
 
   for (const template of customTemplates) {
-    const moduleTemplate = moduleTemplates.find((t) => t.name === template.name);
+    const moduleTemplate = moduleTemplates.find((t) => t.name === template.name && t.author === template.author);
     let err = false;
 
     const templateData = {
@@ -252,6 +258,7 @@ export async function validateSystemTemplates() {
       system: template.system,
       providedVersion: moduleTemplate?.version ?? "-",
       minimumSystemVersion: template.minimumSystemVersion,
+      maximumSystemVersion: template.maximumSystemVersion,
       ownedSystemVersion: systemVersions.find((s) => s.system === template.system)?.version ?? "-",
     };
     if (!template.minimumSystemVersion) {
@@ -270,13 +277,36 @@ export async function validateSystemTemplates() {
     }
 
     if (moduleTemplate && compareSymVer(template.version, moduleTemplate.version) < 0) {
+      // @ts-ignore
+      const currentSystem = game.system.id;
+      if (template.system === currentSystem) {
+        log(
+          `Version check: "${template.name}" by ${template.author} - Current: v${template.version}, Available: v${moduleTemplate.version}`,
+        );
+      }
       output.outOfDateTemplates.push(templateData);
       err = true;
+    } else if (moduleTemplate && compareSymVer(template.version, moduleTemplate.version) === 0) {
+      // @ts-ignore
+      const currentSystem = game.system.id;
+      if (template.system === currentSystem) {
+        log(`Version check: "${template.name}" by ${template.author} - Current: v${template.version} (up to date)`);
+      }
     }
 
     if (templateData.ownedSystemVersion !== "-") {
+      // Check if system is too old (below minimum required version)
       if (compareSymVer(templateData.ownedSystemVersion, templateData.minimumSystemVersion) < 0) {
         output.outOfDateSystems.push(templateData);
+        err = true;
+      }
+
+      // Check if current system version exceeds maximum supported version (system too new)
+      if (
+        template.maximumSystemVersion &&
+        compareSymVer(templateData.ownedSystemVersion, template.maximumSystemVersion) > 0
+      ) {
+        output.tooNewSystems.push(templateData);
         err = true;
       }
     }
@@ -342,7 +372,7 @@ export function getSelectedTemplate() {
 
 /**
  * Adds a custom system to the list of systems.
- * @param {*} system - The custom system to add.
+ * @param {TemplateData} system - The custom system to add.
  */
 export function addCustomTemplate(system) {
   customTemplates.push(system);
@@ -357,7 +387,7 @@ export function clearCustomTemplates() {
 
 /**
  * Retrieves the list of custom systems.
- * @returns {*} - The list of custom systems.
+ * @returns {TemplateData[]} - The list of custom systems.
  */
 export function getCustomTemplates() {
   return customTemplates;
@@ -399,8 +429,8 @@ export function extractPropertyByString(obj, path) {
 
 /**
  * Takes a JSON object and trims the strings for value, else, and match.
- * @param {*} item - The item to trim.
- * @returns {*}  - The item with trimmed strings.
+ * @param {DirectComplexTextObject} item - The item to trim.
+ * @returns {DirectComplexTextObject}  - The item with trimmed strings.
  */
 export function trimIfString(item) {
   if (item.text && typeof item.text === "string") {
@@ -414,68 +444,6 @@ export function trimIfString(item) {
   }
 
   return item;
-}
-
-/**
- * Parses out plus sumbols and adds values together.
- * @param {*} value - The value to parse.
- * @returns {*} - The value with the pluses parsed out.
- */
-export function parsePluses(value) {
-  // Match patterns with optional spaces around {+}
-  let match = value.match(/(\d+)\s*\{\+\}\s*(\d+)|\d+\{\+\}\d+/);
-  if (!match) {
-    return value;
-  }
-  do {
-    const numbers = match[0].trim().split("{+}").map(Number);
-    const result = numbers[0] + numbers[1];
-    value = value.replace(match[0], result.toString());
-  } while ((match = value.match(/(\d+)\s*\{\+\}\s*(\d+)|\d+\{\+\}\d+/)));
-
-  return value;
-}
-
-/**
- * Parse underline, bold, and italics from a string.
- * @param {string} value - The value to parse.
- * @param {boolean} isSafeStringNeeded - A boolean indicating if a SafeString is needed.
- * @returns {[boolean, string]} - A tuple with the first value being a boolean indicating if a SafeString is needed and the second value being the parsed string.
- */
-export function parseExtras(value, isSafeStringNeeded = false) {
-  // Detect if any text is surrounded with "{i} and {/i}" and replace with <i> tags
-  if (value.indexOf("{i}") > -1 || value.indexOf("{/i}") > -1) {
-    isSafeStringNeeded = true;
-    value = value.replaceAll("{i}", "<i>").replaceAll("{/i}", "</i>");
-  }
-
-  // Detect if any text is surrounded with "{b} and {/b}" and replace with <b> tags
-  if (value.indexOf("{b}") > -1 || value.indexOf("{/b}") > -1) {
-    isSafeStringNeeded = true;
-    value = value.replaceAll("{b}", "<b>").replaceAll("{/b}", "</b>");
-  }
-
-  // Detect if any text is surrounded with "{u} and {/u}" and replace with <b> tags
-  if (value.indexOf("{u}") > -1 || value.indexOf("{/u}") > -1) {
-    isSafeStringNeeded = true;
-    value = value.replaceAll("{u}", "<u>").replaceAll("{/u}", "</u>");
-  }
-
-  // Detect if any text is surrounded with "{u} and {/u}" and replace with <b> tags
-  if (value.indexOf("{s}") > -1) {
-    isSafeStringNeeded = true;
-    value = value.replaceAll("{s}", "&nbsp;");
-  }
-
-  ({ value, isSafeStringNeeded } = parseFontAwesome(value, isSafeStringNeeded));
-
-  // Detect if the value contains {sX} where x is a digit and insert that many &nbsp; marks
-  ({ value, isSafeStringNeeded } = parseSpacing(value, isSafeStringNeeded));
-
-  //Parse out newline elements
-  ({ value, isSafeStringNeeded } = parseNewlines(value, isSafeStringNeeded));
-
-  return [isSafeStringNeeded, value];
 }
 
 /**
@@ -553,4 +521,71 @@ export function parseNewlines(value, isSafeStringNeeded) {
     }
   }
   return { value, isSafeStringNeeded };
+}
+
+/**
+ * Get the Foundry version
+ * @returns {{ major: number, minor: number, full: string }} version
+ */
+export function getFoundryVersion() {
+  // @ts-ignore
+  const version = game.version;
+  const versionInfo = version.split(".");
+  const major = Number.parseInt(versionInfo[0]);
+  const minor = Number.parseInt(versionInfo[1]);
+  const full = version;
+
+  return {
+    major,
+    minor,
+    full,
+  };
+}
+
+/**
+ * Checks if the current Foundry version is at least the specified major version.
+ * @param {*} major - The major version to check against.
+ * @returns {boolean} True if the current version is at least the specified major version, false otherwise.
+ */
+export function isVersionAtLeast(major) {
+  const version = getFoundryVersion();
+  return version.major >= major;
+}
+
+/**
+ * Shows notification banners when version differences are detected between installed templates
+ * and the example templates provided with the module.
+ * @param {TemplateValidityReturnData} validationData - The validation data from validateSystemTemplates()
+ */
+export function showVersionDifferenceNotifications(validationData) {
+  // @ts-ignore
+  if (!game.user.isGM) {
+    return; // Only show notifications to GM
+  }
+
+  // @ts-ignore
+  const showNotifications = game.settings.get("fvtt-party-sheet", "showVersionNotifications");
+  if (!showNotifications) {
+    return; // User has disabled version notifications
+  }
+
+  // @ts-ignore
+  const currentSystem = game.system.id;
+
+  // Filter validation data to only include templates for the current game system
+  const currentSystemOutOfDate =
+    validationData.outOfDateTemplates?.filter((template) => template.system === currentSystem) || [];
+
+  const outOfDateCount = currentSystemOutOfDate.length;
+
+  // Show notification for templates that have newer versions available in the module
+  if (outOfDateCount > 0) {
+    // @ts-ignore
+    const message = game.i18n.format("fvtt-party-sheet.notifications.template-update-available", {
+      count: outOfDateCount,
+    });
+    // @ts-ignore
+    ui.notifications.warn(message, { permanent: false, console: false });
+    log(`${outOfDateCount} template update(s) available for ${currentSystem}`);
+  }
 }

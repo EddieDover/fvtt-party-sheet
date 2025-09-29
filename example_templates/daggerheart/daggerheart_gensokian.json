@@ -1,0 +1,122 @@
+{
+  "name": "Daggerheart",
+  "system": "daggerheart",
+  "author": "James / Gensokian",
+  "version": "1.1.0",
+  "minimumSystemVersion": "1.1.2",
+  "offline_excludes": ["npc", "base", "vehicle", "group"],
+  "rows": [
+    [
+      {
+        "name": "Character",
+        "type": "charactersheet",
+        "header": "show",
+        "text": ""
+      },
+      {
+        "name": "HP",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.resources.hitPoints.value}"
+      },
+      {
+        "name": "Stress",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.resources.stress.value}"
+      },
+      {
+        "name": "Hope",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.resources.hope.value}"
+      },
+      {
+        "name": "AGI",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.traits.agility.value}"
+      },
+      {
+        "name": "FIN",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.traits.finesse.value}"
+      },
+      {
+        "name": "PRE",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.traits.presence.value}"
+      },
+      {
+        "name": "Evasion",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.evasion}"
+      },
+      {
+        "name": "Severe DT",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.damageThresholds.severe}"
+      }
+    ],
+    [
+      {
+        "name": "Name",
+        "type": "direct",
+        "header": "show",
+        "text": "{name}"
+      },
+      {
+        "name": "HP Max",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.resources.hitPoints.max}"
+      },
+      {
+        "name": "Stress Max",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.resources.stress.max}"
+      },
+      {
+        "name": "Hope Max",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.resources.hope.max}"
+      },
+      {
+        "name": "STR",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.traits.strength.value}"
+      },
+      {
+        "name": "INS",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.traits.instinct.value}"
+      },
+      {
+        "name": "KNO",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.traits.knowledge.value}"
+      },
+      {
+        "name": "Armor",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.armorScore}"
+      },
+      {
+        "name": "Major DT",
+        "type": "direct",
+        "header": "show",
+        "text": "{system.damageThresholds.major}"
+      }
+    ]
+  ]
+}

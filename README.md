@@ -7,6 +7,8 @@
 
 ## Links
 
+Join the [Discord Server](https://discord.gg/mvMdc7bH2d) for support, to file bug reports, request templates, etc!
+
 | Upcoming Changes | Template Readme | Template List |
 | --- | --- | --- |
 | [Link](UPCOMING_CHANGELOG.md) | [Link](TEMPLATE_README.md) | [Link](TEMPLATE_LIST.md) |

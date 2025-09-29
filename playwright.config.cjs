@@ -11,41 +11,52 @@ require("dotenv").config();
  * @see https://playwright.dev/docs/test-configuration
  */
 module.exports = defineConfig({
-  testDir: "./test",
+  testDir: "./playwright_tests",
   testMatch: "**/*.spec.js",
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: 1,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: "list",
+  reporter: [
+    ["html", { outputFolder: "playwright-report" }],
+    ["json", { outputFile: "test-results/results.json" }],
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  timeout: 30000,
+  expect: {
+    timeout: 10000,
+  },
   use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://127.0.0.1:3000',
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    baseURL: "http://localhost:30000",
     trace: "on-first-retry",
-
-    /* Ignore SSL errors */
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
     ignoreHTTPSErrors: true,
   },
-
   /* Configure projects for major browsers */
   projects: [
-    // {
-    //   name: "chromium",
-    //   use: { ...devices["Desktop Chrome"] },
-    // },
-
     {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
+      name: "setup",
+      testMatch: /.*\.setup\.ts/,
     },
+    {
+      name: "chromium",
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "playwright/.auth/user.json",
+      },
+      dependencies: ["setup"],
+    },
+
+    // {
+    //   name: "firefox",
+    //   use: { ...devices["Desktop Firefox"] },
+    // },
 
     // {
     //   name: "webkit",

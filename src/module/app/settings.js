@@ -29,7 +29,7 @@ export const registerSettings = () => {
     "hint": "fvtt-party-sheet.settings.refresh-rate.hint",
     "scope": "world",
     "config": true,
-    "default": 0,
+    "default": 5,
     "type": Number,
   });
 
@@ -60,6 +60,16 @@ export const registerSettings = () => {
     "scope": "world",
     "config": true,
     "default": false,
+    "type": Boolean,
+  });
+
+  // @ts-ignore
+  game.settings.register("fvtt-party-sheet", "showVersionNotifications", {
+    "name": "fvtt-party-sheet.settings.show-version-notifications.name",
+    "hint": "fvtt-party-sheet.settings.show-version-notifications.hint",
+    "scope": "world",
+    "config": true,
+    "default": true,
     "type": Boolean,
   });
 
