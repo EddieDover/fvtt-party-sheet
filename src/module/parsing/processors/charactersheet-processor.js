@@ -1,3 +1,4 @@
+import { generateCharacterSheetImageFromCharacter } from "../../utils.js";
 import { DataProcessor } from "../base-processor.js";
 
 /**
@@ -15,13 +16,10 @@ export class CharacterSheetProcessor extends DataProcessor {
   process(character, value, options = {}) {
     this.validate(character, value);
 
+    console.log(character);
+    console.log(character["#lastWildcard"]);
+
     // @ts-ignore
-    return new Handlebars.SafeString(
-      `<input type="image" data-action="onOpenActorSheet" name="fvtt-party-sheet-actorimage" data-actorid="${
-        character.uuid
-      }" class="token-image" src="${character.prototypeToken.texture.src}" title="${
-        character.prototypeToken.name
-      }" width="36" height="36" style="transform: rotate(${character.prototypeToken.rotation ?? 0}deg);"/>`,
-    );
+    return new Handlebars.SafeString(generateCharacterSheetImageFromCharacter(character));
   }
 }

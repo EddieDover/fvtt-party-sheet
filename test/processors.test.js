@@ -199,55 +199,16 @@ describe("Data Processors", () => {
     it("should generate character sheet button HTML", () => {
       const character = {
         uuid: "Actor.123",
-        prototypeToken: {
-          texture: {
-            src: "path/to/token.png",
-          },
-          name: "Test Character",
-          rotation: 0,
-        },
+        name: "Test Character",
+        img: "path/to/token.png",
       };
 
       const result = processor.process(character, "unused");
 
       expect(mockSafeString).toHaveBeenCalledWith(
-        `<input type="image" data-action="onOpenActorSheet" name="fvtt-party-sheet-actorimage" data-actorid="Actor.123" class="token-image" src="path/to/token.png" title="Test Character" width="36" height="36" style="transform: rotate(0deg);"/>`,
+        '<input type="image" data-action="onOpenActorSheet" name="fvtt-party-sheet-actorimage" data-actorid="Actor.123" class="token-image" src="path/to/token.png" title="Test Character" width="36" height="36" />',
       );
       expect(result.__isSafeString).toBe(true);
-    });
-
-    it("should handle character with rotation", () => {
-      const character = {
-        uuid: "Actor.456",
-        prototypeToken: {
-          texture: {
-            src: "path/to/rotated.png",
-          },
-          name: "Rotated Character",
-          rotation: 90,
-        },
-      };
-
-      const result = processor.process(character, "unused");
-
-      expect(mockSafeString).toHaveBeenCalledWith(expect.stringContaining("rotate(90deg)"));
-    });
-
-    it("should handle character without rotation", () => {
-      const character = {
-        uuid: "Actor.789",
-        prototypeToken: {
-          texture: {
-            src: "path/to/norotation.png",
-          },
-          name: "No Rotation Character",
-          // rotation is undefined
-        },
-      };
-
-      const result = processor.process(character, "unused");
-
-      expect(mockSafeString).toHaveBeenCalledWith(expect.stringContaining("rotate(0deg)"));
     });
   });
 
@@ -350,144 +311,6 @@ describe("Data Processors", () => {
       const result = processor.process(character, undefined);
 
       expect(result).toBeUndefined();
-    });
-  });
-
-  describe("SmallestFromArrayProcessor", () => {
-    let processor;
-
-    beforeEach(() => {
-      processor = new SmallestFromArrayProcessor();
-    });
-
-    it("should find the smallest numeric value in an array", () => {
-      const character = {
-        scores: [10, 15, 8, 20, 12],
-      };
-
-      const result = processor.process(character, "scores");
-      expect(result).toBe(8);
-    });
-
-    it("should handle arrays with string numbers", () => {
-      const character = {
-        values: ["10", "25", "5", "30"],
-      };
-
-      const result = processor.process(character, "values");
-      expect(result).toBe(5);
-    });
-
-    it("should handle empty arrays", () => {
-      const character = {
-        empty: [],
-      };
-
-      const result = processor.process(character, "empty");
-      expect(result).toBe("");
-    });
-
-    it("should handle non-numeric values in array", () => {
-      const character = {
-        mixed: ["abc", 10, "def", 25, "ghi"],
-      };
-
-      const result = processor.process(character, "mixed");
-      expect(result).toBe(10);
-    });
-
-    it("should handle all non-numeric values", () => {
-      const character = {
-        strings: ["abc", "def", "ghi"],
-      };
-
-      const result = processor.process(character, "strings");
-      expect(result).toBe("");
-    });
-
-    it("should warn and return empty string for non-array input", () => {
-      const character = {
-        notArray: "not an array",
-      };
-
-      const result = processor.process(character, "notArray");
-      expect(result).toBe("");
-      expect(consoleMocks.warnSpy).toHaveBeenCalledWith("SmallestFromArray requires an array, got:", "string");
-    });
-
-    it("should handle nested property paths", () => {
-      const character = {
-        system: {
-          abilities: {
-            scores: [8, 14, 16, 12],
-          },
-        },
-      };
-
-      const result = processor.process(character, "system.abilities.scores");
-      expect(result).toBe(8);
-    });
-  });
-
-  describe("CharacterSheetProcessor", () => {
-    let processor;
-
-    beforeEach(() => {
-      processor = new CharacterSheetProcessor();
-    });
-
-    it("should generate character sheet button HTML", () => {
-      const character = {
-        uuid: "Actor.123",
-        prototypeToken: {
-          texture: {
-            src: "path/to/token.png",
-          },
-          name: "Test Character",
-          rotation: 0,
-        },
-      };
-
-      const result = processor.process(character, "unused");
-
-      expect(mockSafeString).toHaveBeenCalledWith(
-        `<input type="image" data-action="onOpenActorSheet" name="fvtt-party-sheet-actorimage" data-actorid="Actor.123" class="token-image" src="path/to/token.png" title="Test Character" width="36" height="36" style="transform: rotate(0deg);"/>`,
-      );
-      expect(result.__isSafeString).toBe(true);
-    });
-
-    it("should handle character with rotation", () => {
-      const character = {
-        uuid: "Actor.456",
-        prototypeToken: {
-          texture: {
-            src: "path/to/rotated.png",
-          },
-          name: "Rotated Character",
-          rotation: 90,
-        },
-      };
-
-      const result = processor.process(character, "unused");
-
-      expect(mockSafeString).toHaveBeenCalledWith(expect.stringContaining("rotate(90deg)"));
-    });
-
-    it("should handle character without rotation", () => {
-      const character = {
-        uuid: "Actor.789",
-        prototypeToken: {
-          texture: {
-            src: "path/to/norotation.png",
-          },
-          name: "No Rotation Character",
-          // rotation is undefined
-        },
-      };
-
-      const result = processor.process(character, "unused");
-
-      expect(mockSafeString).toHaveBeenCalledWith(expect.stringContaining("rotate(0deg)"));
     });
   });
 });

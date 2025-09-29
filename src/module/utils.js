@@ -767,3 +767,13 @@ export function formatTemplateJson(jsonText) {
     };
   }
 }
+
+/**
+ * Generates HTML for a character sheet button given a character object.
+ * @param {*} character - The character object
+ * @returns {string}  HTML for character sheet button
+ */
+export function generateCharacterSheetImageFromCharacter(character) {
+  // @ts-ignore
+  return `<input type="image" data-action="onOpenActorSheet" name="fvtt-party-sheet-actorimage" data-actorid="${character.uuid}" class="token-image" src="${character.img}" title="${character.name}" width="36" height="36" />`;
+}
