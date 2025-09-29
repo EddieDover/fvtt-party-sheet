@@ -6,6 +6,7 @@ export default {
     "src/module/vendor/dompurify.es.js",
     "src/module/utils/dompurify-sanitizer.js",
     "index.js",
+    "test-mocks.js",
   ],
   coverageThreshold: {
     global: {

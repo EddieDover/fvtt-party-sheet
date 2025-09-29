@@ -1,12 +1,67 @@
 /* eslint-disable no-undef */
 // @ts-ignore
-export class HiddenCharactersSettings extends FormApplication {
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+export class HiddenCharactersSettings extends HandlebarsApplicationMixin(ApplicationV2) {
+  static _instance = null;
+
+  static DEFAULT_OPTIONS = {
+    tag: "form",
+    form: {
+      handler: HiddenCharactersSettings.formHandler,
+      submitOnChange: false,
+      closeOnSubmit: false,
+    },
+    window: {
+      title: "Configure Hidden Characters",
+      width: "auto",
+      height: "auto",
+    },
+    classes: ["fvtt-party-sheet-hidden-characters-settings"],
+    actions: {
+      onSubmit: HiddenCharactersSettings.onSubmit,
+      onReset: HiddenCharactersSettings.onReset,
+    },
+  };
+
+  static PARTS = {
+    form: {
+      template: "modules/fvtt-party-sheet/templates/hidden-characters.hbs",
+    },
+  };
+
+  static async formHandler(event, form, formData) {
+    event.preventDefault();
+    event.stopPropagation();
+    // Handle form submission logic here if needed
+  }
+
   constructor(overrides) {
     super();
     this.overrides = overrides || {};
+    // Store reference to this instance
+    HiddenCharactersSettings._instance = this;
   }
 
-  getData(options) {
+  static getInstance(overrides) {
+    // If an instance exists and is rendered, bring it to focus
+    if (HiddenCharactersSettings._instance && HiddenCharactersSettings._instance.rendered) {
+      HiddenCharactersSettings._instance.bringToTop();
+      return HiddenCharactersSettings._instance;
+    }
+    // Otherwise create a new instance
+    return new HiddenCharactersSettings(overrides);
+  }
+
+  close(options) {
+    // Clear the static reference when closing
+    if (HiddenCharactersSettings._instance === this) {
+      HiddenCharactersSettings._instance = null;
+    }
+    return super.close(options);
+  }
+
+  _prepareContext(options) {
     // @ts-ignore
     this.characterList = game.actors
       .filter((actor) => actor.type !== "npc")
@@ -18,30 +73,22 @@ export class HiddenCharactersSettings extends FormApplication {
     // @ts-ignore
     const enableOnlyOnline = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
 
-    // @ts-ignore
-    return foundry.utils.mergeObject(super.getData(options), {
+    return {
       characters: this.characterList,
       hiddenCharacters,
       enableOnlyOnline,
       overrides: this.overrides,
-    });
+    };
   }
 
-  static get defaultOptions() {
-    // @ts-ignore
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      id: "fvtt-party-sheet-hidden-characters-settings",
-      classes: ["form"],
-      title: "Configure Hidden Characters",
-      // resizable: true,
-      template: "modules/fvtt-party-sheet/templates/hidden-characters.hbs",
-      // @ts-ignore
-      width: "auto", // $(window).width() > 960 ? 960 : $(window).width() - 100,
-      height: "auto",
-    });
+  _onRender(context, options) {
+    super._onRender(context, options);
+    // Actions are automatically bound by ApplicationV2
   }
 
-  saveHiddenCharacters() {
+  saveHiddenCharacters(event) {
+    if (event) event.preventDefault();
+
     const hiddenCharacters = [];
     for (const character of this.characterList) {
       const checkbox = document.getElementById(`hidden-character-${character.uuid}`);
@@ -56,19 +103,25 @@ export class HiddenCharactersSettings extends FormApplication {
     if (closefunc) {
       closefunc();
     }
-    super.close();
+    // @ts-ignore
+    this.close();
   }
 
-  resetEffects() {
+  resetEffects(event) {
+    if (event) event.preventDefault();
     // @ts-ignore
-    this.refresh();
+    this.render();
   }
 
-  activateListeners(html) {
-    super.activateListeners(html);
+  static onSubmit(event, target) {
+    event.preventDefault();
     // @ts-ignore
-    $('button[name="submit"]', html).click(this.saveHiddenCharacters.bind(this));
+    this.saveHiddenCharacters(event);
+  }
+
+  static onReset(event, target) {
+    event.preventDefault();
     // @ts-ignore
-    $('button[name="reset"]', html).click(this.resetEffects.bind(this));
+    this.resetEffects(event);
   }
 }

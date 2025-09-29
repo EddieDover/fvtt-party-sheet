@@ -14,8 +14,8 @@ import {
 import { sanitizeHTML } from "../utils/dompurify-sanitizer.js";
 import { HiddenCharactersSettings } from "./hidden-characters-settings.js";
 import { ParserFactory } from "../parsing/parser-factory.js";
-import { TemplateProcessor } from "../parsing/template-processor.js";
-
+// @ts-ignore
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 const FEEDBACK_URL = "https://github.com/EddieDover/fvtt-party-sheet/issues/new/choose";
 const BUGREPORT_URL =
   "https://github.com/EddieDover/fvtt-party-sheet/issues/new?assignees=EddieDover&labels=bug&projects=&template=bug_report.yml&title=%5BBug%5D%3A+";
@@ -23,7 +23,49 @@ const DISCORD_URL = "https://discord.gg/mvMdc7bH2d";
 
 const DEFAULT_EXCLUDES = ["npc"];
 
-export class PartySheetForm extends FormApplication {
+export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
+  static DEFAULT_OPTIONS = {
+    tag: "form",
+    form: {
+      handler: PartySheetForm.formHandler,
+      submitOnChange: false,
+      closeOnSubmit: false,
+    },
+    window: {
+      title: "fvtt-party-sheet.section-title",
+      width: "auto",
+      height: "auto",
+    },
+    classes: ["fvtt-party-sheet"],
+    actions: {
+      onOpenOptions: PartySheetForm.onOpenOptions,
+      onCloseWindow: PartySheetForm.onCloseWindow,
+      onOpenActorSheet: PartySheetForm.onOpenActorSheet,
+      onFeedback: PartySheetForm.onFeedback,
+      onBugReport: PartySheetForm.onBugReport,
+      onDiscord: PartySheetForm.onDiscord,
+      onInstaller: PartySheetForm.onInstaller,
+    },
+  };
+
+  static PARTS = {
+    form: {
+      template: "modules/fvtt-party-sheet/templates/party-sheet.hbs",
+    },
+  };
+
+  static async formHandler(event, form, formData) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Handle form submission logic here
+    // For example, you can process the formData and update the application state
+    // console.log("Form submitted with data:", formData);
+
+    // Optionally, you can close the form after submission
+    // this.close();
+  }
+
   constructor(options = {}, postInstallCallback = async () => {}) {
     super();
     this._postInstallCallback = postInstallCallback;
@@ -184,6 +226,7 @@ export class PartySheetForm extends FormApplication {
   }
 
   // eslint-disable-next-line no-unused-vars
+  // @ts-ignore
   _updateObject(event, formData) {
     // Don't delete this function or FoundryVTT complains...
   }
@@ -201,7 +244,8 @@ export class PartySheetForm extends FormApplication {
     return getSelectedTemplate();
   }
 
-  getData(options) {
+  // @ts-ignore
+  _prepareContext(options, b, c) {
     // Reset dropdown counters at the beginning of each render cycle
     if (this.parserEngine && this.parserEngine.resetDropdownCounters) {
       this.parserEngine.resetDropdownCounters();
@@ -295,7 +339,7 @@ export class PartySheetForm extends FormApplication {
     });
 
     // @ts-ignore
-    return foundry.utils.mergeObject(super.getData(options), {
+    const payload = {
       minimalView,
       hiddenCharacters,
       enableOnlyOnline,
@@ -312,22 +356,9 @@ export class PartySheetForm extends FormApplication {
       currentSystemVersion: game.system.version,
       // @ts-ignore
       overrides: this.overrides,
-    });
-  }
+    };
 
-  static get defaultOptions() {
-    // @ts-ignore
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      id: "fvtt-party-sheet-party-sheet",
-      classes: ["form"],
-      // @ts-ignore
-      title: game.i18n.localize("fvtt-party-sheet.section-title"),
-      // resizable: true,
-      template: "modules/fvtt-party-sheet/templates/party-sheet.hbs",
-      // @ts-ignore
-      width: "auto", // $(window).width() > 960 ? 960 : $(window).width() - 100,
-      height: "auto", //$(window).height() > 800 ? 800 : $(window).height() - 100,
-    });
+    return payload;
   }
 
   /**
@@ -337,26 +368,14 @@ export class PartySheetForm extends FormApplication {
    * @param {boolean} [focus] - Whether to focus the form after rendering.
    */
   doRender(force = false, focus = false) {
-    const v13andUp = isVersionAtLeast(13);
-
     // Set a flag to indicate if this is a user-initiated action (force=true) or auto-refresh (force=false)
     this._isUserAction = force;
 
-    // Save dropdown states before rendering (if this is a re-render)
     // @ts-ignore
-    if (this.rendered && this.element) {
-      // @ts-ignore
-      this.saveDropdownStates(this.element);
-    }
-
-    if (v13andUp) {
-      this.render({
-        force,
-        focus,
-      });
-    } else {
-      this.render(force, { focus });
-    }
+    this.render({
+      force,
+      focus,
+    });
 
     // If installer is showing, ensure adequate window width after render
     if (this.showInstaller) {
@@ -371,6 +390,7 @@ export class PartySheetForm extends FormApplication {
    * @memberof PartySheetForm
    */
   _ensureInstallerWidth() {
+    // @ts-ignore
     if (!this.rendered || !this.showInstaller) return;
 
     try {
@@ -521,7 +541,7 @@ export class PartySheetForm extends FormApplication {
     return super.close();
   }
 
-  openOptions(event) {
+  static onOpenOptions(event) {
     event.preventDefault();
     const overrides = {
       onexit: () => {
@@ -530,22 +550,21 @@ export class PartySheetForm extends FormApplication {
         }, 350);
       },
     };
-    const hcs = new HiddenCharactersSettings(overrides);
+    const hcs = HiddenCharactersSettings.getInstance(overrides);
     // @ts-ignore
     hcs.render(true);
   }
 
-  closeWindow() {
+  static onCloseWindow() {
     // Clear the refresh timer when closing the window
     if (this.refreshTimer) {
       clearInterval(this.refreshTimer);
       this.refreshTimer = null;
     }
-    // @ts-ignore
     this.close();
   }
 
-  openActorSheet(event) {
+  static onOpenActorSheet(event) {
     event.preventDefault();
     const actorId = event.currentTarget.dataset.actorid;
     // @ts-ignore
@@ -553,7 +572,7 @@ export class PartySheetForm extends FormApplication {
     actor.sheet.render(true);
   }
 
-  changeSystem(event) {
+  static onChangeSystem(event) {
     const namedata = event.currentTarget.value.split("___");
     const selectedSystemName = namedata[0];
     const selectedSystemAuthor = namedata[1];
@@ -574,83 +593,84 @@ export class PartySheetForm extends FormApplication {
     this.doRender(true, false);
   }
 
-  activateListeners(html) {
-    super.activateListeners(html);
+  _onRender(context, options) {
+    super._onRender(context, options);
 
     // Start the refresh timer for periodic updates
     this.startRefreshTimer();
+    const sheetSelectDropdown = document.querySelector('select[name="fvtt-party-sheet-system"]');
 
-    // @ts-ignore
-    $('button[name="fvtt-party-sheet-options"]', html).click(this.openOptions.bind(this));
-    // @ts-ignore
-    $('button[name="fvtt-party-sheet-close"]', html).click(this.closeWindow.bind(this));
-    // @ts-ignore
-    $('input[name="fvtt-party-sheet-actorimage"]', html).click(this.openActorSheet.bind(this));
-    // @ts-ignore
-    $('select[name="fvtt-party-sheet-system"]', html)
-      .on("mousedown", (event) => {
-        // User is starting to interact with template dropdown (opening it)
-        console.log("fvtt-party-sheet | Template selector interaction started");
-        this.isDropdownInteracting = true;
-      })
-      .on("change", this.changeSystem.bind(this))
-      .on("blur", (event) => {
-        // Template selector lost focus without selection (clicked elsewhere)
-        setTimeout(() => {
-          this.isDropdownInteracting = false;
-        }, 50);
-      });
-    // @ts-ignore
-    $('button[name="feedback"]', html).click(this.onFeedback.bind(this));
-    // @ts-ignore
-    $('button[name="bugreport"]', html).click(this.onBugReport.bind(this));
-    // @ts-ignore
-    $('button[name="discord"]', html).click(this.onDiscord.bind(this));
-    // @ts-ignore
-    $('button[name="installer"]', html).click(this.onInstaller.bind(this));
-    // @ts-ignore
-    $('button[class="fvtt-party-sheet-module-preview-button"]').click((event) => {
-      const modulepath = event.currentTarget.dataset.modulepath;
-      // Construct the Application instance
-      // @ts-ignore
-      const ip = new ImagePopout(
-        `https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/${modulepath}`,
-      );
-
-      // Display the image popout
-      ip.render(true);
+    sheetSelectDropdown?.addEventListener("change", PartySheetForm.onChangeSystem.bind(this));
+    sheetSelectDropdown?.addEventListener("blur", (event) => {
+      // Template selector lost focus without selection (clicked elsewhere)
+      setTimeout(() => {
+        this.isDropdownInteracting = false;
+      }, 50);
     });
-    // @ts-ignore
-    $('button[class="fvtt-party-sheet-module-install-button"]').click(async (event) => {
-      // Check if the button is disabled
-      if (event.currentTarget.disabled) {
-        return;
-      }
+    sheetSelectDropdown?.addEventListener("mousedown", (event) => {
+      // User is starting to interact with template dropdown (opening it)
+      console.log("fvtt-party-sheet | Template selector interaction started");
+      this.isDropdownInteracting = true;
+    });
 
-      const dataModuleTemplatePath = event.currentTarget.dataset.modulepath;
-      const dataModuleTemplateFilename = dataModuleTemplatePath.split("/").pop();
-      const dataModuleTemplateFolder = dataModuleTemplatePath.split("/").slice(0, -1).join("/") + "/";
-      // @ts-ignore
-      const fileContents = JSON.parse(
-        await fetch(`${dataModuleTemplateFolder}${dataModuleTemplateFilename}`).then((r) => r.text()),
-      );
-      const fileObject = new File([JSON.stringify(fileContents)], dataModuleTemplateFilename, {
-        type: "application/json",
+    sheetSelectDropdown?.addEventListener("mousedown", (event) => {
+      // User is starting to interact with template dropdown (opening it)
+      console.log("fvtt-party-sheet | Template selector interaction started");
+      this.isDropdownInteracting = true;
+    });
+
+    document.querySelectorAll('button[class="fvtt-party-sheet-feedback-button"]').forEach((button) => {
+      button.addEventListener("click", PartySheetForm.onFeedback.bind(this));
+    });
+
+    document.querySelectorAll('button[class="fvtt-party-sheet-module-preview-button"]').forEach((button) => {
+      button.addEventListener("click", (event) => {
+        const modulepath = event.currentTarget.dataset.modulepath;
+        // Construct the Application instance
+        // @ts-ignore
+        const ip = new ImagePopout(
+          `https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/${modulepath}`,
+        );
+
+        // Display the image popout
+        ip.render(true);
       });
-      // @ts-ignore
-      await FilePicker.upload("data", "partysheets", fileObject);
-      await this._postInstallCallback();
-      this.label = "Installed";
     });
 
     // @ts-ignore
-    $('select[class="fvtt-party-sheet-dropdown"]', html)
-      .on("mousedown", (event) => {
+    const installButtons = document.querySelectorAll('button[class="fvtt-party-sheet-module-install-button"]');
+    installButtons.forEach((button) => {
+      button.addEventListener("click", async (event) => {
+        // Check if the button is disabled
+        if (event.currentTarget.disabled) {
+          return;
+        }
+
+        const dataModuleTemplatePath = event.currentTarget.dataset.modulepath;
+        const dataModuleTemplateFilename = dataModuleTemplatePath.split("/").pop();
+        const dataModuleTemplateFolder = dataModuleTemplatePath.split("/").slice(0, -1).join("/") + "/";
+        // @ts-ignore
+        const fileContents = JSON.parse(
+          await fetch(`${dataModuleTemplateFolder}${dataModuleTemplateFilename}`).then((r) => r.text()),
+        );
+        const fileObject = new File([JSON.stringify(fileContents)], dataModuleTemplateFilename, {
+          type: "application/json",
+        });
+        // @ts-ignore
+        await foundry.applications.apps.FilePicker.implementation.upload("data", "partysheets", fileObject);
+        await this._postInstallCallback();
+        this.label = "Installed";
+      });
+    });
+
+    const allDropdowns = document.querySelectorAll('select[class="fvtt-party-sheet-dropdown"]');
+    allDropdowns.forEach((dropdown) => {
+      dropdown.addEventListener("mousedown", (event) => {
         // User is starting to interact with dropdown (opening it)
         console.log("fvtt-party-sheet | Dropdown interaction started");
         this.isDropdownInteracting = true;
-      })
-      .on("change", (event) => {
+      });
+      dropdown.addEventListener("change", (event) => {
         const dropdownSection = event.currentTarget.dataset.dropdownsection;
         const dropdownValue = event.currentTarget.value;
 
@@ -660,48 +680,59 @@ export class PartySheetForm extends FormApplication {
         }
 
         // @ts-ignore
-        $(`div[data-dropdownsection="${dropdownSection}"]`).hide();
+        document
+          .querySelectorAll(`div[data-dropdownsection="${dropdownSection}"]`)
+          .forEach((div) => (div.style.display = "none"));
 
         // @ts-ignore
-        $(`div[data-dropdownsection="${dropdownSection}"][data-dropdownoption="${dropdownValue}"]`).show();
+        document
+          .querySelectorAll(`div[data-dropdownsection="${dropdownSection}"][data-dropdownoption="${dropdownValue}"]`)
+          .forEach((div) => (div.style.display = "block"));
 
         // User made a selection, they're done interacting
         // Small delay to allow the selection to complete
         setTimeout(() => {
           this.isDropdownInteracting = false;
         }, 50);
-      })
-      .on("blur", (event) => {
+      });
+      dropdown.addEventListener("blur", (event) => {
         // Dropdown lost focus without selection (clicked elsewhere)
         setTimeout(() => {
           this.isDropdownInteracting = false;
         }, 50);
       });
+    });
   }
 
-  onFeedback(event) {
+  static onFeedback(event) {
     event.preventDefault();
     const newWindow = window.open(FEEDBACK_URL, "_blank", "noopener,noreferrer");
     if (newWindow) newWindow.opener = undefined;
   }
 
-  onBugReport(event) {
+  static onBugReport(event) {
     event.preventDefault();
     const newWindow = window.open(BUGREPORT_URL, "_blank", "noopener,noreferrer");
     if (newWindow) newWindow.opener = undefined;
   }
 
-  onDiscord(event) {
+  static onDiscord(event) {
     event.preventDefault();
     const newWindow = window.open(DISCORD_URL, "_blank", "noopener,noreferrer");
     if (newWindow) newWindow.opener = undefined;
   }
 
-  onInstaller(event) {
+  static onInstaller(event) {
     event.preventDefault();
-    this.showInstaller = true;
-    this._openingInstaller = true; // Flag to prevent immediate closure
 
+    // In ApplicationV2, 'this' in static action handlers refers to the instance
+    // Toggle the installer view - if it's showing, hide it; if hidden, show it
+    // @ts-ignore
+    this.showInstaller = !this.showInstaller;
+    // @ts-ignore
+    this._openingInstaller = this.showInstaller; // Only flag as opening if we're showing it
+
+    // @ts-ignore
     this.doRender(true, false);
   }
 }
