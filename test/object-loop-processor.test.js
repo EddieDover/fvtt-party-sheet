@@ -404,6 +404,176 @@ describe("ObjectLoopProcessor", () => {
 
       expect(result).toBe("parsed_text");
     });
+
+    describe("string matching operators", () => {
+      it("should filter using contains operator", () => {
+        const character = {
+          stats: {
+            str: { name: "Strength", rollLabel: "Strength Check" },
+            strSave: { name: "Strength", rollLabel: "Strength Save" },
+            dex: { name: "Dexterity", rollLabel: "Dexterity Check" },
+          },
+        };
+
+        const result = processor.process(character, "stats{rollLabel contains 'Save'} => {name}: {rollLabel}{nl}");
+
+        expect(result).toBe("parsed_text");
+        expect(mockParserEngine.parseText).toHaveBeenCalled();
+      });
+
+      it("should filter using !contains operator", () => {
+        const character = {
+          stats: {
+            str: { name: "Strength", rollLabel: "Strength Check" },
+            strSave: { name: "Strength", rollLabel: "Strength Save" },
+            dex: { name: "Dexterity", rollLabel: "Dexterity Check" },
+          },
+        };
+
+        const result = processor.process(character, "stats{rollLabel !contains 'Save'} => {name}: {rollLabel}{nl}");
+
+        expect(result).toBe("parsed_text");
+        expect(mockParserEngine.parseText).toHaveBeenCalled();
+      });
+
+      it("should filter using startsWith operator", () => {
+        const character = {
+          stats: {
+            str: { name: "Strength", rollLabel: "Strength Check" },
+            arm: { name: "Armor", rollLabel: "Armor Save" },
+            dex: { name: "Dexterity", rollLabel: "Dexterity Check" },
+          },
+        };
+
+        const result = processor.process(character, "stats{rollLabel startsWith 'Armor'} => {name}: {rollLabel}{nl}");
+
+        expect(result).toBe("parsed_text");
+        expect(mockParserEngine.parseText).toHaveBeenCalled();
+      });
+
+      it("should filter using endsWith operator", () => {
+        const character = {
+          stats: {
+            str: { name: "Strength", rollLabel: "Strength Check" },
+            strSave: { name: "Strength", rollLabel: "Strength Save" },
+            dex: { name: "Dexterity", rollLabel: "Dexterity Check" },
+          },
+        };
+
+        const result = processor.process(character, "stats{rollLabel endsWith 'Check'} => {name}: {rollLabel}{nl}");
+
+        expect(result).toBe("parsed_text");
+        expect(mockParserEngine.parseText).toHaveBeenCalled();
+      });
+    });
+
+    describe("comparison operators", () => {
+      it("should filter using == operator", () => {
+        const character = {
+          stats: {
+            str: { name: "Strength", value: 18 },
+            dex: { name: "Dexterity", value: 14 },
+            con: { name: "Constitution", value: 18 },
+          },
+        };
+
+        const result = processor.process(character, "stats{value == 18} => {name}: {value}{nl}");
+
+        expect(result).toBe("parsed_text");
+        expect(mockParserEngine.parseText).toHaveBeenCalled();
+      });
+
+      it("should filter using != operator", () => {
+        const character = {
+          stats: {
+            str: { name: "Strength", value: 18 },
+            dex: { name: "Dexterity", value: 14 },
+            con: { name: "Constitution", value: 16 },
+          },
+        };
+
+        const result = processor.process(character, "stats{value != 18} => {name}: {value}{nl}");
+
+        expect(result).toBe("parsed_text");
+        expect(mockParserEngine.parseText).toHaveBeenCalled();
+      });
+
+      it("should filter using > operator", () => {
+        const character = {
+          stats: {
+            str: { name: "Strength", value: 18 },
+            dex: { name: "Dexterity", value: 14 },
+            con: { name: "Constitution", value: 16 },
+          },
+        };
+
+        const result = processor.process(character, "stats{value > 15} => {name}: {value}{nl}");
+
+        expect(result).toBe("parsed_text");
+        expect(mockParserEngine.parseText).toHaveBeenCalled();
+      });
+
+      it("should filter using < operator", () => {
+        const character = {
+          stats: {
+            str: { name: "Strength", value: 18 },
+            dex: { name: "Dexterity", value: 14 },
+            con: { name: "Constitution", value: 16 },
+          },
+        };
+
+        const result = processor.process(character, "stats{value < 15} => {name}: {value}{nl}");
+
+        expect(result).toBe("parsed_text");
+        expect(mockParserEngine.parseText).toHaveBeenCalled();
+      });
+
+      it("should filter using >= operator", () => {
+        const character = {
+          stats: {
+            str: { name: "Strength", value: 18 },
+            dex: { name: "Dexterity", value: 14 },
+            con: { name: "Constitution", value: 16 },
+          },
+        };
+
+        const result = processor.process(character, "stats{value >= 16} => {name}: {value}{nl}");
+
+        expect(result).toBe("parsed_text");
+        expect(mockParserEngine.parseText).toHaveBeenCalled();
+      });
+
+      it("should filter using <= operator", () => {
+        const character = {
+          stats: {
+            str: { name: "Strength", value: 18 },
+            dex: { name: "Dexterity", value: 14 },
+            con: { name: "Constitution", value: 16 },
+          },
+        };
+
+        const result = processor.process(character, "stats{value <= 16} => {name}: {value}{nl}");
+
+        expect(result).toBe("parsed_text");
+        expect(mockParserEngine.parseText).toHaveBeenCalled();
+      });
+    });
+
+    describe("backwards compatibility", () => {
+      it("should still support legacy type filter syntax", () => {
+        const character = {
+          items: [
+            { name: "Sword", type: "weapon" },
+            { name: "Potion", type: "consumable" },
+          ],
+        };
+
+        const result = processor.process(character, "items{weapon} => {name}");
+
+        expect(result).toBe("parsed_text");
+        expect(mockParserEngine.parseText).toHaveBeenCalled();
+      });
+    });
   });
 
   describe("error handling", () => {

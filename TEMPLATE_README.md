@@ -336,7 +336,7 @@ Returns the largest numeric value from the specified array or object.
 {
   "name": "Classes",
   "type": "object-loop",
-  "header": "show", 
+  "header": "show",
   "text": "classes => {i}{name}{/i} {b}{level}{/b} {newline}"
 }
 ```
@@ -353,11 +353,44 @@ This processes an object like:
 
 Output: _Cleric_ **1**<br>_Rogue_ **1**
 
+**Filtering Options:**
+
+Object loops support powerful filtering to show only items that match specific conditions:
+
+**String Matching Filters:**
+- **contains** - Check if property contains a substring: `stats{rollLabel contains 'Save'} => {name}: {value}{nl}`
+- **!contains** - Check if property doesn't contain a substring: `stats{rollLabel !contains 'Check'} => {name}: {value}{nl}`
+- **startsWith** - Check if property starts with text: `stats{rollLabel startsWith 'Armor'} => {name}: {value}{nl}`
+- **endsWith** - Check if property ends with text: `stats{rollLabel endsWith 'Save'} => {name}: {value}{nl}`
+
+**Comparison Filters:**
+- **==** - Equal to: `stats{value == 18} => {name}: {value}{nl}`
+- **!=** - Not equal to: `stats{value != 0} => {name}: {value}{nl}`
+- **>** - Greater than: `stats{value > 15} => {name}: {value}{nl}`
+- **<** - Less than: `stats{value < 10} => {name}: {value}{nl}`
+- **>=** - Greater than or equal: `stats{value >= 16} => {name}: {value}{nl}`
+- **<=** - Less than or equal: `stats{value <= 12} => {name}: {value}{nl}`
+
+**Legacy Filter (for backwards compatibility):**
+- Simple type matching: `items{weapon} => {name}` (filters where `type === 'weapon'`)
+
+**Filter Examples:**
+```json
+{
+  "name": "Stats",
+  "type": "object-loop",
+  "header": "show",
+  "text": "system.stats{rollLabel contains 'Save'} => {label}: {value}{+}{mod}{nl}"
+}
+```
+
+This filters the stats object to only show items where `rollLabel` contains the word 'Save', such as "Strength Save" or "Armor Save", excluding "Strength Check" entries.
+
 **Multiple Loops with Filtering:**
 ```json
 {
   "name": "Equipment",
-  "type": "object-loop", 
+  "type": "object-loop",
   "header": "show",
   "text": "{u}Talents:{/u}{nl} items{talent} => {name} {nl} || {u}Weapons:{/u}{nl} items{starshipweapon} => {name} Damage: {b}{system.damage}{/b}{nl} || {u}Other:{/u}{nl} items{item} => {name} {nl}"
 }
@@ -371,7 +404,17 @@ Prefix with `{dropdown}` to create a dropdown selector for viewing different sec
 "text": "{dropdown} {u}Talents:{/u}{nl} items{talent} => {name} {nl} || {u}Weapons:{/u}{nl} items{weapon} => {name} {nl}"
 ```
 
-**Syntax:** `objectname{filter} => {property}` where properties are automatically processed with brace notation.
+**Prefix Text:**
+
+You can add prefix text to each loop section by wrapping it in brackets:
+
+```json
+"text": "[Weapons] items{weapon} => {name}{nl}"
+```
+
+This will display "Weapons" before the looped items.
+
+**Syntax:** `[Prefix] objectname{filter} => {property}` where properties are automatically processed with brace notation.
 
 ### Table Layout Control
 

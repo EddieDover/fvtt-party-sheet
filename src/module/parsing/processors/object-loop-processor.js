@@ -56,9 +56,9 @@ export class ObjectLoopProcessor extends DataProcessor {
         if (isDropdown) {
           // Extract filter for successful chunks only
           let objName = chunk.split("=>")[0].trim();
-          const findPrefixMatches = objName.match(/^(.*)\s/);
+          const findPrefixMatches = objName.match(/^(\[[^\]]+\])\s+/);
           if (findPrefixMatches?.length) {
-            objName = objName.replace(findPrefixMatches[1].trim(), "").trim();
+            objName = objName.replace(findPrefixMatches[0], "").trim();
           }
 
           let objFilter = null;
@@ -101,11 +101,11 @@ export class ObjectLoopProcessor extends DataProcessor {
     let prefix = "";
     let objName = chunk.split("=>")[0].trim();
 
-    // Extract prefix if present
-    const findPrefixMatches = objName.match(/^(.*)\s/);
+    // Extract prefix if present (must be in brackets like [Prefix])
+    const findPrefixMatches = objName.match(/^(\[[^\]]+\])\s+/);
     if (findPrefixMatches?.length) {
       prefix = findPrefixMatches[1].trim();
-      objName = objName.replace(prefix, "").trim();
+      objName = objName.replace(findPrefixMatches[0], "").trim();
     }
 
     // Extract filter if present
@@ -128,7 +128,7 @@ export class ObjectLoopProcessor extends DataProcessor {
 
     // Apply filter if specified
     if (objFilter) {
-      loopData = loopData.filter((data) => data.type === objFilter);
+      loopData = loopData.filter((data) => this.evaluateFilter(data, objFilter));
     }
 
     if (loopData.length === 0) {
@@ -138,6 +138,114 @@ export class ObjectLoopProcessor extends DataProcessor {
     // Process template replacements
     const output = TemplateProcessor.processTemplateWithArray(actualValue, loopData);
     return { success: true, output, prefix };
+  }
+
+  /**
+   * Evaluate a filter expression against data object
+   * @param {any} data - The data object to evaluate
+   * @param {string} filterExpression - The filter expression (e.g., "rollLabel contains 'Save'")
+   * @returns {boolean} True if the filter passes
+   */
+  evaluateFilter(data, filterExpression) {
+    console.log(data, filterExpression);
+    // Parse the filter expression
+    // Supported operators: contains, !contains, startsWith, endsWith, ==, !=, >, <, >=, <=
+
+    // Try string matching operators first (they have spaces)
+    const containsMatch = filterExpression.match(/^(.+?)\s+contains\s+['"](.+)['"]$/);
+    if (containsMatch) {
+      const [, property, value] = containsMatch;
+      const propValue = this.getPropertyValue(data, property.trim());
+      return propValue != null && String(propValue).includes(value);
+    }
+
+    const notContainsMatch = filterExpression.match(/^(.+?)\s+!contains\s+['"](.+)['"]$/);
+    if (notContainsMatch) {
+      const [, property, value] = notContainsMatch;
+      const propValue = this.getPropertyValue(data, property.trim());
+      return propValue == null || !String(propValue).includes(value);
+    }
+
+    const startsWithMatch = filterExpression.match(/^(.+?)\s+startsWith\s+['"](.+)['"]$/);
+    if (startsWithMatch) {
+      const [, property, value] = startsWithMatch;
+      const propValue = this.getPropertyValue(data, property.trim());
+      return propValue != null && String(propValue).startsWith(value);
+    }
+
+    const endsWithMatch = filterExpression.match(/^(.+?)\s+endsWith\s+['"](.+)['"]$/);
+    if (endsWithMatch) {
+      const [, property, value] = endsWithMatch;
+      const propValue = this.getPropertyValue(data, property.trim());
+      return propValue != null && String(propValue).endsWith(value);
+    }
+
+    // Try comparison operators
+    const comparisonMatch = filterExpression.match(/^(.+?)\s*(==|!=|>=|<=|>|<)\s*(.+)$/);
+    if (comparisonMatch) {
+      const [, property, operator, value] = comparisonMatch;
+      const propValue = this.getPropertyValue(data, property.trim());
+      const compareValue = this.parseValue(value.trim());
+
+      switch (operator) {
+        case "==":
+          return propValue == compareValue;
+        case "!=":
+          return propValue != compareValue;
+        case ">":
+          return Number(propValue) > Number(compareValue);
+        case "<":
+          return Number(propValue) < Number(compareValue);
+        case ">=":
+          return Number(propValue) >= Number(compareValue);
+        case "<=":
+          return Number(propValue) <= Number(compareValue);
+        default:
+          return false;
+      }
+    }
+
+    // Fallback to legacy simple equality filter for backwards compatibility
+    // This handles filters like {weapon} where it checks data.type === 'weapon'
+    return data.type === filterExpression;
+  }
+
+  /**
+   * Get a property value from an object using dot notation or direct access
+   * @param {any} obj - The object to extract from
+   * @param {string} property - The property path (e.g., "rollLabel" or "system.level")
+   * @returns {any} The property value
+   */
+  getPropertyValue(obj, property) {
+    if (property.includes(".")) {
+      return extractPropertyByString(obj, property);
+    }
+    return obj[property];
+  }
+
+  /**
+   * Parse a value string to its appropriate type
+   * @param {string} value - The value to parse
+   * @returns {any} The parsed value
+   */
+  parseValue(value) {
+    // Remove quotes if present
+    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      return value.slice(1, -1);
+    }
+
+    // Try to parse as number
+    const num = Number(value);
+    if (!isNaN(num)) {
+      return num;
+    }
+
+    // Try to parse as boolean
+    if (value === "true") return true;
+    if (value === "false") return false;
+
+    // Return as string
+    return value;
   }
 
   /**
@@ -158,6 +266,7 @@ export class ObjectLoopProcessor extends DataProcessor {
 
   /**
    * Create dropdown HTML from keys and strings
+   * @param {number} dropdownIndex - The index of the dropdown
    * @param {Array} dropdownKeys - The dropdown keys
    * @param {Array} finStrs - The processed strings
    * @returns {string} Dropdown HTML
