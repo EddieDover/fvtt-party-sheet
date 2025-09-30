@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-shadow
 import { jest } from "@jest/globals";
 import { ObjectLoopProcessor } from "../src/module/parsing/processors/object-loop-processor.js";
 import { setupFoundryMocks, cleanupFoundryMocks, createConsoleMocks } from "./test-mocks.js";
@@ -444,7 +445,10 @@ describe("ObjectLoopProcessor", () => {
 
         const result = processor.process(character, "stats{rollLabel !contains 'Save'} => {name}: {rollLabel}{nl}");
 
-        expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Strength: Strength Check{nl} Dexterity: Dexterity Check{nl}", false);
+        expect(mockParserEngine.parseText).toHaveBeenCalledWith(
+          " Strength: Strength Check{nl} Dexterity: Dexterity Check{nl}",
+          false,
+        );
         expect(result).toBe("parsed_text");
       });
 
@@ -474,7 +478,10 @@ describe("ObjectLoopProcessor", () => {
 
         const result = processor.process(character, "stats{rollLabel endsWith 'Check'} => {name}: {rollLabel}{nl}");
 
-        expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Strength: Strength Check{nl} Dexterity: Dexterity Check{nl}", false);
+        expect(mockParserEngine.parseText).toHaveBeenCalledWith(
+          " Strength: Strength Check{nl} Dexterity: Dexterity Check{nl}",
+          false,
+        );
         expect(result).toBe("parsed_text");
       });
     });

@@ -120,7 +120,7 @@
         "valign": "top",
         "maxwidth": 90,
         "header": "show",
-        "text": "statuses => value, "
+        "text": "statuses => {value}, "
       }
     ]
   ]

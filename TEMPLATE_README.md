@@ -312,7 +312,7 @@ The direct-complex type provides conditional logic for displaying data based on 
 
 This processes arrays like `["burning", "bleeding", "prone"]` into formatted output: "burning, bleeding, prone, "
 
-**Syntax:** `arrayname => {property}` where properties are automatically processed with brace notation.
+**Syntax:** `arrayname => {property}` where all properties must be enclosed in braces `{}`. Use `{value}` to reference the array item itself, or `{propertyName}` to reference object properties.
 
 **largest-from-array / smallest-from-array** - Extract min/max values:
 

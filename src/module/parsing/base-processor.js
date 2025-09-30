@@ -28,4 +28,9 @@ export class DataProcessor {
       throw new Error("Value parameter is required");
     }
   }
+
+  // abstract method to be implemented by subclasses
+  resetDropdownCounter() {
+    throw new Error("resetDropdownCounter method must be implemented by subclass if used");
+  }
 }

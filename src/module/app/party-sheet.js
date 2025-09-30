@@ -59,7 +59,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
   };
 
   // @ts-ignore
-  static async formHandler(event, form, formData) {
+  static formHandler(event, form, formData) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -384,9 +384,9 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
    * Render the sheet
    * @memberof PartySheetForm
    * @param {boolean} [force] - Whether to force re-rendering the form.
-   * @param {boolean} [focus] - Whether to focus the form after rendering.
+   * @param {boolean} [hasFocus] - Whether to focus the form after rendering.
    */
-  doRender(force = false, focus = false) {
+  doRender(force = false, hasFocus = false) {
     // Set a flag to indicate if this is a user-initiated action (force=true) or auto-refresh (force=false)
     this._isUserAction = force;
 
@@ -443,6 +443,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * Save the current state of all dropdowns
    * @memberof PartySheetForm
+   * @param {HTMLElement} html - The HTML element to search within
    */
   saveDropdownStates(html) {
     // @ts-ignore
@@ -468,6 +469,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * Restore the saved state of all dropdowns
    * @memberof PartySheetForm
+   * @param {HTMLElement} html - The HTML element to search within
    */
   restoreDropdownStates(html) {
     // @ts-ignore
@@ -513,7 +515,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /**
    * Check if the user is currently interacting with dropdowns
-   * @returns {boolean}
+   * @returns {boolean} True if user is interacting, false otherwise
    * @memberof PartySheetForm
    */
   isUserInteractingWithDropdowns() {
@@ -523,6 +525,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * Ensure dropdown select elements have the correct values set
    * @memberof PartySheetForm
+   * @param {HTMLElement} html - The HTML element to search within
    */
   ensureDropdownSelectValues(html) {
     // @ts-ignore
@@ -554,7 +557,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
    * @returns {Promise<void>}
    * @memberof PartySheetForm
    */
-  async close() {
+  close() {
     // Clear the refresh timer when closing
     if (this.refreshTimer) {
       clearInterval(this.refreshTimer);
@@ -622,7 +625,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /**
    * Update all active party sheet instances with preview template
-   * @param {Object} previewTemplate - The template data to use for preview
+   * @param {object} previewTemplate - The template data to use for preview
    */
   static updateAllInstancesWithPreview(previewTemplate) {
     for (const instance of PartySheetForm._activeInstances) {

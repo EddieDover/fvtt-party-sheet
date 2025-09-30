@@ -176,7 +176,7 @@
         "align": "left",
         "maxwidth": 110,
         "header": "show",
-        "text": "statuses => value, "
+        "text": "statuses => {value}, "
       }
     ]
   ]

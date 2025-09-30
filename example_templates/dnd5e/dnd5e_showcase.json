@@ -222,13 +222,13 @@
         "name": "Languages",
         "type": "array-string-builder",
         "header": "show",
-        "text": "system.traits.languages.value => value, "
+        "text": "system.traits.languages.value => {value}, "
       },
       {
         "name": "Tools",
         "type": "array-string-builder",
         "header": "show",
-        "text": "system.tools => name, "
+        "text": "system.tools => {name}, "
       },
       {
         "name": "Background",
@@ -307,7 +307,7 @@
         "name": "Cantrips",
         "type": "array-string-builder",
         "header": "show",
-        "text": "system.spells.cantrip => name, "
+        "text": "system.spells.cantrip => {name}, "
       },
       {
         "name": "Skills",

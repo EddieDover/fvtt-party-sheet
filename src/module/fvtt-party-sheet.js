@@ -495,6 +495,7 @@ Handlebars.registerHelper("systemVersionBelowMin", function (minVersion, options
  * @param {PartySheetRenderOptions} [options] - Additional Options
  */
 function togglePartySheet(options = {}) {
+  // @ts-ignore
   if (currentPartySheet?.rendered) {
     currentPartySheet.close();
   } else {
@@ -519,6 +520,7 @@ function togglePartySheet(options = {}) {
  * Refreshes the party sheet
  */
 function refreshSheet() {
+  // @ts-ignore
   if (currentPartySheet?.rendered) {
     try {
       // Check if user is currently interacting with dropdowns
@@ -687,6 +689,7 @@ Hooks.on("renderPlayerList", () => {
   if (!game.user.isGM || !showOnlyOnlineUsers) {
     return;
   }
+  // @ts-ignore
   if (currentPartySheet?.rendered) {
     currentPartySheet.doRender(true);
   }

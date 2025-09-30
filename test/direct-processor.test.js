@@ -1,5 +1,7 @@
+// eslint-disable-next-line no-shadow
 import { jest } from "@jest/globals";
 import { DirectProcessor } from "../src/module/parsing/processors/direct-processor.js";
+import { ParserEngine } from "../src/module/parsing/parser-engine.js";
 import { setupFoundryMocks, cleanupFoundryMocks, createConsoleMocks } from "./test-mocks.js";
 
 // Mock Handlebars SafeString
@@ -10,19 +12,15 @@ global.Handlebars = {
 
 describe("DirectProcessor", () => {
   let processor;
-  let mockParserEngine;
+  let parserEngine;
   let consoleMocks;
 
   beforeEach(() => {
     setupFoundryMocks();
     consoleMocks = createConsoleMocks();
 
-    // Mock parser engine
-    mockParserEngine = {
-      parseText: jest.fn().mockReturnValue([false, "parsed_text"]),
-    };
-
-    processor = new DirectProcessor(mockParserEngine);
+    parserEngine = new ParserEngine();
+    processor = new DirectProcessor(parserEngine);
     jest.clearAllMocks();
   });
 
@@ -37,43 +35,40 @@ describe("DirectProcessor", () => {
 
       const result = processor.process(character, "Character: {name}");
 
-      expect(result).toBe("parsed_text");
-      // The template processor should replace {name} with actual value
-      expect(mockParserEngine.parseText).toHaveBeenCalledWith("Character: Test Character", false);
+      expect(result).toBe("Character: Test Character");
     });
 
     it("should handle character sheet token replacement", () => {
       const character = {
         uuid: "Actor.123",
-        prototypeToken: {
-          texture: { src: "path/to/token.png" },
-          name: "Test Token",
-          rotation: 45,
-        },
+        img: "path/to/token.png",
+        name: "Test Token",
       };
-
-      mockParserEngine.parseText.mockReturnValue([true, "<input>token</input>"]);
 
       const result = processor.process(character, "Token: {charactersheet}");
 
-      expect(mockSafeString).toHaveBeenCalledWith("<input>token</input>");
+      // Result is a SafeString object, check its content
+      expect(mockSafeString).toHaveBeenCalled();
       expect(result.__isSafeString).toBe(true);
+      expect(result.content).toContain('<input type="image"');
+      expect(result.content).toContain("path/to/token.png");
+      expect(result.content).toContain("Test Token");
+      expect(result.content).toContain("Actor.123");
     });
 
-    it("should handle character sheet token without rotation", () => {
+    it("should handle character sheet token with basic data", () => {
       const character = {
         uuid: "Actor.456",
-        prototypeToken: {
-          texture: { src: "path/to/token.png" },
-          name: "Test Token",
-          // rotation is undefined
-        },
+        img: "path/to/token.png",
+        name: "Test Token",
       };
 
       const result = processor.process(character, "{charactersheet}");
 
-      // Should default rotation to 0
-      expect(result).toBe("parsed_text");
+      // Result is a SafeString object
+      expect(result.__isSafeString).toBe(true);
+      expect(result.content).toContain('<input type="image"');
+      expect(result.content).toContain("Actor.456");
     });
   });
 
@@ -84,7 +79,7 @@ describe("DirectProcessor", () => {
 
       const result = processor.process(character, "{score}", options);
 
-      expect(result).toBe("parsed_text");
+      expect(result).toBe("+15");
     });
 
     it("should not modify value when showSign option is false", () => {
@@ -93,7 +88,7 @@ describe("DirectProcessor", () => {
 
       const result = processor.process(character, "{score}", options);
 
-      expect(result).toBe("parsed_text");
+      expect(result).toBe("15");
     });
 
     it("should handle empty options object", () => {
@@ -101,7 +96,7 @@ describe("DirectProcessor", () => {
 
       const result = processor.process(character, "{name}", {});
 
-      expect(result).toBe("parsed_text");
+      expect(result).toBe("Test");
     });
   });
 
@@ -109,18 +104,15 @@ describe("DirectProcessor", () => {
     it("should return SafeString when HTML content is detected", () => {
       const character = { name: "Test" };
 
-      mockParserEngine.parseText.mockReturnValue([true, "<b>Test</b>"]);
-
       const result = processor.process(character, "<b>{name}</b>");
 
-      expect(mockSafeString).toHaveBeenCalledWith("<b>Test</b>");
-      expect(result.__isSafeString).toBe(true);
+      // HTML content alone doesn't trigger SafeString - only {charactersheet} does
+      expect(result).toBe("<b>Test</b>");
+      expect(mockSafeString).not.toHaveBeenCalled();
     });
 
     it("should return plain text when SafeString not needed", () => {
       const character = { name: "Test" };
-
-      mockParserEngine.parseText.mockReturnValue([false, "Test"]);
 
       const result = processor.process(character, "{name}");
 
@@ -129,19 +121,21 @@ describe("DirectProcessor", () => {
     });
 
     it("should handle SafeString creation when Handlebars is undefined", () => {
-      const character = { name: "Test" };
+      const character = {
+        uuid: "Actor.123",
+        img: "test.png",
+        name: "Test",
+      };
 
       // Temporarily remove Handlebars
       const originalHandlebars = global.Handlebars;
       delete global.Handlebars;
 
-      mockParserEngine.parseText.mockReturnValue([true, "<b>Test</b>"]);
-
-      const result = processor.process(character, "<b>{name}</b>");
+      const result = processor.process(character, "{charactersheet}");
 
       // Should return SafeString-like object
       expect(result.toString).toBeDefined();
-      expect(result.string).toBe("<b>Test</b>");
+      expect(result.string).toContain('<input type="image"');
 
       // Restore Handlebars
       global.Handlebars = originalHandlebars;
@@ -197,34 +191,30 @@ describe("DirectProcessor", () => {
     it("should handle multiple character sheet tokens", () => {
       const character = {
         uuid: "Actor.123",
-        prototypeToken: {
-          texture: { src: "token.png" },
-          name: "Test",
-          rotation: 0,
-        },
+        img: "token.png",
+        name: "Test",
       };
 
       const result = processor.process(character, "{charactersheet} and {charactersheet}");
 
-      expect(result).toBe("parsed_text");
+      // Result is a SafeString object
+      expect(result.__isSafeString).toBe(true);
+      const inputMatches = result.content.match(/<input type="image"/g);
+      expect(inputMatches).toHaveLength(2);
     });
 
     it("should handle mixed template and character sheet tokens", () => {
       const character = {
         name: "Hero",
         uuid: "Actor.123",
-        prototypeToken: {
-          texture: { src: "token.png" },
-          name: "Hero Token",
-          rotation: 90,
-        },
+        img: "token.png",
       };
-
-      mockParserEngine.parseText.mockReturnValue([true, "Hero <input>token</input>"]);
 
       const result = processor.process(character, "{name} {charactersheet}");
 
-      expect(mockSafeString).toHaveBeenCalledWith("Hero <input>token</input>");
+      expect(mockSafeString).toHaveBeenCalled();
+      expect(result.content).toContain("Hero");
+      expect(result.content).toContain('<input type="image"');
     });
 
     it("should handle empty template strings", () => {
@@ -232,7 +222,7 @@ describe("DirectProcessor", () => {
 
       const result = processor.process(character, "");
 
-      expect(result).toBe("parsed_text");
+      expect(result).toBe("");
     });
 
     it("should handle templates with no property replacements", () => {
@@ -240,7 +230,7 @@ describe("DirectProcessor", () => {
 
       const result = processor.process(character, "Static text");
 
-      expect(result).toBe("parsed_text");
+      expect(result).toBe("Static text");
     });
   });
 });

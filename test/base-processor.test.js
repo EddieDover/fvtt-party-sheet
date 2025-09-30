@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-shadow
 import { jest } from "@jest/globals";
 import { DataProcessor } from "../src/module/parsing/base-processor.js";
 import * as ProcessorIndex from "../src/module/parsing/processors/index.js";

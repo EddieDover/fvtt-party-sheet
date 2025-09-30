@@ -74,7 +74,7 @@
         "valign": "top",
         "maxwidth": 80,
         "header": "show",
-        "text": "statuses => value, "
+        "text": "statuses => {value}, "
       },
       {
         "name": "Traits",

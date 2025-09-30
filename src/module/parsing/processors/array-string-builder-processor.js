@@ -1,6 +1,7 @@
 import { DataProcessor } from "../base-processor.js";
 import { extractPropertyByString } from "../../utils.js";
 import { sanitizeHTMLWithStyles } from "../../utils/dompurify-sanitizer.js";
+import { TemplateProcessor } from "../template-processor.js";
 
 /**
  * Processor for "array-string-builder" data type - builds strings from arrays
@@ -53,34 +54,23 @@ export class ArrayStringBuilderProcessor extends DataProcessor {
       return "";
     }
 
-    const regValue = /(\{[^}]*\})|((?:\*\.|[\w.]+)+)/g;
-    const allMatches = Array.from(outStrTemplate.matchAll(regValue), (match) => match[0]).filter(
-      (m) => !m.startsWith("{") && !m.endsWith("}"),
-    );
-
-    let outStr = "";
-    let subCount = 0;
-
+    // Use TemplateProcessor for consistent {property} syntax
     try {
-      for (const objSubData of objData) {
-        let templateCopy = outStrTemplate;
-        for (const m of allMatches) {
-          if (m === "value") {
-            finalStr += outStrTemplate.replace(m, objSubData);
-            continue;
-          }
-          templateCopy = templateCopy.replace(m, extractPropertyByString(objSubData, m));
+      // Handle special {value} case
+      if (outStrTemplate.includes("{value}")) {
+        let processedTemplate = "";
+        for (const objSubData of objData) {
+          let itemTemplate = outStrTemplate.replace(/\{value\}/g, objSubData);
+          processedTemplate += TemplateProcessor.processTemplate(itemTemplate, objSubData);
         }
-        outStr += templateCopy + (subCount > 0 ? "\n" : "");
-        subCount += 1;
+        finalStr = processedTemplate;
+      } else {
+        // Standard {property} processing
+        finalStr = TemplateProcessor.processTemplateWithArray(outStrTemplate, objData);
       }
     } catch (error) {
-      console.warn("Array-string-builder processor failed to iterate over data:", error);
+      console.warn("Array-string-builder processor failed to process template:", error);
       return "";
-    }
-
-    if (finalStr === "") {
-      finalStr = outStr;
     }
 
     finalStr = finalStr.trim();

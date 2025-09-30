@@ -214,8 +214,8 @@ export class FormattingParser extends TextParser {
 
     if (meterRegex.test(value)) {
       needsSafe = true;
-      parsedValue = parsedValue.replace(meterRegex, (match, value, minimum, maximum, low, high, optimum) => {
-        const valueNum = parseFloat(value);
+      parsedValue = parsedValue.replace(meterRegex, (match, nvalue, minimum, maximum, low, high, optimum) => {
+        const valueNum = parseFloat(nvalue);
         const minNum = parseFloat(minimum);
         const maxNum = parseFloat(maximum);
 

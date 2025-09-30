@@ -2,6 +2,7 @@
  * Tests for the new parser architecture
  */
 // @jest-environment jsdom
+// eslint-disable-next-line no-shadow
 import { jest } from "@jest/globals";
 import { ParserFactory } from "../src/module/parsing/parser-factory.js";
 import { createConsoleMocks } from "./test-mocks.js";

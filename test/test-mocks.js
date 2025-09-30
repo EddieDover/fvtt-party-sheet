@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-shadow
 import { jest } from "@jest/globals";
 
 /**

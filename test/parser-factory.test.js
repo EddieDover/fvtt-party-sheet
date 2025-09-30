@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-shadow
 import { jest } from "@jest/globals";
 import { ParserFactory } from "../src/module/parsing/parser-factory.js";
 import { ParserEngine } from "../src/module/parsing/parser-engine.js";

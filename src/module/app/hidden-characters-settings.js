@@ -30,7 +30,7 @@ export class HiddenCharactersSettings extends HandlebarsApplicationMixin(Applica
     },
   };
 
-  static async formHandler(event, form, formData) {
+  static formHandler(event, form, formData) {
     event.preventDefault();
     event.stopPropagation();
     // Handle form submission logic here if needed

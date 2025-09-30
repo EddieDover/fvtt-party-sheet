@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-shadow
 import { jest } from "@jest/globals";
 import {
   parseSpacing,
@@ -1839,7 +1840,7 @@ describe("Utils testing", () => {
       delete global.FilePicker;
     });
 
-    it("should recognize ForgeVTT", async () => {
+    it("should recognize ForgeVTT", () => {
       expect(isForgeVTT()).toBe(true);
     });
 

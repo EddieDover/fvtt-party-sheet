@@ -40,7 +40,7 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     },
   };
 
-  static async formHandler(event, form, formData) {
+  static formHandler(event, form, formData) {
     event.preventDefault();
     event.stopPropagation();
     // Handle form submission logic here if needed
@@ -305,7 +305,7 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
-  async _loadMonacoEditor() {
+  _loadMonacoEditor() {
     return new Promise((resolve, reject) => {
       // @ts-ignore
       if (window.monaco) {
@@ -339,7 +339,7 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     });
   }
 
-  async _configureJsonSchema() {
+  _configureJsonSchema() {
     try {
       // Embedded schema - avoids fetch issues in Foundry modules
       const schema = templateSchema;
@@ -768,7 +768,7 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     ).render(true);
   }
 
-  async _promptForFilename() {
+  _promptForFilename() {
     return new Promise((resolve) => {
       // @ts-ignore
       new Dialog({

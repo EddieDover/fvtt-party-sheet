@@ -94,7 +94,7 @@
         "header": "show",
         "minwidth": 80,
         "maxwidth": 180,
-        "text": "statuses => value, "
+        "text": "statuses => {value}, "
       }
     ]
   ]

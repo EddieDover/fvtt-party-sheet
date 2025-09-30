@@ -550,7 +550,7 @@
         "valign": "top",
         "maxwidth": 125,
         "header": "show",
-        "text": "system.traits.languages => value, "
+        "text": "system.traits.languages => {value}, "
       },
       {
         "name": "Status",

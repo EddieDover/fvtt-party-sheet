@@ -182,7 +182,7 @@ Note that even empty columns need unique names. Feel free to be as descriptive a
 * **direct** - This will process the text in the **text** property and parse out any string sections to see if they are properties of the character.
 * **direct-complex** - This will expect the **text** property to contain an array of complex types. See documentation below.
 * **string** - This will simply display the text in the **text** property without modification.
-* **array-string-builder** - This will accept a **text** property in the following format: **<array_object> => <sub_property_string>** See examples below for more information
+* **array-string-builder** - This will accept a **text** property in the following format: **<array_object> => {property}** where all properties must be enclosed in braces. See examples below for more information
 * **largest-from-array** - This will accept a **text** property of an array and return the largest numeric item from it. See examples below for more information
 * **smallest-from-array** - This will accept a **text** property of an array and return the largest numeric item from it. See examples below for more information
 * **object-loop** - This will accept a **text** property in the following format: **<optional_dropdown> <block_prefix> <object_with_subobjects> => <sub_property_string>**. Multiple object-loops may be performed, by splitting each with a double-pipe `||`. See examples below for more information
@@ -373,7 +373,7 @@ Code:
 
 This example is used to display Active Status Effects on a character, such as burning, bleeding, prone, etc. They are stored by Foundry under the actor as `.statuses`, and the value is an array of strings. To display an array of values with no definite end or number of values or even empty sometimes, array-string-builder is your weapon of choice.
 
-**Note:** The array-string-builder type uses a special syntax `arrayname => {property}` where properties within the `=>` section are automatically processed with brace notation.
+**Note:** The array-string-builder type uses a special syntax `arrayname => {property}` where all properties within the `=>` section must be enclosed in braces `{}`. Use `{value}` to reference the array item itself, or `{propertyName}` to access object properties.
 
 ### Example of object-loop
 

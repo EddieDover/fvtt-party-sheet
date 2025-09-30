@@ -115,7 +115,7 @@
         "name": "Statuses",
         "type": "array-string-builder",
         "header": "show",
-        "text": "statuses => value, ",
+        "text": "statuses => {value}, ",
         "rowspan": 2
       }
     ],
