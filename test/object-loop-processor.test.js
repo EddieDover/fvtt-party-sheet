@@ -148,8 +148,8 @@ describe("ObjectLoopProcessor", () => {
 
       const result = processor.process(character, "spells => {name} (Level {level})");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Fireball (Level 3) Shield (Level 1)", false);
       expect(result).toBe("parsed_text");
-      expect(mockParserEngine.parseText).toHaveBeenCalled();
     });
 
     it("should handle multiple chunks separated by ||", () => {
@@ -160,6 +160,7 @@ describe("ObjectLoopProcessor", () => {
 
       const result = processor.process(character, "weapons => {name} || armor => {name}");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Sword Shield", false);
       expect(result).toBe("parsed_text");
     });
 
@@ -170,6 +171,7 @@ describe("ObjectLoopProcessor", () => {
 
       const result = processor.process(character, "[Spells] spells => {name}");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith("[Spells] Fireball", false);
       expect(result).toBe("parsed_text");
     });
   });
@@ -276,6 +278,7 @@ describe("ObjectLoopProcessor", () => {
 
       const result = processor.process(character, "emptySpells => {name}");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith("", false);
       expect(result).toBe("parsed_text");
     });
 
@@ -286,6 +289,7 @@ describe("ObjectLoopProcessor", () => {
 
       const result = processor.process(character, "nullData => {name}");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith("", false);
       expect(result).toBe("parsed_text");
     });
 
@@ -297,12 +301,13 @@ describe("ObjectLoopProcessor", () => {
         ],
       };
 
-      const result = processor.process(character, "spells[prepared:true] => {name}");
+      const result = processor.process(character, "spells{prepared == true} => {name}");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Fireball", false);
       expect(result).toBe("parsed_text");
     });
 
-    it("should handle complex filtering conditions", () => {
+    it("should handle filtering by type", () => {
       const character = {
         items: [
           { name: "Sword", type: "weapon", equipped: true },
@@ -311,8 +316,9 @@ describe("ObjectLoopProcessor", () => {
         ],
       };
 
-      const result = processor.process(character, "items[type:weapon,equipped:true] => {name}");
+      const result = processor.process(character, "items{type == 'weapon'} => {name}");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Sword Bow", false);
       expect(result).toBe("parsed_text");
     });
   });
@@ -333,6 +339,7 @@ describe("ObjectLoopProcessor", () => {
 
       const result = processor.process(character, "spells => {name}: {damage.dice} {damage.type}");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Fireball: 8d6 fire", false);
       expect(result).toBe("parsed_text");
     });
 
@@ -346,6 +353,7 @@ describe("ObjectLoopProcessor", () => {
 
       const result = processor.process(character, "spells => {name} (Level {level})");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Fireball (Level {level})", false);
       expect(result).toBe("parsed_text");
     });
   });
@@ -359,8 +367,9 @@ describe("ObjectLoopProcessor", () => {
         ],
       };
 
-      const result = processor.process(character, "spells[prepared:true] => {name}");
+      const result = processor.process(character, "spells{prepared == true} => {name}");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Fireball", false);
       expect(result).toBe("parsed_text");
     });
 
@@ -372,8 +381,9 @@ describe("ObjectLoopProcessor", () => {
         ],
       };
 
-      const result = processor.process(character, "items[type:weapon] => {name}");
+      const result = processor.process(character, "items{type == 'weapon'} => {name}");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Sword", false);
       expect(result).toBe("parsed_text");
     });
 
@@ -386,8 +396,9 @@ describe("ObjectLoopProcessor", () => {
         ],
       };
 
-      const result = processor.process(character, "spells[level:3] => {name}");
+      const result = processor.process(character, "spells{level == 3} => {name}");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Fireball", false);
       expect(result).toBe("parsed_text");
     });
 
@@ -400,8 +411,9 @@ describe("ObjectLoopProcessor", () => {
         ],
       };
 
-      const result = processor.process(character, "items[type:weapon,rarity:rare] => {name}");
+      const result = processor.process(character, "items{rarity == 'rare'} => {name}");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Magic Sword Magic Shield", false);
       expect(result).toBe("parsed_text");
     });
 
@@ -417,8 +429,8 @@ describe("ObjectLoopProcessor", () => {
 
         const result = processor.process(character, "stats{rollLabel contains 'Save'} => {name}: {rollLabel}{nl}");
 
+        expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Strength: Strength Save{nl}", false);
         expect(result).toBe("parsed_text");
-        expect(mockParserEngine.parseText).toHaveBeenCalled();
       });
 
       it("should filter using !contains operator", () => {
@@ -432,8 +444,8 @@ describe("ObjectLoopProcessor", () => {
 
         const result = processor.process(character, "stats{rollLabel !contains 'Save'} => {name}: {rollLabel}{nl}");
 
+        expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Strength: Strength Check{nl} Dexterity: Dexterity Check{nl}", false);
         expect(result).toBe("parsed_text");
-        expect(mockParserEngine.parseText).toHaveBeenCalled();
       });
 
       it("should filter using startsWith operator", () => {
@@ -447,8 +459,8 @@ describe("ObjectLoopProcessor", () => {
 
         const result = processor.process(character, "stats{rollLabel startsWith 'Armor'} => {name}: {rollLabel}{nl}");
 
+        expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Armor: Armor Save{nl}", false);
         expect(result).toBe("parsed_text");
-        expect(mockParserEngine.parseText).toHaveBeenCalled();
       });
 
       it("should filter using endsWith operator", () => {
@@ -462,8 +474,8 @@ describe("ObjectLoopProcessor", () => {
 
         const result = processor.process(character, "stats{rollLabel endsWith 'Check'} => {name}: {rollLabel}{nl}");
 
+        expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Strength: Strength Check{nl} Dexterity: Dexterity Check{nl}", false);
         expect(result).toBe("parsed_text");
-        expect(mockParserEngine.parseText).toHaveBeenCalled();
       });
     });
 
@@ -479,8 +491,8 @@ describe("ObjectLoopProcessor", () => {
 
         const result = processor.process(character, "stats{value == 18} => {name}: {value}{nl}");
 
+        expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Strength: 18{nl} Constitution: 18{nl}", false);
         expect(result).toBe("parsed_text");
-        expect(mockParserEngine.parseText).toHaveBeenCalled();
       });
 
       it("should filter using != operator", () => {
@@ -494,8 +506,8 @@ describe("ObjectLoopProcessor", () => {
 
         const result = processor.process(character, "stats{value != 18} => {name}: {value}{nl}");
 
+        expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Dexterity: 14{nl} Constitution: 16{nl}", false);
         expect(result).toBe("parsed_text");
-        expect(mockParserEngine.parseText).toHaveBeenCalled();
       });
 
       it("should filter using > operator", () => {
@@ -509,8 +521,8 @@ describe("ObjectLoopProcessor", () => {
 
         const result = processor.process(character, "stats{value > 15} => {name}: {value}{nl}");
 
+        expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Strength: 18{nl} Constitution: 16{nl}", false);
         expect(result).toBe("parsed_text");
-        expect(mockParserEngine.parseText).toHaveBeenCalled();
       });
 
       it("should filter using < operator", () => {
@@ -524,8 +536,8 @@ describe("ObjectLoopProcessor", () => {
 
         const result = processor.process(character, "stats{value < 15} => {name}: {value}{nl}");
 
+        expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Dexterity: 14{nl}", false);
         expect(result).toBe("parsed_text");
-        expect(mockParserEngine.parseText).toHaveBeenCalled();
       });
 
       it("should filter using >= operator", () => {
@@ -539,8 +551,8 @@ describe("ObjectLoopProcessor", () => {
 
         const result = processor.process(character, "stats{value >= 16} => {name}: {value}{nl}");
 
+        expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Strength: 18{nl} Constitution: 16{nl}", false);
         expect(result).toBe("parsed_text");
-        expect(mockParserEngine.parseText).toHaveBeenCalled();
       });
 
       it("should filter using <= operator", () => {
@@ -554,8 +566,8 @@ describe("ObjectLoopProcessor", () => {
 
         const result = processor.process(character, "stats{value <= 16} => {name}: {value}{nl}");
 
+        expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Dexterity: 14{nl} Constitution: 16{nl}", false);
         expect(result).toBe("parsed_text");
-        expect(mockParserEngine.parseText).toHaveBeenCalled();
       });
     });
 
@@ -570,8 +582,8 @@ describe("ObjectLoopProcessor", () => {
 
         const result = processor.process(character, "items{weapon} => {name}");
 
+        expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Sword", false);
         expect(result).toBe("parsed_text");
-        expect(mockParserEngine.parseText).toHaveBeenCalled();
       });
     });
   });
@@ -589,13 +601,14 @@ describe("ObjectLoopProcessor", () => {
       }).toThrow("Value parameter is required");
     });
 
-    it("should handle malformed filter syntax", () => {
+    it("should handle unrecognized filter that falls back to legacy type matching", () => {
       const character = {
-        spells: [{ name: "Fireball" }],
+        spells: [{ name: "Fireball", type: "spell" }],
       };
 
-      const result = processor.process(character, "spells[invalid filter syntax => {name}");
+      const result = processor.process(character, "spells{invalidfilter} => {name}");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith("", false);
       expect(result).toBe("parsed_text");
     });
 
@@ -604,6 +617,7 @@ describe("ObjectLoopProcessor", () => {
 
       const result = processor.process(character, "nonexistent => {name}");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith("", false);
       expect(result).toBe("parsed_text");
     });
   });
@@ -618,6 +632,7 @@ describe("ObjectLoopProcessor", () => {
 
       const result = processor.process(character, "spells => <b>{name}</b>");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" <b>Fireball</b>", false);
       expect(mockSafeString).toHaveBeenCalledWith("<b>Fireball</b>");
       expect(result.__isSafeString).toBe(true);
     });
@@ -631,6 +646,7 @@ describe("ObjectLoopProcessor", () => {
 
       const result = processor.process(character, "spells => {name}");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Fireball", false);
       expect(result).toBe("Fireball");
       expect(mockSafeString).not.toHaveBeenCalled();
     });
@@ -644,6 +660,7 @@ describe("ObjectLoopProcessor", () => {
 
       const result = processor.process(character, "spells => ");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith("", false);
       expect(result).toBe("parsed_text");
     });
 
@@ -654,6 +671,7 @@ describe("ObjectLoopProcessor", () => {
 
       const result = processor.process(character, "spells => Static Text");
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Static Text", false);
       expect(result).toBe("parsed_text");
     });
 
@@ -677,6 +695,7 @@ describe("ObjectLoopProcessor", () => {
         "character.class.features => {name} ({uses.value}/{uses.max}): {description}",
       );
 
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Rage (3/3): Bonus damage and resistance", false);
       expect(result).toBe("parsed_text");
     });
   });
