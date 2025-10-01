@@ -30,7 +30,5 @@ export class DataProcessor {
   }
 
   // abstract method to be implemented by subclasses
-  resetDropdownCounter() {
-    throw new Error("resetDropdownCounter method must be implemented by subclass if used");
-  }
+  resetDropdownCounter() {}
 }

@@ -572,7 +572,9 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static onOpenOptions(event) {
     event.preventDefault();
+    const currentTemplate = getSelectedTemplate();
     const overrides = {
+      excludedTypes: currentTemplate?.offline_excludes ?? [],
       onexit: () => {
         setTimeout(() => {
           // @ts-ignore

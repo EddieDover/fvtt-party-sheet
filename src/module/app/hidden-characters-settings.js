@@ -38,7 +38,10 @@ export class HiddenCharactersSettings extends HandlebarsApplicationMixin(Applica
 
   constructor(overrides) {
     super();
-    this.overrides = overrides || {};
+    this.overrides = overrides || {
+      excludedTypes: [],
+      onexit: () => {},
+    };
     // Store reference to this instance
     HiddenCharactersSettings._instance = this;
   }
@@ -63,17 +66,21 @@ export class HiddenCharactersSettings extends HandlebarsApplicationMixin(Applica
 
   _prepareContext(options) {
     // @ts-ignore
-    this.characterList = game.actors
-      .filter((actor) => actor.type !== "npc")
-      .map((actor) => {
-        return { "uuid": actor.uuid, "name": actor.name };
-      });
+    this.characterList = game.actors.map((actor) => {
+      return { "uuid": actor.uuid, "name": actor.name, "type": actor.type };
+    });
+    if (this.overrides?.excludedTypes?.length > 0) {
+      this.characterList = this.characterList.filter((char) => !this.overrides.excludedTypes.includes(char.type));
+    }
     // @ts-ignore
     const hiddenCharacters = game.settings.get("fvtt-party-sheet", "hiddenCharacters");
     // @ts-ignore
     const enableOnlyOnline = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
+    // @ts-ignore
+    const actorTypes = Object.keys(game.system.documentTypes.Actor);
 
     return {
+      actorTypes,
       characters: this.characterList,
       hiddenCharacters,
       enableOnlyOnline,

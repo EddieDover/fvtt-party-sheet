@@ -1,13 +1,26 @@
 <form autocomplete="off" class="fvtt-party-sheet-hc-form standard-form">
   <p>{{localize "fvtt-party-sheet.hide-sheet.tooltip"}}</p>
-  <section class="fvtt-party-sheet-hc-section">
-    {{#each characters}}
-    <div class="fvtt-party-sheet-hc-item">
-      <input type="checkbox" name="character-{{this.uuid}}" value="{{this.uuid}}" class="hidden-character" id="hidden-character-{{this.uuid}}" {{#hccontains this.uuid hiddenCharacters}}checked{{/hccontains}}>
-      <label for="hidden-character-{{this.uuid}}">{{this.name}}</label>
-    </div>
-    {{/each}}
-  </section>
+  {{#each actorTypes}}
+    {{#ifCond this 'in' ../exclude_types}}
+      {{!-- Excluded type, do not render --}}
+      {{continue}}
+    {{else}}
+      {{!-- Not excluded, render normally --}}
+      {{#ifCond ../characters 'someType' this}}
+        <h4>Type: {{this}}</h4>
+        <section class="fvtt-party-sheet-hc-section">
+        {{#each ../characters as |character|}}
+          {{#ifCond character.type '==' ../this}}
+          <div class="fvtt-party-sheet-hc-item">
+            <input type="checkbox" name="character-{{character.uuid}}" value="{{character.uuid}}" class="hidden-character" id="hidden-character-{{character.uuid}}" {{#hccontains character.uuid hiddenCharacters}}checked{{/hccontains}}>
+            <label for="hidden-character-{{character.uuid}}">{{character.name}}</label>
+          </div>
+          {{/ifCond}}
+        {{/each}}
+      </section>
+      {{/ifCond}}
+    {{/ifCond}}
+  {{/each}}
   <button type="button" name="submit" data-action="onSubmit">
     <i class="fas fa-save"></i> Save
   </button>
