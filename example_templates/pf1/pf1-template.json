@@ -2,6 +2,8 @@
   "name": "Pathfinder 1e Party Sheet",
   "system": "pf1",
   "author": "LeCuay",
+  "version": "1.0.0",
+  "minimumSystemVersion": "1.0.0",
   "offline_excludes": ["basic", "haunt", "npc", "trap", "vehicle"],
   "rows": [
     [

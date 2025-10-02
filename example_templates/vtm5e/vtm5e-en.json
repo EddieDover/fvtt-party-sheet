@@ -2,6 +2,8 @@
   "name": "vtm5e",
   "system": "vtm5e",
   "author": "Arboreal",
+  "version": "1.0.0",
+  "minimumSystemVersion": "1.0.0",
   "offline_excludes": ["npc"],
   "rows": [
     [
