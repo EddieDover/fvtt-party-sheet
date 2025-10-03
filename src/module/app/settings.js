@@ -11,6 +11,14 @@ export const registerSettings = () => {
   });
 
   // @ts-ignore
+  game.settings.register("fvtt-party-sheet", "hiddenCharacterTypes", {
+    "scope": "world",
+    "config": false,
+    "default": [],
+    "type": Array,
+  });
+
+  // @ts-ignore
   game.settings.register("fvtt-party-sheet", "showAssignedOnly", {
     "scope": "world",
     "config": false,

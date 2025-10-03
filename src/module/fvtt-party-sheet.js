@@ -187,6 +187,14 @@ Handlebars.registerHelper("hccontains", function (needle, haystack, options) {
   return haystack.indexOf(needle) > -1 ? options.fn(this) : options.inverse(this);
 });
 
+//@ts-ignore
+Handlebars.registerHelper("inArray", function (elem, list, options) {
+  if (list && list.indexOf(elem) > -1) {
+    return options.fn(this);
+  }
+  return options.inverse(this);
+});
+
 // @ts-ignore
 Handlebars.registerHelper("hcifgte", function (v1, v2, options) {
   if (v1 >= v2) {

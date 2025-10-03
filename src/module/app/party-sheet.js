@@ -156,6 +156,12 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
       actorList = actorList.filter((actor) => Object.keys(actor.ownership).length > 2); // Show any actors with 2+ owners (0 = default, 1 = GM, 2+ = assigned to player)
     }
 
+    // @ts-ignore
+    const hiddenTypes = game.settings.get("fvtt-party-sheet", "hiddenCharacterTypes");
+    if (hiddenTypes.length > 0) {
+      actorList = actorList.filter((actor) => !hiddenTypes.includes(actor.type));
+    }
+
     try {
       if (showDebugOutput) {
         console.log("======= FVTT-PARTY-SHEET DEBUG CHARACTER LIST ======= ");

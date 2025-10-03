@@ -75,6 +75,8 @@ export class HiddenCharactersSettings extends HandlebarsApplicationMixin(Applica
     // @ts-ignore
     const hiddenCharacters = game.settings.get("fvtt-party-sheet", "hiddenCharacters");
     // @ts-ignore
+    const hiddenTypes = game.settings.get("fvtt-party-sheet", "hiddenCharacterTypes");
+    // @ts-ignore
     const enableOnlyOnline = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
     // @ts-ignore
     const actorTypes = Object.keys(game.system.documentTypes.Actor);
@@ -84,6 +86,7 @@ export class HiddenCharactersSettings extends HandlebarsApplicationMixin(Applica
     return {
       actorTypes,
       showAssignedOnly,
+      hiddenTypes,
       characters: this.characterList,
       hiddenCharacters,
       enableOnlyOnline,
@@ -99,6 +102,32 @@ export class HiddenCharactersSettings extends HandlebarsApplicationMixin(Applica
       showAssignedOnlyToggle.addEventListener("change", (event) => {
         // @ts-ignore
         game.settings.set("fvtt-party-sheet", "showAssignedOnly", event.target.checked);
+      });
+    }
+
+    const hiddenTypeToggles = document.getElementsByClassName("hidden-type-toggle");
+    for (const toggle of hiddenTypeToggles) {
+      toggle.addEventListener("change", (event) => {
+        /** @type {HTMLInputElement} */
+        // @ts-ignore
+        const target = event.target;
+        if (target) {
+          const type = target.id.replace("character-type-", "");
+          // @ts-ignore
+          const hiddenTypes = game.settings.get("fvtt-party-sheet", "hiddenCharacterTypes");
+          if (target.checked) {
+            if (!hiddenTypes.includes(type)) {
+              hiddenTypes.push(type);
+            }
+          } else {
+            const index = hiddenTypes.indexOf(type);
+            if (index > -1) {
+              hiddenTypes.splice(index, 1);
+            }
+          }
+          // @ts-ignore
+          game.settings.set("fvtt-party-sheet", "hiddenCharacterTypes", hiddenTypes);
+        }
       });
     }
   }

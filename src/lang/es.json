@@ -1,8 +1,8 @@
 {
   "fvtt-party-sheet": {
     "party-sheet": {
-      "assigned-only": "Mostrar solo asignados",
-      "assigned-only-tooltip": "Mostrar solo actores asignados a jugadores.",
+      "assigned-only": "Ocultar todos los actores no asignados",
+      "assigned-only-tooltip": "Ocultar cualquier actor no asignado a un jugador.",
       "invalid-template": "La plantilla que está usando no es válida. <br/> Por favor revise la plantilla y vuelva a intentarlo.",
       "no-players": "Ningún jugador ha iniciado sesión actualmente.",
       "no-systems": "La carpeta data/partysheets no contiene archivos JSON para este sistema. Necesitas agregar algunos para activar esta funcionalidad.",
@@ -17,6 +17,7 @@
     "hide-sheet": {
       "button": "Configurar actores ocultos",
       "hint": "Edite qué actores se muestran si no se muestran actores en línea.",
+      "hide-all": "Ocultar todo",
       "tooltip": "Seleccionar actores para ocultar"
     },
     "settings": {

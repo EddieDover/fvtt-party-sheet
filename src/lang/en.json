@@ -1,8 +1,8 @@
 {
   "fvtt-party-sheet": {
     "party-sheet": {
-      "assigned-only": "Show Assigned Only",
-      "assigned-only-tooltip": "Show only actors assigned to players.",
+      "assigned-only": "Hide All Unassigned Actors",
+      "assigned-only-tooltip": "Hide any actor not assigned to a player.",
       "invalid-template": "The template you are using is invalid. <br/> Please check the template and try again.",
       "no-players": "No players are currently logged in.",
       "no-systems": "You do not have any json files for this system in your data/partysheets folder. Please add some to enable this feature.",
@@ -17,6 +17,7 @@
     "hide-sheet": {
       "button": "Configure Hidden Actors",
       "hint": "Edit which actors are displayed if not showing online actors.",
+      "hide-all": "Hide All",
       "tooltip": "Select Actors To Hide"
     },
     "settings": {
