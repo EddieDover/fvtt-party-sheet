@@ -1,47 +1,70 @@
 // @ts-ignore
-export class TemplateStatusForm extends FormApplication {
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+export class TemplateStatusForm extends HandlebarsApplicationMixin(ApplicationV2) {
+  static DEFAULT_OPTIONS = {
+    tag: "form",
+    form: {
+      handler: TemplateStatusForm.formHandler,
+      submitOnChange: false,
+      closeOnSubmit: false,
+    },
+    window: {
+      title: "Party Sheet Template Status",
+      width: "auto",
+      height: "auto",
+    },
+    classes: ["fvtt-party-sheet-template-status-dialog"],
+    actions: {
+      onCloseSheet: TemplateStatusForm.onCloseSheet,
+    },
+  };
+
+  static PARTS = {
+    form: {
+      template: "modules/fvtt-party-sheet/templates/template-status.hbs",
+    },
+  };
+
+  static formHandler(event, form, formData) {
+    event.preventDefault();
+    event.stopPropagation();
+    // Handle form submission logic here if needed
+  }
+
   constructor() {
     super();
     // @ts-ignore
     this.template_validation = game.settings.get("fvtt-party-sheet", "validationInfo") || {};
   }
 
-  getData(options) {
-    // @ts-ignore
-    return foundry.utils.mergeObject(super.getData(options), {
+  _prepareContext(options) {
+    return {
       outOfDateTemplates: this.template_validation.outOfDateTemplates,
       outOfDateSystems: this.template_validation.outOfDateSystems,
+      tooNewSystems: this.template_validation.tooNewSystems,
       noVersionInformation: this.template_validation.noVersionInformation,
       noSystemInformation: this.template_validation.noSystemInformation,
       valid: this.template_validation.valid,
       // @ts-ignore
       systemVersion: game.system.version,
-    });
+    };
   }
 
-  activateListeners(html) {
-    super.activateListeners(html);
-    // @ts-ignore
-    // eslint-disable-next-line no-undef
-    $('button[name="fvtt-party-sheet-template-ok-btn').click(this.CloseSheet.bind(this));
+  _onRender(context, options) {
+    super._onRender(context, options);
+    // Actions are automatically bound by ApplicationV2
   }
 
-  CloseSheet() {
+  onCloseSheet(event) {
+    event.preventDefault();
     // @ts-ignore
     this.close();
   }
 
-  static get defaultOptions() {
+  static onCloseSheet(event, target) {
+    event.preventDefault();
     // @ts-ignore
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      id: "fvtt-party-sheet-template-status-dialog",
-      classes: ["form"],
-      title: "Party Sheet Template Status",
-      // resizable: true,
-      template: "modules/fvtt-party-sheet/templates/template-status.hbs",
-      // @ts-ignore
-      width: "auto", // $(window).width() > 960 ? 960 : $(window).width() - 100,
-      height: "auto", //$(window).height() > 800 ? 800 : $(window).height() - 100,
-    });
+    this.close();
   }
 }

@@ -2,14 +2,9 @@
   "name": "Vaesen",
   "system": "vaesen",
   "author": "Michael Card (EmoCthulhu)",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "minimumSystemVersion": "6.0.2",
-  "offline_excludes": [
-    "npc",
-    "base",
-    "vaesen",
-    "headquarter"
-  ],
+  "offline_excludes": ["npc", "base", "vaesen", "headquarter"],
   "rows": [
     [
       {
@@ -23,7 +18,7 @@
         "type": "direct",
         "align": "left",
         "header": "show",
-        "text": "{b} name {/b} {newline} {i} system.bio.archetype {/i}"
+        "text": "{b} {name} {/b} {newline} {i} {system.bio.archetype} {/i}"
       },
       {
         "name": "Physical",
@@ -97,7 +92,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "PHYSIQUE: {b} system.attribute.physique {/b} {newline} {newline} Agility: system.skill.agility / {b} system.skill.agility {+} system.attribute.physique {/b} {newline} ClsCom: system.skill.closeCombat / {b} system.skill.closeCombat {+} system.attribute.physique {/b} {newline} Force: system.skill.force / {b} system.skill.force {+} system.attribute.physique {/b}"
+        "text": "PHYSIQUE: {b} {system.attribute.physique} {/b} {newline} {newline} Agility: {system.skill.agility} / {b} {system.skill.agility} {+} {system.attribute.physique} {/b} {newline} ClsCom: {system.skill.closeCombat} / {b} {system.skill.closeCombat} {+} {system.attribute.physique} {/b} {newline} Force: {system.skill.force} / {b} {system.skill.force} {+} {system.attribute.physique} {/b}"
       },
       {
         "name": "Precision",
@@ -105,7 +100,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "PRECISION: {b} system.attribute.precision {/b} {newline} {newline} Medic: system.skill.medicine / {b} system.skill.medicine {+} system.attribute.precision {/b} {newline} RgCom: system.skill.rangedCombat / {b} system.skill.rangedCombat {+} system.attribute.precision {/b} {newline} Stealth: system.skill.stealth / {b} system.skill.stealth {+} system.attribute.precision {/b}"
+        "text": "PRECISION: {b} {system.attribute.precision} {/b} {newline} {newline} Medic: {system.skill.medicine} / {b} {system.skill.medicine} {+} {system.attribute.precision} {/b} {newline} RgCom: {system.skill.rangedCombat} / {b} {system.skill.rangedCombat} {+} {system.attribute.precision} {/b} {newline} Stealth: {system.skill.stealth} / {b} {system.skill.stealth} {+} {system.attribute.precision} {/b}"
       },
       {
         "name": "Logic",
@@ -113,7 +108,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "LOGIC: {b} system.attribute.logic {/b} {newline} {newline} Invest: system.skill.investigation / {b} system.skill.investigation {+} system.attribute.logic {/b} {newline} Learn: system.skill.learning / {b} system.skill.learning {+} system.attribute.logic {/b} {newline} Vigil: system.skill.vigilance / {b} system.skill.vigilance {+} system.attribute.logic {/b}"
+        "text": "LOGIC: {b} {system.attribute.logic} {/b} {newline} {newline} Invest: {system.skill.investigation} / {b} {system.skill.investigation} {+} {system.attribute.logic} {/b} {newline} Learn: {system.skill.learning} / {b} {system.skill.learning} {+} {system.attribute.logic} {/b} {newline} Vigil: {system.skill.vigilance} / {b} {system.skill.vigilance} {+} {system.attribute.logic} {/b}"
       },
       {
         "name": "Empathy",
@@ -121,7 +116,7 @@
         "align": "left",
         "valign": "top",
         "header": "show",
-        "text": "EMPATHY: {b} system.attribute.empathy {/b} {newline} {newline} Inspir: system.skill.inspiration / {b} system.skill.inspiration {+} system.attribute.empathy {/b} {newline} Manip: system.skill.manipulation / {b} system.skill.manipulation {+} system.attribute.empathy {/b} {newline} Observ: system.skill.observation / {b} system.skill.observation {+} system.attribute.empathy {/b}"
+        "text": "EMPATHY: {b} {system.attribute.empathy} {/b} {newline} {newline} Inspir: {system.skill.inspiration} / {b} {system.skill.inspiration} {+} {system.attribute.empathy} {/b} {newline} Manip: {system.skill.manipulation} / {b} {system.skill.manipulation} {+} {system.attribute.empathy} {/b} {newline} Observ: {system.skill.observation} / {b} {system.skill.observation} {+} {system.attribute.empathy} {/b}"
       },
       {
         "name": "Resources",
@@ -129,7 +124,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.resources"
+        "text": "{system.resources}"
       },
       {
         "name": "Capital",
@@ -137,7 +132,7 @@
         "align": "center",
         "valign": "top",
         "header": "show",
-        "text": "system.capital"
+        "text": "{system.capital}"
       }
     ]
   ]
