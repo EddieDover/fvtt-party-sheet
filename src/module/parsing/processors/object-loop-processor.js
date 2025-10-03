@@ -147,7 +147,6 @@ export class ObjectLoopProcessor extends DataProcessor {
    * @returns {boolean} True if the filter passes
    */
   evaluateFilter(data, filterExpression) {
-    console.log(data, filterExpression);
     // Parse the filter expression
     // Supported operators: contains, !contains, startsWith, endsWith, ==, !=, >, <, >=, <=
 
