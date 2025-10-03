@@ -11,6 +11,14 @@ export const registerSettings = () => {
   });
 
   // @ts-ignore
+  game.settings.register("fvtt-party-sheet", "showAssignedOnly", {
+    "scope": "world",
+    "config": false,
+    "default": false,
+    "type": Boolean,
+  });
+
+  // @ts-ignore
   game.settings.register("fvtt-party-sheet", "validationInfo", {
     "scope": "world",
     "config": false,

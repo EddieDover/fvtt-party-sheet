@@ -29,7 +29,7 @@
     <div class="preview-mode-content">
       <i class="fas fa-eye"></i>
       <span class="preview-mode-text">
-        <strong>Preview Mode Active</strong> - You are currently previewing a template from the Template Editor. Close the Template Editor to return to normal view.
+        <strong>{{localize "fvtt-party-sheet.preview-mode.active"}}</strong> - {{localize "fvtt-party-sheet.preview-mode.active-tooltip"}}
       </span>
     </div>
   </div>
@@ -46,7 +46,7 @@
         {{/each}}
       </select>
       {{else}}
-        <div style="text-align:center">Template: {{applicableTemplates.[0].name}} - {{applicableTemplates.[0].author}}</div>
+        <div style="text-align:center;padding-top:0.25rem;">{{localize "fvtt-party-sheet.template"}}: {{applicableTemplates.[0].name}} - {{applicableTemplates.[0].author}}</div>
       {{/hcifgte}}
       {{#if players}}
       <table id='fvtt-party-sheet-ps-table'>

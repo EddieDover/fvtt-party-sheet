@@ -1,24 +1,23 @@
 <form autocomplete="off" class="fvtt-party-sheet-hc-form standard-form">
-  <p>{{localize "fvtt-party-sheet.hide-sheet.tooltip"}}</p>
+  <div>{{localize "fvtt-party-sheet.hide-sheet.tooltip"}}</div>
+    <div style="display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;">
+      <input type="checkbox" id="fvtt-party-sheet-assigned-only" name="fvtt-party-sheet-assigned-only" {{#if showAssignedOnly}}checked{{/if}}>
+      <label for="fvtt-party-sheet-assigned-only" title="{{localize "fvtt-party-sheet.party-sheet.assigned-only-tooltip"}}">{{localize "fvtt-party-sheet.party-sheet.assigned-only"}}</label>
+    </div>
   {{#each actorTypes}}
-    {{#ifCond this 'in' ../exclude_types}}
-      {{!-- Excluded type, do not render --}}
-      {{continue}}
-    {{else}}
-      {{!-- Not excluded, render normally --}}
-      {{#ifCond ../characters 'someType' this}}
-        <h4>Type: {{this}}</h4>
-        <section class="fvtt-party-sheet-hc-section">
-        {{#each ../characters as |character|}}
-          {{#ifCond character.type '==' ../this}}
-          <div class="fvtt-party-sheet-hc-item">
-            <input type="checkbox" name="character-{{character.uuid}}" value="{{character.uuid}}" class="hidden-character" id="hidden-character-{{character.uuid}}" {{#hccontains character.uuid hiddenCharacters}}checked{{/hccontains}}>
-            <label for="hidden-character-{{character.uuid}}">{{character.name}}</label>
-          </div>
-          {{/ifCond}}
-        {{/each}}
-      </section>
-      {{/ifCond}}
+    {{!-- Not excluded, render normally --}}
+    {{#ifCond ../characters 'someType' this}}
+      <h4>Type: {{this}}</h4>
+      <section class="fvtt-party-sheet-hc-section">
+      {{#each ../characters as |character|}}
+        {{#ifCond character.type '==' ../this}}
+        <div class="fvtt-party-sheet-hc-item">
+          <input type="checkbox" name="character-{{character.uuid}}" value="{{character.uuid}}" class="hidden-character" id="hidden-character-{{character.uuid}}" {{#hccontains character.uuid hiddenCharacters}}checked{{/hccontains}}>
+          <label for="hidden-character-{{character.uuid}}">{{character.name}}</label>
+        </div>
+        {{/ifCond}}
+      {{/each}}
+    </section>
     {{/ifCond}}
   {{/each}}
   <button type="button" name="submit" data-action="onSubmit">

@@ -16,9 +16,6 @@ export class CharacterSheetProcessor extends DataProcessor {
   process(character, value, options = {}) {
     this.validate(character, value);
 
-    console.log(character);
-    console.log(character["#lastWildcard"]);
-
     // @ts-ignore
     return new Handlebars.SafeString(generateCharacterSheetImageFromCharacter(character));
   }

@@ -1,6 +1,8 @@
 {
   "fvtt-party-sheet": {
     "party-sheet": {
+      "assigned-only": "Show Assigned Only",
+      "assigned-only-tooltip": "Show only actors assigned to players.",
       "invalid-template": "The template you are using is invalid. <br/> Please check the template and try again.",
       "no-players": "No players are currently logged in.",
       "no-systems": "You do not have any json files for this system in your data/partysheets folder. Please add some to enable this feature.",
@@ -8,10 +10,14 @@
       "feedback": "Send Feedback",
       "discord": "Discord"
     },
+    "preview-mode": {
+      "active": "Preview Mode Active",
+      "active-tooltip": "You are currently previewing a template from the Template Editor. Close the Template Editor to return to normal view."
+    },
     "hide-sheet": {
-      "button": "Configure Hidden Characters",
-      "hint": "Edit which characters are displayed if not showing online characters.",
-      "tooltip": "Select Characters To Hide"
+      "button": "Configure Hidden Actors",
+      "hint": "Edit which actors are displayed if not showing online actors.",
+      "tooltip": "Select Actors To Hide"
     },
     "settings": {
       "refresh-rate": {
@@ -23,8 +29,8 @@
         "hint": "Hide the buttons for bug reports and feedback."
       },
       "enable-only-online": {
-        "name": "Show only online characters",
-        "hint": "Only show characters assigned to logged in players. Turning this off will show all non-NPC characters but allow you to 'hide' the ones you don't care about."
+        "name": "Show only online actors",
+        "hint": "Only show actors assigned to logged in players. Turning this off will show all non-NPC actors but allow you to 'hide' the ones you don't care about."
       },
       "enable-dark-mode": {
         "name": "Enable Dark Mode",
@@ -32,7 +38,7 @@
       },
       "show-debug-info": {
         "name": "Show Debug Information",
-        "hint": "Enable this to show debug information in the console for all parsed characters when the party sheet is opened. Hopefully this will allow you to track down specific properties that you are trying to parse."
+        "hint": "Enable this to show debug information in the console for all parsed actors when the party sheet is opened. Hopefully this will allow you to track down specific properties that you are trying to parse."
       },
       "show-template-status-form": {
         "name": "Show Template Status Form",
@@ -60,6 +66,7 @@
     "notifications": {
       "template-update-available": "Template updates available! {count} installed template(s) have newer versions available. Check the Template Status dialog or use the Installer to update."
     },
+    "template": "Template",
     "close": "Close",
     "install": "Install",
     "reinstall": "Reinstall",

@@ -112,6 +112,8 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     // @ts-ignore
     const showOnlyOnlineUsers = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
     // @ts-ignore
+    const showAssignedOnly = game.settings.get("fvtt-party-sheet", "showAssignedOnly");
+    // @ts-ignore
     const hiddenCharacters = game.settings.get("fvtt-party-sheet", "hiddenCharacters");
 
     if (showDebugOutput) {
@@ -148,6 +150,10 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
     if (!showOnlyOnlineUsers) {
       actorList = actorList.filter((player) => !hiddenCharacters.includes(player.uuid));
+    }
+
+    if (showAssignedOnly) {
+      actorList = actorList.filter((actor) => Object.keys(actor.ownership).length > 2); // Show any actors with 2+ owners (0 = default, 1 = GM, 2+ = assigned to player)
     }
 
     try {

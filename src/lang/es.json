@@ -1,17 +1,23 @@
 {
   "fvtt-party-sheet": {
     "party-sheet": {
-      "invalid-template": "La plantilla que está usando no es válida. <BR/> Por favor revise la plantilla y vuelva a intentarlo.",
+      "assigned-only": "Mostrar solo asignados",
+      "assigned-only-tooltip": "Mostrar solo actores asignados a jugadores.",
+      "invalid-template": "La plantilla que está usando no es válida. <br/> Por favor revise la plantilla y vuelva a intentarlo.",
       "no-players": "Ningún jugador ha iniciado sesión actualmente.",
       "no-systems": "La carpeta data/partysheets no contiene archivos JSON para este sistema. Necesitas agregar algunos para activar esta funcionalidad.",
-      "bugreport": "Dar retroalimentación",
-      "feedback": "Reportar un fallo",
+      "bugreport": "Reportar un fallo",
+      "feedback": "Dar retroalimentación",
       "discord": "Discord"
     },
+    "preview-mode": {
+      "active": "Modo de vista previa activo",
+      "active-tooltip": "Actualmente está previsualizando una plantilla desde el Editor de Plantillas. Cierre el Editor de Plantillas para volver a la vista normal."
+    },
     "hide-sheet": {
-      "button": "Configurar personajes ocultos",
-      "hint": "Edite qué caracteres se muestran si no se muestran caracteres en línea.",
-      "tooltip": "Seleccionar personajes para ocultar"
+      "button": "Configurar actores ocultos",
+      "hint": "Edite qué actores se muestran si no se muestran actores en línea.",
+      "tooltip": "Seleccionar actores para ocultar"
     },
     "settings": {
       "refresh-rate": {
@@ -23,8 +29,8 @@
         "hint": "Ocultar los botones para informes de errores y comentarios."
       },
       "enable-only-online": {
-        "name": "Mostrar solo personajes en línea",
-        "hint": "Solo muestra personajes asignados a jugadores conectados. Desactivar esta opción mostrará todos los personajes que no sean NPC, pero te permitirá 'ocultar' los que no te interesan."
+        "name": "Mostrar solo actores en línea",
+        "hint": "Solo muestra actores asignados a jugadores conectados. Desactivar esta opción mostrará todos los actores que no sean NPC, pero te permitirá 'ocultar' los que no te interesan."
       },
       "enable-dark-mode": {
         "name": "Habilitar el modo oscuro",
@@ -32,14 +38,14 @@
       },
       "show-debug-info": {
         "name": "Mostrar información de depuración",
-        "hint": "Actívelo para mostrar información de depuración en la consola para todos los personajes analizados cuando se abre la hoja de grupo. Esperemos que esto le permita rastrear propiedades específicas que está intentando analizar."
+        "hint": "Actívelo para mostrar información de depuración en la consola para todos los actores analizados cuando se abre la hoja de grupo. Esperemos que esto le permita rastrear propiedades específicas que está intentando analizar."
       },
       "show-template-status-form": {
         "name": "Mostrar formulario de estado de plantilla",
         "hint": "Habilita esta opción para mostrar el formulario de estado de plantilla cuando se abra la hoja de grupo. Esto te mostrará qué plantillas están desactualizadas, cuáles tienen sistemas más nuevos instalados y cuáles no tienen información de versión."
       },
       "show-version-notifications": {
-        "name": "Mostrar Notificaciones de Actualización de Plantillas",
+        "name": "Mostrar notificaciones de actualización de plantillas",
         "hint": "Mostrar banners de notificación cuando las plantillas instaladas tengan versiones más nuevas disponibles en las plantillas de ejemplo del módulo."
       }
     },
@@ -60,14 +66,15 @@
     "notifications": {
       "template-update-available": "¡Actualizaciones de plantillas disponibles! {count} plantilla(s) instalada(s) tienen versiones más nuevas disponibles. Consulte el diálogo de Estado de Plantillas o use el Instalador para actualizar."
     },
-    "close": "Cerca",
+    "template": "Plantilla",
+    "close": "Cerrar",
     "install": "Instalar",
     "reinstall": "Reinstalar",
-    "installer": "Instaladora",
+    "installer": "Instalador",
     "update": "Actualizar",
     "template-name": "Nombre",
     "preview": "Avance",
-    "author": "Autora",
+    "author": "Autor",
     "version": "Versión",
     "section-title": "Hoja de Grupo",
     "show-section-title": "Mostrar Hoja de Grupo",

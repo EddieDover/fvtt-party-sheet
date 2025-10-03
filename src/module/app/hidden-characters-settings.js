@@ -78,9 +78,12 @@ export class HiddenCharactersSettings extends HandlebarsApplicationMixin(Applica
     const enableOnlyOnline = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
     // @ts-ignore
     const actorTypes = Object.keys(game.system.documentTypes.Actor);
+    // @ts-ignore
+    const showAssignedOnly = game.settings.get("fvtt-party-sheet", "showAssignedOnly");
 
     return {
       actorTypes,
+      showAssignedOnly,
       characters: this.characterList,
       hiddenCharacters,
       enableOnlyOnline,
@@ -91,6 +94,13 @@ export class HiddenCharactersSettings extends HandlebarsApplicationMixin(Applica
   _onRender(context, options) {
     super._onRender(context, options);
     // Actions are automatically bound by ApplicationV2
+    const showAssignedOnlyToggle = document.getElementById("fvtt-party-sheet-assigned-only");
+    if (showAssignedOnlyToggle) {
+      showAssignedOnlyToggle.addEventListener("change", (event) => {
+        // @ts-ignore
+        game.settings.set("fvtt-party-sheet", "showAssignedOnly", event.target.checked);
+      });
+    }
   }
 
   saveHiddenCharacters(event) {
