@@ -1,3 +1,25 @@
+
+## [2.7.2](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.7.1...v2.7.2) (2025-10-02)
+
+### IMPORTANT NOTES:
+
+This will be the last version of the plugin that supports V12 (unless breaking bugs are found). The new version is in testing and will release by mid-October. 
+
+Upcoming Features include:
+  - Notifications when community made templates have updates.
+  - Updates to the Template Parsing Engine
+  - Better Template Creation Documentation
+  - New parsing support for colspan, more maths (addition, subtraction, multiplication, division, etc.), and column totals.
+  - An in-foundry JSON template editor with intellisense and realtime-template previews.
+  - Bug fixes
+  - New Templates
+  - **And More**
+  - _**Due to changes in the template parsing engine, you will be required to update your community templates using the new installer. Custom templates will need to add curly braces to any value you want displayed on screen. More details will be in the full release notes.**_
+
+### Bug Fixes
+
+* updated broken templates ([82fb479](https://github.com/EddieDover/fvtt-party-sheet/commit/82fb479500136894bba3c835721f2d6ae77e201b))
+
 ## [2.7.1](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.7.0...v2.7.1) (2025-06-01)
 
 ### Features
