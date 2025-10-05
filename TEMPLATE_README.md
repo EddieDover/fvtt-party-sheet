@@ -372,7 +372,7 @@ Object loops support powerful filtering to show only items that match specific c
 - **>=** - Greater than or equal: `stats{value >= 16} => {name}: {value}{nl}`
 - **<=** - Less than or equal: `stats{value <= 12} => {name}: {value}{nl}`
 
-**Legacy Filter (for backwards compatibility):**
+**Type Filter:**
 - Simple type matching: `items{weapon} => {name}` (filters where `type === 'weapon'`)
 
 **Filter Examples:**
@@ -393,11 +393,44 @@ This filters the stats object to only show items where `rollLabel` contains the 
   "name": "Equipment",
   "type": "object-loop",
   "header": "show",
-  "text": "{u}Talents:{/u}{nl} items{talent} => {name} {nl} || {u}Weapons:{/u}{nl} items{starshipweapon} => {name} Damage: {b}{system.damage}{/b}{nl} || {u}Other:{/u}{nl} items{item} => {name} {nl}"
+  "text": "[{u}Talents:{/u}{nl}] items{talent} => {name} {nl} || [{u}Weapons:{/u}{nl}] items{starshipweapon} => {name} Damage: {b}{system.damage}{/b}{nl} || [{u}Other:{/u}{nl}] items{item} => {name} {nl}"
 }
 ```
 
 Use `||` to separate multiple object loops. Each can have its own prefix text and filter criteria.
+
+**Sub-Object Loops:**
+
+The object-loop processor allows you to loop through non-array objects, and sometimes in doing so you may find the need to access the key of said object. Consider the following example where the abilities names are not listed inside of the ability objects.
+
+```json
+system.abilities = {
+  "parkor": {
+    "value": "5",
+    "max": "10",
+  },
+  "dancing": {
+    "value": "1",
+    "max":"10"
+  }
+}
+```
+
+You are able to access the 'key' of the object using the keyword **objectLoopKey** like this:
+
+```json
+{
+  "name": "Abilities",
+  "type": "object-loop",
+  "header": "show",
+  "text": "system.abilities => {objectKeyLoop} - {value} / {max}{nl}"
+}
+```
+
+This would result in:
+
+    Parkor - 5/10
+    Dancing - 1/10
 
 **Dropdown Option:**
 Prefix with `{dropdown}` to create a dropdown selector for viewing different sections:
