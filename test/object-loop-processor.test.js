@@ -170,9 +170,9 @@ describe("ObjectLoopProcessor", () => {
         spells: [{ name: "Fireball" }],
       };
 
-      const result = processor.process(character, "[Spells] spells => {name}");
+      const result = processor.process(character, "[Spells:] spells => {name}");
 
-      expect(mockParserEngine.parseText).toHaveBeenCalledWith("[Spells] Fireball", false);
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith("Spells: Fireball", false);
       expect(result).toBe("parsed_text");
     });
   });
@@ -703,6 +703,197 @@ describe("ObjectLoopProcessor", () => {
       );
 
       expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Rage (3/3): Bonus damage and resistance", false);
+      expect(result).toBe("parsed_text");
+    });
+  });
+
+  describe("nested loops", () => {
+    it("should process nested loops with => separator", () => {
+      const character = {
+        items: [
+          {
+            name: "Longsword",
+            type: "weapon",
+            system: {
+              attack: {
+                damage: {
+                  parts: [
+                    { dice: "1d8", bonus: "+3" },
+                    { dice: "1d6", bonus: "+0" },
+                  ],
+                },
+              },
+            },
+          },
+        ],
+      };
+
+      const result = processor.process(
+        character,
+        "items{weapon} => {name} - {system.attack.damage.parts} => {dice}{bonus}",
+      );
+
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Longsword - 1d8+3 1d6+0", false);
+      expect(result).toBe("parsed_text");
+    });
+
+    it("should handle nested loops with separators between items", () => {
+      const character = {
+        items: [
+          {
+            name: "Shortsword",
+            type: "weapon",
+            system: {
+              attack: {
+                damage: {
+                  parts: [
+                    { dice: "1d6", bonus: "+2" },
+                    { dice: "1d4", bonus: "+1" },
+                  ],
+                },
+              },
+            },
+          },
+        ],
+      };
+
+      const result = processor.process(
+        character,
+        "items{weapon} => {name}: {system.attack.damage.parts} => {dice} ({bonus}), ",
+      );
+
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Shortsword: 1d6 (+2), 1d4 (+1),", false);
+      expect(result).toBe("parsed_text");
+    });
+
+    it("should handle multiple items with nested loops", () => {
+      const character = {
+        items: [
+          {
+            name: "Dagger",
+            type: "weapon",
+            system: {
+              attack: {
+                damage: {
+                  parts: [{ dice: "1d4", bonus: "+1" }],
+                },
+              },
+            },
+          },
+          {
+            name: "Staff",
+            type: "weapon",
+            system: {
+              attack: {
+                damage: {
+                  parts: [
+                    { dice: "1d6", bonus: "+0" },
+                    { dice: "1d8", bonus: "+2" },
+                  ],
+                },
+              },
+            },
+          },
+        ],
+      };
+
+      const result = processor.process(
+        character,
+        "items{weapon} => {name}: {system.attack.damage.parts} => {dice}{bonus} | ",
+      );
+
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Dagger: 1d4+1 | Staff: 1d6+0 | 1d8+2 |", false);
+      expect(result).toBe("parsed_text");
+    });
+
+    it("should handle empty nested arrays", () => {
+      const character = {
+        items: [
+          {
+            name: "Unarmed Strike",
+            type: "weapon",
+            system: {
+              attack: {
+                damage: {
+                  parts: [],
+                },
+              },
+            },
+          },
+        ],
+      };
+
+      const result = processor.process(
+        character,
+        "items{weapon} => {name} - {system.attack.damage.parts} => {dice}{bonus}",
+      );
+
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Unarmed Strike - ", false);
+      expect(result).toBe("parsed_text");
+    });
+
+    it("should handle nested loops with filter on outer loop", () => {
+      const character = {
+        items: [
+          {
+            name: "Longsword",
+            type: "weapon",
+            equipped: true,
+            system: {
+              attack: {
+                damage: {
+                  parts: [{ dice: "1d8", bonus: "+3" }],
+                },
+              },
+            },
+          },
+          {
+            name: "Dagger",
+            type: "weapon",
+            equipped: false,
+            system: {
+              attack: {
+                damage: {
+                  parts: [{ dice: "1d4", bonus: "+1" }],
+                },
+              },
+            },
+          },
+        ],
+      };
+
+      const result = processor.process(
+        character,
+        "items{equipped == true} => {name}: {system.attack.damage.parts} => {dice}{bonus}",
+      );
+
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Longsword: 1d8+3", false);
+      expect(result).toBe("parsed_text");
+    });
+
+    it("should handle triple nested loops", () => {
+      const character = {
+        classes: [
+          {
+            name: "Wizard",
+            spells: [
+              {
+                name: "Fireball",
+                damage: {
+                  types: [{ type: "fire", multiplier: "2x" }],
+                },
+              },
+            ],
+          },
+        ],
+      };
+
+      const result = processor.process(
+        character,
+        "classes => {name}: {spells} => {name} - {damage.types} => {type} {multiplier}",
+      );
+
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Wizard: Fireball - fire 2x", false);
       expect(result).toBe("parsed_text");
     });
   });

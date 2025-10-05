@@ -99,7 +99,14 @@ export class ObjectLoopProcessor extends DataProcessor {
    */
   processChunk(character, chunk, isDropdown, dropdownKeys) {
     let prefix = "";
-    let objName = chunk.split("=>")[0].trim();
+
+    // Split only on the FIRST => to separate object name from template
+    const firstArrowIndex = chunk.indexOf("=>");
+    if (firstArrowIndex === -1) {
+      return { success: false, output: "", prefix: "" };
+    }
+
+    let objName = chunk.substring(0, firstArrowIndex).trim();
 
     // Extract prefix if present (must be in brackets like [Prefix])
     const findPrefixMatches = objName.match(/^\[([^\]]+)\]\s+/);
@@ -116,7 +123,8 @@ export class ObjectLoopProcessor extends DataProcessor {
       objName = objName.replace(`{${objFilter}}`, "");
     }
 
-    const actualValue = chunk.split("=>")[1];
+    // Get everything after the first => (including any subsequent => for nested loops)
+    const actualValue = chunk.substring(firstArrowIndex + 2);
     const objData = extractPropertyByString(character, objName);
 
     if (!objData) {
