@@ -1,0 +1,55 @@
+{
+  "name": "Daggerheart",
+  "system": "daggerheart",
+  "author": "Eddie Dover",
+  "version": "1.0.0",
+  "minimumSystemVersion": "1.1.2",
+  "offline_excludes": ["npc", "base", "vehicle", "group"],
+  "rows": [
+    [
+      {
+        "name": "Character",
+        "type": "direct",
+        "header": "show",
+        "text": "{charactersheet}{nl}{name}"
+      },
+      {
+        "name": "HP",
+        "type": "direct",
+        "header": "show",
+        "text": "{progress {system.resources.hitPoints.value} {system.resources.hitPoints.max}}{nl}{system.resources.hitPoints.value}/{system.resources.hitPoints.max}"
+      },
+      {
+        "name": "Stress",
+        "type": "direct",
+        "header": "show",
+        "text": "{progress {system.resources.stress.value} {system.resources.stress.max}}{nl}{system.resources.stress.value}/{system.resources.stress.max}"
+      },
+      {
+        "name": "Hope",
+        "type": "direct",
+        "header": "show",
+        "text": "{progress {system.resources.hope.value} {system.resources.hope.max}}{nl}{system.resources.hope.value}/{system.resources.hope.max}"
+      },
+      {
+        "name": "Traits",
+        "type": "object-loop",
+        "header": "show",
+        "align": "right",
+        "text": "system.traits => {b}{objectLoopKey}{/b}: {value}{nl}"
+      },
+      {
+        "name": "Combat",
+        "type": "direct",
+        "header": "show",
+        "text": "{b}Armor{/b}: {system.resources.armor.value}/{system.resources.armor.max}{nl}{b}Evasion{/b}: {system.evasion}{nl}{b}Major{/b}:{system.damageThresholds.major} {b}Severe{/b}:{system.damageThresholds.severe}{nl}{b}SP{/b}:{system.cast}{nl}"
+      },
+      {
+        "name": "Weapons",
+        "type": "object-loop",
+        "header": "show",
+        "text": "items{weapon} => {b}{name}{/b}: {system.attack.damage.parts} => {value.dice}+{value.bonus}{nl}"
+      }
+    ]
+  ]
+}
