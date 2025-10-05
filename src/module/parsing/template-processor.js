@@ -37,7 +37,7 @@ export class TemplateProcessor {
 
     // Remove skipped property placeholders
     if (skipProperty) {
-      result = result.replace(new RegExp(`\\{${skipProperty.replace(/\./g, "\\.")}\\}`, "g"), "");
+      result = result.replace(new RegExp(`\\{${skipProperty.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\}`, "g"), "");
     }
 
     for (const matchInfo of allMatches) {
