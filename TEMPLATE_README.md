@@ -490,8 +490,8 @@ Output: `Longsword - 1d8+3 | 1d6+0 |`
 **Nested Loop Features:**
 - **Multiple nesting levels** - You can nest as deeply as needed: `classes => {name}: {spells} => {name} - {damage.types} => {type}`
 - **Filters on any level** - Apply filters to outer or inner loops: `items{equipped == true} => {name}: {parts} => {value}`
-- **Flexible spacing** - Control spacing between nested items with your template text
-- **Empty arrays handled gracefully** - If a nested array is empty, the loop simply skips it
+
+If a nested array is empty, the loop simply skips it
 
 **Nested Loop Examples:**
 
