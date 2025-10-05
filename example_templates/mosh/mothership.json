@@ -1,0 +1,53 @@
+{
+  "name": "Mothership",
+  "system": "mosh",
+  "author": "Eddie Dover",
+  "version": "1.0.0",
+  "minimumSystemVersion": "0.6.0",
+  "offline_excludes": [],
+  "rows": [
+    [
+      {
+        "name": "Name",
+        "type": "direct",
+        "header": "show",
+        "align": "center",
+        "text": "{name}{nl}{b}{system.class}{/b}"
+      },
+      {
+        "name": "Saves",
+        "type": "object-loop",
+        "header": "show",
+        "align": "right",
+        "text": "system.stats{rollLabel contains 'Save'}=>{b}{label}{/b}: {value}{+}{mod}{nl}"
+      },
+      {
+        "name": "Checks",
+        "type": "object-loop",
+        "header": "show",
+        "align": "right",
+        "text": "system.stats{rollLabel contains 'Check'}=>{b}{label}{/b}: {value}{+}{mod}{nl}"
+      },
+      {
+        "name": "Health",
+        "type": "direct",
+        "header": "show",
+        "align": "right",
+        "text": "{b}HP{/b}: {system.health}/{system.health.max}{nl}{b}Wounds{/b}: {system.hits}/{system.hits.max}"
+      },
+      {
+        "name": "Stress",
+        "type": "direct",
+        "header": "show",
+        "text": "{b}Stress{/b}: {system.other.stress}{nl}{i}{system.other.stressdesc}{/i}"
+      },
+      {
+        "name": "Skills",
+        "type": "object-loop",
+        "header": "show",
+        "align": "right",
+        "text": "items{skill} => {b}{name}{/b} - {system.bonus} {nl}"
+      }
+    ]
+  ]
+}
