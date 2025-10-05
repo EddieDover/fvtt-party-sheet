@@ -102,7 +102,7 @@ export class ObjectLoopProcessor extends DataProcessor {
     let objName = chunk.split("=>")[0].trim();
 
     // Extract prefix if present (must be in brackets like [Prefix])
-    const findPrefixMatches = objName.match(/^(\[[^\]]+\])\s+/);
+    const findPrefixMatches = objName.match(/^\[([^\]]+)\]\s+/);
     if (findPrefixMatches?.length) {
       prefix = findPrefixMatches[1].trim();
       objName = objName.replace(findPrefixMatches[0], "").trim();
