@@ -291,6 +291,12 @@ Handlebars.registerHelper("getMinWidth", function (row, key) {
 });
 
 // @ts-ignore
+Handlebars.registerHelper("getHeaderAlignment", function (row, key) {
+  const myoptions = row[key]?.options ?? {};
+  return myoptions?.headerAlign ?? "center";
+});
+
+// @ts-ignore
 Handlebars.registerHelper("shouldShowTotal", function (row, key) {
   const myoptions = row[key]?.options ?? {};
   return myoptions?.showTotal === true;

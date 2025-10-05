@@ -151,6 +151,7 @@ Each column requires these basic properties:
 
 - **align** - Horizontal alignment: "left", "center", "right"
 - **valign** - Vertical alignment: "top", "bottom" (overrides system CSS when set)
+- **headerAlign** - Horizontal alignment for the header text: "left", "center", "right"
 - **minwidth** - Minimum column width in pixels (number, no quotes): `"minwidth": 100`
 - **maxwidth** - Maximum column width in pixels (number, no quotes): `"maxwidth": 200`
 - **showSign** - (direct/direct-complex only) Show "+" for positive numbers: `"showSign": true`

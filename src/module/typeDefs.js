@@ -44,6 +44,7 @@ class FormApplication {
  * @typedef { 'show' | 'hide' | 'skip' } TemplateDataColumnHeader
  * @typedef { 'left' | 'center' | 'right' } TemplateDataColumnAlignType
  * @typedef { 'top' | 'bottom' } TemplateDataColumnVAlignType
+ * @typedef { 'left' | 'center' | 'right' } TemplateDataColumnHeaderAlignType
  */
 
 /**
@@ -53,6 +54,7 @@ class FormApplication {
  * @property {TemplateDataColumnHeader} header - Whether to show, hide, or skip the column.
  * @property {TemplateDataColumnAlignType} align - The horizontal alignment of the column.
  * @property {TemplateDataColumnVAlignType} valign - The vertical alignment of the column.
+ * @property {TemplateDataColumnHeaderAlignType} headerAlign - The horizontal alignment of the header text.
  * @property {number} colspan - The number of columns to span.
  * @property {number} rowspan - The number of rows to span. Spanned rows must have spanover type.
  * @property {number} maxwidth - The maximum width of the column in pixels.
