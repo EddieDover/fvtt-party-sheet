@@ -1,5 +1,5 @@
 import { DataProcessor } from "../base-processor.js";
-import { extractPropertyByString } from "../../utils.js";
+import { extractPropertyByString, toProperCase } from "../../utils.js";
 import { TemplateProcessor } from "../template-processor.js";
 
 /**
@@ -257,9 +257,9 @@ export class ObjectLoopProcessor extends DataProcessor {
 
     // Handle special FoundryVTT document structure
     if (objKeys.length === 6 && objKeys.includes("documentClass") && objKeys.includes("_source")) {
-      return Object.keys(objData._source).map((key) => objData._source[key]);
+      return Object.keys(objData._source).map((key) => ({ ...objData._source[key], objectLoopKey: toProperCase(key) }));
     } else {
-      return Object.keys(objData).map((key) => objData[key]);
+      return Object.keys(objData).map((key) => ({ ...objData[key], objectLoopKey: toProperCase(key) }));
     }
   }
 
