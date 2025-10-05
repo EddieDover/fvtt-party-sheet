@@ -450,6 +450,63 @@ This will display "Weapons" before the looped items.
 
 **Syntax:** `[Prefix] objectname{filter} => {property}` where properties are automatically processed with brace notation.
 
+**Nested Loops:**
+
+Object loops can be nested to iterate through arrays within arrays. Use multiple `=>` separators to define nested loops:
+
+```json
+{
+  "name": "Weapons with Damage",
+  "type": "object-loop",
+  "header": "show",
+  "text": "items{weapon} => {name} - {system.attack.damage.parts} => {dice}{bonus} | "
+}
+```
+
+This processes a structure like:
+```json
+{
+  "items": [
+    {
+      "name": "Longsword",
+      "type": "weapon",
+      "system": {
+        "attack": {
+          "damage": {
+            "parts": [
+              {"dice": "1d8", "bonus": "+3"},
+              {"dice": "1d6", "bonus": "+0"}
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+Output: `Longsword - 1d8+3 | 1d6+0 |`
+
+**Nested Loop Features:**
+- **Multiple nesting levels** - You can nest as deeply as needed: `classes => {name}: {spells} => {name} - {damage.types} => {type}`
+- **Filters on any level** - Apply filters to outer or inner loops: `items{equipped == true} => {name}: {parts} => {value}`
+- **Flexible spacing** - Control spacing between nested items with your template text
+- **Empty arrays handled gracefully** - If a nested array is empty, the loop simply skips it
+
+**Nested Loop Examples:**
+
+Triple-nested with separators:
+```json
+"text": "items{weapon} => {name}: {system.attack.damage.parts} => {dice} ({bonus}), "
+```
+Output: `Shortsword: 1d6 (+2), 1d4 (+1),`
+
+Multiple items with nested arrays:
+```json
+"text": "items{weapon} => {name}: {system.attack.damage.parts} => {dice}{bonus} | "
+```
+Output: `Dagger: 1d4+1 | Staff: 1d6+0 | 1d8+2 |`
+
 ### Table Layout Control
 
 **Column Spanning:**
