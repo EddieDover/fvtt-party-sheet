@@ -31,19 +31,6 @@ export default () => ({
     copy({
       targets: [
         { src: "*.md", dest: "dist" },
-        // { src: "example_templates/*", dest: "dist/example_templates" },
-        {
-          src: "example_templates/**/*.json",
-          dest: "dist/example_templates",
-          rename(fname, extension, fullPath) {
-            fullPath = fullPath.replace("example_templates/", "");
-            fullPath = fullPath.replace(`/${fname}.${extension}`, "");
-            if (extension === "json") {
-              return `${fullPath}/${fname}.json`;
-            }
-            return `${fullPath}/${fname}.${extension}`;
-          },
-        },
       ],
       verbose: true,
     }),
