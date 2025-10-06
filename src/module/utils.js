@@ -337,8 +337,8 @@ export function compareSymVer(a, b) {
   if (!a || !b || !a.includes(".") || !b.includes(".")) {
     return 0;
   }
-  const [aMajor, aMinor, aPatch] = a.split(".").map(Number);
-  const [bMajor, bMinor, bPatch] = b.split(".").map(Number);
+  let [aMajor = 0, aMinor = 0, aPatch = 0, aBuild = 0] = a.split(".").map(Number);
+  let [bMajor = 0, bMinor = 0, bPatch = 0, bBuild = 0] = b.split(".").map(Number);
 
   if (aMajor < bMajor) return -1;
   if (aMajor > bMajor) return 1;
@@ -346,6 +346,8 @@ export function compareSymVer(a, b) {
   if (aMinor > bMinor) return 1;
   if (aPatch < bPatch) return -1;
   if (aPatch > bPatch) return 1;
+  if (aBuild < bBuild) return -1;
+  if (aBuild > bBuild) return 1;
   return 0; // strings are equal
 }
 

@@ -317,6 +317,26 @@ describe("Utils testing", () => {
         expect(() => compareSymVer("abc", "1.0.0")).not.toThrow();
         expect(() => compareSymVer("1.0.0", "xyz")).not.toThrow();
       });
+
+      it("should handle versions with 4 segments", () => {
+        expect(compareSymVer("1.0.0.0", "1.0.0.0")).toBe(0);
+        expect(compareSymVer("1.0.0.1", "1.0.0.0")).toBeGreaterThan(0);
+        expect(compareSymVer("1.0.0.0", "1.0.0.1")).toBeLessThan(0);
+        expect(compareSymVer("1.0.0.0", "1.0.0.0")).toBe(0);
+      });
+
+      it("should handle versions with more than 4 segments by ignoring extra segments", () => {
+        expect(compareSymVer("1.0.0.0.0", "1.0.0.0")).toBe(0);
+        expect(compareSymVer("1.0.0.1.0", "1.0.0.0")).toBeGreaterThan(0);
+        expect(compareSymVer("1.0.0.0.0", "1.0.0.1")).toBeLessThan(0);
+        expect(compareSymVer("1.0.0.0.0", "1.0.0.0.0")).toBe(0);
+      });
+
+      it("should handle comparisons between 3-segment and 4-segment versions correctly", () => {
+        expect(compareSymVer("1.0.0", "1.0.0.0")).toBe(0);
+        expect(compareSymVer("1.0.0.1", "1.0.0")).toBeGreaterThan(0);
+        expect(compareSymVer("1.0.0", "1.0.0.1")).toBeLessThan(0);
+      });
     });
 
     describe("System version filtering logic", () => {
