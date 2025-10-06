@@ -1,0 +1,33 @@
+{
+  "name": "DC20",
+  "system": "dc20rpg",
+  "author": "Eddie Dover",
+  "version": "1.0.0",
+  "minimumSystemVersion": "0.9.7.3",
+  "offline_excludes": ["npc", "storage", "companion"],
+  "rows": [
+    [
+      {
+        "name": "Name",
+        "type": "direct",
+        "header": "show",
+        "text": "{charactersheet}{nl}{name}{nl}Level {system.details.level} ",
+        "align": "center"
+      },
+      {
+        "name": "Resources",
+        "type": "direct",
+        "header": "show",
+        "text": "{c:green}{b}Health{/b}{/c}: {system.resources.health}/{system.resources.health.max}{nl}{c:blue}{b}Mana{/b}{/c}: {system.resources.mana}/{system.resources.mana.max}{nl}{c:red}{b}Grit{/b}{/c}: {system.resources.grit}/{system.resources.grit.max}",
+        "align": "right"
+      },
+      {
+        "name": "Attributes",
+        "type": "object-loop",
+        "header": "show",
+        "align": "right",
+        "text": "system.attributes{objectLoopKey !contains 'Prime'} => {b}{label}{/b}:{value}{nl} || system.attributes{objectLoopKey contains 'Prime'} => {b}{objectLoopKey}{/b}:{value}"
+      }
+    ]
+  ]
+}

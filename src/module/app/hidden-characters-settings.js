@@ -1,47 +1,140 @@
 /* eslint-disable no-undef */
 // @ts-ignore
-export class HiddenCharactersSettings extends FormApplication {
-  constructor(overrides) {
-    super();
-    this.overrides = overrides || {};
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+export class HiddenCharactersSettings extends HandlebarsApplicationMixin(ApplicationV2) {
+  static _instance = null;
+
+  static DEFAULT_OPTIONS = {
+    tag: "form",
+    form: {
+      handler: HiddenCharactersSettings.formHandler,
+      submitOnChange: false,
+      closeOnSubmit: false,
+    },
+    window: {
+      title: "fvtt-party-sheet.hide-sheet.button",
+      width: "auto",
+      height: "auto",
+    },
+    classes: ["fvtt-party-sheet-hidden-characters-settings"],
+    actions: {
+      onSubmit: HiddenCharactersSettings.onSubmit,
+      onReset: HiddenCharactersSettings.onReset,
+    },
+  };
+
+  static PARTS = {
+    form: {
+      template: "modules/fvtt-party-sheet/templates/hidden-characters.hbs",
+    },
+  };
+
+  static formHandler(event, form, formData) {
+    event.preventDefault();
+    event.stopPropagation();
+    // Handle form submission logic here if needed
   }
 
-  getData(options) {
+  constructor(overrides) {
+    super();
+    this.overrides = overrides || {
+      excludedTypes: [],
+      onexit: () => {},
+    };
+    // Store reference to this instance
+    HiddenCharactersSettings._instance = this;
+  }
+
+  static getInstance(overrides) {
+    // If an instance exists and is rendered, bring it to focus
+    if (HiddenCharactersSettings._instance && HiddenCharactersSettings._instance.rendered) {
+      HiddenCharactersSettings._instance.bringToTop();
+      return HiddenCharactersSettings._instance;
+    }
+    // Otherwise create a new instance
+    return new HiddenCharactersSettings(overrides);
+  }
+
+  close(options) {
+    // Clear the static reference when closing
+    if (HiddenCharactersSettings._instance === this) {
+      HiddenCharactersSettings._instance = null;
+    }
+    return super.close(options);
+  }
+
+  _prepareContext(options) {
     // @ts-ignore
-    this.characterList = game.actors
-      .filter((actor) => actor.type !== "npc")
-      .map((actor) => {
-        return { "uuid": actor.uuid, "name": actor.name };
-      });
+    this.characterList = game.actors.map((actor) => {
+      return { "uuid": actor.uuid, "name": actor.name, "type": actor.type };
+    });
+    if (this.overrides?.excludedTypes?.length > 0) {
+      this.characterList = this.characterList.filter((char) => !this.overrides.excludedTypes.includes(char.type));
+    }
     // @ts-ignore
     const hiddenCharacters = game.settings.get("fvtt-party-sheet", "hiddenCharacters");
     // @ts-ignore
-    const enableOnlyOnline = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
-
+    const hiddenTypes = game.settings.get("fvtt-party-sheet", "hiddenCharacterTypes");
     // @ts-ignore
-    return foundry.utils.mergeObject(super.getData(options), {
+    const enableOnlyOnline = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
+    // @ts-ignore
+    const actorTypes = Object.keys(game.system.documentTypes.Actor);
+    // @ts-ignore
+    const showAssignedOnly = game.settings.get("fvtt-party-sheet", "showAssignedOnly");
+
+    return {
+      actorTypes,
+      showAssignedOnly,
+      hiddenTypes,
       characters: this.characterList,
       hiddenCharacters,
       enableOnlyOnline,
       overrides: this.overrides,
-    });
+    };
   }
 
-  static get defaultOptions() {
-    // @ts-ignore
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      id: "fvtt-party-sheet-hidden-characters-settings",
-      classes: ["form"],
-      title: "Configure Hidden Characters",
-      // resizable: true,
-      template: "modules/fvtt-party-sheet/templates/hidden-characters.hbs",
-      // @ts-ignore
-      width: "auto", // $(window).width() > 960 ? 960 : $(window).width() - 100,
-      height: "auto",
-    });
+  _onRender(context, options) {
+    super._onRender(context, options);
+    // Actions are automatically bound by ApplicationV2
+    const showAssignedOnlyToggle = document.getElementById("fvtt-party-sheet-assigned-only");
+    if (showAssignedOnlyToggle) {
+      showAssignedOnlyToggle.addEventListener("change", (event) => {
+        // @ts-ignore
+        game.settings.set("fvtt-party-sheet", "showAssignedOnly", event.target.checked);
+      });
+    }
+
+    const hiddenTypeToggles = document.getElementsByClassName("hidden-type-toggle");
+    for (const toggle of hiddenTypeToggles) {
+      toggle.addEventListener("change", (event) => {
+        /** @type {HTMLInputElement} */
+        // @ts-ignore
+        const target = event.target;
+        if (target) {
+          const type = target.id.replace("character-type-", "");
+          // @ts-ignore
+          const hiddenTypes = game.settings.get("fvtt-party-sheet", "hiddenCharacterTypes");
+          if (target.checked) {
+            if (!hiddenTypes.includes(type)) {
+              hiddenTypes.push(type);
+            }
+          } else {
+            const index = hiddenTypes.indexOf(type);
+            if (index > -1) {
+              hiddenTypes.splice(index, 1);
+            }
+          }
+          // @ts-ignore
+          game.settings.set("fvtt-party-sheet", "hiddenCharacterTypes", hiddenTypes);
+        }
+      });
+    }
   }
 
-  saveHiddenCharacters() {
+  saveHiddenCharacters(event) {
+    if (event) event.preventDefault();
+
     const hiddenCharacters = [];
     for (const character of this.characterList) {
       const checkbox = document.getElementById(`hidden-character-${character.uuid}`);
@@ -56,20 +149,25 @@ export class HiddenCharactersSettings extends FormApplication {
     if (closefunc) {
       closefunc();
     }
-    super.close();
+    // @ts-ignore
+    this.close();
   }
 
-  resetEffects() {
-    // this.effects = game.settings.settings.get('monks-little-details.additional-effects').default;
+  resetEffects(event) {
+    if (event) event.preventDefault();
     // @ts-ignore
-    this.refresh();
+    this.render();
   }
 
-  activateListeners(html) {
-    super.activateListeners(html);
+  static onSubmit(event, target) {
+    event.preventDefault();
     // @ts-ignore
-    $('button[name="submit"]', html).click(this.saveHiddenCharacters.bind(this));
+    this.saveHiddenCharacters(event);
+  }
+
+  static onReset(event, target) {
+    event.preventDefault();
     // @ts-ignore
-    $('button[name="reset"]', html).click(this.resetEffects.bind(this));
+    this.resetEffects(event);
   }
 }
