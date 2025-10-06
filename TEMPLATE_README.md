@@ -208,14 +208,20 @@ Operations support decimals and negative numbers with optional spacing around op
 Text formatting using HTML-like tags:
 
 - **{i}** and **{/i}** - _Italic text_
-- **{b}** and **{/b}** - **Bold text**  
+- **{b}** and **{/b}** - **Bold text**
 - **{u}** and **{/u}** - <u>Underlined text</u>
+- **{c:COLOR}** and **{/c}** - Colored text (supports named colors and hex codes)
 - **{newline}** or **{nl}** - Line breaks
 - **{s}** - Single non-breaking space
 - **{s#}** - Multiple spaces (replace # with number): `{s3}` = 3 spaces
 - **{s0}** - Remove all spaces before and after this tag
 
 Example: `"text": "{b}Name:{/b} {name}{newline}{i}Level {system.level}{/i}"`
+
+**Color Examples:**
+- Named colors: `{c:red}Low HP{/c}`, `{c:green}Healthy{/c}`, `{c:blue}Mana{/c}`
+- Hex colors: `{c:#F00}Critical{/c}`, `{c:#4CAF50}Good{/c}`, `{c:#FF5722}Warning{/c}`
+- Combined: `"text": "HP: {c:red}{system.hp.value}{/c}/{system.hp.max}"`
 
 ### UI Elements
 

@@ -244,6 +244,33 @@ export class FormattingParser extends TextParser {
 }
 
 /**
+ * Parser for handling color tags ({c:COLOR}...{/c})
+ */
+export class ColorParser extends TextParser {
+  /**
+   * @param {string} value - The text value to parse
+   * @param {boolean} isSafeStringNeeded - Whether a SafeString is needed
+   * @returns {[boolean, string]} Tuple of [isSafeStringNeeded, parsedValue]
+   */
+  doParse(value, isSafeStringNeeded) {
+    // Match {c:COLOR}...{/c} patterns
+    // Supports named colors (red, blue) and hex codes (#F00, #FF0000)
+    const colorRegex = /\{c:([\w#]+)\}(.*?)\{\/c\}/g;
+    let parsedValue = value;
+    let needsSafe = isSafeStringNeeded;
+
+    if (colorRegex.test(value)) {
+      needsSafe = true;
+      parsedValue = value.replace(colorRegex, (match, color, text) => {
+        return `<span style="color: ${color}">${text}</span>`;
+      });
+    }
+
+    return /** @type {[boolean, string]} */ ([needsSafe, parsedValue]);
+  }
+}
+
+/**
  * Parser for handling FontAwesome icons
  */
 export class FontAwesomeParser extends TextParser {
@@ -328,6 +355,7 @@ export class TextParserChain {
     const multiplyParser = new MultiplyParser();
     const divideParser = new DivideParser();
     const formattingParser = new FormattingParser();
+    const colorParser = new ColorParser();
     const fontAwesomeParser = new FontAwesomeParser();
     const spacingParser = new SpacingParser();
     const newlineParser = new NewlineParser();
@@ -338,6 +366,7 @@ export class TextParserChain {
       .setNext(multiplyParser)
       .setNext(divideParser)
       .setNext(formattingParser)
+      .setNext(colorParser)
       .setNext(fontAwesomeParser)
       .setNext(spacingParser)
       .setNext(newlineParser);

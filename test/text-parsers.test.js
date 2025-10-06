@@ -7,6 +7,7 @@ import {
   MultiplyParser,
   DivideParser,
   FormattingParser,
+  ColorParser,
   FontAwesomeParser,
   SpacingParser,
   NewlineParser,
@@ -337,6 +338,50 @@ describe("Text Parsers", () => {
     });
   });
 
+  describe("ColorParser", () => {
+    let parser;
+
+    beforeEach(() => {
+      parser = new ColorParser();
+    });
+
+    it("should parse named colors", () => {
+      const [isSafe, result] = parser.doParse("Hello {c:red}world{/c}", false);
+      expect(isSafe).toBe(true);
+      expect(result).toBe('Hello <span style="color: red">world</span>');
+    });
+
+    it("should parse hex colors with 3 digits", () => {
+      const [isSafe, result] = parser.doParse("Status: {c:#F00}Critical{/c}", false);
+      expect(isSafe).toBe(true);
+      expect(result).toBe('Status: <span style="color: #F00">Critical</span>');
+    });
+
+    it("should parse hex colors with 6 digits", () => {
+      const [isSafe, result] = parser.doParse("HP: {c:#4CAF50}Healthy{/c}", false);
+      expect(isSafe).toBe(true);
+      expect(result).toBe('HP: <span style="color: #4CAF50">Healthy</span>');
+    });
+
+    it("should handle multiple color tags", () => {
+      const [isSafe, result] = parser.doParse("{c:red}Stop{/c} and {c:green}Go{/c}", false);
+      expect(isSafe).toBe(true);
+      expect(result).toBe('<span style="color: red">Stop</span> and <span style="color: green">Go</span>');
+    });
+
+    it("should not modify text without color tags", () => {
+      const [isSafe, result] = parser.doParse("No colors here", false);
+      expect(isSafe).toBe(false);
+      expect(result).toBe("No colors here");
+    });
+
+    it("should handle nested content", () => {
+      const [isSafe, result] = parser.doParse("{c:blue}This is a long message{/c}", false);
+      expect(isSafe).toBe(true);
+      expect(result).toBe('<span style="color: blue">This is a long message</span>');
+    });
+  });
+
   describe("FontAwesome Parser", () => {
     let parser;
 
@@ -447,6 +492,19 @@ describe("Text Parsers", () => {
       const [isSafe, result] = TextParserChain.parse("{fa-solid fa-heart}{s3}Love", false);
       expect(isSafe).toBe(true);
       expect(result).toBe('<i class="fa-solid fa-heart"></i>&nbsp;&nbsp;&nbsp;Love');
+    });
+
+    it("should handle color tags with other formatting", () => {
+      const [isSafe, result] = TextParserChain.parse("{c:red}{b}Critical{/b}{/c} HP", false);
+      expect(isSafe).toBe(true);
+      expect(result).toBe('<span style="color: red"><b>Critical</b></span> HP');
+    });
+
+    it("should handle multiple colors in complex text", () => {
+      const [isSafe, result] = TextParserChain.parse("HP: {c:green}75{/c}/100 MP: {c:blue}30{/c}/50", false);
+      expect(isSafe).toBe(true);
+      expect(result).toContain('<span style="color: green">75</span>');
+      expect(result).toContain('<span style="color: blue">30</span>');
     });
 
     it("should process complex meter with embedded math", () => {
