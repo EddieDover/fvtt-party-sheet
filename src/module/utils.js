@@ -1,3 +1,5 @@
+import { loadModuleTemplates as loadTemplatesFromRepository } from "./template-loader.js";
+
 /** @type {TemplateData[]} */
 let customTemplates = [];
 /** @type {TemplateData[]} */
@@ -5,6 +7,10 @@ let moduleTemplates = [];
 
 let selectedTemplate = null;
 let templatesLoaded = false;
+
+// Cache for system versions to avoid repeated file system reads
+/** @type {SystemVersionSet[] | null} */
+let cachedSystemVersions = null;
 
 // Preview mode variables
 let previewTemplate = null;
@@ -32,6 +38,22 @@ export function setTemplatesLoaded(value) {
  */
 export function getModuleTemplates() {
   return moduleTemplates;
+}
+
+/**
+ * Set the module templates
+ * @param {TemplateData[]} templates The module templates to set
+ */
+export function setModuleTemplates(templates) {
+  moduleTemplates = templates;
+}
+
+/**
+ * Clear all cached data (system versions and module templates)
+ */
+export function clearCache() {
+  cachedSystemVersions = null;
+  moduleTemplates = [];
 }
 
 const NEWLINE_ELEMENTS = ["{newline}", "{nl}"];
@@ -72,15 +94,23 @@ export function isForgeVTT() {
 /**
  * Load all the user-provided templates for systems
  * @param {string} path The path to the template
+ * @param {string} previewPath Optional preview image path
  * @returns {Promise<TemplateData>} A promise that resolves when the template is loaded
  */
-export async function getModuleTemplate(path) {
+export async function getModuleTemplate(path, previewPath = null) {
   try {
     /** @type {TemplateData} */
     const template = JSON.parse(await fetch(path).then((r) => r.text()));
-    const templateFileNameWithoutExtension = path.split("/").pop().split(".")[0];
     template.path = path;
-    template.preview = `${template.system}/${templateFileNameWithoutExtension}.jpg`;
+
+    // Use provided preview path or construct from path
+    if (previewPath) {
+      template.preview = previewPath;
+    } else {
+      const templateFileNameWithoutExtension = path.split("/").pop().split(".")[0];
+      template.preview = `${template.system}/${templateFileNameWithoutExtension}.jpg`;
+    }
+
     if (template.name && template.author && template.system && template.rows) {
       return template;
     } else {
@@ -126,9 +156,15 @@ export async function loadSystemTemplate(path) {
 
 /**
  * Get all the systems and versions available.
+ * @param {boolean} useCache - If true, return cached data if available
  * @returns {Promise<SystemVersionSet[]>} A list of all the systems and versions available.
  */
-export async function getAllSystemVersions() {
+export async function getAllSystemVersions(useCache = true) {
+  // Return cached data if available and cache is enabled
+  if (useCache && cachedSystemVersions !== null) {
+    return cachedSystemVersions;
+  }
+
   const systemVersions = [];
 
   try {
@@ -155,6 +191,9 @@ export async function getAllSystemVersions() {
         });
       }
     }
+
+    // Cache the results
+    cachedSystemVersions = systemVersions;
   } catch (e) {
     console.error("Failed to get system versions:", e);
   }
@@ -204,44 +243,74 @@ export async function loadSystemTemplates() {
 
 /**
  * Load all the user-provided templates for modules
+ * @param {boolean} forceRefresh - If true, fetch from repository. If false, return cached templates.
  * @returns {Promise<TemplateData[]>} A promise that resolves when the templates are loaded
  */
-export async function loadModuleTemplates() {
-  // Look inside the "partysheets" folder. Any JSON file inside should be loaded
-  const templatePaths = [];
-  // @ts-ignore
+export async function loadModuleTemplates(forceRefresh = false) {
+  // If we have cached templates and not forcing refresh, return them
+  if (!forceRefresh && moduleTemplates.length > 0) {
+    return moduleTemplates;
+  }
 
-  // @ts-ignore
-  const templateFolders = await foundry.applications.apps.FilePicker.implementation.browse(
-    "data",
-    "/modules/fvtt-party-sheet/example_templates/",
-  );
-  for (const folder of templateFolders.dirs) {
+  // Only fetch from repository if explicitly requested
+  if (forceRefresh) {
+    const result = await loadTemplatesFromRepository();
+    moduleTemplates = result.templates;
+    return result.templates;
+  }
+
+  // Return empty array if no cache and not forcing refresh
+  return [];
+}
+
+/**
+ * Check for template updates without loading full templates
+ * Only fetches the templates.yaml manifest and checks versions
+ * @returns {Promise<{hasUpdates: boolean, updateCount: number}>}
+ */
+export async function checkForTemplateUpdates() {
+  // If no custom templates installed, no need to check
+  if (customTemplates.length === 0) {
+    return { hasUpdates: false, updateCount: 0 };
+  }
+
+  try {
+    const result = await loadTemplatesFromRepository();
+    if (!result.success) {
+      return { hasUpdates: false, updateCount: 0 };
+    }
+
+    // Cache the templates for later use
+    moduleTemplates = result.templates;
+
     // @ts-ignore
-    const templateFiles = await foundry.applications.apps.FilePicker.implementation.browse("data", folder);
+    const currentSystem = game.system.id;
+    let updateCount = 0;
 
-    for (const file of templateFiles.files) {
-      if (file.endsWith(".json")) {
-        templatePaths.push(file);
+    // Check each installed template against repository versions
+    for (const installed of customTemplates) {
+      const repoTemplate = result.templates.find(
+        (t) => t.name === installed.name && t.author === installed.author && t.system === currentSystem,
+      );
+
+      if (repoTemplate && compareSymVer(installed.version, repoTemplate.version) < 0) {
+        updateCount++;
       }
     }
+
+    return { hasUpdates: updateCount > 0, updateCount };
+  } catch (error) {
+    console.error("Error checking for template updates:", error);
+    return { hasUpdates: false, updateCount: 0 };
   }
-
-  /** @type {TemplateData[]} */
-  const includedTemplates = [];
-
-  for (const path of templatePaths) {
-    includedTemplates.push(await getModuleTemplate(path));
-  }
-
-  return includedTemplates;
 }
 
 /**
  * Validates the system templates.
+ * @param {boolean} fetchFromRepository - If true, fetch latest templates from repository before validating
  * @returns {Promise<TemplateValidityReturnData>} - A list of the valid, out of date, and too new templates.
  */
-export async function validateSystemTemplates() {
+export async function validateSystemTemplates(fetchFromRepository = false) {
   /** @type {TemplateValidityReturnData} */
   let output = {
     valid: [],
@@ -253,7 +322,7 @@ export async function validateSystemTemplates() {
   };
 
   const systemVersions = await getAllSystemVersions();
-  moduleTemplates = await loadModuleTemplates();
+  moduleTemplates = await loadModuleTemplates(fetchFromRepository);
 
   for (const template of customTemplates) {
     const moduleTemplate = moduleTemplates.find((t) => t.name === template.name && t.author === template.author);

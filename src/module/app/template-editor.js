@@ -767,35 +767,4 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       },
     ).render(true);
   }
-
-  _promptForFilename() {
-    return new Promise((resolve) => {
-      // @ts-ignore
-      new Dialog({
-        title: "Save Template As",
-        content: `
-          <form>
-            <div class="form-group">
-              <label>Filename:</label>
-              <input type="text" name="filename" value="${this.currentFilename.replace(".json", "")}" />
-            </div>
-          </form>
-        `,
-        buttons: {
-          save: {
-            label: "Save",
-            callback: (html) => {
-              const filename = html.find('[name="filename"]').val();
-              resolve(filename);
-            },
-          },
-          cancel: {
-            label: "Cancel",
-            callback: () => resolve(null),
-          },
-        },
-        default: "save",
-      }).render(true);
-    });
-  }
 }

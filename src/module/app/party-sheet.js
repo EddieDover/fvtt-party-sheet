@@ -79,6 +79,8 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     this.refreshTimer = null;
     this.dropdownStates = new Map(); // Store dropdown selection states
     this.isDropdownInteracting = false; // Track if user is interacting with dropdowns
+    this.templateLoadStatus = null; // Track template loading state: 'loading', 'loaded', 'error'
+    this.templateLoadError = null; // Store error message if loading fails
 
     // Add this instance to active instances set
     PartySheetForm._activeInstances.add(this);
@@ -388,6 +390,8 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
       // @ts-ignore
       overrides: this.overrides,
       isInPreviewMode: isInPreviewMode(),
+      templateLoadStatus: this.templateLoadStatus,
+      templateLoadError: this.templateLoadError,
     };
 
     return payload;
@@ -731,7 +735,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
         const modulepath = event.currentTarget.dataset.modulepath;
         // Construct the Application instance
 
-        const imageURL = `https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet/main/example_templates/${modulepath}`;
+        const imageURL = `https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet-templates/main/templates/${modulepath}`;
         console.log(`Loading image from URL: ${imageURL}`);
         // @ts-ignore
         const ip = new ImagePopout({
@@ -753,20 +757,61 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
         }
 
         // @ts-ignore
-        const dataModuleTemplatePath = event.currentTarget.dataset.modulepath;
-        const dataModuleTemplateFilename = dataModuleTemplatePath.split("/").pop();
-        const dataModuleTemplateFolder = dataModuleTemplatePath.split("/").slice(0, -1).join("/") + "/";
-        // @ts-ignore
-        const fileContents = JSON.parse(
-          await fetch(`${dataModuleTemplateFolder}${dataModuleTemplateFilename}`).then((r) => r.text()),
-        );
-        const fileObject = new File([JSON.stringify(fileContents)], dataModuleTemplateFilename, {
-          type: "application/json",
-        });
-        // @ts-ignore
-        await foundry.applications.apps.FilePicker.implementation.upload("data", "partysheets", fileObject);
-        await this._postInstallCallback();
-        this.label = "Installed";
+        /** @type {HTMLElementEvent} */
+        const buttonElement = event.currentTarget;
+        const originalText = buttonElement.innerHTML;
+
+        try {
+          // Show loading state
+          buttonElement.disabled = true;
+          buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Installing...';
+          buttonElement.style.opacity = "0.7";
+          buttonElement.style.cursor = "wait";
+
+          // @ts-ignore
+          const dataModuleTemplatePath = buttonElement.dataset.modulepath;
+          const dataModuleTemplateFilename = dataModuleTemplatePath.split("/").pop();
+          const dataModuleTemplateFolder = dataModuleTemplatePath.split("/").slice(0, -1).join("/") + "/";
+
+          // @ts-ignore
+          const fileContents = JSON.parse(
+            await fetch(`${dataModuleTemplateFolder}${dataModuleTemplateFilename}`).then((r) => r.text()),
+          );
+          const fileObject = new File([JSON.stringify(fileContents)], dataModuleTemplateFilename, {
+            type: "application/json",
+          });
+
+          // @ts-ignore
+          await foundry.applications.apps.FilePicker.implementation.upload("data", "partysheets", fileObject);
+          await this._postInstallCallback();
+
+          // Show success state
+          buttonElement.innerHTML = '<i class="fas fa-check"></i> Installed';
+          buttonElement.style.backgroundColor = "#29b125";
+
+          // Refresh the party sheet after a brief delay to show success
+          setTimeout(() => {
+            this.doRender(false, false);
+          }, 800);
+        } catch (error) {
+          console.error("Error installing template:", error);
+
+          // Show error state
+          buttonElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Failed';
+          buttonElement.style.backgroundColor = "#ff6666";
+
+          // @ts-ignore
+          ui.notifications.error(`Failed to install template: ${error.message}`);
+
+          // Reset button after delay
+          setTimeout(() => {
+            buttonElement.innerHTML = originalText;
+            buttonElement.style.backgroundColor = "";
+            buttonElement.style.opacity = "";
+            buttonElement.style.cursor = "";
+            buttonElement.disabled = false;
+          }, 2000);
+        }
       });
     });
 
@@ -844,7 +889,56 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     // @ts-ignore
     this._openingInstaller = this.showInstaller; // Only flag as opening if we're showing it
 
+    // If we're opening the installer, trigger template loading with status
+    // @ts-ignore
+    if (this.showInstaller) {
+      // @ts-ignore
+      this.loadTemplatesWithStatus();
+    }
+
     // @ts-ignore
     this.doRender(true, false);
+  }
+
+  /**
+   * Load templates from repository with status tracking
+   * @memberof PartySheetForm
+   */
+  async loadTemplatesWithStatus() {
+    // Import the template loader and utils
+    const { loadModuleTemplates: loadTemplatesFromRepo } = await import("../template-loader.js");
+    const { setModuleTemplates, validateSystemTemplates } = await import("../utils.js");
+
+    // Set loading status and render
+    this.templateLoadStatus = "loading";
+    this.templateLoadError = null;
+    this.doRender(false, false);
+
+    // Load templates from repository
+    const result = await loadTemplatesFromRepo();
+
+    // Update status based on result
+    if (result.success) {
+      this.templateLoadStatus = "loaded";
+      this.templateLoadError = null;
+
+      // Update the module templates cache
+      setModuleTemplates(result.templates);
+
+      // Validate the templates now that we have fresh data from repository
+      try {
+        const template_validation = await validateSystemTemplates(false); // Don't fetch again, use what we just loaded
+        // @ts-ignore
+        game.settings.set("fvtt-party-sheet", "validationInfo", template_validation);
+      } catch (error) {
+        console.error("Error validating templates:", error);
+      }
+    } else {
+      this.templateLoadStatus = "error";
+      this.templateLoadError = result.error;
+    }
+
+    // Re-render with results
+    this.doRender(false, false);
   }
 }
