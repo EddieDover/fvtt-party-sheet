@@ -1592,7 +1592,7 @@ describe("Utils testing", () => {
         };
 
         // Mock GitHub templates.yaml returning empty (no templates available)
-        const yamlContent = `dnd5e:`;
+        const yamlContent = "dnd5e:";
 
         global.fetch
           .mockResolvedValueOnce({
@@ -1643,7 +1643,7 @@ describe("Utils testing", () => {
         };
 
         // Mock GitHub templates.yaml returning empty (no templates available)
-        const yamlContent = `dnd5e:`;
+        const yamlContent = "dnd5e:";
 
         global.fetch
           .mockResolvedValueOnce({
