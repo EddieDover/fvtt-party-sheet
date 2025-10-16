@@ -1,3 +1,5 @@
+import { loadModuleTemplates as loadTemplatesFromRepository } from "./template-loader.js";
+
 /** @type {TemplateData[]} */
 let customTemplates = [];
 /** @type {TemplateData[]} */
@@ -5,6 +7,15 @@ let moduleTemplates = [];
 
 let selectedTemplate = null;
 let templatesLoaded = false;
+
+// Cache for system versions to avoid repeated file system reads
+/** @type {SystemVersionSet[] | null} */
+let cachedSystemVersions = null;
+
+// Preview mode variables
+let previewTemplate = null;
+let isPreviewMode = false;
+let previewModeCallbacks = [];
 /**
  * Are the templates loaded?
  * @returns {boolean} True if the templates are loaded
@@ -27,6 +38,22 @@ export function setTemplatesLoaded(value) {
  */
 export function getModuleTemplates() {
   return moduleTemplates;
+}
+
+/**
+ * Set the module templates
+ * @param {TemplateData[]} templates The module templates to set
+ */
+export function setModuleTemplates(templates) {
+  moduleTemplates = templates;
+}
+
+/**
+ * Clear all cached data (system versions and module templates)
+ */
+export function clearCache() {
+  cachedSystemVersions = null;
+  moduleTemplates = [];
 }
 
 const NEWLINE_ELEMENTS = ["{newline}", "{nl}"];
@@ -67,15 +94,23 @@ export function isForgeVTT() {
 /**
  * Load all the user-provided templates for systems
  * @param {string} path The path to the template
+ * @param {string} previewPath Optional preview image path
  * @returns {Promise<TemplateData>} A promise that resolves when the template is loaded
  */
-export async function getModuleTemplate(path) {
+export async function getModuleTemplate(path, previewPath = null) {
   try {
     /** @type {TemplateData} */
     const template = JSON.parse(await fetch(path).then((r) => r.text()));
-    const templateFileNameWithoutExtension = path.split("/").pop().split(".")[0];
     template.path = path;
-    template.preview = `${template.system}/${templateFileNameWithoutExtension}.jpg`;
+
+    // Use provided preview path or construct from path
+    if (previewPath) {
+      template.preview = previewPath;
+    } else {
+      const templateFileNameWithoutExtension = path.split("/").pop().split(".")[0];
+      template.preview = `${template.system}/${templateFileNameWithoutExtension}.jpg`;
+    }
+
     if (template.name && template.author && template.system && template.rows) {
       return template;
     } else {
@@ -100,7 +135,8 @@ export async function loadSystemTemplate(path) {
     const template = JSON.parse(await fetch(path).then((r) => r.text()));
     if (template.name && template.author && template.system && template.rows) {
       if (template.version && template.minimumSystemVersion) {
-        console.log(`${path} - Good Template`);
+        const maxVersionText = template.maximumSystemVersion ? ` (max: ${template.maximumSystemVersion})` : "";
+        console.log(`${path} - Good Template - Min system: ${template.minimumSystemVersion}${maxVersionText}`);
       } else {
         console.warn(`${path} - Missing Version Information`);
       }
@@ -110,7 +146,7 @@ export async function loadSystemTemplate(path) {
         addCustomTemplate(template);
       }
     } else {
-      console.log(`${path} - Bad Template`);
+      console.error(`${path} - Bad Template`);
     }
   } catch (e) {
     console.log(`${path} - Failed to Load. See error below.`);
@@ -120,33 +156,46 @@ export async function loadSystemTemplate(path) {
 
 /**
  * Get all the systems and versions available.
+ * @param {boolean} useCache - If true, return cached data if available
  * @returns {Promise<SystemVersionSet[]>} A list of all the systems and versions available.
  */
-export async function getAllSystemVersions() {
-  const systemVersions = [];
-
-  let assetPrefix = "data";
-
-  if (isForgeVTT()) {
-    console.log("Detected ForgeVTT");
-    // @ts-ignore
-    // eslint-disable-next-line no-undef
-    assetPrefix = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId()) + "/";
+export async function getAllSystemVersions(useCache = true) {
+  // Return cached data if available and cache is enabled
+  if (useCache && cachedSystemVersions !== null) {
+    return cachedSystemVersions;
   }
 
-  // @ts-ignore
-  const systemFolder = await FilePicker.browse(assetPrefix, "systems"); // `modules/${MODULE_NAME}/templates`);
-  for (var folder of systemFolder.dirs) {
-    // @ts-ignore
-    const pathFolder = await FilePicker.browse(assetPrefix, folder);
-    // @ts-ignore
-    for (var file of pathFolder.files.filter((f) => f.endsWith("system.json"))) {
-      const data = JSON.parse(await fetch(file).then((r) => r.text()));
-      systemVersions.push({
-        system: data.id,
-        version: data.version,
-      });
+  const systemVersions = [];
+
+  try {
+    let assetPrefix = "data";
+
+    if (isForgeVTT()) {
+      console.log("Detected ForgeVTT");
+      // @ts-ignore
+      // eslint-disable-next-line no-undef
+      assetPrefix = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId()) + "/";
     }
+
+    // @ts-ignore
+    const systemFolder = await foundry.applications.apps.FilePicker.implementation.browse(assetPrefix, "systems"); // `modules/${MODULE_NAME}/templates`);
+    for (var folder of systemFolder.dirs) {
+      // @ts-ignore
+      const pathFolder = await foundry.applications.apps.FilePicker.implementation.browse(assetPrefix, folder);
+      // @ts-ignore
+      for (var file of pathFolder.files.filter((f) => f.endsWith("system.json"))) {
+        const data = JSON.parse(await fetch(file).then((r) => r.text()));
+        systemVersions.push({
+          system: data.id,
+          version: data.version,
+        });
+      }
+    }
+
+    // Cache the results
+    cachedSystemVersions = systemVersions;
+  } catch (e) {
+    console.error("Failed to get system versions:", e);
   }
 
   return systemVersions;
@@ -171,13 +220,13 @@ export async function loadSystemTemplates() {
 
   try {
     // @ts-ignore
-    await FilePicker.createDirectory(assetPrefix, "partysheets"); //, { bucket: "public" }
+    await foundry.applications.apps.FilePicker.implementation.createDirectory(assetPrefix, "partysheets"); //, { bucket: "public" }
   } catch (e) {
     console.log("Failed creating PartySheets directory. It probably already exists.");
   }
 
   // @ts-ignore
-  const templateFiles = await FilePicker.browse(assetPrefix, "partysheets"); // `modules/${MODULE_NAME}/templates`);
+  const templateFiles = await foundry.applications.apps.FilePicker.implementation.browse(assetPrefix, "partysheets"); // `modules/${MODULE_NAME}/templates`);
 
   templateFiles.files.forEach((file) => {
     if (file.endsWith(".json")) {
@@ -194,55 +243,89 @@ export async function loadSystemTemplates() {
 
 /**
  * Load all the user-provided templates for modules
+ * @param {boolean} forceRefresh - If true, fetch from repository. If false, return cached templates.
  * @returns {Promise<TemplateData[]>} A promise that resolves when the templates are loaded
  */
-export async function loadModuleTemplates() {
-  // Look inside the "partysheets" folder. Any JSON file inside should be loaded
-  const templatePaths = [];
-  // @ts-ignore
+export async function loadModuleTemplates(forceRefresh = false) {
+  // If we have cached templates and not forcing refresh, return them
+  if (!forceRefresh && moduleTemplates.length > 0) {
+    return moduleTemplates;
+  }
 
-  // @ts-ignore
-  const templateFolders = await FilePicker.browse("data", "/modules/fvtt-party-sheet/example_templates/");
-  for (const folder of templateFolders.dirs) {
+  // Only fetch from repository if explicitly requested
+  if (forceRefresh) {
+    const result = await loadTemplatesFromRepository();
+    moduleTemplates = result.templates;
+    return result.templates;
+  }
+
+  // Return empty array if no cache and not forcing refresh
+  return [];
+}
+
+/**
+ * Check for template updates without loading full templates
+ * Only fetches the templates.yaml manifest and checks versions
+ * @returns {Promise<{hasUpdates: boolean, updateCount: number}>}
+ */
+export async function checkForTemplateUpdates() {
+  // If no custom templates installed, no need to check
+  if (customTemplates.length === 0) {
+    return { hasUpdates: false, updateCount: 0 };
+  }
+
+  try {
+    const result = await loadTemplatesFromRepository();
+    if (!result.success) {
+      return { hasUpdates: false, updateCount: 0 };
+    }
+
+    // Cache the templates for later use
+    moduleTemplates = result.templates;
+
     // @ts-ignore
-    const templateFiles = await FilePicker.browse("data", folder);
+    const currentSystem = game.system.id;
+    let updateCount = 0;
 
-    for (const file of templateFiles.files) {
-      if (file.endsWith(".json")) {
-        templatePaths.push(file);
+    // Check each installed template against repository versions
+    for (const installed of customTemplates) {
+      const repoTemplate = result.templates.find(
+        (t) => t.name === installed.name && t.author === installed.author && t.system === currentSystem,
+      );
+
+      if (repoTemplate && compareSymVer(installed.version, repoTemplate.version) < 0) {
+        updateCount++;
       }
     }
+
+    return { hasUpdates: updateCount > 0, updateCount };
+  } catch (error) {
+    console.error("Error checking for template updates:", error);
+    return { hasUpdates: false, updateCount: 0 };
   }
-
-  /** @type {TemplateData[]} */
-  const includedTemplates = [];
-
-  for (const path of templatePaths) {
-    includedTemplates.push(await getModuleTemplate(path));
-  }
-
-  return includedTemplates;
 }
 
 /**
  * Validates the system templates.
+ * @param {boolean} fetchFromRepository - If true, fetch latest templates from repository before validating
  * @returns {Promise<TemplateValidityReturnData>} - A list of the valid, out of date, and too new templates.
  */
-export async function validateSystemTemplates() {
+export async function validateSystemTemplates(fetchFromRepository = false) {
   /** @type {TemplateValidityReturnData} */
   let output = {
     valid: [],
     outOfDateSystems: [],
+    tooNewSystems: [],
     outOfDateTemplates: [],
     noVersionInformation: [],
     noSystemInformation: [],
   };
 
   const systemVersions = await getAllSystemVersions();
-  moduleTemplates = await loadModuleTemplates();
+  moduleTemplates = await loadModuleTemplates(fetchFromRepository);
 
   for (const template of customTemplates) {
-    const moduleTemplate = moduleTemplates.find((t) => t.name === template.name);
+    const moduleTemplate = moduleTemplates.find((t) => t.name === template.name && t.author === template.author);
     let err = false;
 
     const templateData = {
@@ -252,6 +335,7 @@ export async function validateSystemTemplates() {
       system: template.system,
       providedVersion: moduleTemplate?.version ?? "-",
       minimumSystemVersion: template.minimumSystemVersion,
+      maximumSystemVersion: template.maximumSystemVersion,
       ownedSystemVersion: systemVersions.find((s) => s.system === template.system)?.version ?? "-",
     };
     if (!template.minimumSystemVersion) {
@@ -270,13 +354,36 @@ export async function validateSystemTemplates() {
     }
 
     if (moduleTemplate && compareSymVer(template.version, moduleTemplate.version) < 0) {
+      // @ts-ignore
+      const currentSystem = game.system.id;
+      if (template.system === currentSystem) {
+        log(
+          `Version check: "${template.name}" by ${template.author} - Current: v${template.version}, Available: v${moduleTemplate.version}`,
+        );
+      }
       output.outOfDateTemplates.push(templateData);
       err = true;
+    } else if (moduleTemplate && compareSymVer(template.version, moduleTemplate.version) === 0) {
+      // @ts-ignore
+      const currentSystem = game.system.id;
+      if (template.system === currentSystem) {
+        log(`Version check: "${template.name}" by ${template.author} - Current: v${template.version} (up to date)`);
+      }
     }
 
     if (templateData.ownedSystemVersion !== "-") {
+      // Check if system is too old (below minimum required version)
       if (compareSymVer(templateData.ownedSystemVersion, templateData.minimumSystemVersion) < 0) {
         output.outOfDateSystems.push(templateData);
+        err = true;
+      }
+
+      // Check if current system version exceeds maximum supported version (system too new)
+      if (
+        template.maximumSystemVersion &&
+        compareSymVer(templateData.ownedSystemVersion, template.maximumSystemVersion) > 0
+      ) {
+        output.tooNewSystems.push(templateData);
         err = true;
       }
     }
@@ -299,8 +406,8 @@ export function compareSymVer(a, b) {
   if (!a || !b || !a.includes(".") || !b.includes(".")) {
     return 0;
   }
-  const [aMajor, aMinor, aPatch] = a.split(".").map(Number);
-  const [bMajor, bMinor, bPatch] = b.split(".").map(Number);
+  let [aMajor = 0, aMinor = 0, aPatch = 0, aBuild = 0] = a.split(".").map(Number);
+  let [bMajor = 0, bMinor = 0, bPatch = 0, bBuild = 0] = b.split(".").map(Number);
 
   if (aMajor < bMajor) return -1;
   if (aMajor > bMajor) return 1;
@@ -308,7 +415,22 @@ export function compareSymVer(a, b) {
   if (aMinor > bMinor) return 1;
   if (aPatch < bPatch) return -1;
   if (aPatch > bPatch) return 1;
+  if (aBuild < bBuild) return -1;
+  if (aBuild > bBuild) return 1;
   return 0; // strings are equal
+}
+
+/**
+ * Get the SymVer object from a version string.
+ * @param {string} version_text - The version string to convert.
+ * @returns {{ major: number, minor: number, patch: number } | null} - The SymVer object
+ */
+export function getSymVersion(version_text) {
+  if (!version_text || !version_text.includes(".") || version_text.split(".").length !== 3) {
+    return null;
+  }
+  const [major, minor, patch] = version_text.split(".").map(Number);
+  return { major, minor, patch };
 }
 
 /**
@@ -325,7 +447,7 @@ export function toProperCase(inputString) {
 }
 
 /**
- * Updates the selected system.
+ * Updates the selected template.
  * @param {*} template - The system to select.
  */
 export function updateSelectedTemplate(template) {
@@ -337,12 +459,71 @@ export function updateSelectedTemplate(template) {
  * @returns {*} - The selected system.
  */
 export function getSelectedTemplate() {
-  return selectedTemplate;
+  return isPreviewMode ? previewTemplate : selectedTemplate;
+}
+
+/**
+ * Sets preview mode on/off and optionally sets a preview template
+ * @param {boolean} enabled - Whether preview mode is enabled
+ * @param {*} template - The template to preview (optional)
+ */
+export function setPreviewMode(enabled, template = null) {
+  const wasPreviewMode = isPreviewMode;
+  isPreviewMode = enabled;
+
+  if (enabled && template) {
+    previewTemplate = template;
+  } else if (!enabled) {
+    previewTemplate = null;
+  }
+
+  // Notify callbacks if preview mode changed
+  if (wasPreviewMode !== enabled) {
+    previewModeCallbacks.forEach((callback) => callback(enabled, template));
+  }
+}
+
+/**
+ * Updates the preview template and notifies callbacks
+ * @param {*} template - The template to preview
+ */
+export function updatePreviewTemplate(template) {
+  if (isPreviewMode) {
+    previewTemplate = template;
+    previewModeCallbacks.forEach((callback) => callback(true, template));
+  }
+}
+
+/**
+ * Registers a callback for preview mode changes
+ * @param {Function} callback - Function to call when preview mode changes
+ */
+export function registerPreviewCallback(callback) {
+  previewModeCallbacks.push(callback);
+}
+
+/**
+ * Unregisters a preview mode callback
+ * @param {Function} callback - Function to remove from callbacks
+ */
+export function unregisterPreviewCallback(callback) {
+  const index = previewModeCallbacks.indexOf(callback);
+  if (index > -1) {
+    previewModeCallbacks.splice(index, 1);
+  }
+}
+
+/**
+ * Gets the current preview mode status
+ * @returns {boolean} Whether preview mode is active
+ */
+export function isInPreviewMode() {
+  return isPreviewMode;
 }
 
 /**
  * Adds a custom system to the list of systems.
- * @param {*} system - The custom system to add.
+ * @param {TemplateData} system - The custom system to add.
  */
 export function addCustomTemplate(system) {
   customTemplates.push(system);
@@ -357,7 +538,7 @@ export function clearCustomTemplates() {
 
 /**
  * Retrieves the list of custom systems.
- * @returns {*} - The list of custom systems.
+ * @returns {TemplateData[]} - The list of custom systems.
  */
 export function getCustomTemplates() {
   return customTemplates;
@@ -399,8 +580,8 @@ export function extractPropertyByString(obj, path) {
 
 /**
  * Takes a JSON object and trims the strings for value, else, and match.
- * @param {*} item - The item to trim.
- * @returns {*}  - The item with trimmed strings.
+ * @param {DirectComplexTextObject} item - The item to trim.
+ * @returns {DirectComplexTextObject}  - The item with trimmed strings.
  */
 export function trimIfString(item) {
   if (item.text && typeof item.text === "string") {
@@ -414,68 +595,6 @@ export function trimIfString(item) {
   }
 
   return item;
-}
-
-/**
- * Parses out plus sumbols and adds values together.
- * @param {*} value - The value to parse.
- * @returns {*} - The value with the pluses parsed out.
- */
-export function parsePluses(value) {
-  // Match patterns with optional spaces around {+}
-  let match = value.match(/(\d+)\s*\{\+\}\s*(\d+)|\d+\{\+\}\d+/);
-  if (!match) {
-    return value;
-  }
-  do {
-    const numbers = match[0].trim().split("{+}").map(Number);
-    const result = numbers[0] + numbers[1];
-    value = value.replace(match[0], result.toString());
-  } while ((match = value.match(/(\d+)\s*\{\+\}\s*(\d+)|\d+\{\+\}\d+/)));
-
-  return value;
-}
-
-/**
- * Parse underline, bold, and italics from a string.
- * @param {string} value - The value to parse.
- * @param {boolean} isSafeStringNeeded - A boolean indicating if a SafeString is needed.
- * @returns {[boolean, string]} - A tuple with the first value being a boolean indicating if a SafeString is needed and the second value being the parsed string.
- */
-export function parseExtras(value, isSafeStringNeeded = false) {
-  // Detect if any text is surrounded with "{i} and {/i}" and replace with <i> tags
-  if (value.indexOf("{i}") > -1 || value.indexOf("{/i}") > -1) {
-    isSafeStringNeeded = true;
-    value = value.replaceAll("{i}", "<i>").replaceAll("{/i}", "</i>");
-  }
-
-  // Detect if any text is surrounded with "{b} and {/b}" and replace with <b> tags
-  if (value.indexOf("{b}") > -1 || value.indexOf("{/b}") > -1) {
-    isSafeStringNeeded = true;
-    value = value.replaceAll("{b}", "<b>").replaceAll("{/b}", "</b>");
-  }
-
-  // Detect if any text is surrounded with "{u} and {/u}" and replace with <b> tags
-  if (value.indexOf("{u}") > -1 || value.indexOf("{/u}") > -1) {
-    isSafeStringNeeded = true;
-    value = value.replaceAll("{u}", "<u>").replaceAll("{/u}", "</u>");
-  }
-
-  // Detect if any text is surrounded with "{u} and {/u}" and replace with <b> tags
-  if (value.indexOf("{s}") > -1) {
-    isSafeStringNeeded = true;
-    value = value.replaceAll("{s}", "&nbsp;");
-  }
-
-  ({ value, isSafeStringNeeded } = parseFontAwesome(value, isSafeStringNeeded));
-
-  // Detect if the value contains {sX} where x is a digit and insert that many &nbsp; marks
-  ({ value, isSafeStringNeeded } = parseSpacing(value, isSafeStringNeeded));
-
-  //Parse out newline elements
-  ({ value, isSafeStringNeeded } = parseNewlines(value, isSafeStringNeeded));
-
-  return [isSafeStringNeeded, value];
 }
 
 /**
@@ -553,4 +672,179 @@ export function parseNewlines(value, isSafeStringNeeded) {
     }
   }
   return { value, isSafeStringNeeded };
+}
+
+/**
+ * Get the Foundry version
+ * @returns {{ major: number, minor: number, full: string }} version
+ */
+export function getFoundryVersion() {
+  // @ts-ignore
+  const version = game.version;
+  const versionInfo = version.split(".");
+  const major = Number.parseInt(versionInfo[0]);
+  const minor = Number.parseInt(versionInfo[1]);
+  const full = version;
+
+  return {
+    major,
+    minor,
+    full,
+  };
+}
+
+/**
+ * Checks if the current Foundry version is at least the specified major version.
+ * @param {*} major - The major version to check against.
+ * @returns {boolean} True if the current version is at least the specified major version, false otherwise.
+ */
+export function isVersionAtLeast(major) {
+  const version = getFoundryVersion();
+  return version.major >= major;
+}
+
+/**
+ * Shows notification banners when version differences are detected between installed templates
+ * and the example templates provided with the module.
+ * @param {TemplateValidityReturnData} validationData - The validation data from validateSystemTemplates()
+ */
+export function showVersionDifferenceNotifications(validationData) {
+  // @ts-ignore
+  if (!game.user.isGM) {
+    return; // Only show notifications to GM
+  }
+
+  // @ts-ignore
+  const showNotifications = game.settings.get("fvtt-party-sheet", "showVersionNotifications");
+  if (!showNotifications) {
+    return; // User has disabled version notifications
+  }
+
+  // @ts-ignore
+  const currentSystem = game.system.id;
+
+  // Filter validation data to only include templates for the current game system
+  const currentSystemOutOfDate =
+    validationData.outOfDateTemplates?.filter((template) => template.system === currentSystem) || [];
+
+  const outOfDateCount = currentSystemOutOfDate.length;
+
+  // Show notification for templates that have newer versions available in the module
+  if (outOfDateCount > 0) {
+    // @ts-ignore
+    const message = game.i18n.format("fvtt-party-sheet.notifications.template-update-available", {
+      count: outOfDateCount,
+    });
+    // @ts-ignore
+    ui.notifications.warn(message, { permanent: false, console: false });
+    log(`${outOfDateCount} template update(s) available for ${currentSystem}`);
+  }
+}
+
+/**
+ * Validates a template object structure and content
+ * @param {object} template - The template object to validate
+ * @returns {object} Validation result with isValid boolean and errors array
+ */
+export function validateTemplateStructure(template) {
+  const errors = [];
+
+  // Required fields validation
+  if (!template.name || template.name.trim() === "") {
+    errors.push("Template must have a 'name' field");
+  }
+
+  if (!template.author || template.author.trim() === "") {
+    errors.push("Template must have an 'author' field");
+  }
+
+  if (!template.system || template.system.trim() === "") {
+    errors.push("Template must have a 'system' field");
+  }
+
+  if (!template.rows || !Array.isArray(template.rows)) {
+    errors.push("Template must have a 'rows' field that is an array");
+  } else if (template.rows.length === 0) {
+    errors.push("Template must have at least one row");
+  }
+
+  // Version validation
+  if (template.version && !getSymVersion(template.version)) {
+    errors.push("Invalid template version. Must be in format 'x.y.z'");
+  }
+
+  // Rows structure validation
+  if (template.rows && Array.isArray(template.rows)) {
+    template.rows.forEach((row, rowIndex) => {
+      if (!Array.isArray(row)) {
+        errors.push(`Row ${rowIndex + 1} must be an array`);
+      } else {
+        row.forEach((cell, cellIndex) => {
+          if (!cell || typeof cell !== "object") {
+            errors.push(`Row ${rowIndex + 1}, Cell ${cellIndex + 1} must be an object`);
+          } else {
+            if (!cell.name || cell.name.trim() === "") {
+              errors.push(`Row ${rowIndex + 1}, Cell ${cellIndex + 1} must have a 'name' field`);
+            }
+            if (!cell.type || cell.type.trim() === "") {
+              errors.push(`Row ${rowIndex + 1}, Cell ${cellIndex + 1} must have a 'type' field`);
+            }
+          }
+        });
+      }
+    });
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}
+
+/**
+ * Validates a JSON string as a template
+ * @param {string} jsonText - The JSON string to validate
+ * @returns {object} Validation result with isValid boolean and errors array
+ */
+export function validateTemplateJson(jsonText) {
+  try {
+    const template = JSON.parse(jsonText);
+    return validateTemplateStructure(template);
+  } catch (error) {
+    return {
+      isValid: false,
+      errors: [`Invalid JSON: ${error.message}`],
+    };
+  }
+}
+
+/**
+ * Formats a JSON string with proper indentation
+ * @param {string} jsonText - The JSON string to format
+ * @returns {object} Result with success boolean, formatted string, and optional error
+ */
+export function formatTemplateJson(jsonText) {
+  try {
+    const template = JSON.parse(jsonText);
+    const formatted = JSON.stringify(template, null, 2);
+    return {
+      success: true,
+      formatted,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: `Cannot format invalid JSON: ${error.message}`,
+    };
+  }
+}
+
+/**
+ * Generates HTML for a character sheet button given a character object.
+ * @param {*} character - The character object
+ * @returns {string}  HTML for character sheet button
+ */
+export function generateCharacterSheetImageFromCharacter(character) {
+  // @ts-ignore
+  return `<input type="image" data-action="onOpenActorSheet" name="fvtt-party-sheet-actorimage" data-actorid="${character.uuid}" class="token-image" src="${character.img}" title="${character.name}" width="36" height="36" />`;
 }
