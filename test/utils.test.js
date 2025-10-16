@@ -36,6 +36,7 @@ import {
   validateTemplateStructure,
   validateTemplateJson,
   formatTemplateJson,
+  clearCache,
 } from "../src/module/utils";
 import { setupFoundryMocks, cleanupFoundryMocks, mockTemplateData, versionTestCases } from "./test-mocks.js";
 
@@ -745,6 +746,7 @@ describe("Utils testing", () => {
       let consoleLogSpy;
       let consoleErrorSpy;
       beforeEach(() => {
+        clearCache();
         setupFoundryMocks();
         consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
@@ -760,6 +762,7 @@ describe("Utils testing", () => {
       });
 
       afterEach(() => {
+        clearCache();
         cleanupFoundryMocks();
         delete global.FilePicker;
         delete global.fetch;
@@ -818,7 +821,7 @@ describe("Utils testing", () => {
           },
         };
 
-        const result = await getAllSystemVersions();
+        const result = await getAllSystemVersions(false); // Pass false to bypass cache
         expect(result).toEqual([]);
         expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
       });
@@ -1194,7 +1197,15 @@ describe("Utils testing", () => {
     });
 
     describe("loadModuleTemplates", () => {
-      it("should load module templates from predefined paths", async () => {
+      beforeEach(() => {
+        clearCache();
+      });
+
+      afterEach(() => {
+        clearCache();
+      });
+
+      it("should load module templates from GitHub repository", async () => {
         const validTemplate = {
           name: "Module Template",
           author: "Module Author",
@@ -1204,56 +1215,45 @@ describe("Utils testing", () => {
           rows: [],
         };
 
-        // Override the default FilePicker mock for this specific test
-        global.foundry = {
-          applications: {
-            apps: {
-              FilePicker: {
-                implementation: {
-                  browse: jest
-                    .fn()
-                    .mockResolvedValueOnce({
-                      dirs: [
-                        "modules/fvtt-party-sheet/example_templates/dnd5e",
-                        "modules/fvtt-party-sheet/example_templates/pf2e",
-                      ],
-                    })
-                    .mockResolvedValueOnce({
-                      files: ["modules/fvtt-party-sheet/example_templates/dnd5e/template1.json"],
-                    })
-                    .mockResolvedValueOnce({
-                      files: ["modules/fvtt-party-sheet/example_templates/pf2e/template2.json"],
-                    }),
-                },
-              },
-            },
-          },
-        };
+        // Mock the templates.yaml fetch
+        const yamlContent = `dnd5e:
+  - file: template1.json
+    version: 1.0.0
+    author: Module Author`;
 
-        // Mock multiple fetch calls for different systems
-        global.fetch.mockResolvedValue({
-          text: () => Promise.resolve(JSON.stringify(validTemplate)),
-        });
+        global.fetch
+          .mockResolvedValueOnce({
+            ok: true,
+            text: () => Promise.resolve(yamlContent),
+          })
+          .mockResolvedValueOnce({
+            text: () => Promise.resolve(JSON.stringify(validTemplate)),
+          });
 
-        await loadModuleTemplates();
-        expect(global.fetch).toHaveBeenCalled();
+        const result = await loadModuleTemplates(true); // forceRefresh = true
+        expect(Array.isArray(result)).toBe(true);
+        expect(result).toHaveLength(1);
+        expect(global.fetch).toHaveBeenCalledTimes(2);
       });
 
       it("should handle individual template loading failures", async () => {
-        global.foundry = {
-          applications: {
-            apps: {
-              FilePicker: {
-                implementation: {
-                  browse: jest.fn().mockResolvedValueOnce({ dirs: [], files: [] }),
-                },
-              },
-            },
-          },
-        };
-        global.fetch.mockRejectedValue(new Error("Template not found"));
+        // Mock templates.yaml fetch success but template fetch failure
+        const yamlContent = `dnd5e:
+  - file: template1.json`;
 
-        await expect(loadModuleTemplates()).resolves.not.toThrow();
+        global.fetch
+          .mockResolvedValueOnce({
+            ok: true,
+            text: () => Promise.resolve(yamlContent),
+          })
+          .mockResolvedValueOnce({
+            text: () => Promise.reject(new Error("Template not found")),
+          });
+
+        const result = await loadModuleTemplates(true); // forceRefresh = true
+        // Should return empty array when all templates fail to load
+        expect(Array.isArray(result)).toBe(true);
+        expect(result).toHaveLength(0);
       });
     });
 
@@ -1262,6 +1262,7 @@ describe("Utils testing", () => {
       let originalModuleTemplates;
 
       beforeEach(() => {
+        clearCache();
         setupFoundryMocks();
 
         // Mock FilePicker and fetch for getAllSystemVersions and loadModuleTemplates
@@ -1278,6 +1279,7 @@ describe("Utils testing", () => {
       });
 
       afterEach(() => {
+        clearCache();
         cleanupFoundryMocks();
         delete global.FilePicker;
         delete global.fetch;
@@ -1344,6 +1346,8 @@ describe("Utils testing", () => {
         };
 
         addCustomTemplate(template);
+
+        // Mock getAllSystemVersions
         global.foundry = {
           applications: {
             apps: {
@@ -1352,24 +1356,30 @@ describe("Utils testing", () => {
                   browse: jest
                     .fn()
                     .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
-                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
-                    .mockResolvedValueOnce({ dirs: ["example_templates/dnd5e"] })
-                    .mockResolvedValueOnce({ files: ["example_templates/dnd5e/template.json"] }),
+                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] }),
                 },
               },
             },
           },
         };
 
+        // Mock templates.yaml fetch
+        const yamlContent = `dnd5e:
+  - file: template.json`;
+
         global.fetch
           .mockResolvedValueOnce({
             text: () => Promise.resolve(JSON.stringify({ id: "dnd5e", version: "2.0.0" })),
           })
           .mockResolvedValueOnce({
+            ok: true,
+            text: () => Promise.resolve(yamlContent),
+          })
+          .mockResolvedValueOnce({
             text: () => Promise.resolve(JSON.stringify(moduleTemplate)),
           });
 
-        const result = await validateSystemTemplates();
+        const result = await validateSystemTemplates(true); // Pass true to fetch from repository
 
         expect(result.outOfDateTemplates).toHaveLength(1);
         expect(result.outOfDateTemplates[0].name).toBe("Old Template");
@@ -1461,24 +1471,29 @@ describe("Utils testing", () => {
                   browse: jest
                     .fn()
                     .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
-                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
-                    .mockResolvedValueOnce({ dirs: ["example_templates/dnd5e"] })
-                    .mockResolvedValueOnce({ files: ["example_templates/dnd5e/template.json"] }),
+                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] }),
                 },
               },
             },
           },
         };
 
+        const yamlContent = `dnd5e:
+  - file: template.json`;
+
         global.fetch
           .mockResolvedValueOnce({
             text: () => Promise.resolve(JSON.stringify({ id: "dnd5e", version: "2.0.0" })),
           })
           .mockResolvedValueOnce({
+            ok: true,
+            text: () => Promise.resolve(yamlContent),
+          })
+          .mockResolvedValueOnce({
             text: () => Promise.resolve(JSON.stringify(moduleTemplate)),
           });
 
-        const result = await validateSystemTemplates();
+        const result = await validateSystemTemplates(true); // Pass true to fetch from repository
 
         expect(result.outOfDateSystems).toHaveLength(1);
         expect(result.outOfDateSystems[0].name).toBe("High Requirement Template");
@@ -1518,24 +1533,29 @@ describe("Utils testing", () => {
                   browse: jest
                     .fn()
                     .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
-                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
-                    .mockResolvedValueOnce({ dirs: ["example_templates/dnd5e"] })
-                    .mockResolvedValueOnce({ files: ["example_templates/dnd5e/template.json"] }),
+                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] }),
                 },
               },
             },
           },
         };
 
+        const yamlContent = `dnd5e:
+  - file: template.json`;
+
         global.fetch
           .mockResolvedValueOnce({
             text: () => Promise.resolve(JSON.stringify({ id: "dnd5e", version: "2.0.0" })),
           })
           .mockResolvedValueOnce({
+            ok: true,
+            text: () => Promise.resolve(yamlContent),
+          })
+          .mockResolvedValueOnce({
             text: () => Promise.resolve(JSON.stringify(moduleTemplate)),
           });
 
-        const result = await validateSystemTemplates();
+        const result = await validateSystemTemplates(true); // Pass true to fetch from repository
 
         expect(result.tooNewSystems).toHaveLength(1);
         expect(result.tooNewSystems[0].name).toBe("Max Version Template");
@@ -1564,25 +1584,32 @@ describe("Utils testing", () => {
                   browse: jest
                     .fn()
                     .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
-                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
-                    .mockResolvedValueOnce({ dirs: [], files: [] }),
+                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] }),
                 },
               },
             },
           },
         };
 
-        global.fetch.mockResolvedValueOnce({
-          text: () => Promise.resolve(JSON.stringify({ id: "dnd5e", version: "2.0.0" })),
-        });
+        // Mock GitHub templates.yaml returning empty (no templates available)
+        const yamlContent = `dnd5e:`;
 
-        const result = await validateSystemTemplates();
+        global.fetch
+          .mockResolvedValueOnce({
+            text: () => Promise.resolve(JSON.stringify({ id: "dnd5e", version: "2.1.5" })),
+          })
+          .mockResolvedValueOnce({
+            ok: true,
+            text: () => Promise.resolve(yamlContent),
+          });
+
+        const result = await validateSystemTemplates(true); // Fetch from repository
 
         // Since there's no module template, it goes to valid first, but should still check system compatibility
         // However, the current implementation adds to valid and continues, skipping system checks
         expect(result.valid).toHaveLength(1);
         expect(result.valid[0].name).toBe("High Requirement Template");
-        expect(result.valid[0].ownedSystemVersion).toBe("2.0.0");
+        expect(result.valid[0].ownedSystemVersion).toBe("2.1.5");
         expect(result.valid[0].minimumSystemVersion).toBe("3.0.0");
       });
 
@@ -1608,24 +1635,31 @@ describe("Utils testing", () => {
                   browse: jest
                     .fn()
                     .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
-                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
-                    .mockResolvedValueOnce({ dirs: [], files: [] }), // No module templates
+                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] }),
                 },
               },
             },
           },
         };
 
-        global.fetch.mockResolvedValueOnce({
-          text: () => Promise.resolve(JSON.stringify({ id: "dnd5e", version: "2.0.0" })),
-        });
+        // Mock GitHub templates.yaml returning empty (no templates available)
+        const yamlContent = `dnd5e:`;
 
-        const result = await validateSystemTemplates();
+        global.fetch
+          .mockResolvedValueOnce({
+            text: () => Promise.resolve(JSON.stringify({ id: "dnd5e", version: "2.1.5" })),
+          })
+          .mockResolvedValueOnce({
+            ok: true,
+            text: () => Promise.resolve(yamlContent),
+          });
+
+        const result = await validateSystemTemplates(true); // Fetch from repository
 
         // Since there's no module template, it goes to valid first and continues, skipping system checks
         expect(result.valid).toHaveLength(1);
         expect(result.valid[0].name).toBe("Max Version Template");
-        expect(result.valid[0].ownedSystemVersion).toBe("2.0.0");
+        expect(result.valid[0].ownedSystemVersion).toBe("2.1.5");
         expect(result.valid[0].maximumSystemVersion).toBe("1.5.0");
       });
 
@@ -1757,24 +1791,30 @@ describe("Utils testing", () => {
                   browse: jest
                     .fn()
                     .mockResolvedValueOnce({ dirs: ["systems/dnd5e"] })
-                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] })
-                    .mockResolvedValueOnce({ dirs: ["example_templates/dnd5e"] })
-                    .mockResolvedValueOnce({ files: ["example_templates/dnd5e/template.json"] }),
+                    .mockResolvedValueOnce({ files: ["systems/dnd5e/system.json"] }),
                 },
               },
             },
           },
         };
 
+        // Mock GitHub templates.yaml with one template
+        const yamlContent = `dnd5e:
+  - file: template.json`;
+
         global.fetch
           .mockResolvedValueOnce({
-            text: () => Promise.resolve(JSON.stringify({ id: "dnd5e", version: "2.0.0" })),
+            text: () => Promise.resolve(JSON.stringify({ id: "dnd5e", version: "2.1.5" })),
+          })
+          .mockResolvedValueOnce({
+            ok: true,
+            text: () => Promise.resolve(yamlContent),
           })
           .mockResolvedValueOnce({
             text: () => Promise.resolve(JSON.stringify(moduleTemplate)),
           });
 
-        const result = await validateSystemTemplates();
+        const result = await validateSystemTemplates(true); // Fetch from repository
 
         // Both Valid Template and Missing Version Template go to valid because:
         // 1. Valid Template has no module template match, so goes to valid and continues
@@ -1894,6 +1934,7 @@ describe("Utils testing", () => {
     });
 
     it("getAllSystemVersions should handle if using ForgeVTT", async () => {
+      clearCache(); // Clear cache to ensure function runs
       global.ForgeVTT = {
         usingTheForge: true,
         ASSETS_LIBRARY_URL_PREFIX: "",
@@ -1913,7 +1954,7 @@ describe("Utils testing", () => {
           },
         },
       };
-      await getAllSystemVersions();
+      await getAllSystemVersions(false); // Pass false to bypass cache
       expect(consoleLogSpy).toHaveBeenCalledTimes(1);
       expect(consoleLogSpy).toHaveBeenCalledWith("Detected ForgeVTT");
     });
