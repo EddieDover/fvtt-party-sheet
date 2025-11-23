@@ -11,6 +11,8 @@ import {
   clearCustomTemplates,
   compareSymVer,
   checkForTemplateUpdates,
+  addCustomTemplate,
+  updateSelectedTemplate,
 } from "./utils.js";
 import { TemplateStatusForm } from "./app/template-status.js";
 
@@ -683,22 +685,30 @@ Hooks.on("init", () => {
 // @ts-ignore
 Hooks.on("ready", async () => {
   log("Ready");
-  // @ts-ignore
-  if (game.user.isGM) {
-    registerAPI();
-  }
+  registerAPI();
   showSettingsButton();
 
   await ReloadTemplates(true);
+
+  // Sync selected template
+  // @ts-ignore
+  const savedSelection = game.settings.get("fvtt-party-sheet", "selectedTemplate");
+  if (savedSelection) {
+    updateSelectedTemplate(savedSelection);
+    // @ts-ignore
+    if (!game.user.isGM) {
+      addCustomTemplate(savedSelection);
+    }
+  }
 });
 
 const ReloadTemplates = async (fullReload = false) => {
+  if (fullReload) {
+    clearCustomTemplates();
+  }
+
   // @ts-ignore
   if (game.user.isGM) {
-    if (fullReload) {
-      clearCustomTemplates();
-    }
-
     if (!areTemplatesLoaded() || fullReload) {
       await loadSystemTemplates();
 
@@ -728,8 +738,7 @@ Hooks.on("renderPlayerList", () => {
   // @ts-ignore
   const showOnlyOnlineUsers = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
 
-  // @ts-ignore
-  if (!game.user.isGM || !showOnlyOnlineUsers) {
+  if (!showOnlyOnlineUsers) {
     return;
   }
   // @ts-ignore
@@ -750,10 +759,31 @@ Hooks.on("getSceneControlButtons", (controls) => {
     button: true,
   };
 
-  // @ts-ignore
-  if (!game.user.isGM) {
-    return;
-  }
-
   controls.tokens.tools["partysheet"] = button;
+});
+
+// @ts-ignore
+Hooks.on("updateSetting", (setting, change, options, userId) => {
+  if (setting.key === "fvtt-party-sheet.selectedTemplate") {
+    // @ts-ignore
+    if (game.user.isGM && userId === game.user.id) {
+      return;
+    }
+
+    // @ts-ignore
+    const newValue = game.settings.get("fvtt-party-sheet", "selectedTemplate");
+
+    updateSelectedTemplate(newValue);
+    // @ts-ignore
+    if (!game.user.isGM) {
+      clearCustomTemplates();
+      if (newValue) {
+        addCustomTemplate(newValue);
+      }
+    }
+    // @ts-ignore
+    if (currentPartySheet?.rendered) {
+      currentPartySheet.doRender(true);
+    }
+  }
 });

@@ -40,6 +40,14 @@ export const registerSettings = () => {
   });
 
   // @ts-ignore
+  game.settings.register("fvtt-party-sheet", "selectedTemplate", {
+    "scope": "world",
+    "config": false,
+    "default": null,
+    "type": Object,
+  });
+
+  // @ts-ignore
   game.settings.register("fvtt-party-sheet", "refreshRate", {
     "name": "fvtt-party-sheet.settings.refresh-rate.name",
     "hint": "fvtt-party-sheet.settings.refresh-rate.hint",
