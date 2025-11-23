@@ -392,6 +392,8 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
       isInPreviewMode: isInPreviewMode(),
       templateLoadStatus: this.templateLoadStatus,
       templateLoadError: this.templateLoadError,
+      // @ts-ignore
+      isGM: game.user.isGM,
     };
 
     return payload;
@@ -677,7 +679,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     actor.sheet.render(true);
   }
 
-  static onChangeSystem(event) {
+  static async onChangeSystem(event) {
     const namedata = event.currentTarget.value.split("___");
     const selectedSystemName = namedata[0];
     const selectedSystemAuthor = namedata[1];
@@ -686,7 +688,14 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
         (data) => data.name === selectedSystemName && data.author === selectedSystemAuthor,
       ) ?? -1;
     if (selectedIndex != -1) {
-      updateSelectedTemplate(getCustomTemplates()[selectedIndex]);
+      const template = getCustomTemplates()[selectedIndex];
+      updateSelectedTemplate(template);
+
+      // @ts-ignore
+      if (game.user.isGM) {
+        // @ts-ignore
+        await game.settings.set("fvtt-party-sheet", "selectedTemplate", template);
+      }
     }
 
     // User made a template selection, they're done interacting
