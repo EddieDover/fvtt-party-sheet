@@ -92,14 +92,14 @@ export class ObjectLoopProcessor extends DataProcessor {
 
     if (isDropdown && dropdownKeys.length === validDropdownSections && validDropdownSections > 1) {
       isSafeStringNeeded = true;
-      outputText = this.createDropdown(this.generated_dropdowns_count, dropdownKeys, finStrsContent, options.maxHeight);
+      outputText = this.createDropdown(this.generated_dropdowns_count, dropdownKeys, finStrsContent, options.maxheight);
     } else {
       outputText = finStrs.join("");
 
-      // If maxHeight is set, wrap the output in a scrollable div
-      if (options.maxHeight && outputText) {
+      // If maxheight is set, wrap the output in a scrollable div
+      if (options.maxheight && outputText) {
         isSafeStringNeeded = true;
-        outputText = `<div style="max-height: ${options.maxHeight}px; overflow-y: auto;">${outputText}</div>`;
+        outputText = `<div style="max-height: ${options.maxheight}px; overflow-y: auto;">${outputText}</div>`;
       }
     }
 
@@ -339,10 +339,10 @@ export class ObjectLoopProcessor extends DataProcessor {
    * @param {number} dropdownIndex - The index of the dropdown
    * @param {Array} dropdownKeys - The dropdown keys
    * @param {Array} finStrs - The processed strings
-   * @param {string|null} maxHeight - Optional max height for the content
+   * @param {string|null} maxheight - Optional max height for the content
    * @returns {string} Dropdown HTML
    */
-  createDropdown(dropdownIndex, dropdownKeys, finStrs, maxHeight = null) {
+  createDropdown(dropdownIndex, dropdownKeys, finStrs, maxheight = null) {
     // Create a more stable identifier based on content
     const contentHash = dropdownKeys
       .join("-")
@@ -378,8 +378,8 @@ export class ObjectLoopProcessor extends DataProcessor {
       }
 
       let style = `display: ${isVisible};`;
-      if (maxHeight) {
-        style += `max-height: ${maxHeight}; overflow-y: auto;`;
+      if (maxheight) {
+        style += `max-height: ${maxheight}; overflow-y: auto;`;
       }
 
       contentDivs += `<div data-dropdownsection="${dropdownSection}" data-dropdownoption="${key}" style="${style}">${finStrs[i] || ""}</div>`;

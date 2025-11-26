@@ -122,7 +122,7 @@
               "description": "Shows a total sum for this column in a footer row if values are numeric.",
               "type": "boolean"
             },
-            "maxHeight": {
+            "maxheight": {
               "description": "Maximum height, in pixels, for the content of a cell, enabling scrollbars if exceeded.",
               "type": "number"
             },

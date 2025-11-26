@@ -189,7 +189,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
               customData[colname] = {
                 text: this.getCustomData(userChar, colobj.type, colobj.text, {
                   showSign: colobj.showSign,
-                  maxHeight: colobj.maxHeight,
+                  maxheight: colobj.maxheight,
                 }),
                 options: {
                   align: colobj.align,

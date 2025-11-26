@@ -1062,8 +1062,8 @@ describe("ObjectLoopProcessor", () => {
     });
   });
 
-  describe("maxHeight functionality", () => {
-    it("should apply maxHeight style when provided in options", () => {
+  describe("maxheight functionality", () => {
+    it("should apply maxheight style when provided in options", () => {
       const character = {
         items: {
           spell: [{ name: "Fireball" }],
@@ -1074,7 +1074,7 @@ describe("ObjectLoopProcessor", () => {
       mockParserEngine.parseText = jest.fn().mockReturnValue([true, "dropdown_html"]);
 
       const result = processor.process(character, "{dropdown} items{spell} => {name} || items{equipment} => {name}", {
-        maxHeight: 100,
+        maxheight: 100,
       });
 
       expect(result).toHaveProperty("__isSafeString", true);
@@ -1083,7 +1083,7 @@ describe("ObjectLoopProcessor", () => {
       // or we can check the output if we mock parseText to return the input.
     });
 
-    it("should apply maxHeight style to non-dropdown output", () => {
+    it("should apply maxheight style to non-dropdown output", () => {
       const character = {
         items: {
           item1: { name: "Fireball", type: "spell" },
@@ -1093,7 +1093,7 @@ describe("ObjectLoopProcessor", () => {
 
       mockParserEngine.parseText = jest.fn().mockImplementation((text, isSafe) => [isSafe, text]);
 
-      const result = processor.process(character, "items{spell} => {name}", { maxHeight: "100px" });
+      const result = processor.process(character, "items{spell} => {name}", { maxheight: "100px" });
 
       // The result might be a SafeString object or just the content depending on how parseText is mocked
       // In our test setup, parseText returns [isSafe, text]
@@ -1112,18 +1112,18 @@ describe("ObjectLoopProcessor", () => {
   });
 
   describe("createDropdown method", () => {
-    it("should include max-height style when maxHeight is provided", () => {
+    it("should include max-height style when maxheight is provided", () => {
       const dropdownKeys = ["Key1", "Key2"];
       const finStrs = ["Content1", "Content2"];
-      const maxHeight = "150px";
+      const maxheight = "150px";
 
-      const html = processor.createDropdown(1, dropdownKeys, finStrs, maxHeight);
+      const html = processor.createDropdown(1, dropdownKeys, finStrs, maxheight);
 
-      expect(html).toContain(`max-height: ${maxHeight}`);
+      expect(html).toContain(`max-height: ${maxheight}`);
       expect(html).toContain("overflow-y: auto");
     });
 
-    it("should not include max-height style when maxHeight is not provided", () => {
+    it("should not include max-height style when maxheight is not provided", () => {
       const dropdownKeys = ["Key1", "Key2"];
       const finStrs = ["Content1", "Content2"];
 
