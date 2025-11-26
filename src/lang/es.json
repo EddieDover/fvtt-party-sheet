@@ -82,6 +82,26 @@
     "section-title-tooltip": "Mostrar la Hoja de Grupo",
     "template-installed-version": "Versión instalada",
     "template-system-version": "Versión Mín del Sistema",
-    "template-max-system-version": "Versión Máx del Sistema"
+    "template-max-system-version": "Versión Máx del Sistema",
+    "template-editor": {
+      "new": "Nuevo",
+      "new-tooltip": "Nueva Plantilla",
+      "load": "Cargar",
+      "load-tooltip": "Cargar Plantilla",
+      "save": "Guardar",
+      "save-tooltip": "Copiar Plantilla al Portapapeles",
+      "validate": "Validar",
+      "validate-tooltip": "Validar JSON",
+      "format": "Formatear",
+      "format-tooltip": "Formatear JSON",
+      "close-tooltip": "Cerrar Editor",
+      "metadata": "Metadatos de la Plantilla",
+      "name-placeholder": "Nombre de la plantilla...",
+      "author-placeholder": "Nombre del autor...",
+      "system": "Sistema",
+      "json-editor": "Editor JSON",
+      "save-warnings": "Estos datos son temporales. Use el botón Guardar para copiar la plantilla en su portapapeles antes de cerrar.",
+      "ready": "Listo"
+    }
   }
 }
