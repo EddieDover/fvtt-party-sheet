@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-conditional-expect */
 // eslint-disable-next-line no-shadow
 import { jest } from "@jest/globals";
 import { ObjectLoopProcessor } from "../src/module/parsing/processors/object-loop-processor.js";
