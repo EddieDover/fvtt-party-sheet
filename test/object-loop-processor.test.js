@@ -1028,4 +1028,32 @@ describe("ObjectLoopProcessor", () => {
       expect(result).toHaveProperty("__isSafeString", true);
     });
   });
+
+  describe("Complex Parsing Scenarios", () => {
+    it("should handle unbracketed prefixes with complex filters (User Repro)", () => {
+      const character = {
+        system: {
+          skills: {
+            acrobatics: { proficiency: 20 },
+            athletics: { proficiency: 10 },
+          },
+        },
+      };
+
+      mockParserEngine.parseText = jest.fn().mockImplementation((text, isSafe) => [isSafe, text]);
+
+      // The user's failing example
+      const template =
+        "{dropdown} Expert system.skills{proficiency >= 20} => {objectLoopKey} - {proficiency}{nl} || Average system.skills{proficiency <= 10 && proficiency > 5} => {objectLoopKey} - {proficiency}{nl}";
+
+      const result = processor.process(character, template);
+
+      expect(result).toHaveProperty("__isSafeString", true);
+      const html = result.content;
+      expect(html).toContain("Expert");
+      expect(html).toContain("Average");
+      expect(html).toContain("Acrobatics");
+      expect(html).toContain("Athletics");
+    });
+  });
 });

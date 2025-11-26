@@ -79,21 +79,8 @@ export class ObjectLoopProcessor extends DataProcessor {
 
         // Only add to dropdownKeys for successful chunks
         if (isDropdown) {
-          // Extract filter for successful chunks only
-          let objName = chunk.split("=>")[0].trim();
-          const findPrefixMatches = objName.match(/^(\[[^\]]+\])\s+/);
-          if (findPrefixMatches?.length) {
-            objName = objName.replace(findPrefixMatches[0], "").trim();
-          }
-
-          let objFilter = null;
-          const filterMatches = objName.match(/(?<=.)\{([^}]+)\}(?=$)/);
-          if (filterMatches?.length) {
-            objFilter = filterMatches[1];
-            objName = objName.replace(`{${objFilter}}`, "");
-          }
-
-          dropdownKeys.push(objFilter || objName);
+          // Use the prefix as the dropdown key if available, otherwise use the filter or object name
+          dropdownKeys.push(result.prefix || result.filter || result.cleanObjName);
         }
       }
     }
@@ -133,11 +120,42 @@ export class ObjectLoopProcessor extends DataProcessor {
 
     let objName = chunk.substring(0, firstArrowIndex).trim();
 
-    // Extract prefix if present (must be in brackets like [Prefix])
-    const findPrefixMatches = objName.match(/^\[([^\]]+)\]\s+/);
-    if (findPrefixMatches?.length) {
-      prefix = findPrefixMatches[1].trim();
-      objName = objName.replace(findPrefixMatches[0], "").trim();
+    // Extract prefix if present
+    // We support [Prefix] ObjectName OR Prefix ObjectName
+    // We assume the object name is the last part (space separated), but respecting the filter braces
+
+    // Manual split from right to left to avoid splitting inside braces
+    let splitIndex = -1;
+    let braceDepth = 0;
+
+    for (let i = objName.length - 1; i >= 0; i--) {
+      const char = objName[i];
+      if (char === "}") {
+        braceDepth++;
+      } else if (char === "{") {
+        braceDepth--;
+      } else if ((char === " " || char === "\t") && braceDepth === 0) {
+        splitIndex = i;
+        break;
+      }
+    }
+
+    if (splitIndex !== -1) {
+      prefix = objName.substring(0, splitIndex).trim();
+      objName = objName.substring(splitIndex + 1).trim();
+
+      // Strip brackets if present
+      const bracketMatch = prefix.match(/^\[(.*)\]$/);
+      if (bracketMatch) {
+        prefix = bracketMatch[1];
+      }
+    } else {
+      // Check for [Prefix]Object (no space) - though this is rare/bad style
+      const bracketPrefixMatch = objName.match(/^\[([^\]]+)\]([^\s]+.*)$/);
+      if (bracketPrefixMatch) {
+        prefix = bracketPrefixMatch[1];
+        objName = bracketPrefixMatch[2];
+      }
     }
 
     // Extract filter if present
@@ -153,7 +171,7 @@ export class ObjectLoopProcessor extends DataProcessor {
     const objData = extractPropertyByString(character, objName);
 
     if (!objData) {
-      return { success: false, output: "", prefix: "" };
+      return { success: false, output: "", prefix: "", filter: objFilter, cleanObjName: objName };
     }
 
     // Convert object data to array format
@@ -165,12 +183,12 @@ export class ObjectLoopProcessor extends DataProcessor {
     }
 
     if (loopData.length === 0) {
-      return { success: false, output: "", prefix: "" };
+      return { success: false, output: "", prefix: "", filter: objFilter, cleanObjName: objName };
     }
 
     // Process template replacements
     const output = TemplateProcessor.processTemplateWithArray(actualValue, loopData);
-    return { success: true, output, prefix };
+    return { success: true, output, prefix, filter: objFilter, cleanObjName: objName };
   }
 
   /**
