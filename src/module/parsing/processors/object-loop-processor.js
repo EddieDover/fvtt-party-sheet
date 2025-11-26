@@ -40,7 +40,32 @@ export class ObjectLoopProcessor extends DataProcessor {
       this.generated_dropdowns_count += 1;
     }
 
-    const chunks = processValue.split("||").map((chunk) => chunk.trim());
+    // Split by || but respect curly braces for filters
+    const chunks = [];
+    let currentChunk = "";
+    let braceDepth = 0;
+
+    for (let i = 0; i < processValue.length; i++) {
+      const char = processValue[i];
+
+      if (char === "{") {
+        braceDepth++;
+      } else if (char === "}") {
+        braceDepth--;
+      }
+
+      if (char === "|" && processValue[i + 1] === "|" && braceDepth === 0) {
+        chunks.push(currentChunk.trim());
+        currentChunk = "";
+        i++; // Skip the second |
+      } else {
+        currentChunk += char;
+      }
+    }
+    if (currentChunk) {
+      chunks.push(currentChunk.trim());
+    }
+
     const finStrs = [];
     let validDropdownSections = 0;
 
@@ -155,6 +180,18 @@ export class ObjectLoopProcessor extends DataProcessor {
    * @returns {boolean} True if the filter passes
    */
   evaluateFilter(data, filterExpression) {
+    // Handle OR logic (||)
+    if (filterExpression.includes("||")) {
+      const orParts = filterExpression.split("||");
+      return orParts.some((part) => this.evaluateFilter(data, part.trim()));
+    }
+
+    // Handle AND logic (&&)
+    if (filterExpression.includes("&&")) {
+      const andParts = filterExpression.split("&&");
+      return andParts.every((part) => this.evaluateFilter(data, part.trim()));
+    }
+
     // Parse the filter expression
     // Supported operators: contains, !contains, startsWith, endsWith, ==, !=, >, <, >=, <=
 
