@@ -67,6 +67,7 @@ export class ObjectLoopProcessor extends DataProcessor {
     }
 
     const finStrs = [];
+    const finStrsContent = [];
     let validDropdownSections = 0;
 
     for (const chunk of chunks) {
@@ -75,6 +76,7 @@ export class ObjectLoopProcessor extends DataProcessor {
         validDropdownSections += 1;
         if (result.output) {
           finStrs.push(result.prefix + result.output);
+          finStrsContent.push(result.output);
         }
 
         // Only add to dropdownKeys for successful chunks
@@ -90,7 +92,7 @@ export class ObjectLoopProcessor extends DataProcessor {
 
     if (isDropdown && dropdownKeys.length === validDropdownSections && validDropdownSections > 1) {
       isSafeStringNeeded = true;
-      outputText = this.createDropdown(this.generated_dropdowns_count, dropdownKeys, finStrs);
+      outputText = this.createDropdown(this.generated_dropdowns_count, dropdownKeys, finStrsContent);
     } else {
       outputText = finStrs.join("");
     }

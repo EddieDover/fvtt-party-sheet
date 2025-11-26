@@ -1054,6 +1054,10 @@ describe("ObjectLoopProcessor", () => {
       expect(html).toContain("Average");
       expect(html).toContain("Acrobatics");
       expect(html).toContain("Athletics");
+
+      // Verify that the prefix is NOT duplicated in the content
+      expect(html).not.toContain("Expert Acrobatics");
+      expect(html).not.toContain("Average Athletics");
     });
   });
 });
