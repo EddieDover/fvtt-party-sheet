@@ -37,6 +37,7 @@ import {
   validateTemplateJson,
   formatTemplateJson,
   clearCache,
+  setModuleTemplates,
 } from "../src/module/utils";
 import { setupFoundryMocks, cleanupFoundryMocks, mockTemplateData, versionTestCases } from "./test-mocks.js";
 
@@ -2413,6 +2414,120 @@ describe("Utils testing", () => {
         // Check that it's properly indented
         expect(result.formatted.split("\n").length).toBeGreaterThan(10);
       });
+    });
+  });
+
+  describe("clearCache and setModuleTemplates", () => {
+    beforeEach(() => {
+      clearCache();
+      setupFoundryMocks();
+    });
+
+    afterEach(() => {
+      cleanupFoundryMocks();
+    });
+
+    it("should clear cached system versions", async () => {
+      // Mock FilePicker for directory browsing
+      const mockBrowse = jest.fn().mockResolvedValue({
+        dirs: ["data/partysheets/dnd5e/1.0.0", "data/partysheets/dnd5e/2.0.0"],
+        files: [],
+      });
+
+      global.foundry.applications.apps.FilePicker.implementation.browse = mockBrowse;
+
+      // Mock fetch to avoid actual network calls
+      global.fetch = jest.fn(() =>
+        Promise.resolve({
+          ok: true,
+          text: () => Promise.resolve("1.0.0\n2.0.0"),
+          json: () => Promise.resolve({}),
+        }),
+      );
+
+      // First call should fetch data
+      const result1 = await getAllSystemVersions(true);
+      expect(result1).toBeDefined();
+
+      // Clear cache
+      clearCache();
+
+      // After clearing cache, should fetch again
+      const result2 = await getAllSystemVersions(true);
+      expect(result2).toBeDefined();
+    });
+
+    it("should handle getModuleTemplate with preview path", async () => {
+      const mockTemplate = {
+        name: "Test Template",
+        author: "Test Author",
+        system: "dnd5e",
+        rows: [[]],
+      };
+
+      global.fetch = jest.fn(() =>
+        Promise.resolve({
+          text: () => Promise.resolve(JSON.stringify(mockTemplate)),
+        }),
+      );
+
+      const result = await getModuleTemplate("path/to/template.json", "custom/preview.jpg");
+      expect(result.preview).toBe("custom/preview.jpg");
+    });
+
+    it("should handle getModuleTemplate without preview path", async () => {
+      const mockTemplate = {
+        name: "Test Template",
+        author: "Test Author",
+        system: "dnd5e",
+        rows: [[]],
+      };
+
+      global.fetch = jest.fn(() =>
+        Promise.resolve({
+          text: () => Promise.resolve(JSON.stringify(mockTemplate)),
+        }),
+      );
+
+      const result = await getModuleTemplate("path/to/my-template.json");
+      expect(result.preview).toBe("dnd5e/my-template.jpg");
+    });
+
+    it("should handle validateTemplateStructure with invalid version", () => {
+      const template = {
+        name: "Test",
+        author: "Test",
+        system: "dnd5e",
+        version: "invalid-version",
+        rows: [[]],
+      };
+
+      const result = validateTemplateStructure(template);
+      expect(result.isValid).toBe(false);
+      expect(result.errors).toContain("Invalid template version. Must be in format 'x.y.z'");
+    });
+
+    it("should set and get module templates", () => {
+      const testTemplates = [
+        {
+          name: "Test Template 1",
+          author: "Test Author",
+          system: "dnd5e",
+          rows: [[]],
+        },
+        {
+          name: "Test Template 2",
+          author: "Test Author",
+          system: "pf2e",
+          rows: [[]],
+        },
+      ];
+
+      setModuleTemplates(testTemplates);
+      const retrieved = getModuleTemplates();
+      expect(retrieved).toHaveLength(2);
+      expect(retrieved[0].name).toBe("Test Template 1");
+      expect(retrieved[1].name).toBe("Test Template 2");
     });
   });
 });

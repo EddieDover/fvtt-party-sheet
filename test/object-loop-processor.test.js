@@ -897,4 +897,135 @@ describe("ObjectLoopProcessor", () => {
       expect(result).toBe("parsed_text");
     });
   });
+
+  describe("parseValue method", () => {
+    it("should parse quoted strings", () => {
+      expect(processor.parseValue('"hello"')).toBe("hello");
+      expect(processor.parseValue("'world'")).toBe("world");
+    });
+
+    it("should parse numbers", () => {
+      expect(processor.parseValue("42")).toBe(42);
+      expect(processor.parseValue("3.14")).toBe(3.14);
+      expect(processor.parseValue("0")).toBe(0);
+    });
+
+    it("should parse booleans", () => {
+      expect(processor.parseValue("true")).toBe(true);
+      expect(processor.parseValue("false")).toBe(false);
+    });
+
+    it("should return strings for other values", () => {
+      expect(processor.parseValue("notaquotedstring")).toBe("notaquotedstring");
+    });
+  });
+
+  describe("getPropertyValue method", () => {
+    it("should get direct property", () => {
+      const obj = { name: "Test", level: 5 };
+      expect(processor.getPropertyValue(obj, "name")).toBe("Test");
+      expect(processor.getPropertyValue(obj, "level")).toBe(5);
+    });
+
+    it("should get nested property with dot notation", () => {
+      const obj = {
+        system: {
+          attributes: {
+            hp: { value: 50 },
+          },
+        },
+      };
+      expect(processor.getPropertyValue(obj, "system.attributes.hp.value")).toBe(50);
+    });
+  });
+
+  describe("normalizeObjectData method", () => {
+    it("should normalize regular object", () => {
+      const objData = {
+        item1: { name: "Sword", type: "weapon" },
+        item2: { name: "Shield", type: "armor" },
+      };
+
+      const result = processor.normalizeObjectData(objData);
+      expect(result).toHaveLength(2);
+      expect(result[0].name).toBe("Sword");
+      expect(result[0].objectLoopKey).toBe("Item1");
+      expect(result[1].name).toBe("Shield");
+      expect(result[1].objectLoopKey).toBe("Item2");
+    });
+
+    it("should handle FoundryVTT document structure", () => {
+      const objData = {
+        documentClass: "Item",
+        _source: {
+          item1: { name: "Potion" },
+          item2: { name: "Scroll" },
+        },
+        foo: "bar",
+        baz: "qux",
+        extra1: "val1",
+        extra2: "val2",
+      };
+
+      const result = processor.normalizeObjectData(objData);
+      expect(result).toHaveLength(2);
+      expect(result[0].name).toBe("Potion");
+      expect(result[0].objectLoopKey).toBe("Item1");
+      expect(result[1].name).toBe("Scroll");
+      expect(result[1].objectLoopKey).toBe("Item2");
+    });
+  });
+
+  describe("evaluateFilter edge cases", () => {
+    it("should handle default comparison operators", () => {
+      const data = { score: 10 };
+      expect(processor.evaluateFilter(data, "score > 5")).toBe(true);
+      expect(processor.evaluateFilter(data, "score < 5")).toBe(false);
+      expect(processor.evaluateFilter(data, "score >= 10")).toBe(true);
+      expect(processor.evaluateFilter(data, "score <= 10")).toBe(true);
+    });
+
+    it("should fallback to legacy type filter", () => {
+      const data = { type: "weapon" };
+      expect(processor.evaluateFilter(data, "weapon")).toBe(true);
+      expect(processor.evaluateFilter(data, "armor")).toBe(false);
+    });
+  });
+
+  describe("dropdown with filters and prefixes", () => {
+    it("should handle dropdown with filters in chunks", () => {
+      const character = {
+        items: {
+          item1: { type: "weapon", name: "Sword" },
+          item2: { type: "armor", name: "Shield" },
+          item3: { type: "weapon", name: "Bow" },
+        },
+      };
+
+      // Mock parseText to return SafeString indicator
+      mockParserEngine.parseText = jest.fn().mockReturnValue([true, "dropdown_html"]);
+
+      const result = processor.process(character, "{dropdown} items{weapon} => {name} || items{armor} => {name}");
+
+      expect(result).toHaveProperty("__isSafeString", true);
+    });
+
+    it("should handle dropdown with prefix in chunks", () => {
+      const character = {
+        weapons: {
+          sword: { name: "Longsword" },
+          bow: { name: "Shortbow" },
+        },
+        armor: {
+          shield: { name: "Tower Shield" },
+        },
+      };
+
+      mockParserEngine.parseText = jest.fn().mockReturnValue([true, "dropdown_html"]);
+
+      const result = processor.process(character, "{dropdown} [Weapons] weapons => {name} || [Armor] armor => {name}");
+
+      expect(result).toHaveProperty("__isSafeString", true);
+    });
+  });
 });

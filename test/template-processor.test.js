@@ -115,4 +115,50 @@ describe("TemplateProcessor", () => {
       expect(properties).toEqual([]);
     });
   });
+
+  describe("findArrayPropertyInTemplate", () => {
+    test("should find first array property in template", () => {
+      const data = {
+        name: "Test",
+        items: [{ id: 1 }, { id: 2 }],
+        level: 5,
+      };
+      const template = "{name} - {items} - {level}";
+      const result = TemplateProcessor.findArrayPropertyInTemplate(template, data);
+      expect(result).toBe("items");
+    });
+
+    test("should return null if no array properties found", () => {
+      const data = {
+        name: "Test",
+        level: 5,
+      };
+      const template = "{name} - {level}";
+      const result = TemplateProcessor.findArrayPropertyInTemplate(template, data);
+      expect(result).toBe(null);
+    });
+  });
+
+  describe("processTemplate with skipArrays", () => {
+    test("should skip array properties when skipArrays is true", () => {
+      const data = {
+        name: "Hero",
+        items: [{ name: "Sword" }, { name: "Shield" }],
+        level: 5,
+      };
+      const template = "{name} - {items} - Level {level}";
+      const result = TemplateProcessor.processTemplate(template, data, "items");
+      expect(result).toBe("Hero -  - Level 5");
+    });
+
+    test("should process normally when no skipProperty specified", () => {
+      const data = {
+        name: "Hero",
+        level: 5,
+      };
+      const template = "{name} - Level {level}";
+      const result = TemplateProcessor.processTemplate(template, data, null);
+      expect(result).toBe("Hero - Level 5");
+    });
+  });
 });
