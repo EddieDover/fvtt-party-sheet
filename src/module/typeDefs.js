@@ -59,8 +59,9 @@ class FormApplication {
  * @property {number} rowspan - The number of rows to span. Spanned rows must have spanover type.
  * @property {number} maxwidth - The maximum width of the column in pixels.
  * @property {number} minwidth - The minimum width of the column in pixels.
+ * @property {number} maxHeight - The maximum height of the content (e.g. dropdowns).
  * @property {boolean} showSign - Whether to show a plus sign for positive numbers.
- * @property {boolean} showTotal - Whether to show a total sum for this column in a footer row.
+ * @property {boolean} showTotal - Whether to show a total sum for this column.
  * @property {string} text - The value to display. See below for details.
  */
 

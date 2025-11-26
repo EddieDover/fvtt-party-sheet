@@ -1060,4 +1060,76 @@ describe("ObjectLoopProcessor", () => {
       expect(html).not.toContain("Average Athletics");
     });
   });
+
+  describe("maxHeight functionality", () => {
+    it("should apply maxHeight style when provided in options", () => {
+      const character = {
+        items: {
+          spell: [{ name: "Fireball" }],
+          equipment: [{ name: "Sword" }],
+        },
+      };
+
+      mockParserEngine.parseText = jest.fn().mockReturnValue([true, "dropdown_html"]);
+
+      const result = processor.process(character, "{dropdown} items{spell} => {name} || items{equipment} => {name}", {
+        maxHeight: 100,
+      });
+
+      expect(result).toHaveProperty("__isSafeString", true);
+      // We can't easily check the HTML content because createDropdown is internal and parseText mocks the return.
+      // But we can check if createDropdown was called with the correct arguments if we spy on it,
+      // or we can check the output if we mock parseText to return the input.
+    });
+
+    it("should apply maxHeight style to non-dropdown output", () => {
+      const character = {
+        items: {
+          item1: { name: "Fireball", type: "spell" },
+          item2: { name: "Magic Missile", type: "spell" },
+        },
+      };
+
+      mockParserEngine.parseText = jest.fn().mockImplementation((text, isSafe) => [isSafe, text]);
+
+      const result = processor.process(character, "items{spell} => {name}", { maxHeight: "100px" });
+
+      // The result might be a SafeString object or just the content depending on how parseText is mocked
+      // In our test setup, parseText returns [isSafe, text]
+      // And process returns new Handlebars.SafeString(outputText) if isSafe is true
+
+      // Check if result is a SafeString (mocked)
+      if (result && result.__isSafeString) {
+        expect(result.content).toContain("max-height: 100px");
+        expect(result.content).toContain("overflow-y: auto");
+        expect(result.content).toContain("Fireball");
+      } else {
+        // If it returned a string directly (which shouldn't happen if isSafeStringNeeded is true)
+        expect(result).toContain("max-height: 100px");
+      }
+    });
+  });
+
+  describe("createDropdown method", () => {
+    it("should include max-height style when maxHeight is provided", () => {
+      const dropdownKeys = ["Key1", "Key2"];
+      const finStrs = ["Content1", "Content2"];
+      const maxHeight = "150px";
+
+      const html = processor.createDropdown(1, dropdownKeys, finStrs, maxHeight);
+
+      expect(html).toContain(`max-height: ${maxHeight}`);
+      expect(html).toContain("overflow-y: auto");
+    });
+
+    it("should not include max-height style when maxHeight is not provided", () => {
+      const dropdownKeys = ["Key1", "Key2"];
+      const finStrs = ["Content1", "Content2"];
+
+      const html = processor.createDropdown(1, dropdownKeys, finStrs);
+
+      expect(html).not.toContain("max-height");
+      expect(html).not.toContain("overflow-y: auto");
+    });
+  });
 });

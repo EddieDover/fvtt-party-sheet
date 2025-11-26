@@ -187,7 +187,10 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
             row_obj.forEach((colobj) => {
               const colname = colobj.name;
               customData[colname] = {
-                text: this.getCustomData(userChar, colobj.type, colobj.text, { showSign: colobj.showSign }),
+                text: this.getCustomData(userChar, colobj.type, colobj.text, {
+                  showSign: colobj.showSign,
+                  maxHeight: colobj.maxHeight,
+                }),
                 options: {
                   align: colobj.align,
                   valign: colobj.valign,

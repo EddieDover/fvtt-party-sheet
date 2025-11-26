@@ -92,9 +92,15 @@ export class ObjectLoopProcessor extends DataProcessor {
 
     if (isDropdown && dropdownKeys.length === validDropdownSections && validDropdownSections > 1) {
       isSafeStringNeeded = true;
-      outputText = this.createDropdown(this.generated_dropdowns_count, dropdownKeys, finStrsContent);
+      outputText = this.createDropdown(this.generated_dropdowns_count, dropdownKeys, finStrsContent, options.maxHeight);
     } else {
       outputText = finStrs.join("");
+
+      // If maxHeight is set, wrap the output in a scrollable div
+      if (options.maxHeight && outputText) {
+        isSafeStringNeeded = true;
+        outputText = `<div style="max-height: ${options.maxHeight}px; overflow-y: auto;">${outputText}</div>`;
+      }
     }
 
     [isSafeStringNeeded, outputText] = this.parserEngine.parseText(outputText, isSafeStringNeeded);
@@ -333,9 +339,10 @@ export class ObjectLoopProcessor extends DataProcessor {
    * @param {number} dropdownIndex - The index of the dropdown
    * @param {Array} dropdownKeys - The dropdown keys
    * @param {Array} finStrs - The processed strings
+   * @param {string|null} maxHeight - Optional max height for the content
    * @returns {string} Dropdown HTML
    */
-  createDropdown(dropdownIndex, dropdownKeys, finStrs) {
+  createDropdown(dropdownIndex, dropdownKeys, finStrs, maxHeight = null) {
     // Create a more stable identifier based on content
     const contentHash = dropdownKeys
       .join("-")
@@ -370,7 +377,12 @@ export class ObjectLoopProcessor extends DataProcessor {
         isVisible = "block";
       }
 
-      contentDivs += `<div data-dropdownsection="${dropdownSection}" data-dropdownoption="${key}" style="display: ${isVisible};">${finStrs[i] || ""}</div>`;
+      let style = `display: ${isVisible};`;
+      if (maxHeight) {
+        style += `max-height: ${maxHeight}; overflow-y: auto;`;
+      }
+
+      contentDivs += `<div data-dropdownsection="${dropdownSection}" data-dropdownoption="${key}" style="${style}">${finStrs[i] || ""}</div>`;
     }
 
     return `<select id="${dropdownId}" class="fvtt-party-sheet-dropdown" data-dropdownsection="${dropdownSection}">${options}</select>${contentDivs}`;
