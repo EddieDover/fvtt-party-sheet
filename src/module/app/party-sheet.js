@@ -38,6 +38,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
       title: "fvtt-party-sheet.section-title",
       width: "auto",
       height: "auto",
+      resizable: true,
     },
     classes: ["fvtt-party-sheet"],
     actions: {
