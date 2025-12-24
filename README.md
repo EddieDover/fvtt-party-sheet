@@ -11,14 +11,12 @@ Join the [Discord Server](https://discord.gg/mvMdc7bH2d) for support, to file bu
 
 | Upcoming Changes | Template Readme | Template List | Template Repository
 | --- | --- | --- | --- |
-| [Link](UPCOMING_CHANGELOG.md) | [Link](https://www.github.com/EddieDover/fvtt-party-sheet-templates/README.md) | [Link](https://www.github.com/EddieDover/fvtt-party-sheet-templates/TEMPLATE_LIST.md) | [Link](https://www.github.com/EddieDover/fvtt-party-sheet-templates)
+| [Link](UPCOMING_CHANGELOG.md) | [Link](https://github.com/EddieDover/fvtt-party-sheet-templates/blob/master/README.md) | [Link](https://www.github.com/EddieDover/fvtt-party-sheet-templates/blob/master/TEMPLATE_LIST.md) | [Link](https://www.github.com/EddieDover/fvtt-party-sheet-templates)
 
 ## About
 
 This module provides the GM with a table of actors and associated data about each in order to quickly assess their important stats, traits, abilites, etc. 
 Originally 5e only, it is now system agnostic and you can easily create templates for any system using JSON.
-
-See upcoming changes in the [UPCOMING_CHANGELOG.md](UPCOMING_CHANGELOG.md)
 
 ## Features
 
@@ -38,11 +36,11 @@ See upcoming changes in the [UPCOMING_CHANGELOG.md](UPCOMING_CHANGELOG.md)
 
 ### Template Examples
 
-For a comprehensive list of the pre-made templates provided by this module and screenshots of each, please see **[TEMPLATE_LIST.md](https://www.github.com/EddieDover/fvtt-party-sheet-templates/TEMPLATE_LIST.md)** or visit the [template repository](https://github.com/EddieDover/fvtt-party-sheet-templates).
+For a comprehensive list of the pre-made templates provided by this module and screenshots of each, please see **[TEMPLATE_LIST.md](https://github.com/EddieDover/fvtt-party-sheet-templates/blob/master/TEMPLATE_LIST.md)** or visit the [template repository](https://github.com/EddieDover/fvtt-party-sheet-templates).
 
 ### Making your own system template
 
-Additional systems can be supported by writing a JSON file following the guidelines in the **[README.md](https://www.github.com/EddieDover/fvtt-party-sheet-templates/README.md)** of the `fvtt-party-sheet-templates` repository and placing it in either:
+Additional systems can be supported by writing a JSON file following the guidelines in the **[README.md](https://www.github.com/EddieDover/fvtt-party-sheet-templates/blob/master/README.md)** of the `fvtt-party-sheet-templates` repository and placing it in either:
 
   - Native Foundry: your `<FOUNDRY_VTT>/Data/partysheets/` folder.
   - The Forge: the folder named <partysheets> at the top level of your assets library (created by the module).
@@ -74,6 +72,10 @@ Primary Icon:
 Party Sheet Window:
 
 ![Preview of Plugin Party Sheet - Only Connected Players](images/preview1.png)
+
+JSON Editor:
+
+<img width="800" height="668" alt="image" src="https://github.com/user-attachments/assets/df922843-57f3-49ed-a0e3-a5f14f425e77" />
 
 ## Contributions
 
