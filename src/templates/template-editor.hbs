@@ -1,0 +1,74 @@
+<form autocomplete="off" class="fvtt-party-sheet-template-editor-form standard-form">
+  <div class="template-editor-container">
+    <!-- Toolbar -->
+    <div class="template-editor-toolbar">
+      <div class="toolbar-section">
+        <button type="button" data-action="onNew" class="btn btn--primary" title="{{localize 'fvtt-party-sheet.template-editor.new-tooltip'}}">
+          <i class="fas fa-file"></i> {{localize 'fvtt-party-sheet.template-editor.new'}}
+        </button>
+        <button type="button" data-action="onLoad" class="btn btn--secondary" title="{{localize 'fvtt-party-sheet.template-editor.load-tooltip'}}">
+          <i class="fas fa-folder-open"></i> {{localize 'fvtt-party-sheet.template-editor.load'}}
+        </button>
+        <button type="button" data-action="onSave" class="btn btn--secondary" title="{{localize 'fvtt-party-sheet.template-editor.save-tooltip'}}">
+          <i class="fas fa-save"></i> {{localize 'fvtt-party-sheet.template-editor.save'}}
+        </button>
+      </div>
+      
+      <div class="toolbar-section">
+        <button type="button" data-action="onValidate" class="btn btn--tertiary" title="{{localize 'fvtt-party-sheet.template-editor.validate-tooltip'}}">
+          <i class="fas fa-check-circle"></i> {{localize 'fvtt-party-sheet.template-editor.validate'}}
+        </button>
+        <button type="button" data-action="onFormatJson" class="btn btn--tertiary" title="{{localize 'fvtt-party-sheet.template-editor.format-tooltip'}}">
+          <i class="fas fa-code"></i> {{localize 'fvtt-party-sheet.template-editor.format'}}
+        </button>
+      </div>
+      
+      <div class="toolbar-section">
+        <button type="button" data-action="onClose" class="btn btn--danger" title="{{localize 'fvtt-party-sheet.template-editor.close-tooltip'}}">
+          <i class="fas fa-times"></i> {{localize 'fvtt-party-sheet.close'}}
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="template-editor-content">
+      <!-- Metadata Panel -->
+      <div class="metadata-panel">
+        <h3>{{localize 'fvtt-party-sheet.template-editor.metadata'}}</h3>
+        <div class="form-group metadata-field">
+          <label for="template-name">{{localize 'fvtt-party-sheet.template-name'}}:</label>
+          <input type="text" id="template-name" name="templateName" placeholder="{{localize 'fvtt-party-sheet.template-editor.name-placeholder'}}" />
+        </div>
+        <div class="form-group metadata-field">
+          <label for="template-author">{{localize 'fvtt-party-sheet.author'}}:</label>
+          <input type="text" id="template-author" name="templateAuthor" placeholder="{{localize 'fvtt-party-sheet.template-editor.author-placeholder'}}" />
+        </div>
+        <div class="form-group metadata-field">
+          <label for="template-system">{{localize 'fvtt-party-sheet.template-editor.system'}}:</label>
+          <input type="text" id="template-system" name="templateSystem" readonly />
+        </div>
+        <div class="form-group metadata-field">
+          <label for="template-version">{{localize 'fvtt-party-sheet.version'}}:</label>
+          <input type="text" id="template-version" name="templateVersion" placeholder="1.0.0" />
+        </div>
+      </div>
+
+      <!-- JSON Editor Panel -->
+      <div class="json-editor-panel">
+        <h3>{{localize 'fvtt-party-sheet.template-editor.json-editor'}} - <span style='color:red'>{{localize 'fvtt-party-sheet.template-editor.save-warnings'}}</span></h3>
+        <div id="json-editor" class="json-editor-container">
+          <!-- Monaco Editor will be initialized here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="template-editor-statusbar">
+      <span class="status-text">{{localize 'fvtt-party-sheet.template-editor.ready'}}</span>
+      <span class="filename-text">{{currentFilename}}</span>
+    </div>
+
+    <!-- Hidden file input for loading -->
+    <input type="file" id="template-file-input" accept=".json" style="display: none;" />
+  </div>
+</form>

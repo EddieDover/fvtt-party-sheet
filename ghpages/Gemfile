@@ -2,5 +2,9 @@ source "https://rubygems.org"
 
 gem "github-pages", group: :jekyll_plugins
 gem "jekyll_version_plugin", group: :jekyll_plugins
-gem 'wdm', '>= 0.1.0'
+gem 'wdm', '>= 0.2.0'
 gem "webrick"
+
+gem "csv", "~> 3.3"
+
+gem "logger", "~> 1.7"

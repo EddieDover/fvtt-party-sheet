@@ -7,15 +7,16 @@
 
 ## Links
 
-| Upcoming Changes | Template Readme | Template List |
-| --- | --- | --- |
-| [Link](UPCOMING_CHANGELOG.md) | [Link](TEMPLATE_README.md) | [Link](TEMPLATE_LIST.md) |
+Join the [Discord Server](https://discord.gg/mvMdc7bH2d) for support, to file bug reports, request templates, etc!
+
+| Upcoming Changes | Template Readme | Template List | Template Repository
+| --- | --- | --- | --- |
+| [Link](UPCOMING_CHANGELOG.md) | [Link](https://www.github.com/EddieDover/fvtt-party-sheet-templates/README.md) | [Link](https://www.github.com/EddieDover/fvtt-party-sheet-templates/TEMPLATE_LIST.md) | [Link](https://www.github.com/EddieDover/fvtt-party-sheet-templates)
 
 ## About
 
-This module provides a GM with a table of characters in order to quickly see their important stats, traits, abilites, etc. Originally 5e only, it is now system agnostic and you can create easy to make .json templates for your system. It supports native Foundry and The Forge. Complete instructions for creating templates and placing them in the right folder on Foundry and Forge are included in the [TEMPLATE_README.md](TEMPLATE_README.md) file.
-
-If you create a template, please submit it via email or GitHub as a Pull Request, and we will include it in future updates with full credit.
+This module provides the GM with a table of actors and associated data about each in order to quickly assess their important stats, traits, abilites, etc. 
+Originally 5e only, it is now system agnostic and you can easily create templates for any system using JSON.
 
 See upcoming changes in the [UPCOMING_CHANGELOG.md](UPCOMING_CHANGELOG.md)
 
@@ -23,32 +24,42 @@ See upcoming changes in the [UPCOMING_CHANGELOG.md](UPCOMING_CHANGELOG.md)
 
 - Adds a 'Party Sheet' similar to that provided by Fantasy Grounds. Just click the Party Sheet icon on the Tokens Controls sub-menu.
 
-  - The Party Sheet can be configured via the options to either display only currently connected players, or all non-npc characters. When using the all-characters display, there is a separate dialog to allow hiding of any characters the DM doesn't need to worry about. See the [TEMPLATE_README.md](TEMPLATE_README.md) file for instructions on how to create a json file for your own system.
+- Supports both Foundry and The Forge.
 
-  - Clicking a character portrait will open their sheet.
+- The GM has full control over the actors displayed by the sheet. They can choose to see or hide specific actors, groups of actors, actors only controlled by players, and only player linked actors who are online.
 
-  - The Party Sheet is no longer bound to simply the built-in dnd5e system. Additional systems can be supported by writing a JSON file following the guidelines in [TEMPLATE_README.md](TEMPLATE_README.md) and placing it in either:
+- Clicking a character portrait will open their sheet.
 
-    - Native Foundry: your <FOUNDRY_VTT/Data/partysheets/> folder.
-    - The Forge: the folder named <partysheets> at the top level of your assets library (created by the module).
+- In order to create new templates, a built-in JSON editor is provided to the GM, with the ability to view their template in real-time.
+
+- GMs are given an extensive syntax set in order to craft complex and useful templates.
 
 ## Systems & Templates
 
 ### Template Examples
 
-For a comprehensive list of the pre-made templates provided by this module and screenshots of each, please see **[TEMPLATE_LIST.md](TEMPLATE_LIST.md)** or examine the contents of the [example_templates](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates) folder.
+For a comprehensive list of the pre-made templates provided by this module and screenshots of each, please see **[TEMPLATE_LIST.md](https://www.github.com/EddieDover/fvtt-party-sheet-templates/TEMPLATE_LIST.md)** or visit the [template repository](https://github.com/EddieDover/fvtt-party-sheet-templates).
 
 ### Making your own system template
 
-Please see the [TEMPLATE_README.md](TEMPLATE_README.md) for information on how to create your own template.
+Additional systems can be supported by writing a JSON file following the guidelines in the **[README.md](https://www.github.com/EddieDover/fvtt-party-sheet-templates/README.md)** of the `fvtt-party-sheet-templates` repository and placing it in either:
+
+  - Native Foundry: your `<FOUNDRY_VTT>/Data/partysheets/` folder.
+  - The Forge: the folder named <partysheets> at the top level of your assets library (created by the module).
+
+If you create a template, please submit it via email, [discord](https://discord.gg/mvMdc7bH2d), or as a Pull Request or [Issue](https://github.com/EddieDover/fvtt-party-sheet-templates/issues) to the templates repository.
 
 ### Template Installation
 
-If using native **Foundry**, place the templates you wish to use in the <FOUNDRY_VTT/Data/partysheets/> folder.
+The module comes with a template installer that can be opened at any time. It will show you any templates currently available for your system, provided they exist and your current system version meets their critera. If you do not see a system template available to install then there isn't one available for your system or system version.
 
-If using **The Forge**, this module will create a folder at the top level of your Assets Library named `partysheets`. Place your templates in this folder.
+## API
 
-If using The Forge, install the module on your local Foundry installation to have access to the [example_templates](https://github.com/EddieDover/fvtt-party-sheet/tree/main/example_templates) folder, and to upload any you would like to use to your Assets Library in the <partysheets> folder at the top level. Or, if you haven't installed Foundry and only used the license key on The Forge, use the GitHub link above. In this case, you will have to download the file to your computer, then upload it to The Forge. If you create a template, please submit it via email or GitHub, and we will include it in future updates with full credit.
+Functionality for macros/etc is exposed behind game["fvtt-party-sheet"].api.XXXXX
+
+Current Function List:
+
+- togglePartySheet - Toggles the party open or closed.
 
 ## Support
 

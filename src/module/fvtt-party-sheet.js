@@ -9,21 +9,42 @@ import {
   validateSystemTemplates,
   setTemplatesLoaded,
   clearCustomTemplates,
+  compareSymVer,
+  checkForTemplateUpdates,
+  addCustomTemplate,
+  updateSelectedTemplate,
 } from "./utils.js";
 import { TemplateStatusForm } from "./app/template-status.js";
 
+/** @type {PartySheetForm} */
 let currentPartySheet = null;
 let currentRefreshInterval = null;
 let currentTemplateStatusForm = null;
-
 // @ts-ignore
 Handlebars.registerPartial(
   "installer",
   `
-<div style="display:flex;flex-direction:row;flex-wrap:wrap">
+<div style="display:flex;flex-direction:row;flex-wrap:wrap;width:100%;min-width:600px;">
+{{#if templateLoadStatus}}
+  {{#if (eq templateLoadStatus 'loading')}}
+    <div style="padding:20px;text-align:center;width:100%;">
+      <i class="fas fa-spinner fa-spin" style="font-size:24px;margin-bottom:10px;"></i>
+      <div style="font-weight:bold;">Loading templates from repository...</div>
+      <div style="margin-top:5px;color:#888;">Please wait while we fetch available templates for your system.</div>
+    </div>
+  {{else if (eq templateLoadStatus 'error')}}
+    <div style="padding:20px;text-align:center;width:100%;border:2px solid #ff6666;border-radius:5px;background-color:rgba(255,102,102,0.1);">
+      <i class="fas fa-exclamation-triangle" style="font-size:24px;margin-bottom:10px;color:#ff6666;"></i>
+      <div style="font-weight:bold;color:#ff6666;margin-bottom:10px;">Error Loading Templates</div>
+      <div style="margin-bottom:10px;">{{templateLoadError}}</div>
+      <div style="margin-top:10px;color:#888;">Check your internet connection or try again later.</div>
+    </div>
+  {{/if}}
+{{/if}}
+{{#ifCond moduleSystemTemplates.length '>' 0}}
 {{#each moduleSystemTemplates as |template|}}
     <div style="display:flex;flex-direction:row;flex-wrap:nowrap;padding: 3px;border: 1px solid black;border-radius: 5px;margin: 5px;">
-        <div class="fvtt-party-sheet-ps-system-name" style="display:flex;flex-direction:column;flex-wrap:nowrap;width:200px;max-height:300px;">
+        <div class="fvtt-party-sheet-ps-system-name" style="display:flex;flex-direction:column;flex-wrap:nowrap;width:200px;height:100%;max-height:400px;">
         <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-name"}}:</div>
         <div style="padding-bottom:3px;">{{template.name}}</div>
         <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.author"}}:</div>
@@ -42,10 +63,27 @@ Handlebars.registerPartial(
               <span style="border-radius:5px;padding:2px;"></span>
             {{/if}}
         </div>
+        <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-status.current-system-version"}}:</div>
+        <div style="padding-bottom:3px;font-weight:bold;color:#4a90e2;">{{../currentSystemVersion}}</div>
         <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-system-version"}}:</div>
-        <div style="flex-grow:1;">{{template.minimumSystemVersion}}</div>
+        {{#systemVersionBelowMin template.minimumSystemVersion}}
+        <div style="padding-bottom:3px;color:#ff6666;background-color:#000000;border-radius:5px;padding:2px;">{{template.minimumSystemVersion}}</div>
+        {{else}}
+        <div style="padding-bottom:3px;">{{template.minimumSystemVersion}}</div>
+        {{/systemVersionBelowMin}}
+        {{#if template.maximumSystemVersion}}
+        <div style="font-weight:bolder;text-transform:uppercase;">{{localize "fvtt-party-sheet.template-max-system-version"}}:</div>
+        {{#systemVersionAboveMax template.maximumSystemVersion}}
+        <div style="flex-grow:1;color:#ff6666;background-color:#000000;border-radius:5px;padding:2px;">{{template.maximumSystemVersion}}</div>
+        {{else}}
+        <div style="flex-grow:1;">{{template.maximumSystemVersion}}</div>
+        {{/systemVersionAboveMax}}
+        {{else}}
+        <div style="flex-grow:1;"></div>
+        {{/if}}
         {{#if template.installedVersion}}
               {{#compVersion template.installedVersion template.version}}
+              {{#systemVersionInRange template.minimumSystemVersion template.maximumSystemVersion}}
               <button
                   type="button"
                   class="fvtt-party-sheet-module-install-button"
@@ -54,6 +92,19 @@ Handlebars.registerPartial(
                   {{localize "fvtt-party-sheet.reinstall"}}
               </button>
               {{else}}
+              <button
+                  type="button"
+                  class="fvtt-party-sheet-module-install-button"
+                  data-modulepath="{{template.path}}"
+                  disabled
+                  style="opacity:0.5;cursor:not-allowed;"
+                  title="System version {{../currentSystemVersion}} is incompatible with this template (requires {{template.minimumSystemVersion}}{{#if template.maximumSystemVersion}} - {{template.maximumSystemVersion}}{{/if}})"
+              >
+                  {{localize "fvtt-party-sheet.reinstall"}}
+              </button>
+              {{/systemVersionInRange}}
+              {{else}}
+                  {{#systemVersionInRange template.minimumSystemVersion template.maximumSystemVersion}}
                   <button
                   type="button"
                   style="background-color:#29b125"
@@ -62,6 +113,18 @@ Handlebars.registerPartial(
               >
                 {{localize "fvtt-party-sheet.update"}}
               </button>
+                  {{else}}
+                  <button
+                  type="button"
+                  style="background-color:#666;opacity:0.5;cursor:not-allowed;"
+                  class="fvtt-party-sheet-module-install-button"
+                  data-modulepath="{{template.path}}"
+                  disabled
+                  title="System version {{../currentSystemVersion}} is incompatible with this template (requires {{template.minimumSystemVersion}}{{#if template.maximumSystemVersion}} - {{template.maximumSystemVersion}}{{/if}})"
+              >
+                {{localize "fvtt-party-sheet.update"}}
+              </button>
+                  {{/systemVersionInRange}}
               {{/compVersion}}
         {{else}}
           {{#if template.version}}
@@ -73,6 +136,7 @@ Handlebars.registerPartial(
                 {{localize "fvtt-party-sheet.preview"}}
             </button>
             {{#if template.installed}}
+              {{#systemVersionInRange template.minimumSystemVersion template.maximumSystemVersion}}
               <button
                   type="button"
                   style="background-color:#29b125"
@@ -81,7 +145,20 @@ Handlebars.registerPartial(
                 >
                 {{localize "fvtt-party-sheet.update"}}
               </button>
+              {{else}}
+              <button
+                  type="button"
+                  style="background-color:#666;opacity:0.5;cursor:not-allowed;"
+                  class="fvtt-party-sheet-module-install-button"
+                  data-modulepath="{{template.path}}"
+                  disabled
+                  title="System version {{../currentSystemVersion}} is incompatible with this template (requires {{template.minimumSystemVersion}}{{#if template.maximumSystemVersion}} - {{template.maximumSystemVersion}}{{/if}})"
+                >
+                {{localize "fvtt-party-sheet.update"}}
+              </button>
+              {{/systemVersionInRange}}
             {{else}}
+              {{#systemVersionInRange template.minimumSystemVersion template.maximumSystemVersion}}
               <button
                 type="button"
                 class="fvtt-party-sheet-module-install-button"
@@ -89,12 +166,31 @@ Handlebars.registerPartial(
               >
               {{localize "fvtt-party-sheet.install"}}
             </button>
+              {{else}}
+              <button
+                type="button"
+                class="fvtt-party-sheet-module-install-button"
+                data-modulepath="{{template.path}}"
+                disabled
+                style="opacity:0.5;cursor:not-allowed;"
+                title="System version {{../currentSystemVersion}} is incompatible with this template (requires {{template.minimumSystemVersion}}{{#if template.maximumSystemVersion}} - {{template.maximumSystemVersion}}{{/if}})"
+              >
+              {{localize "fvtt-party-sheet.install"}}
+            </button>
+              {{/systemVersionInRange}}
             {{/if}}
           {{/if}}
         {{/if}}
         </div>
     </div>
 {{/each}}
+{{else}}
+  <div>
+    There are currently no community created templates available for your system.
+    <br/>
+    Visit <a href='https://github.com/EddieDover/fvtt-party-sheet/blob/main/TEMPLATE_README.md'>TEMPLATE_README.md</a> for more information on how to create your own.
+  </div>
+{{/ifCond}}
 </div>
 `,
 );
@@ -106,6 +202,14 @@ Handlebars.registerHelper("hccontains", function (needle, haystack, options) {
   // @ts-ignore
   haystack = game.settings.get("fvtt-party-sheet", "hiddenCharacters") ?? [];
   return haystack.indexOf(needle) > -1 ? options.fn(this) : options.inverse(this);
+});
+
+//@ts-ignore
+Handlebars.registerHelper("inArray", function (elem, list, options) {
+  if (list && list.indexOf(elem) > -1) {
+    return options.fn(this);
+  }
+  return options.inverse(this);
 });
 
 // @ts-ignore
@@ -167,6 +271,25 @@ Handlebars.registerHelper("getColSpan", function (row, key) {
 });
 
 // @ts-ignore
+Handlebars.registerHelper("shouldSkipForColspan", function (row, currentKey, options) {
+  const keys = Object.keys(row);
+  const currentIndex = keys.indexOf(currentKey);
+
+  // Check if any previous cell in this row spans into this position
+  for (let i = 0; i < currentIndex; i++) {
+    const prevKey = keys[i];
+    const prevColspan = row[prevKey]?.options?.colspan ?? 1;
+
+    // If the previous cell spans enough columns to cover this position
+    if (i + prevColspan > currentIndex) {
+      return options.fn(this); // Skip this cell
+    }
+  }
+
+  return options.inverse(this); // Don't skip this cell
+});
+
+// @ts-ignore
 Handlebars.registerHelper("getRowSpan", function (row, key) {
   const myoptions = row[key]?.options ?? {};
   return myoptions?.rowspan ?? 1;
@@ -182,6 +305,52 @@ Handlebars.registerHelper("getMaxWidth", function (row, key) {
 Handlebars.registerHelper("getMinWidth", function (row, key) {
   const myoptions = row[key]?.options ?? {};
   return myoptions?.minwidth ? `${myoptions?.minwidth}px` : "auto";
+});
+
+// @ts-ignore
+Handlebars.registerHelper("getHeaderAlignment", function (row, key) {
+  const myoptions = row[key]?.options ?? {};
+  return myoptions?.headerAlign ?? "center";
+});
+
+// @ts-ignore
+Handlebars.registerHelper("shouldShowTotal", function (row, key) {
+  const myoptions = row[key]?.options ?? {};
+  return myoptions?.showTotal === true;
+});
+
+// @ts-ignore
+Handlebars.registerHelper("getColumnTotal", function (players, columnKey, rowIndex) {
+  // Validate that players is iterable
+  if (!players || !Array.isArray(players) || players.length === 0) {
+    return "";
+  }
+
+  let total = 0;
+  let hasNumericValues = false;
+
+  try {
+    for (let i = 0; i < players.length; i++) {
+      const playerData = players[i];
+
+      if (playerData && playerData[rowIndex] && playerData[rowIndex][columnKey]) {
+        const cellText = playerData[rowIndex][columnKey].text;
+
+        // Try to extract numeric value from the text
+        const numericValue = parseFloat(cellText);
+
+        if (!isNaN(numericValue)) {
+          total += numericValue;
+          hasNumericValues = true;
+        }
+      }
+    }
+  } catch (error) {
+    console.warn("Error calculating column total:", error);
+    return "";
+  }
+
+  return hasNumericValues ? total : "";
 });
 
 // @ts-ignore
@@ -256,6 +425,9 @@ Handlebars.registerHelper("ifCond", function (v1, operator, v2, options) {
       return v1 && v2 ? options.fn(this) : options.inverse(this);
     case "||":
       return v1 || v2 ? options.fn(this) : options.inverse(this);
+    case "someType":
+      const applicableItems = v1.filter((item) => item.type === v2);
+      return applicableItems.length > 0 ? options.fn(this) : options.inverse(this);
     default:
       return options.inverse(this);
   }
@@ -291,16 +463,79 @@ Handlebars.registerHelper("compVersion", function (v1, v2, options) {
   return options.fn(this);
 });
 
+// @ts-ignore
+Handlebars.registerHelper("systemVersionInRange", function (minVersion, maxVersion, options) {
+  // @ts-ignore
+  const currentSystemVersion = game.system.version;
+
+  if (!compareSymVer) {
+    // Fallback: simple string comparison if compareSymVer is not available
+    const minCheck = currentSystemVersion >= minVersion;
+    const maxCheck = !maxVersion || currentSystemVersion <= maxVersion;
+
+    if (minCheck && maxCheck) {
+      return options.fn(this);
+    } else {
+      return options.inverse(this);
+    }
+  }
+
+  const aboveMin = compareSymVer(currentSystemVersion, minVersion) >= 0;
+  const belowMax = !maxVersion || compareSymVer(currentSystemVersion, maxVersion) <= 0;
+
+  const inRange = aboveMin && belowMax;
+
+  if (inRange) {
+    return options.fn(this);
+  } else {
+    return options.inverse(this);
+  }
+});
+
+// @ts-ignore
+Handlebars.registerHelper("systemVersionAboveMax", function (maxVersion, options) {
+  if (!maxVersion) {
+    return options.inverse(this);
+  }
+
+  // @ts-ignore
+  const currentSystemVersion = game.system.version;
+
+  const aboveMax = compareSymVer(currentSystemVersion, maxVersion) > 0;
+
+  if (aboveMax) {
+    return options.fn(this);
+  } else {
+    return options.inverse(this);
+  }
+});
+
+// @ts-ignore
+Handlebars.registerHelper("systemVersionBelowMin", function (minVersion, options) {
+  // @ts-ignore
+  const currentSystemVersion = game.system.version;
+
+  const belowMin = compareSymVer(currentSystemVersion, minVersion) < 0;
+
+  if (belowMin) {
+    return options.fn(this);
+  } else {
+    return options.inverse(this);
+  }
+});
+
 /**
  * Toggles the party sheet
+ * @param {PartySheetRenderOptions} [options] - Additional Options
  */
-function togglePartySheet() {
+function togglePartySheet(options = {}) {
+  // @ts-ignore
   if (currentPartySheet?.rendered) {
     currentPartySheet.close();
   } else {
-    currentPartySheet = new PartySheetForm(afterInstall);
+    currentPartySheet = new PartySheetForm(options, afterInstall);
     // @ts-ignore
-    currentPartySheet.render(true);
+    currentPartySheet.doRender(true);
 
     // @ts-ignore
     const refreshRate = game.settings.get("fvtt-party-sheet", "refreshRate");
@@ -309,6 +544,7 @@ function togglePartySheet() {
     } else {
       if (currentRefreshInterval) {
         clearInterval(currentRefreshInterval);
+        currentRefreshInterval = null;
       }
     }
   }
@@ -318,20 +554,32 @@ function togglePartySheet() {
  * Refreshes the party sheet
  */
 function refreshSheet() {
+  // @ts-ignore
   if (currentPartySheet?.rendered) {
-    currentPartySheet.render(false, {
-      focus: false,
-    });
+    try {
+      // Check if user is currently interacting with dropdowns
+      if (currentPartySheet.isUserInteractingWithDropdowns && currentPartySheet.isUserInteractingWithDropdowns()) {
+        // Skip this refresh cycle to avoid interrupting the user
+        return;
+      }
+
+      currentPartySheet.doRender(false, false);
+    } catch (error) {
+      console.warn("fvtt-party-sheet | Error during auto-refresh:", error);
+    }
   } else {
-    clearInterval(currentRefreshInterval);
+    // Party sheet is not rendered, cleanup the timer
+    if (currentRefreshInterval) {
+      clearInterval(currentRefreshInterval);
+      currentRefreshInterval = null;
+    }
   }
 }
 
 /**
  * Toggles the template status form
- * @param {TemplateValidityReturnData} template_validation - The template validation data
  */
-function toggleTemplateStatusForm(template_validation) {
+function toggleTemplateStatusForm() {
   if (currentTemplateStatusForm?.rendered) {
     currentTemplateStatusForm.close();
   } else {
@@ -341,66 +589,58 @@ function toggleTemplateStatusForm(template_validation) {
   }
 }
 
-const showButton = () => {
-  if (areTemplatesLoaded()) {
-    let v13AndUp = false;
-    let controls = null;
+/**
+ * Make an element a sibling to another element
+ * @param {*} element - The element to make a sibling
+ * @param {*} sibling - The sibling element
+ */
+function makeSibling(element, sibling) {
+  element.parentNode.insertBefore(sibling, element.nextSibling);
+}
 
-    // @ts-ignore
-    const version = game.version.split(".").map((v) => parseInt(v, 10));
-    const majorVersion = version[0];
+const showSettingsButton = () => {
+  const button = document.querySelector("#PartySheet");
+  const v13SettingsAreaName = "fvtt-party-sheet-settings";
+  const settingsArea = document.querySelector(`.${v13SettingsAreaName}`);
 
-    if (majorVersion >= 13) {
+  if (!button) {
+    const sidebarSettings = document.querySelector("section.settings.flexcol");
+    if (sidebarSettings && !settingsArea) {
+      const settingsAreaSection = document.createElement("section");
+      settingsAreaSection.classList.add(v13SettingsAreaName, "flexcol");
+      const settingsAreaHeader = document.createElement("h4");
+      settingsAreaHeader.classList.add("divider");
       // @ts-ignore
-      controls = $("#scene-controls-tools");
-      v13AndUp = true;
-    } else {
+      settingsAreaHeader.textContent = game.i18n.localize("fvtt-party-sheet.section-title");
+      settingsAreaSection.append(settingsAreaHeader);
+
+      makeSibling(sidebarSettings, settingsAreaSection);
+
+      let settingsButton = document.createElement("button");
+      settingsButton.classList.add("settings-button");
+      settingsButton.dataset.action = "openApp";
+      settingsButton.type = "button";
       // @ts-ignore
-      controls = $("#tools-panel-token");
-    }
+      let localizedLabel = game.i18n.localize("fvtt-party-sheet.template-status.template-status");
+      settingsButton.innerHTML = `<i class='fas fa-download'></i> ${localizedLabel}`;
+      settingsButton.addEventListener("click", () => {
+        toggleTemplateStatusForm();
+      });
+      makeSibling(settingsAreaHeader, settingsButton);
 
-    if (v13AndUp) {
-      const newli = document.createElement("li");
-      const newbutton = document.createElement("button");
-      newbutton.setAttribute("type", "button");
-      newbutton.setAttribute("class", "control ui-control tool icon toggle fas fa-users");
-      newbutton.setAttribute("data-tool", "PartySheet");
-      newbutton.setAttribute("aria-label", "Party Sheet");
-      newbutton.setAttribute("aria-pressed", "false");
-      newbutton.setAttribute(
-        "data-tooltip-html",
-        '<div class="toolclip themed theme-dark"><h4>Party Sheet</h4><p>Show the Party Sheet</p></div>',
-      );
-      newbutton.addEventListener("click", () => togglePartySheet());
-      newli.appendChild(newbutton);
-      if (controls.find(".control[data-tool='PartySheet']").length === 0) {
-        controls.append(newli);
-      }
-    } else {
+      settingsButton = document.createElement("button");
+      settingsButton.classList.add("settings-button");
+      settingsButton.dataset.action = "openApp";
+      settingsButton.type = "button";
       // @ts-ignore
-      const button = $(`<li class="control-tool "
-      data-tool="PartySheet"
-      aria-label="Show Party Sheet"
-      role="button"
-      data-tooltip="Party Sheet">
-      <i class="fas fa-users"></i>
-    </li>`);
-      button.click(() => togglePartySheet());
-
-      if (controls.find(".control-tool[data-tool='PartySheet']").length === 0) {
-        controls.append(button);
-      }
-    }
-  }
-};
-
-const hideButton = () => {
-  // @ts-ignore
-  const control_parent = $("#tools-panel-token");
-  const controls = control_parent.find(".control-tool[data-tool='PartySheet']");
-  if (controls.length > 0) {
-    for (const control of controls) {
-      control.remove();
+      localizedLabel = game.i18n.localize("fvtt-party-sheet.installer");
+      settingsButton.innerHTML = `<i class='fas fa-download'></i> ${localizedLabel}`;
+      settingsButton.addEventListener("click", () => {
+        togglePartySheet({
+          showInstaller: true,
+        });
+      });
+      makeSibling(settingsAreaHeader, settingsButton);
     }
   }
 };
@@ -414,6 +654,7 @@ function registerAPI() {
   // @ts-ignore
   game["fvtt-party-sheet"].api = {
     togglePartySheet: togglePartySheet,
+    toggleTemplateStatusForm: toggleTemplateStatusForm,
   };
   log("API registered");
 }
@@ -444,31 +685,51 @@ Hooks.on("init", () => {
 // @ts-ignore
 Hooks.on("ready", async () => {
   log("Ready");
-  // @ts-ignore
-  if (game.user.isGM) {
-    registerAPI();
-  }
+  registerAPI();
+  showSettingsButton();
+
   await ReloadTemplates(true);
+
+  // Sync selected template
+  // @ts-ignore
+  const savedSelection = game.settings.get("fvtt-party-sheet", "selectedTemplate");
+  if (savedSelection) {
+    updateSelectedTemplate(savedSelection);
+    // @ts-ignore
+    if (!game.user.isGM) {
+      addCustomTemplate(savedSelection);
+    }
+  }
 });
 
 const ReloadTemplates = async (fullReload = false) => {
+  if (fullReload) {
+    clearCustomTemplates();
+  }
+
   // @ts-ignore
   if (game.user.isGM) {
-    hideButton();
-
-    if (fullReload) {
-      clearCustomTemplates();
-    }
-
     if (!areTemplatesLoaded() || fullReload) {
       await loadSystemTemplates();
 
-      const template_validation = await validateSystemTemplates();
+      // Check for template updates from repository (only if user has templates installed)
+      const updateCheck = await checkForTemplateUpdates();
+
+      // Validate templates using cached data (already loaded by checkForTemplateUpdates if needed)
+      const template_validation = await validateSystemTemplates(false);
       // @ts-ignore
       game.settings.set("fvtt-party-sheet", "validationInfo", template_validation);
-    }
 
-    showButton();
+      // Show a single notification for updates (only if we found updates)
+      if (updateCheck.hasUpdates) {
+        // @ts-ignore
+        ui.notifications.info(
+          `Party Sheet: ${updateCheck.updateCount} template update(s) available. Open the template installer to update.`,
+          { permanent: false, console: false },
+        );
+        log(`${updateCheck.updateCount} template update(s) available`);
+      }
+    }
   }
 };
 
@@ -477,16 +738,52 @@ Hooks.on("renderPlayerList", () => {
   // @ts-ignore
   const showOnlyOnlineUsers = game.settings.get("fvtt-party-sheet", "enableOnlyOnline");
 
-  // @ts-ignore
-  if (!game.user.isGM || !showOnlyOnlineUsers) {
+  if (!showOnlyOnlineUsers) {
     return;
   }
+  // @ts-ignore
   if (currentPartySheet?.rendered) {
-    currentPartySheet.render(true);
+    currentPartySheet.doRender(true);
   }
 });
 
 // @ts-ignore
-Hooks.on("renderSceneControls", () => {
-  showButton();
+Hooks.on("getSceneControlButtons", (controls) => {
+  const button = {
+    name: "partysheet",
+    // @ts-ignore
+    title: game.i18n.localize("fvtt-party-sheet.section-title"),
+    icon: "fas fa-users",
+    visible: true,
+    onChange: () => togglePartySheet(),
+    button: true,
+  };
+
+  controls.tokens.tools["partysheet"] = button;
+});
+
+// @ts-ignore
+Hooks.on("updateSetting", (setting, change, options, userId) => {
+  if (setting.key === "fvtt-party-sheet.selectedTemplate") {
+    // @ts-ignore
+    if (game.user.isGM && userId === game.user.id) {
+      return;
+    }
+
+    // @ts-ignore
+    const newValue = game.settings.get("fvtt-party-sheet", "selectedTemplate");
+
+    updateSelectedTemplate(newValue);
+    // @ts-ignore
+    if (!game.user.isGM) {
+      clearCustomTemplates();
+      if (newValue) {
+        addCustomTemplate(newValue);
+      }
+    }
+    // @ts-ignore
+    if (currentPartySheet?.rendered) {
+      currentPartySheet.doRender(true);
+    }
+  }
 });

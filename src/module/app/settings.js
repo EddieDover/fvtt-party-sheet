@@ -11,6 +11,22 @@ export const registerSettings = () => {
   });
 
   // @ts-ignore
+  game.settings.register("fvtt-party-sheet", "hiddenCharacterTypes", {
+    "scope": "world",
+    "config": false,
+    "default": [],
+    "type": Array,
+  });
+
+  // @ts-ignore
+  game.settings.register("fvtt-party-sheet", "showAssignedOnly", {
+    "scope": "world",
+    "config": false,
+    "default": false,
+    "type": Boolean,
+  });
+
+  // @ts-ignore
   game.settings.register("fvtt-party-sheet", "validationInfo", {
     "scope": "world",
     "config": false,
@@ -24,12 +40,20 @@ export const registerSettings = () => {
   });
 
   // @ts-ignore
+  game.settings.register("fvtt-party-sheet", "selectedTemplate", {
+    "scope": "world",
+    "config": false,
+    "default": null,
+    "type": Object,
+  });
+
+  // @ts-ignore
   game.settings.register("fvtt-party-sheet", "refreshRate", {
     "name": "fvtt-party-sheet.settings.refresh-rate.name",
     "hint": "fvtt-party-sheet.settings.refresh-rate.hint",
     "scope": "world",
     "config": true,
-    "default": 0,
+    "default": 5,
     "type": Number,
   });
 
@@ -60,6 +84,16 @@ export const registerSettings = () => {
     "scope": "world",
     "config": true,
     "default": false,
+    "type": Boolean,
+  });
+
+  // @ts-ignore
+  game.settings.register("fvtt-party-sheet", "showVersionNotifications", {
+    "name": "fvtt-party-sheet.settings.show-version-notifications.name",
+    "hint": "fvtt-party-sheet.settings.show-version-notifications.hint",
+    "scope": "world",
+    "config": true,
+    "default": true,
     "type": Boolean,
   });
 
