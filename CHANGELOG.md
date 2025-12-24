@@ -1,4 +1,60 @@
 
+## [3.0.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.7.2...v3.0.0) (2025-12-24)
+
+
+### Features
+
+* able to hide all actors by type ([ad20c1c](https://github.com/EddieDover/fvtt-party-sheet/commit/ad20c1cd74d48e9ee478fb107a5f4f11c10c7e18))
+* add maxHeight option for dropdowns and content in party sheet ([b567b90](https://github.com/EddieDover/fvtt-party-sheet/commit/b567b90819c257a739465cc35c71747be49cf287))
+* added {meter} for meter displays ([85c05b1](https://github.com/EddieDover/fvtt-party-sheet/commit/85c05b124aa65b589245643c975708a481103410))
+* added autorefresh without stealing focus to party sheet form ([9c27785](https://github.com/EddieDover/fvtt-party-sheet/commit/9c277856d32a0e1d91a768f04c82eb88560b314d))
+* added color support with {c} tags ([1c35b2d](https://github.com/EddieDover/fvtt-party-sheet/commit/1c35b2dd039a4d9dfb29fd9db36868a5a5ad353c))
+* added daggerheart template by Gensokian ([82ab0ed](https://github.com/EddieDover/fvtt-party-sheet/commit/82ab0edc5823c33110b0d7b86166b6f9ec13032e))
+* added filtering to object-loops ([5c18cd1](https://github.com/EddieDover/fvtt-party-sheet/commit/5c18cd134513f4582904d98f80f76ad89e298397))
+* added headerAlign property ([d5b246f](https://github.com/EddieDover/fvtt-party-sheet/commit/d5b246fd668ab7adc64510dff785ba81ab78110b))
+* added notifications for template version updates ([a7ca6cb](https://github.com/EddieDover/fvtt-party-sheet/commit/a7ca6cbd7607aa39d776ec03aa3e68d297994e44))
+* added objectLoopKey ([7b5ddee](https://github.com/EddieDover/fvtt-party-sheet/commit/7b5ddee0f38b2062274e22968405706e9c4efc88))
+* added progress bar creation ([ab7f114](https://github.com/EddieDover/fvtt-party-sheet/commit/ab7f11403ab61332979ef9acd8559152dcaf73f4))
+* allow players to view party sheet using selected GM template ([3e64a19](https://github.com/EddieDover/fvtt-party-sheet/commit/3e64a19cb6f2056055fa8812ab73572683ad6bd9))
+* column total support ([2942148](https://github.com/EddieDover/fvtt-party-sheet/commit/29421482ce585bc2b5a5d65c55f57efeac5fdf3b))
+* display only assigned characters toggle ([2546a26](https://github.com/EddieDover/fvtt-party-sheet/commit/2546a265588197b1661642c33251000f93b4ad88))
+* enable resizable option for party sheet window ([a7b3b42](https://github.com/EddieDover/fvtt-party-sheet/commit/a7b3b424ea619564c2e3e0cf2ea27b1fe9fd7920))
+* enhance object loop processing to support complex parsing scenarios with dropdowns ([8c34a4e](https://github.com/EddieDover/fvtt-party-sheet/commit/8c34a4e00227ce47105536f1a4a0232f701585d3))
+* enhance object loop processing with multi-filter logic ([14b380f](https://github.com/EddieDover/fvtt-party-sheet/commit/14b380f9d26fb2945346ef473afd1b25db42c1c3))
+* implemented colspan ([a3ac433](https://github.com/EddieDover/fvtt-party-sheet/commit/a3ac433625ce5dfc4584e58e761be30a2098743a))
+* nested object-loops ([22ad181](https://github.com/EddieDover/fvtt-party-sheet/commit/22ad1817dd886bbad9be49e34b13fd03291c2ad7))
+* streamlined template processing ([bdd25a4](https://github.com/EddieDover/fvtt-party-sheet/commit/bdd25a48c28c74c5b8b52f4d3afdcd6ed87874eb))
+
+### Templates
+* added maximumSystemVersion to EmoCuthulu dnd5e enhanced template ([fd1ef07](https://github.com/EddieDover/fvtt-party-sheet/commit/fd1ef070c0d10a56fd33340e9d09f9744408ff7d))
+* mass-updated templates to use braces notation ([344be6f](https://github.com/EddieDover/fvtt-party-sheet/commit/344be6fe010101bdb4667abb697cbaebee8a3a9c))
+* Added a new dnd5e template using more features ([5e47dd8](https://github.com/EddieDover/fvtt-party-sheet/commit/5e47dd8c41ae5ab464d42a79682e46d3a5fad440))
+* added daggerheart template by Eddie Dover ([ed9e849](https://github.com/EddieDover/fvtt-party-sheet/commit/ed9e84939eb18f0ebc3f4ec463e8bc26cb18863d))
+* added DC20 basic template ([25eedd5](https://github.com/EddieDover/fvtt-party-sheet/commit/25eedd540140430f4447fbb936cc8feae1a00e6c))
+* added Mothership template ([b85a4d0](https://github.com/EddieDover/fvtt-party-sheet/commit/b85a4d03dfc04736f4e8778803ba3a1db2cefcb7))
+* updated 1 swade template for 5.0.4 ([f5ca5d4](https://github.com/EddieDover/fvtt-party-sheet/commit/f5ca5d45fe7cfaffe3fde9a733980e53aaac525a))
+* Updated dnd5e template to new value format ([5013ed2](https://github.com/EddieDover/fvtt-party-sheet/commit/5013ed28da940acc2735262ac307d7edfc48f802))
+* updated swade template to newest system version ([865b976](https://github.com/EddieDover/fvtt-party-sheet/commit/865b9761e07769a781a3cae29e0209a098380840))
+
+
+### Bug Fixes
+
+* addressed a potential regex security issue ([5f93221](https://github.com/EddieDover/fvtt-party-sheet/commit/5f932215cd7c98adccde5f3143b3b3a0963bc0eb))
+* allow json editor to work even when no templates are installed or available ([aef1b76](https://github.com/EddieDover/fvtt-party-sheet/commit/aef1b76f8e316dc7af74c9ec5b5c554f16a230ff))
+* fixed a stray filepicker call ([e006d2e](https://github.com/EddieDover/fvtt-party-sheet/commit/e006d2e643d34629917d22b67f56dd147b9efaef))
+* fixed character sheet popups ([1558316](https://github.com/EddieDover/fvtt-party-sheet/commit/155831608155edc8f19cdd10616c813cde73c94a))
+* missed a select dropdown capture ([94e6664](https://github.com/EddieDover/fvtt-party-sheet/commit/94e6664c4dc203da8d221e459fa906db75dd45fc))
+* party sheet should display portraits instead of tokens ([48c43e9](https://github.com/EddieDover/fvtt-party-sheet/commit/48c43e9d51b498182336b46da4ccc656b1428b6b))
+* fixed 'jumpy' party sheet button ([eedc994](https://github.com/EddieDover/fvtt-party-sheet/commit/eedc994a304bf2f79e140b4700fe6d5cd5202c76))
+* moved show button logic to fix duplication on template install ([d2d72d1](https://github.com/EddieDover/fvtt-party-sheet/commit/d2d72d18fba3bf1e539e3df18239fa601a21613d))
+
+
+### Documentation
+
+* fixed documentation link to example_templates ([0b44397](https://github.com/EddieDover/fvtt-party-sheet/commit/0b4439717cc7701203676278cee81fe2c17e4a11))
+* updated documentation to reflect new braces requirements ([28b05e3](https://github.com/EddieDover/fvtt-party-sheet/commit/28b05e3745b1155d48e25fa04c6d27c3d76d46c3))
+* updated readme to include Discord Link ([28f7284](https://github.com/EddieDover/fvtt-party-sheet/commit/28f72848f6c40c3cc3f43e7015657021c25b468e))
+
 ## [2.7.2](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.7.1...v2.7.2) (2025-10-02)
 
 ### IMPORTANT NOTES:
