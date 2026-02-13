@@ -254,7 +254,6 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
   // eslint-disable-next-line no-unused-vars
   // @ts-ignore
-  // @ts-ignore
   _updateObject(event, formData) {
     // Don't delete this function or FoundryVTT complains...
   }
@@ -268,7 +267,23 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
         )
       : 0;
 
-    updateSelectedTemplate(applicableTemplates[selectedIdx]);
+    const newTemplate = applicableTemplates[selectedIdx];
+    const currentTemplate = getSelectedTemplate();
+
+    // Check if the template has changed or if it's being set for the first time
+    const templateChanged =
+      !currentTemplate || currentTemplate.name !== newTemplate.name || currentTemplate.author !== newTemplate.author;
+
+    updateSelectedTemplate(newTemplate);
+
+    // @ts-ignore
+    if (templateChanged && game.user.isGM) {
+      // @ts-ignore
+      game.settings.set("fvtt-party-sheet", "selectedTemplate", newTemplate).catch((err) => {
+        console.error("Failed to save selected template:", err);
+      });
+    }
+
     return getSelectedTemplate();
   }
 
