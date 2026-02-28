@@ -76,7 +76,7 @@
     "lint-staged": "^14.0.1",
     "nyc": "^17.1.0",
     "prettier": "^3.0.3",
-    "rollup": "^2.79.2",
+    "rollup": "^2.80.0",
     "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-istanbul": "^5.0.0",
     "sass": "^1.91.0",
