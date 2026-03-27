@@ -692,7 +692,6 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
   static onOpenActorSheet(event, target) {
     event.preventDefault();
     const actorId = target.dataset.actorid;
-    console.log(`Opening sheet for actor ID: ${actorId}`);
     // @ts-ignore
     const actor = game.actors.get(actorId.replace("Actor.", ""));
     actor.sheet.render(true);
@@ -764,7 +763,6 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
         // Construct the Application instance
 
         const imageURL = `https://raw.githubusercontent.com/EddieDover/fvtt-party-sheet-templates/main/templates/${modulepath}`;
-        console.log(`Loading image from URL: ${imageURL}`);
         // @ts-ignore
         const ip = new ImagePopout({
           src: imageURL,
