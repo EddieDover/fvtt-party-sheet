@@ -11,7 +11,7 @@ export default () => ({
   output: {
     dir: "dist/module",
     format: "es",
-    sourcemap: true,
+    sourcemap: "inline",
   },
   plugins: [
     nodeResolve(),
@@ -29,9 +29,7 @@ export default () => ({
       namedExports: true,
     }),
     copy({
-      targets: [
-        { src: "*.md", dest: "dist" },
-      ],
+      targets: [{ src: "*.md", dest: "dist" }],
       verbose: true,
     }),
   ],
