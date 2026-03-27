@@ -60,5 +60,25 @@ jobs:
             ${{ steps.Changelog.outputs.changelog }}
           draft: false
           prerelease: false
-          artifacts: './dist/module.json,./dist/module.zip'
+          artifacts: "./dist/module.json,./dist/module.zip"
           tag: v${{ steps.get-version.outputs.version }}
+
+      # Notify Foundry VTT Package Release API
+      - name: Publish to Foundry VTT Package Release API
+        if: ${{ !cancelled() }}
+        run: |
+          curl --location --request POST 'https://foundryvtt.com/_api/packages/release_version/' \
+          --header 'Content-Type: application/json' \
+          --header 'Authorization: ${{ secrets.FOUNDRY_RELEASE_TOKEN }}' \
+          --data-raw '{
+            "id": "fvtt-party-sheet",
+            "release": {
+              "version": "${{ steps.get-version.outputs.version }}",
+              "manifest": "https://github.com/EddieDover/fvtt-party-sheet/releases/download/v${{ steps.get-version.outputs.version }}/module.json",
+              "notes": "https://github.com/EddieDover/fvtt-party-sheet/blob/master/CHANGELOG.md",
+              "compatibility": {
+                "minimum": "13",
+                "verified": "13"
+              }
+            }
+          }'
