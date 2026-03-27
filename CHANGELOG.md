@@ -1,4 +1,11 @@
 
+## [3.0.1](https://github.com/EddieDover/fvtt-party-sheet/compare/v3.0.0...v3.0.1) (2026-03-27)
+
+
+### Bug Fixes
+
+* template now visible to players if it is the only template installed ([5330922](https://github.com/EddieDover/fvtt-party-sheet/commit/53309223df5a161d2aa9cded3b5235f171331e23))
+
 ## [3.0.0](https://github.com/EddieDover/fvtt-party-sheet/compare/v2.7.2...v3.0.0) (2025-12-24)
 
 
