@@ -50,6 +50,14 @@
     {
       "filename": "src/module.json",
       "type": "json"
+    },
+    {
+      "filename": "src/module.json",
+      "updater": "scripts/bump-download.cjs"
+    },
+    {
+      "filename": "src/module.json",
+      "updater": "scripts/bump-manifest.cjs"
     }
   ]
 }
