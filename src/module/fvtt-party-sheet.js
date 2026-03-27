@@ -13,6 +13,7 @@ import {
   checkForTemplateUpdates,
   addCustomTemplate,
   updateSelectedTemplate,
+  validateSavedTemplate,
 } from "./utils.js";
 import { TemplateStatusForm } from "./app/template-status.js";
 
@@ -693,11 +694,26 @@ Hooks.on("ready", async () => {
   // Sync selected template
   // @ts-ignore
   const savedSelection = game.settings.get("fvtt-party-sheet", "selectedTemplate");
+
   if (savedSelection) {
-    updateSelectedTemplate(savedSelection);
-    // @ts-ignore
-    if (!game.user.isGM) {
-      addCustomTemplate(savedSelection);
+    // Validate that the saved template still exists and is valid
+    const isValid = await validateSavedTemplate(savedSelection);
+
+    if (isValid) {
+      updateSelectedTemplate(savedSelection);
+      // @ts-ignore
+      if (!game.user.isGM) {
+        addCustomTemplate(savedSelection);
+      }
+    } else {
+      // Template is no longer valid, clear both the setting and in-memory template
+      log("Saved template is no longer valid or has been deleted. Clearing selection.");
+      updateSelectedTemplate(null);
+      // @ts-ignore
+      if (game.user.isGM) {
+        // @ts-ignore
+        await game.settings.set("fvtt-party-sheet", "selectedTemplate", null);
+      }
     }
   }
 });

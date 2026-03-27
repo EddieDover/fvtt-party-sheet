@@ -537,6 +537,70 @@ export function clearCustomTemplates() {
 }
 
 /**
+ * Checks that a saved template still exists and is valid.
+ * @param {TemplateData} savedTemplate - The template saved in settings to validate.
+ * @returns {Promise<boolean>} - True if the template is valid, false otherwise.
+ */
+export async function validateSavedTemplate(savedTemplate) {
+  if (!savedTemplate || !savedTemplate.name || !savedTemplate.author) {
+    return false;
+  }
+
+  // Check if the template exists in the current custom templates
+  const existsInCustomTemplates = customTemplates.some(
+    (template) => template.name === savedTemplate.name && template.author === savedTemplate.author,
+  );
+
+  // Check if the template exists in module templates
+  const existsInModuleTemplates = moduleTemplates.some(
+    (template) => template.name === savedTemplate.name && template.author === savedTemplate.author,
+  );
+
+  // Template must exist in either custom or module templates
+  if (!existsInCustomTemplates && !existsInModuleTemplates) {
+    log(`Template "${savedTemplate.name}" by ${savedTemplate.author} not found in loaded templates.`);
+    return false;
+  }
+
+  // If the template has a path, verify the file still exists
+  if (savedTemplate.path) {
+    try {
+      // @ts-ignore
+      const response = await fetch(savedTemplate.path);
+      if (!response.ok) {
+        log(`Template file not found at path: ${savedTemplate.path}`);
+        return false;
+      }
+
+      // Verify the content is valid JSON
+      const content = await response.text();
+      try {
+        JSON.parse(content);
+      } catch (e) {
+        log(`Template file at ${savedTemplate.path} is not valid JSON.`);
+        return false;
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      log(`Error accessing template file at ${savedTemplate.path}: ${errorMessage}`);
+      return false;
+    }
+  }
+
+  // Verify that the template is compatible with the current system
+  // @ts-ignore
+  const currentSystem = game.system.id;
+  if (savedTemplate.system !== currentSystem) {
+    log(
+      `Template "${savedTemplate.name}" is for system "${savedTemplate.system}" but current system is "${currentSystem}".`,
+    );
+    return false;
+  }
+
+  return true;
+}
+
+/**
  * Retrieves the list of custom systems.
  * @returns {TemplateData[]} - The list of custom systems.
  */

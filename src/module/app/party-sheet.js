@@ -261,11 +261,22 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
   updateSelectedTemplateIndex(applicableTemplates) {
     // @ts-ignore
 
+    // If no templates available, clear selection and return null
+    if (!applicableTemplates || applicableTemplates.length === 0) {
+      updateSelectedTemplate(null);
+      return null;
+    }
+
     let selectedIdx = getSelectedTemplate()
       ? applicableTemplates.findIndex(
           (data) => data.name === getSelectedTemplate().name && data.author === getSelectedTemplate().author,
         )
       : 0;
+
+    // If template not found, default to first template
+    if (selectedIdx === -1) {
+      selectedIdx = 0;
+    }
 
     const newTemplate = applicableTemplates[selectedIdx];
     const currentTemplate = getSelectedTemplate();
@@ -341,23 +352,33 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
     let selectedName, selectedAuthor, players, rowcount;
     let invalidTemplateError = false;
-    try {
-      let result = this.getCustomPlayerData(selectedTemplate);
-      selectedName = result.name;
-      selectedAuthor = result.author;
-      players = result.players;
-      rowcount = result.rowcount;
-    } catch (ex) {
-      if (ex instanceof TemplateProcessError) {
-        // @ts-ignore
-        ui.notifications.error(
-          `There was an error processing the template for ${selectedTemplate.name} by ${selectedTemplate.author}.`,
-        );
-        selectedName = ex.data.name;
-        selectedAuthor = ex.data.author;
-        invalidTemplateError = true;
-      } else {
-        console.log(ex);
+
+    // Handle case where no template is available
+    if (!selectedTemplate) {
+      selectedName = "No Template";
+      selectedAuthor = "";
+      players = [];
+      rowcount = 0;
+      invalidTemplateError = true;
+    } else {
+      try {
+        let result = this.getCustomPlayerData(selectedTemplate);
+        selectedName = result.name;
+        selectedAuthor = result.author;
+        players = result.players;
+        rowcount = result.rowcount;
+      } catch (ex) {
+        if (ex instanceof TemplateProcessError) {
+          // @ts-ignore
+          ui.notifications.error(
+            `There was an error processing the template for ${selectedTemplate.name} by ${selectedTemplate.author}.`,
+          );
+          selectedName = ex.data.name;
+          selectedAuthor = ex.data.author;
+          invalidTemplateError = true;
+        } else {
+          console.log(ex);
+        }
       }
     }
 
