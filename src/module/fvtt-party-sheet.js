@@ -216,6 +216,15 @@ Handlebars.registerPartial(
 );
 
 // @ts-ignore
+Handlebars.registerHelper("hchiddentype", function (needle, options) {
+  // Handle Handlebars string wrappers
+  let primitiveNeedle = typeof needle === "object" ? String(needle) : needle;
+  // @ts-ignore
+  let haystack = game.settings.get("fvtt-party-sheet", "hiddenCharacterTypes") ?? [];
+  return haystack.includes(primitiveNeedle) ? options.fn(this) : options.inverse(this);
+});
+
+// @ts-ignore
 Handlebars.registerHelper("hccontains", function (needle, haystack, options) {
   // @ts-ignore
   needle = Handlebars.escapeExpression(needle);
@@ -226,7 +235,9 @@ Handlebars.registerHelper("hccontains", function (needle, haystack, options) {
 
 //@ts-ignore
 Handlebars.registerHelper("inArray", function (elem, list, options) {
-  if (list && list.indexOf(elem) > -1) {
+  // Handle Handlebars string wrappers by converting to a string primitive
+  let primitiveElem = typeof elem === "object" ? String(elem) : elem;
+  if (list && (list.indexOf(elem) > -1 || list.indexOf(primitiveElem) > -1)) {
     return options.fn(this);
   }
   return options.inverse(this);

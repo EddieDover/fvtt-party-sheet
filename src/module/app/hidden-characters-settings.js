@@ -115,18 +115,14 @@ export class HiddenCharactersSettings extends HandlebarsApplicationMixin(Applica
           const type = target.id.replace("character-type-", "");
           // @ts-ignore
           const hiddenTypes = game.settings.get("fvtt-party-sheet", "hiddenCharacterTypes");
+          let updatedTypes;
           if (target.checked) {
-            if (!hiddenTypes.includes(type)) {
-              hiddenTypes.push(type);
-            }
+            updatedTypes = hiddenTypes.includes(type) ? [...hiddenTypes] : [...hiddenTypes, type];
           } else {
-            const index = hiddenTypes.indexOf(type);
-            if (index > -1) {
-              hiddenTypes.splice(index, 1);
-            }
+            updatedTypes = hiddenTypes.filter((t) => t !== type);
           }
           // @ts-ignore
-          game.settings.set("fvtt-party-sheet", "hiddenCharacterTypes", hiddenTypes);
+          game.settings.set("fvtt-party-sheet", "hiddenCharacterTypes", updatedTypes);
         }
       });
     }

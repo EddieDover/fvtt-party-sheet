@@ -10,19 +10,19 @@
     
   {{#each actorTypes}}
     {{!-- Not excluded, render normally --}}
-    {{#ifCond ../characters 'someType' this}}
+    {{#ifCond @root.characters 'someType' this}}
       <div style="display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;padding-bottom:0.5rem;">
         <h4 style="margin-bottom:0px;">Type: {{this}}</h4>
         <div style="display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;padding-left:0.25rem;">
-          <input type="checkbox" class="hidden-type-toggle" id="character-type-{{this}}" name="character-type-{{this}}" {{#inArray this ../hiddenTypes}}checked{{/inArray}}>
+          <input type="checkbox" class="hidden-type-toggle" id="character-type-{{this}}" name="character-type-{{this}}" {{#hchiddentype this}}checked{{/hchiddentype}}>
           <label for="character-type-{{this}}" title="{{localize "fvtt-party-sheet.hide-sheet.hide-all"}}">{{localize "fvtt-party-sheet.hide-sheet.hide-all"}}</label>
         </div>
       </div>
       <section class="fvtt-party-sheet-hc-section">
-      {{#each ../characters as |character|}}
+      {{#each @root.characters as |character|}}
         {{#ifCond character.type '==' ../this}}
         <div class="fvtt-party-sheet-hc-item">
-          <input type="checkbox" name="character-{{character.uuid}}" value="{{character.uuid}}" class="hidden-character" id="hidden-character-{{character.uuid}}" {{#hccontains character.uuid hiddenCharacters}}checked{{/hccontains}}>
+          <input type="checkbox" name="character-{{character.uuid}}" value="{{character.uuid}}" class="hidden-character" id="hidden-character-{{character.uuid}}" {{#hccontains character.uuid @root.hiddenCharacters}}checked{{/hccontains}}>
           <label for="hidden-character-{{character.uuid}}">{{character.name}}</label>
         </div>
         {{/ifCond}}
