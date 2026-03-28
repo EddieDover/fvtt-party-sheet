@@ -21,6 +21,25 @@ import { TemplateStatusForm } from "./app/template-status.js";
 let currentPartySheet = null;
 let currentRefreshInterval = null;
 let currentTemplateStatusForm = null;
+
+/**
+ * Clone a template payload from synced settings so player-side state never reuses stale object references.
+ * @param {TemplateData|null} template - Synced selected template payload from world settings.
+ * @returns {TemplateData|null} A detached template object safe to store locally.
+ */
+function cloneTemplatePayload(template) {
+  if (!template) {
+    return null;
+  }
+
+  try {
+    return typeof structuredClone === "function" ? structuredClone(template) : JSON.parse(JSON.stringify(template));
+  } catch (err) {
+    console.warn("fvtt-party-sheet | Failed to clone selected template payload, using original object.", err);
+    return template;
+  }
+}
+
 // @ts-ignore
 Handlebars.registerPartial(
   "installer",
@@ -696,24 +715,26 @@ Hooks.on("ready", async () => {
   const savedSelection = game.settings.get("fvtt-party-sheet", "selectedTemplate");
 
   if (savedSelection) {
-    // Validate that the saved template still exists and is valid
-    const isValid = await validateSavedTemplate(savedSelection);
+    // @ts-ignore
+    if (game.user.isGM) {
+      // Only the GM validates the saved template — players receive the selection via settings sync
+      const isValid = await validateSavedTemplate(savedSelection);
 
-    if (isValid) {
-      updateSelectedTemplate(savedSelection);
-      // @ts-ignore
-      if (!game.user.isGM) {
-        addCustomTemplate(savedSelection);
-      }
-    } else {
-      // Template is no longer valid, clear both the setting and in-memory template
-      log("Saved template is no longer valid or has been deleted. Clearing selection.");
-      updateSelectedTemplate(null);
-      // @ts-ignore
-      if (game.user.isGM) {
+      if (isValid) {
+        updateSelectedTemplate(savedSelection);
+      } else {
+        // Template is no longer valid, clear both the setting and in-memory template
+        log("Saved template is no longer valid or has been deleted. Clearing selection.");
+        updateSelectedTemplate(null);
         // @ts-ignore
         await game.settings.set("fvtt-party-sheet", "selectedTemplate", null);
       }
+    } else {
+      // Players just trust the synced value from the GM
+      const incomingTemplate = cloneTemplatePayload(savedSelection);
+      updateSelectedTemplate(incomingTemplate);
+      clearCustomTemplates();
+      addCustomTemplate(incomingTemplate);
     }
   }
 });
@@ -788,13 +809,14 @@ Hooks.on("updateSetting", (setting, change, options, userId) => {
 
     // @ts-ignore
     const newValue = game.settings.get("fvtt-party-sheet", "selectedTemplate");
+    const syncedTemplate = cloneTemplatePayload(newValue);
 
-    updateSelectedTemplate(newValue);
+    updateSelectedTemplate(syncedTemplate);
     // @ts-ignore
     if (!game.user.isGM) {
       clearCustomTemplates();
-      if (newValue) {
-        addCustomTemplate(newValue);
+      if (syncedTemplate) {
+        addCustomTemplate(syncedTemplate);
       }
     }
     // @ts-ignore
