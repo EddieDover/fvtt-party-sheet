@@ -1,27 +1,30 @@
 <form autocomplete="off" class="fvtt-party-sheet-hc-psform" class="standard-form">
   <div class="fvtt-party-sheet-toprow">
-    {{#unless enableOnlyOnline}}
-    <button data-action="onOpenOptions"  class="fvtt-party-sheet-options" name="fvtt-party-sheet-options"><i class="fas fa-cog"></i>{{localize "fvtt-party-sheet.hide-sheet.button" }}</button>
-    {{/unless}}
-    <div style="flex-grow:1"></div>
     {{#if isGM}}
-    <button data-action="onInstaller"  type="button" class="btn btn--primary" style="max-width:50px" name="installer" title="{{localize "fvtt-party-sheet.installer"}}">
-      <i class="fas fa-download"></i>
-    </button>
-    <button data-action="onOpenEditor"  type="button" class="btn btn--primary" style="max-width:50px" name="template-editor" title="Template Editor">
-      <i class="fas fa-edit"></i>
-    </button>
+      {{#unless enableOnlyOnline}}
+      <button data-action="onOpenOptions"  class="fvtt-party-sheet-options" name="fvtt-party-sheet-options"><i class="fas fa-cog"></i>{{localize "fvtt-party-sheet.hide-sheet.button" }}</button>
+      {{/unless}}
+      <div style="flex-grow:1"></div>
+      <!--<div style="width:100%;display:flex;flex-direction:row;justify-content:flex-end;"></div>-->
+      <button data-action="onInstaller"  type="button" class="btn btn--primary" style="max-width:50px" name="installer" title="{{localize "fvtt-party-sheet.installer"}}">
+        <i class="fas fa-download"></i>
+      </button>
+      <button data-action="onOpenEditor"  type="button" class="btn btn--primary" style="max-width:50px" name="template-editor" title="Template Editor">
+        <i class="fas fa-edit"></i>
+      </button>
+    {{else}}
+      <div style="flex-grow:1"></div>
     {{/if}}
     {{#unless minimalView}}
-    <button data-action="onFeedback"  type="button" class="btn btn--primary" style="max-width:50px" name="feedback" title="{{localize "fvtt-party-sheet.party-sheet.feedback"}}">
-      <i class="fas fa-comment"></i>
-    </button>
-    <button data-action="onBugReport"  type="button" class="btn btn--primary" style="max-width:50px" name="bugreport" title="{{localize "fvtt-party-sheet.party-sheet.bugreport"}}">
-      <i class="fas fa-bug"></i>
-    </button>
-    <button data-action="onDiscord"  type="button" class="btn btn--primary" style="max-width:50px" name="discord" title={{localize "fvtt-party-sheet.party-sheet.discord"}}>
-      <i class="fab fa-discord"></i>
-    </button>
+      <button data-action="onFeedback"  type="button" class="btn btn--primary" style="max-width:50px" name="feedback" title="{{localize "fvtt-party-sheet.party-sheet.feedback"}}">
+        <i class="fas fa-comment"></i>
+      </button>
+      <button data-action="onBugReport"  type="button" class="btn btn--primary" style="max-width:50px" name="bugreport" title="{{localize "fvtt-party-sheet.party-sheet.bugreport"}}">
+        <i class="fas fa-bug"></i>
+      </button>
+      <button data-action="onDiscord"  type="button" class="btn btn--primary" style="max-width:50px" name="discord" title={{localize "fvtt-party-sheet.party-sheet.discord"}}>
+        <i class="fab fa-discord"></i>
+      </button>
     {{/unless}}
   </div>
 

@@ -150,15 +150,12 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
     if (showDebugOutput) {
       console.log("====================================== ");
     }
-
     if (!showOnlyOnlineUsers) {
       actorList = actorList.filter((player) => !hiddenCharacters.includes(player.uuid));
     }
-
     if (showAssignedOnly) {
       actorList = actorList.filter((actor) => Object.keys(actor.ownership).length > 2); // Show any actors with 2+ owners (0 = default, 1 = GM, 2+ = assigned to player)
     }
-
     // @ts-ignore
     const hiddenTypes = game.settings.get("fvtt-party-sheet", "hiddenCharacterTypes");
     if (hiddenTypes.length > 0) {
@@ -210,7 +207,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
           return row_data;
         })
-        .filter((player) => player);
+        .filter(Boolean);
       if (showDebugOutput) {
         console.log("========================================= ");
       }
@@ -261,23 +258,39 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
   updateSelectedTemplateIndex(applicableTemplates) {
     // @ts-ignore
 
+    // If no templates available, clear selection and return null
+    if (!applicableTemplates || applicableTemplates.length === 0) {
+      // @ts-ignore
+      if (game.user.isGM) {
+        updateSelectedTemplate(null);
+      }
+      return null;
+    }
+
     let selectedIdx = getSelectedTemplate()
       ? applicableTemplates.findIndex(
           (data) => data.name === getSelectedTemplate().name && data.author === getSelectedTemplate().author,
         )
       : 0;
 
+    // If template not found, default to first template
+    if (selectedIdx === -1) {
+      selectedIdx = 0;
+    }
+
     const newTemplate = applicableTemplates[selectedIdx];
     const currentTemplate = getSelectedTemplate();
 
-    // Check if the template has changed or if it's being set for the first time
-    const templateChanged =
+    // Check if the selected identity changed, or if the selected template content changed.
+    const templateIdentityChanged =
       !currentTemplate || currentTemplate.name !== newTemplate.name || currentTemplate.author !== newTemplate.author;
+
+    const templateContentChanged = !currentTemplate || JSON.stringify(currentTemplate) !== JSON.stringify(newTemplate);
 
     updateSelectedTemplate(newTemplate);
 
     // @ts-ignore
-    if (templateChanged && game.user.isGM) {
+    if ((templateIdentityChanged || templateContentChanged) && game.user.isGM) {
       // @ts-ignore
       game.settings.set("fvtt-party-sheet", "selectedTemplate", newTemplate).catch((err) => {
         console.error("Failed to save selected template:", err);
@@ -341,23 +354,33 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
     let selectedName, selectedAuthor, players, rowcount;
     let invalidTemplateError = false;
-    try {
-      let result = this.getCustomPlayerData(selectedTemplate);
-      selectedName = result.name;
-      selectedAuthor = result.author;
-      players = result.players;
-      rowcount = result.rowcount;
-    } catch (ex) {
-      if (ex instanceof TemplateProcessError) {
-        // @ts-ignore
-        ui.notifications.error(
-          `There was an error processing the template for ${selectedTemplate.name} by ${selectedTemplate.author}.`,
-        );
-        selectedName = ex.data.name;
-        selectedAuthor = ex.data.author;
-        invalidTemplateError = true;
-      } else {
-        console.log(ex);
+
+    // Handle case where no template is available
+    if (!selectedTemplate) {
+      selectedName = "No Template";
+      selectedAuthor = "";
+      players = [];
+      rowcount = 0;
+      invalidTemplateError = true;
+    } else {
+      try {
+        let result = this.getCustomPlayerData(selectedTemplate);
+        selectedName = result.name;
+        selectedAuthor = result.author;
+        players = result.players;
+        rowcount = result.rowcount;
+      } catch (ex) {
+        if (ex instanceof TemplateProcessError) {
+          // @ts-ignore
+          ui.notifications.error(
+            `There was an error processing the template for ${selectedTemplate.name} by ${selectedTemplate.author}.`,
+          );
+          selectedName = ex.data.name;
+          selectedAuthor = ex.data.author;
+          invalidTemplateError = true;
+        } else {
+          console.log(ex);
+        }
       }
     }
 

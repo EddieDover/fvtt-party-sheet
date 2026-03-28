@@ -38,6 +38,8 @@ import {
   formatTemplateJson,
   clearCache,
   setModuleTemplates,
+  checkForTemplateUpdates,
+  validateSavedTemplate,
 } from "../src/module/utils";
 import { setupFoundryMocks, cleanupFoundryMocks, mockTemplateData, versionTestCases } from "./test-mocks.js";
 
@@ -2528,6 +2530,254 @@ describe("Utils testing", () => {
       expect(retrieved).toHaveLength(2);
       expect(retrieved[0].name).toBe("Test Template 1");
       expect(retrieved[1].name).toBe("Test Template 2");
+    });
+  });
+
+  describe("validateTemplateStructure additional assertions", () => {
+    it("should reject templates with missing rows", () => {
+      const template = {
+        name: "Test",
+        author: "Me",
+        system: "dnd5e",
+        version: "1.0.0",
+      };
+      const result = validateTemplateStructure(template);
+      expect(result.isValid).toBe(false);
+      expect(result.errors).toContain("Template must have a 'rows' field that is an array");
+    });
+
+    it("should reject templates with rows but not an array", () => {
+      const template = {
+        name: "Test",
+        author: "Me",
+        system: "dnd5e",
+        version: "1.0.0",
+        rows: "not-an-array",
+      };
+      const result = validateTemplateStructure(template);
+      expect(result.isValid).toBe(false);
+      expect(result.errors).toContain("Template must have a 'rows' field that is an array");
+    });
+
+    it("should reject templates with an empty rows array", () => {
+      const template = {
+        name: "Test",
+        author: "Me",
+        system: "dnd5e",
+        version: "1.0.0",
+        rows: [],
+      };
+      const result = validateTemplateStructure(template);
+      expect(result.isValid).toBe(false);
+      expect(result.errors).toContain("Template must have at least one row");
+    });
+  });
+
+  describe("getAllSystemVersions cache coverage", () => {
+    it("should return cached results if useCache is true", async () => {
+      clearCache();
+
+      // Setup file picker mock specifically for this
+      global.foundry.applications.apps.FilePicker.implementation.browse = jest
+        .fn()
+        .mockResolvedValueOnce({ dirs: ["systems/test1"] }) // First call (systems dir)
+        .mockResolvedValueOnce({ files: ["systems/test1/system.json"] }); // Second call (test1 dir)
+
+      global.fetch = jest.fn().mockResolvedValue({
+        text: () => Promise.resolve('{"id": "test1", "version": "1.0.0"}'),
+      });
+
+      const firstResult = await getAllSystemVersions(true);
+      expect(firstResult.length).toBe(1);
+
+      // call it again
+      const secondResult = await getAllSystemVersions(true);
+      expect(secondResult).toBe(firstResult); // Referentially identical and didn't call fetch again
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("validateSystemTemplates", () => {
+    it("should push templates into output.valid if err is false", async () => {
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      clearCache();
+      clearCustomTemplates();
+      // Need a valid custom template that perfectly fits the system version mock (which is "2.0")
+      addCustomTemplate({ name: "Valid Sys", author: "Author", system: "dnd5e", version: "1.0.0" });
+
+      const res = await validateSystemTemplates(false);
+      expect(res.valid.some((t) => t.name === "Valid Sys")).toBe(true);
+      consoleSpy.mockRestore();
+    });
+  });
+
+  describe("validateSavedTemplate", () => {
+    beforeEach(() => {
+      clearCache();
+      clearCustomTemplates();
+      setupFoundryMocks({ system: { id: "dnd5e" } });
+    });
+
+    afterEach(() => {
+      cleanupFoundryMocks();
+    });
+
+    it("should return false if template is null or missing properties", async () => {
+      expect(await validateSavedTemplate(null)).toBe(false);
+      expect(await validateSavedTemplate({})).toBe(false);
+      expect(await validateSavedTemplate({ name: "foo" })).toBe(false);
+      expect(await validateSavedTemplate({ author: "bar" })).toBe(false);
+    });
+
+    it("should return false if template is not in custom or module templates", async () => {
+      expect(await validateSavedTemplate({ name: "Unfound", author: "Ghost" })).toBe(false);
+    });
+
+    it("should return false if template path points to invalid file", async () => {
+      addCustomTemplate({ name: "Bad Path", author: "Me", path: "bad/path.json" });
+
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+      });
+
+      expect(
+        await validateSavedTemplate({ name: "Bad Path", author: "Me", path: "bad/path.json", system: "dnd5e" }),
+      ).toBe(false);
+    });
+
+    it("should return false if template system mismatches", async () => {
+      addCustomTemplate({ name: "Mismatch", author: "Me" });
+
+      expect(await validateSavedTemplate({ name: "Mismatch", author: "Me", system: "pf2e" })).toBe(false);
+    });
+
+    it("should return true for valid custom template without path", async () => {
+      addCustomTemplate({ name: "Valid", author: "Me" });
+      expect(await validateSavedTemplate({ name: "Valid", author: "Me", system: "dnd5e" })).toBe(true);
+    });
+
+    it("should return true for valid template with valid path JSON", async () => {
+      addCustomTemplate({ name: "Path Template", author: "Me", path: "good/path.json" });
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        text: () => Promise.resolve('{"valid": "json"}'),
+      });
+      expect(
+        await validateSavedTemplate({ name: "Path Template", author: "Me", path: "good/path.json", system: "dnd5e" }),
+      ).toBe(true);
+    });
+
+    it("should return false for valid template with invalid path JSON", async () => {
+      addCustomTemplate({ name: "Path Template", author: "Me", path: "good/path.json" });
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        text: () => Promise.resolve("not-json"),
+      });
+      expect(
+        await validateSavedTemplate({ name: "Path Template", author: "Me", path: "good/path.json", system: "dnd5e" }),
+      ).toBe(false);
+    });
+
+    it("should handle fetch throwing error in path validation", async () => {
+      addCustomTemplate({ name: "Path Template", author: "Me", path: "error/path.json" });
+      global.fetch = jest.fn().mockRejectedValue(new Error("Network Error"));
+      expect(
+        await validateSavedTemplate({ name: "Path Template", author: "Me", path: "error/path.json", system: "dnd5e" }),
+      ).toBe(false);
+    });
+  });
+
+  describe("loadModuleTemplates", () => {
+    it("returns cached moduleTemplates if not forcing refresh and cache exists", async () => {
+      setModuleTemplates([{ name: "TestCached" }]);
+      const res = await loadModuleTemplates(false);
+      expect(res).toEqual([{ name: "TestCached" }]);
+    });
+  });
+
+  describe("checkForTemplateUpdates", () => {
+    beforeEach(() => {
+      clearCustomTemplates();
+      clearCache();
+      setupFoundryMocks({ system: { id: "dnd5e" } });
+    });
+
+    afterEach(() => {
+      cleanupFoundryMocks();
+    });
+
+    it("returns false if no custom templates installed", async () => {
+      expect(await checkForTemplateUpdates()).toEqual({ hasUpdates: false, updateCount: 0 });
+    });
+
+    it("handles failure to load repository", async () => {
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      addCustomTemplate({ name: "Test", author: "Old", version: "1.0.0" });
+      global.fetch = jest.fn().mockResolvedValue({ ok: false });
+      expect(await checkForTemplateUpdates()).toEqual({ hasUpdates: false, updateCount: 0 });
+      consoleSpy.mockRestore();
+    });
+
+    it("identifies out of date templates", async () => {
+      addCustomTemplate({ name: "MyTemplate", author: "MyAuthor", version: "1.0.0" });
+
+      const mockYaml = `
+dnd5e:
+  - file: MyTemplate.json`;
+
+      const mockJson = JSON.stringify({
+        name: "MyTemplate",
+        author: "MyAuthor",
+        system: "dnd5e",
+        version: "2.0.0",
+        rows: [],
+      });
+
+      global.fetch = jest.fn(async (url) => {
+        if (typeof url === "string" && url.endsWith(".yaml")) {
+          return { ok: true, text: () => Promise.resolve(mockYaml) };
+        }
+        return { ok: true, text: () => Promise.resolve(mockJson) };
+      });
+
+      const res = await checkForTemplateUpdates();
+      expect(res.hasUpdates).toBe(true);
+      expect(res.updateCount).toBe(1);
+    });
+
+    it("returns no updates if local is up to date", async () => {
+      addCustomTemplate({ name: "MyTemplate", author: "MyAuthor", version: "2.0.0" });
+
+      const mockYaml = `
+dnd5e:
+  - file: MyTemplate.json`;
+
+      const mockJson = JSON.stringify({
+        name: "MyTemplate",
+        author: "MyAuthor",
+        system: "dnd5e",
+        version: "1.0.0",
+        rows: [],
+      });
+
+      global.fetch = jest.fn(async (url) => {
+        if (typeof url === "string" && url.endsWith(".yaml")) {
+          return { ok: true, text: () => Promise.resolve(mockYaml) };
+        }
+        return { ok: true, text: () => Promise.resolve(mockJson) };
+      });
+
+      const res = await checkForTemplateUpdates();
+      expect(res.hasUpdates).toBe(false);
+      expect(res.updateCount).toBe(0);
+    });
+
+    it("returns false on error", async () => {
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      addCustomTemplate({ name: "Test", author: "Old", version: "1.0.0" });
+      global.fetch = jest.fn().mockRejectedValue(new Error("failed"));
+      expect(await checkForTemplateUpdates()).toEqual({ hasUpdates: false, updateCount: 0 });
+      consoleSpy.mockRestore();
     });
   });
 });

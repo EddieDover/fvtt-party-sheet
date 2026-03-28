@@ -62,6 +62,10 @@ export function setupFoundryMocks(gameOverrides = {}, uiOverrides = {}) {
   global.ui = { ...createMockUI(), ...uiOverrides };
   global.foundry = {
     applications: {
+      api: {
+        ApplicationV2: class {},
+        HandlebarsApplicationMixin: (cls) => class extends cls {},
+      },
       apps: {
         FilePicker: {
           implementation: {

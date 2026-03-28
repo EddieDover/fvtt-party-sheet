@@ -1,8 +1,13 @@
 
-## [3.0.1](https://github.com/EddieDover/fvtt-party-sheet/compare/v3.0.0...v3.0.1) (2026-03-27)
+## [3.0.2](https://github.com/EddieDover/fvtt-party-sheet/compare/v3.0.0...v3.0.2) (2026-03-28)
 
 
 ### Bug Fixes
+
+* deleting or modifying a template should update or clear the saved template in settings/memory ([c0748b6](https://github.com/EddieDover/fvtt-party-sheet/commit/c0748b649499bc5ff0b9d61c5c4a8179f9c9a073))
+* hidden character categories now respected by UI ([0605b71](https://github.com/EddieDover/fvtt-party-sheet/commit/0605b71a2e448825eb5d5cd929939cabdd9d0297))
+* players should not be able to override local value of GM selected template ([e61b39e](https://github.com/EddieDover/fvtt-party-sheet/commit/e61b39e5a0624300cfdb4f6c744585622b63cb8e))
+* removed hide category button from non-GM player view ([1b89ea6](https://github.com/EddieDover/fvtt-party-sheet/commit/1b89ea63f23571a500dabfacb629bed087b05322))
 
 * template now visible to players if it is the only template installed ([5330922](https://github.com/EddieDover/fvtt-party-sheet/commit/53309223df5a161d2aa9cded3b5235f171331e23))
 

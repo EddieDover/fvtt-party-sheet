@@ -13,6 +13,7 @@ import {
   checkForTemplateUpdates,
   addCustomTemplate,
   updateSelectedTemplate,
+  validateSavedTemplate,
 } from "./utils.js";
 import { TemplateStatusForm } from "./app/template-status.js";
 
@@ -20,6 +21,25 @@ import { TemplateStatusForm } from "./app/template-status.js";
 let currentPartySheet = null;
 let currentRefreshInterval = null;
 let currentTemplateStatusForm = null;
+
+/**
+ * Clone a template payload from synced settings so player-side state never reuses stale object references.
+ * @param {TemplateData|null} template - Synced selected template payload from world settings.
+ * @returns {TemplateData|null} A detached template object safe to store locally.
+ */
+function cloneTemplatePayload(template) {
+  if (!template) {
+    return null;
+  }
+
+  try {
+    return typeof structuredClone === "function" ? structuredClone(template) : JSON.parse(JSON.stringify(template));
+  } catch (err) {
+    console.warn("fvtt-party-sheet | Failed to clone selected template payload, using original object.", err);
+    return template;
+  }
+}
+
 // @ts-ignore
 Handlebars.registerPartial(
   "installer",
@@ -196,6 +216,15 @@ Handlebars.registerPartial(
 );
 
 // @ts-ignore
+Handlebars.registerHelper("hchiddentype", function (needle, options) {
+  // Handle Handlebars string wrappers
+  let primitiveNeedle = typeof needle === "object" ? String(needle) : needle;
+  // @ts-ignore
+  let haystack = game.settings.get("fvtt-party-sheet", "hiddenCharacterTypes") ?? [];
+  return haystack.includes(primitiveNeedle) ? options.fn(this) : options.inverse(this);
+});
+
+// @ts-ignore
 Handlebars.registerHelper("hccontains", function (needle, haystack, options) {
   // @ts-ignore
   needle = Handlebars.escapeExpression(needle);
@@ -206,7 +235,9 @@ Handlebars.registerHelper("hccontains", function (needle, haystack, options) {
 
 //@ts-ignore
 Handlebars.registerHelper("inArray", function (elem, list, options) {
-  if (list && list.indexOf(elem) > -1) {
+  // Handle Handlebars string wrappers by converting to a string primitive
+  let primitiveElem = typeof elem === "object" ? String(elem) : elem;
+  if (list && (list.indexOf(elem) > -1 || list.indexOf(primitiveElem) > -1)) {
     return options.fn(this);
   }
   return options.inverse(this);
@@ -693,11 +724,28 @@ Hooks.on("ready", async () => {
   // Sync selected template
   // @ts-ignore
   const savedSelection = game.settings.get("fvtt-party-sheet", "selectedTemplate");
+
   if (savedSelection) {
-    updateSelectedTemplate(savedSelection);
     // @ts-ignore
-    if (!game.user.isGM) {
-      addCustomTemplate(savedSelection);
+    if (game.user.isGM) {
+      // Only the GM validates the saved template — players receive the selection via settings sync
+      const isValid = await validateSavedTemplate(savedSelection);
+
+      if (isValid) {
+        updateSelectedTemplate(savedSelection);
+      } else {
+        // Template is no longer valid, clear both the setting and in-memory template
+        log("Saved template is no longer valid or has been deleted. Clearing selection.");
+        updateSelectedTemplate(null);
+        // @ts-ignore
+        await game.settings.set("fvtt-party-sheet", "selectedTemplate", null);
+      }
+    } else {
+      // Players just trust the synced value from the GM
+      const incomingTemplate = cloneTemplatePayload(savedSelection);
+      updateSelectedTemplate(incomingTemplate);
+      clearCustomTemplates();
+      addCustomTemplate(incomingTemplate);
     }
   }
 });
@@ -772,13 +820,14 @@ Hooks.on("updateSetting", (setting, change, options, userId) => {
 
     // @ts-ignore
     const newValue = game.settings.get("fvtt-party-sheet", "selectedTemplate");
+    const syncedTemplate = cloneTemplatePayload(newValue);
 
-    updateSelectedTemplate(newValue);
+    updateSelectedTemplate(syncedTemplate);
     // @ts-ignore
     if (!game.user.isGM) {
       clearCustomTemplates();
-      if (newValue) {
-        addCustomTemplate(newValue);
+      if (syncedTemplate) {
+        addCustomTemplate(syncedTemplate);
       }
     }
     // @ts-ignore
