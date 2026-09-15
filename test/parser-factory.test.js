@@ -53,7 +53,8 @@ describe("ParserFactory", () => {
       expect(registeredTypes).toContain("span");
       expect(registeredTypes).toContain("largest-from-array");
       expect(registeredTypes).toContain("smallest-from-array");
-      expect(registeredTypes).toHaveLength(9);
+      expect(registeredTypes).toContain("uuid-link");
+      expect(registeredTypes).toHaveLength(10);
     });
 
     it("should create processors that work correctly", () => {
