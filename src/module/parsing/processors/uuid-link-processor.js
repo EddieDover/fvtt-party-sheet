@@ -1,6 +1,7 @@
 import { DataProcessor } from "../base-processor.js";
 import { extractPropertyByString } from "../../utils.js";
 import { TemplateProcessor } from "../template-processor.js";
+import { sanitizeHTMLWithStyles } from "../../utils/dompurify-sanitizer.js";
 
 /**
  * Processor for "uuid-link" data type - dereferences UUID links to documents
@@ -33,28 +34,27 @@ export class UuidLinkProcessor extends DataProcessor {
       const templateString = parts[1].trim();
 
       // Extract the UUID from the character
-      const uuid = extractPropertyByString(character, uuidPath);
+      const uuidValue = extractPropertyByString(character, uuidPath);
 
-      if (!uuid || typeof uuid !== "string") {
+      if (!uuidValue) {
         return "";
       }
 
-      // Dereference the UUID to get the linked document
-      // @ts-ignore
-      const linkedDocument = fromUuidSync(uuid);
-
-      if (!linkedDocument) {
-        return "";
+      let processedValue = "";
+      if (Array.isArray(uuidValue)) {
+        const linkedDocumentDataArray = uuidValue.map((uuid) => this.getLinkedDocumentData(uuid));
+        processedValue = TemplateProcessor.processTemplateWithArray(templateString, linkedDocumentDataArray);
+      } else {
+        const linkedDocumentData = this.getLinkedDocumentData(uuidValue);
+        processedValue = TemplateProcessor.processTemplate(templateString, linkedDocumentData);
       }
 
-      // Convert document to data object for template processing
-      const documentData = linkedDocument.toObject ? linkedDocument.toObject() : linkedDocument;
-
-      // Process the template string with the document data
-      const processedValue = TemplateProcessor.processTemplate(templateString, documentData);
+      // String sanitization
+      processedValue = this.cleanString(processedValue);
+      processedValue = processedValue === value ? "" : processedValue; // If no change, return empty string
 
       // Apply text parsing chain
-      const [isSafeStringNeeded, outputText] = this.parserEngine.parseText(processedValue);
+      const [isSafeStringNeeded, outputText] = this.parserEngine.parseText(processedValue, character, options);
 
       // @ts-ignore
       return isSafeStringNeeded ? new Handlebars.SafeString(outputText) : outputText;
@@ -62,5 +62,49 @@ export class UuidLinkProcessor extends DataProcessor {
       console.warn("UUID-link processor error:", error);
       return "";
     }
+  }
+
+  /**
+   * Get data object from a linked document using its UUID
+   * @param {string} uuid - The UUID to dereference
+   * @returns {any} The processed data object
+   * @private
+   */
+  getLinkedDocumentData(uuid) {
+    // Dereference the UUID to get the linked document
+    // @ts-ignore
+    const linkedDocument = fromUuidSync(uuid);
+
+    if (!linkedDocument) {
+      return "";
+    }
+
+    // Convert document to data object for template processing
+    return linkedDocument.toObject ? linkedDocument.toObject() : linkedDocument;
+  }
+
+  /**
+   * Clean a string of html injection, remove trailing commas, and trim whitespace
+   * @param {string} input - The value to clean
+   * @returns {string} The cleaned value
+   */
+  cleanString(input) {
+    if (typeof input !== "string") {
+      return input;
+    }
+
+    let finalString = input.trim();
+
+    // Use DOMPurify with allowed styles
+    finalString = sanitizeHTMLWithStyles(finalString, [
+      "color",
+      "background-color",
+      "font-weight",
+      "font-style",
+      "text-decoration",
+    ]);
+
+    // Remove trailing commas
+    return finalString.replace(/,\s*$/, "");
   }
 }

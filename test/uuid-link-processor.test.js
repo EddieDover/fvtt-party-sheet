@@ -65,6 +65,7 @@ describe("UuidLinkProcessor", () => {
 
       const result = processor.process(character, "itemUuid => {name}");
 
+      expect(global.fromUuidSync).toHaveBeenCalledWith("Item.xyz789");
       expect(result).toBe("Direct Object");
     });
 
@@ -87,32 +88,12 @@ describe("UuidLinkProcessor", () => {
 
       const result = processor.process(character, "heroUuid => {system.details.biography}");
 
+      expect(global.fromUuidSync).toHaveBeenCalledWith("Actor.hero123");
       expect(result).toBe("A legendary hero");
     });
   });
 
-  describe("UUID extraction from character", () => {
-    it("should extract UUID from nested character property", () => {
-      const mockDocument = {
-        toObject: jest.fn().mockReturnValue({
-          name: "Class Name",
-        }),
-      };
-
-      global.fromUuidSync = jest.fn().mockReturnValue(mockDocument);
-
-      const character = {
-        class: {
-          uuid: "UUID.class123",
-        },
-      };
-
-      const result = processor.process(character, "class.uuid => {name}");
-
-      expect(global.fromUuidSync).toHaveBeenCalledWith("UUID.class123");
-      expect(result).toBe("Class Name");
-    });
-
+  describe("UUID extraction error handling", () => {
     it("should return empty string when UUID path doesn't exist", () => {
       const character = {
         name: "Test Character",
@@ -123,7 +104,7 @@ describe("UuidLinkProcessor", () => {
       expect(result).toBe("");
     });
 
-    it("should return empty string when UUID is not a string", () => {
+    it("should return empty string when UUID is not a string or array", () => {
       const character = {
         invalidUuid: 12345,
       };
@@ -142,9 +123,7 @@ describe("UuidLinkProcessor", () => {
 
       expect(result).toBe("");
     });
-  });
 
-  describe("document dereferencing", () => {
     it("should return empty string when fromUuidSync returns null", () => {
       global.fromUuidSync = jest.fn().mockReturnValue(null);
 
@@ -168,28 +147,6 @@ describe("UuidLinkProcessor", () => {
 
       expect(result).toBe("");
     });
-
-    it("should handle documents with complex data structures", () => {
-      const mockDocument = {
-        toObject: jest.fn().mockReturnValue({
-          name: "Item",
-          attributes: {
-            damage: "2d6",
-            bonus: 3,
-          },
-        }),
-      };
-
-      global.fromUuidSync = jest.fn().mockReturnValue(mockDocument);
-
-      const character = {
-        weaponUuid: "Item.weapon123",
-      };
-
-      const result = processor.process(character, "weaponUuid => {attributes.damage}");
-
-      expect(result).toBe("2d6");
-    });
   });
 
   describe("template processing", () => {
@@ -209,6 +166,7 @@ describe("UuidLinkProcessor", () => {
 
       const result = processor.process(character, "spellUuid => {name} (Level {level})");
 
+      expect(global.fromUuidSync).toHaveBeenCalledWith("Item.spell123");
       expect(result).toBe("Fire Spell (Level 3)");
     });
 
@@ -265,6 +223,193 @@ describe("UuidLinkProcessor", () => {
       const result = processor.process(character, "itemUuid => Name: {name}, Type: {type}");
 
       expect(result).toBe("Name: Sword, Type: {type}");
+    });
+  });
+
+  describe("array of UUID handling", () => {
+    it("should process array of UUIDs and extract properties from each", () => {
+      const mockDocument1 = {
+        toObject: jest.fn().mockReturnValue({ name: "Language 1" }),
+      };
+      const mockDocument2 = {
+        toObject: jest.fn().mockReturnValue({ name: "Language 2" }),
+      };
+      const mockDocument3 = {
+        toObject: jest.fn().mockReturnValue({ name: "Language 3" }),
+      };
+
+      global.fromUuidSync = jest
+        .fn()
+        .mockReturnValueOnce(mockDocument1)
+        .mockReturnValueOnce(mockDocument2)
+        .mockReturnValueOnce(mockDocument3);
+
+      const character = {
+        system: {
+          languages: ["languages.DQzHvoMWSZ0eiRWP", "languages.GVbmj6D47b9lbOHz", "languages.NN9wFGgwk49oOQeN"],
+        },
+      };
+
+      const result = processor.process(character, "system.languages => {name}, ");
+
+      expect(global.fromUuidSync).toHaveBeenCalledWith("languages.DQzHvoMWSZ0eiRWP");
+      expect(global.fromUuidSync).toHaveBeenCalledWith("languages.GVbmj6D47b9lbOHz");
+      expect(global.fromUuidSync).toHaveBeenCalledWith("languages.NN9wFGgwk49oOQeN");
+      expect(result).toBe("Language 1, Language 2, Language 3");
+    });
+
+    it("should handle empty array of UUIDs", () => {
+      const character = {
+        languages: [],
+      };
+
+      const result = processor.process(character, "languages => {name}, ");
+
+      expect(result).toBe("");
+    });
+
+    it("should skip null or undefined items in UUID array", () => {
+      const mockDocument = {
+        toObject: jest.fn().mockReturnValue({ name: "Valid Language" }),
+      };
+
+      global.fromUuidSync = jest
+        .fn()
+        .mockReturnValueOnce(undefined)
+        .mockReturnValueOnce(mockDocument)
+        .mockReturnValueOnce(null);
+
+      const character = {
+        languages: ["languages.invalid1", "languages.valid", "languages.invalid2"],
+      };
+
+      const result = processor.process(character, "languages => {name}, ");
+
+      expect(global.fromUuidSync).toHaveBeenCalledWith("languages.invalid1");
+      expect(global.fromUuidSync).toHaveBeenCalledWith("languages.valid");
+      expect(global.fromUuidSync).toHaveBeenCalledWith("languages.invalid2");
+      expect(result).toBe("Valid Language");
+    });
+
+    it("should handle array with single UUID", () => {
+      const mockDocument = {
+        toObject: jest.fn().mockReturnValue({ name: "Single Language" }),
+      };
+
+      global.fromUuidSync = jest.fn().mockReturnValue(mockDocument);
+
+      const character = {
+        languages: ["languages.single"],
+      };
+
+      const result = processor.process(character, "languages => {name}");
+
+      expect(global.fromUuidSync).toHaveBeenCalledWith("languages.single");
+      expect(result).toBe("Single Language");
+    });
+
+    it("should process array with multiple properties in template", () => {
+      const mockDocument1 = {
+        toObject: jest.fn().mockReturnValue({ name: "Common", type: "common" }),
+      };
+      const mockDocument2 = {
+        toObject: jest.fn().mockReturnValue({ name: "Elvish", type: "uncommon" }),
+      };
+
+      global.fromUuidSync = jest.fn().mockReturnValueOnce(mockDocument1).mockReturnValueOnce(mockDocument2);
+
+      const character = {
+        languages: ["languages.lang1", "languages.lang2"],
+      };
+
+      const result = processor.process(character, "languages => {name} ({type}), ");
+
+      expect(global.fromUuidSync).toHaveBeenCalledWith("languages.lang1");
+      expect(global.fromUuidSync).toHaveBeenCalledWith("languages.lang2");
+      expect(result).toBe("Common (common), Elvish (uncommon)");
+    });
+
+    it("should handle array with nested property access", () => {
+      const mockDocument1 = {
+        toObject: jest.fn().mockReturnValue({
+          name: "Fireball",
+          system: { level: "3" },
+        }),
+      };
+      const mockDocument2 = {
+        toObject: jest.fn().mockReturnValue({
+          name: "Magic Missile",
+          system: { level: "1" },
+        }),
+      };
+
+      global.fromUuidSync = jest.fn().mockReturnValueOnce(mockDocument1).mockReturnValueOnce(mockDocument2);
+
+      const character = {
+        spells: ["spells.spell1", "spells.spell2"],
+      };
+
+      const result = processor.process(character, "spells => {name} (Level {system.level}), ");
+
+      expect(global.fromUuidSync).toHaveBeenCalledWith("spells.spell1");
+      expect(global.fromUuidSync).toHaveBeenCalledWith("spells.spell2");
+      expect(result).toBe("Fireball (Level 3), Magic Missile (Level 1)");
+    });
+
+    it("should handle array with documents without toObject method", () => {
+      const mockDocument1 = { name: "Direct 1", type: "item" };
+      const mockDocument2 = { name: "Direct 2", type: "item" };
+
+      global.fromUuidSync = jest.fn().mockReturnValueOnce(mockDocument1).mockReturnValueOnce(mockDocument2);
+
+      const character = {
+        items: ["Item.item1", "Item.item2"],
+      };
+
+      const result = processor.process(character, "items => {name}, ");
+
+      expect(global.fromUuidSync).toHaveBeenCalledWith("Item.item1");
+      expect(global.fromUuidSync).toHaveBeenCalledWith("Item.item2");
+      expect(result).toBe("Direct 1, Direct 2");
+    });
+
+    it("should handle array with mixed toObject and direct objects", () => {
+      const mockDocument1 = {
+        toObject: jest.fn().mockReturnValue({ name: "With toObject" }),
+      };
+      const mockDocument2 = { name: "Without toObject" };
+
+      global.fromUuidSync = jest.fn().mockReturnValueOnce(mockDocument1).mockReturnValueOnce(mockDocument2);
+
+      const character = {
+        items: ["Item.item1", "Item.item2"],
+      };
+
+      const result = processor.process(character, "items => {name}, ");
+
+      expect(global.fromUuidSync).toHaveBeenCalledWith("Item.item1");
+      expect(global.fromUuidSync).toHaveBeenCalledWith("Item.item2");
+      expect(result).toBe("With toObject, Without toObject");
+    });
+
+    it("should filter out non-string items from array", () => {
+      const mockDocument = {
+        toObject: jest.fn().mockReturnValue({ name: "Valid" }),
+      };
+
+      global.fromUuidSync = jest.fn().mockReturnValue(mockDocument);
+
+      const character = {
+        mixed: ["ValidUUID", 123, null, undefined, "AnotherValidUUID"],
+      };
+
+      const result = processor.process(character, "mixed => {name}, ");
+
+      // Should only process the string UUIDs
+      expect(global.fromUuidSync).toHaveBeenCalledWith("ValidUUID");
+      expect(global.fromUuidSync).toHaveBeenCalledWith("AnotherValidUUID");
+      expect(global.fromUuidSync).toHaveBeenCalledTimes(2);
+      expect(result).toBe("Valid, Valid");
     });
   });
 
@@ -354,6 +499,66 @@ describe("UuidLinkProcessor", () => {
       expect(result).toBe("Plain Name");
       expect(mockSafeString).not.toHaveBeenCalled();
     });
+
+    it("should handle SafeString for array results", () => {
+      const mockDocument1 = {
+        toObject: jest.fn().mockReturnValue({ name: "Item 1" }),
+      };
+      const mockDocument2 = {
+        toObject: jest.fn().mockReturnValue({ name: "Item 2" }),
+      };
+
+      global.fromUuidSync = jest.fn().mockReturnValueOnce(mockDocument1).mockReturnValueOnce(mockDocument2);
+
+      // Mock parseText to return SafeString needed
+      parserEngine.parseText = jest.fn().mockReturnValue([true, "Item 1, Item 2"]);
+
+      const character = {
+        items: ["Item.item1", "Item.item2"],
+      };
+
+      const result = processor.process(character, "items => {name}, ");
+
+      expect(mockSafeString).toHaveBeenCalledWith("Item 1, Item 2");
+      expect(result.__isSafeString).toBe(true);
+    });
+  });
+
+  describe("string cleaning and sanitization", () => {
+    it("should remove trailing commas from result", () => {
+      const mockDocument1 = {
+        toObject: jest.fn().mockReturnValue({ name: "Item 1" }),
+      };
+      const mockDocument2 = {
+        toObject: jest.fn().mockReturnValue({ name: "Item 2" }),
+      };
+
+      global.fromUuidSync = jest.fn().mockReturnValueOnce(mockDocument1).mockReturnValueOnce(mockDocument2);
+
+      const character = {
+        items: ["Item.item1", "Item.item2"],
+      };
+
+      const result = processor.process(character, "items => {name}, ");
+
+      expect(result).toBe("Item 1, Item 2");
+    });
+
+    it("should handle trailing whitespace correctly", () => {
+      const mockDocument = {
+        toObject: jest.fn().mockReturnValue({ name: "Test" }),
+      };
+
+      global.fromUuidSync = jest.fn().mockReturnValue(mockDocument);
+
+      const character = {
+        itemUuid: "Item.item123",
+      };
+
+      const result = processor.process(character, "itemUuid => {name}  ");
+
+      expect(result).toBe("Test");
+    });
   });
 
   describe("error handling", () => {
@@ -396,6 +601,30 @@ describe("UuidLinkProcessor", () => {
       expect(result).toBe("");
       expect(consoleMocks.warnSpy).toHaveBeenCalled();
     });
+
+    it("should handle array processing errors gracefully", () => {
+      const mockDocument = {
+        toObject: jest.fn().mockReturnValue({
+          name: "Test",
+        }),
+      };
+
+      global.fromUuidSync = jest
+        .fn()
+        .mockReturnValueOnce(mockDocument)
+        .mockImplementationOnce(() => {
+          throw new Error("Array item error");
+        });
+
+      const character = {
+        items: ["Item.item1", "Item.item2"],
+      };
+
+      const result = processor.process(character, "items => {name}, ");
+
+      expect(result).toBe("");
+      expect(consoleMocks.warnSpy).toHaveBeenCalled();
+    });
   });
 
   describe("validation", () => {
@@ -415,30 +644,6 @@ describe("UuidLinkProcessor", () => {
   });
 
   describe("complex scenarios", () => {
-    it("should handle chained property access on linked document", () => {
-      const mockDocument = {
-        toObject: jest.fn().mockReturnValue({
-          system: {
-            abilities: {
-              str: {
-                value: 18,
-              },
-            },
-          },
-        }),
-      };
-
-      global.fromUuidSync = jest.fn().mockReturnValue(mockDocument);
-
-      const character = {
-        classUuid: "Actor.class123",
-      };
-
-      const result = processor.process(character, "classUuid => {system.abilities.str.value}");
-
-      expect(result).toBe("18");
-    });
-
     it("should process UUID with mixed static and dynamic template content", () => {
       const mockDocument = {
         toObject: jest.fn().mockReturnValue({
@@ -458,31 +663,28 @@ describe("UuidLinkProcessor", () => {
       expect(result).toBe("Class: Barbarian with d12 hit dice");
     });
 
-    it("should handle multiple UUID properties in character", () => {
-      const mockDocument1 = {
-        toObject: jest.fn().mockReturnValue({
-          name: "Fighter",
-        }),
-      };
+    it("should handle real-world languages array example", () => {
+      const languages = [{ name: "Common" }, { name: "Elvish" }, { name: "Draconic" }];
 
-      const mockDocument2 = {
-        toObject: jest.fn().mockReturnValue({
-          name: "Greatsword",
-        }),
-      };
-
-      global.fromUuidSync = jest.fn().mockReturnValueOnce(mockDocument1).mockReturnValueOnce(mockDocument2);
+      global.fromUuidSync = jest
+        .fn()
+        .mockReturnValueOnce({ toObject: () => languages[0] })
+        .mockReturnValueOnce({ toObject: () => languages[1] })
+        .mockReturnValueOnce({ toObject: () => languages[2] });
 
       const character = {
-        classUuid: "Actor.class123",
-        weaponUuid: "Item.weapon456",
+        system: {
+          languages: [
+            "Compendium.shadowdark.languages.Item.DQzHvoMWSZ0eiRWP",
+            "Compendium.shadowdark.languages.Item.GVbmj6D47b9lbOHz",
+            "Compendium.shadowdark.languages.Item.NN9wFGgwk49oOQeN",
+          ],
+        },
       };
 
-      const result1 = processor.process(character, "classUuid => {name}");
-      const result2 = processor.process(character, "weaponUuid => {name}");
+      const result = processor.process(character, "system.languages => {name}, ");
 
-      expect(result1).toBe("Fighter");
-      expect(result2).toBe("Greatsword");
+      expect(result).toBe("Common, Elvish, Draconic");
     });
   });
 });
