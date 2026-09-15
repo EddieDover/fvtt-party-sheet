@@ -9,6 +9,7 @@ import {
   SpanProcessor,
   LargestFromArrayProcessor,
   SmallestFromArrayProcessor,
+  UuidLinkProcessor,
 } from "./processors/index.js";
 
 /**
@@ -36,6 +37,7 @@ export class ParserFactory {
     engine.registerProcessor("span", new SpanProcessor());
     engine.registerProcessor("largest-from-array", new LargestFromArrayProcessor());
     engine.registerProcessor("smallest-from-array", new SmallestFromArrayProcessor());
+    engine.registerProcessor("uuid-link", new UuidLinkProcessor(engine));
 
     return engine;
   }
