@@ -763,7 +763,7 @@ describe("ObjectLoopProcessor", () => {
         "items{weapon} => {name}: {system.attack.damage.parts} => {dice} ({bonus}), ",
       );
 
-      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Shortsword: 1d6 (+2), 1d4 (+1),", false);
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Shortsword: 1d6 (+2), 1d4 (+1)", false);
       expect(result).toBe("parsed_text");
     });
 
@@ -1131,6 +1131,65 @@ describe("ObjectLoopProcessor", () => {
 
       expect(html).not.toContain("max-height");
       expect(html).not.toContain("overflow-y: auto");
+    });
+  });
+
+  describe("HTML sanitization", () => {
+    it("should strip script-bearing HTML from document data before text parsing", () => {
+      const character = {
+        items: [{ name: '{b}<img src=x onerror="alert(1)">{/b}', type: "weapon" }],
+      };
+
+      processor.process(character, "items => {name}");
+
+      const [sanitized] = mockParserEngine.parseText.mock.calls[0];
+      expect(sanitized).not.toContain("<img");
+      expect(sanitized).not.toContain("onerror");
+      expect(sanitized).toBe(" {b}{/b}");
+    });
+
+    it("should strip disallowed tags but keep their text content", () => {
+      const character = {
+        items: [{ name: "<script>alert(1)</script>Sword<iframe src='x'></iframe>", type: "weapon" }],
+      };
+
+      processor.process(character, "items => {name}");
+
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(" Sword", false);
+    });
+
+    it("should preserve allowed inline formatting", () => {
+      const character = {
+        items: [{ name: '<b>Sword</b> <span style="color: red">Magic</span>', type: "weapon" }],
+      };
+
+      processor.process(character, "items => {name}");
+
+      expect(mockParserEngine.parseText).toHaveBeenCalledWith(
+        ' <b>Sword</b> <span style="color: red">Magic</span>',
+        false,
+      );
+    });
+
+    it("should sanitize data without breaking generated dropdown markup", () => {
+      mockParserEngine.parseText.mockImplementation((value, isSafe) => [isSafe, value]);
+      const character = {
+        items: {
+          weapon: [{ name: '<img src=x onerror="alert(1)">Sword', type: "weapon" }],
+          spell: [{ name: "Fireball", type: "spell" }],
+        },
+      };
+
+      const result = processor.process(
+        character,
+        "{dropdown} [Weapons] items.weapon => {name} || [Spells] items.spell => {name}",
+      );
+
+      expect(result.__isSafeString).toBe(true);
+      expect(result.content).toContain('<select id="party-sheet-dropdown-1"');
+      expect(result.content).toContain('data-dropdownsection="dropdown-1-WeaponsSpells"');
+      expect(result.content).toContain("Sword");
+      expect(result.content).not.toContain("<img");
     });
   });
 });

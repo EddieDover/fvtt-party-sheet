@@ -1,6 +1,7 @@
 import { DataProcessor } from "../base-processor.js";
 import { extractPropertyByString, toProperCase } from "../../utils.js";
 import { TemplateProcessor } from "../template-processor.js";
+import { sanitizeHTMLWithStyles } from "../../utils/dompurify-sanitizer.js";
 
 /**
  * Processor for "object-loop" data type - loops through object data with complex templating
@@ -195,8 +196,34 @@ export class ObjectLoopProcessor extends DataProcessor {
     }
 
     // Process template replacements
-    const output = TemplateProcessor.processTemplateWithArray(actualValue, loopData);
+    let output = TemplateProcessor.processTemplateWithArray(actualValue, loopData);
+    output = this.cleanString(output);
+    output = this.removeTrailingComma(output);
+
     return { success: true, output, prefix, filter: objFilter, cleanObjName: objName };
+  }
+
+  /**
+   * Clean a string of html injection
+   * @param {string} value - The value to clean
+   * @returns {string} The cleaned value
+   */
+  cleanString(value) {
+    if (typeof value !== "string") {
+      return value;
+    }
+
+    // Use DOMPurify with allowed styles
+    return sanitizeHTMLWithStyles(value, ["color", "background-color", "font-weight", "font-style", "text-decoration"]);
+  }
+
+  /**
+   * Remove trailing comma from a string
+   * @param {string} str - The string to process
+   * @returns {string} The string without trailing comma
+   */
+  removeTrailingComma(str) {
+    return str.replace(/,\s*$/, "");
   }
 
   /**

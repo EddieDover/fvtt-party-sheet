@@ -40,12 +40,8 @@
   "version": "3.0.2",
   "compatibility": {
     "minimum": "13",
-    "verified": "13"
+    "verified": "14"
   },
-  "esmodules": [
-    "module/fvtt-party-sheet.js"
-  ],
-  "styles": [
-    "styles/fvtt-party-sheet.css"
-  ]
+  "esmodules": ["module/fvtt-party-sheet.js"],
+  "styles": ["styles/fvtt-party-sheet.css"]
 }
