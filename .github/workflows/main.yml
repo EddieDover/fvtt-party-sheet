@@ -78,7 +78,7 @@ jobs:
               "notes": "https://github.com/EddieDover/fvtt-party-sheet/blob/master/CHANGELOG.md",
               "compatibility": {
                 "minimum": "13",
-                "verified": "13"
+                "verified": "14"
               }
             }
           }'
