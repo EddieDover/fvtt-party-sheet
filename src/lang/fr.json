@@ -1,0 +1,107 @@
+{
+  "fvtt-party-sheet": {
+    "party-sheet": {
+      "assigned-only": "Masquer les acteurs non attribués",
+      "assigned-only-tooltip": "Masquer tout acteur qui n'est attribué à aucun joueur.",
+      "invalid-template": "Le modèle utilisé n'est pas valide. <br/> Vérifiez le modèle et réessayez.",
+      "no-players": "Aucun joueur n'est connecté pour le moment.",
+      "no-systems": "Vous n'avez aucun fichier JSON pour ce système dans votre dossier data/partysheets. Ajoutez-en pour activer cette fonction.",
+      "bugreport": "Signaler un bogue",
+      "feedback": "Envoyer un avis",
+      "discord": "Discord"
+    },
+    "preview-mode": {
+      "active": "Aperçu actif",
+      "active-tooltip": "Vous prévisualisez un modèle depuis l'éditeur de modèles. Fermez l'éditeur pour revenir à l'affichage normal."
+    },
+    "hide-sheet": {
+      "button": "Choisir les acteurs masqués",
+      "hint": "Choisir les acteurs affichés lorsque l'option « acteurs en ligne seulement » est désactivée.",
+      "hide-all": "Tout masquer",
+      "tooltip": "Sélectionner les acteurs à masquer"
+    },
+    "settings": {
+      "refresh-rate": {
+        "name": "Fréquence d'actualisation",
+        "hint": "Intervalle d'actualisation de la fiche de groupe, en secondes. Une valeur trop basse peut ralentir Foundry. Par défaut : 0 (désactivé)."
+      },
+      "enable-minimal-view": {
+        "name": "Masquer les boutons d'assistance",
+        "hint": "Masquer les boutons de signalement de bogue et d'avis."
+      },
+      "enable-only-online": {
+        "name": "Acteurs en ligne seulement",
+        "hint": "N'afficher que les acteurs attribués aux joueurs connectés. Désactivé, tous les acteurs qui ne sont pas des PNJ sont affichés, et vous pouvez masquer ceux qui ne vous intéressent pas."
+      },
+      "enable-dark-mode": {
+        "name": "Activer le mode sombre",
+        "hint": "Activer le mode sombre pour la fiche de groupe."
+      },
+      "show-debug-info": {
+        "name": "Afficher les informations de débogage",
+        "hint": "Affiche dans la console les données de tous les acteurs analysés à l'ouverture de la fiche de groupe. Pratique pour retrouver le chemin d'une propriété à afficher."
+      },
+      "show-template-status-form": {
+        "name": "Afficher l'état des modèles",
+        "hint": "Indique quels modèles sont obsolètes, lesquels demandent une version plus récente du système, et lesquels n'ont pas d'information de version."
+      },
+      "show-version-notifications": {
+        "name": "Signaler les mises à jour de modèles",
+        "hint": "Afficher une notification quand une version plus récente d'un modèle installé est disponible parmi les modèles d'exemple du module."
+      }
+    },
+    "template-status": {
+      "template-status": "État des modèles",
+      "by": "par",
+      "out-of-date": "Les modèles suivants sont obsolètes",
+      "current-version": "Version actuelle",
+      "module-version": "Version du module",
+      "newer-required-system": "Les modèles suivants demandent une version plus récente du système",
+      "older-required-system": "Les modèles suivants demandent une version plus ancienne du système",
+      "no-version-information": "Les modèles suivants n'ont pas d'information de version",
+      "no-system-information": "Les modèles suivants n'ont pas d'information de système",
+      "current-system-version": "Version actuelle du système",
+      "required-system-version": "Version du système requise",
+      "maximum-system-version": "Version maximale du système"
+    },
+    "notifications": {
+      "template-update-available": "Mises à jour de modèles disponibles ! {count} modèle(s) installé(s) ont une version plus récente. Consultez l'état des modèles ou utilisez l'installateur pour les mettre à jour."
+    },
+    "template-editor": {
+      "new": "Nouveau",
+      "new-tooltip": "Nouveau modèle",
+      "load": "Charger",
+      "load-tooltip": "Charger un modèle",
+      "save": "Enregistrer",
+      "save-tooltip": "Copier le modèle dans le presse-papiers",
+      "validate": "Valider",
+      "validate-tooltip": "Valider le JSON",
+      "format": "Mettre en forme",
+      "format-tooltip": "Mettre en forme le JSON",
+      "close-tooltip": "Fermer l'éditeur",
+      "metadata": "Métadonnées du modèle",
+      "name-placeholder": "Nom du modèle…",
+      "author-placeholder": "Nom de l'auteur…",
+      "system": "Système",
+      "json-editor": "Éditeur JSON",
+      "save-warnings": "Ces données sont temporaires. Utilisez le bouton Enregistrer pour copier le modèle dans le presse-papiers avant de fermer.",
+      "ready": "Prêt"
+    },
+    "template": "Modèle",
+    "close": "Fermer",
+    "install": "Installer",
+    "reinstall": "Réinstaller",
+    "installer": "Installateur",
+    "update": "Mettre à jour",
+    "template-name": "Nom",
+    "preview": "Aperçu",
+    "author": "Auteur",
+    "version": "Version",
+    "section-title": "Fiche de groupe",
+    "show-section-title": "Afficher la fiche de groupe",
+    "section-title-tooltip": "Afficher la fiche de groupe",
+    "template-installed-version": "Version installée",
+    "template-system-version": "Version min. du système",
+    "template-max-system-version": "Version max. du système"
+  }
+}
