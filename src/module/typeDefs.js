@@ -56,6 +56,7 @@ class FormApplication {
  * @property {TemplateDataColumnVAlignType} valign - The vertical alignment of the column.
  * @property {TemplateDataColumnHeaderAlignType} headerAlign - The horizontal alignment of the header text.
  * @property {number} colspan - The number of columns to span.
+ * @property {string} [headerGroup] - A shared title shown above the headers; consecutive columns with the same value are merged.
  * @property {number} rowspan - The number of rows to span. Spanned rows must have spanover type.
  * @property {number} maxwidth - The maximum width of the column in pixels.
  * @property {number} minwidth - The minimum width of the column in pixels.

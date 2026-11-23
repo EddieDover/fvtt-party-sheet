@@ -58,11 +58,29 @@
         <thead>
           {{#with players.[0] as |player_data|}}
             {{#each player_data as |row|}}
+            {{#with (getHeaderGroups row) as |groups|}}
+            <tr class="fvtt-party-sheet-header-group">
+              {{#each groups as |group|}}
+                {{#if group.key}}
+                  <th
+                    colspan="{{group.colspan}}"
+                    rowspan="2"
+                    style="max-width:{{getMaxWidth row group.key}};min-width:{{getMinWidth row group.key}};text-align:{{getHeaderAlignment row group.key}};"
+                  >{{group.text}}</th>
+                {{else}}
+                  <th colspan="{{group.colspan}}" style="text-align:center;">{{group.text}}</th>
+                {{/if}}
+              {{/each}}
+            </tr>
+            {{/with}}
             <tr>
               {{#getKeys row}}
                 {{#shouldSkipForColspan row this}}
                   <!-- Skip this header - it's covered by a previous header's colspan -->
                 {{else}}
+                  {{#isInHeaderGroupRow row this}}
+                    <!-- Skip this header - it spans both rows from the header group row -->
+                  {{else}}
                   {{#hcifhidden row key=this}}
                     <th></th>
                   {{else}}
@@ -71,6 +89,7 @@
                       style="max-width:{{getMaxWidth row this}};min-width:{{getMinWidth row this}};text-align:{{getHeaderAlignment row this}};"
                     >{{this}}</th>
                   {{/hcifhidden}}
+                  {{/isInHeaderGroupRow}}
                 {{/shouldSkipForColspan}}
               {{/getKeys}}
             </tr>
