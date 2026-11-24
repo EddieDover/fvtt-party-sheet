@@ -1,6 +1,6 @@
 <form autocomplete="off" class="fvtt-party-sheet-template-status-dialog standard-form">
   <p>{{localize "fvtt-party-sheet.template-status.template-status"}}</p>
-  <p>{{valid.length}} loaded templates are valid and have no issues.</p>
+  <p>{{localize "fvtt-party-sheet.template-status.valid-count" count=valid.length}}</p>
   
   <div class="template-status-grid">
     <div class="template-status-section">
@@ -17,7 +17,7 @@
         </div>
       {{else}}
         <div class="template-status-content empty-state">
-          N/A
+          {{localize "fvtt-party-sheet.template-status.none"}}
         </div>
       {{/if}}
     </div>
@@ -36,7 +36,7 @@
         </div>
       {{else}}
         <div class="template-status-content empty-state">
-          N/A
+          {{localize "fvtt-party-sheet.template-status.none"}}
         </div>
       {{/if}}
     </div>
@@ -55,7 +55,7 @@
         </div>
       {{else}}
         <div class="template-status-content empty-state">
-          N/A
+          {{localize "fvtt-party-sheet.template-status.none"}}
         </div>
       {{/if}}
     </div>
@@ -74,7 +74,7 @@
         </div>
       {{else}}
         <div class="template-status-content empty-state">
-          N/A
+          {{localize "fvtt-party-sheet.template-status.none"}}
         </div>
       {{/if}}
     </div>
@@ -91,7 +91,7 @@
         </div>
       {{else}}
         <div class="template-status-content empty-state">
-          N/A
+          {{localize "fvtt-party-sheet.template-status.none"}}
         </div>
       {{/if}}
     </div>

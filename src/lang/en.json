@@ -64,7 +64,9 @@
       "current-system-version": "Current System Version",
       "required-system-version": "Required System Version",
       "maximum-system-version": "Maximum System Version",
-      "window-title": "Party Sheet Template Status"
+      "window-title": "Party Sheet Template Status",
+      "valid-count": "{count} loaded templates are valid and have no issues.",
+      "none": "N/A"
     },
     "notifications": {
       "template-update-available": "Template updates available! {count} installed template(s) have newer versions available. Check the Template Status dialog or use the Installer to update.",

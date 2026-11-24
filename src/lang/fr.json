@@ -64,7 +64,9 @@
       "current-system-version": "Version actuelle du système",
       "required-system-version": "Version du système requise",
       "maximum-system-version": "Version maximale du système",
-      "window-title": "État des modèles de la fiche de groupe"
+      "window-title": "État des modèles de la fiche de groupe",
+      "valid-count": "{count} modèle(s) chargé(s) valide(s), sans problème.",
+      "none": "Aucun"
     },
     "notifications": {
       "template-update-available": "Mises à jour de modèles disponibles ! {count} modèle(s) installé(s) ont une version plus récente. Consultez l'état des modèles ou utilisez l'installateur pour les mettre à jour.",
