@@ -116,6 +116,11 @@
     font-weight: bold;
   }
 
+  tr.fvtt-party-sheet-header-group th:empty {
+    background: transparent;
+    border: none;
+  }
+
   tr {
     &:nth-child(odd) {
       background: var(--color-bg-primary);
@@ -128,6 +133,14 @@
     &:hover {
       background: var(--color-bg-option-active);
     }
+  }
+
+  // Both header rows of a header group share one background, without hover highlight
+  tr.fvtt-party-sheet-header-group,
+  tr.fvtt-party-sheet-header-group + tr,
+  tr.fvtt-party-sheet-header-group:hover,
+  tr.fvtt-party-sheet-header-group + tr:hover {
+    background: var(--color-bg-primary);
   }
 }
 
@@ -146,6 +159,13 @@
         background: rgba(13, 110, 253, 0.1) !important;
       }
     }
+
+    tr.fvtt-party-sheet-header-group,
+    tr.fvtt-party-sheet-header-group + tr,
+    tr.fvtt-party-sheet-header-group:hover,
+    tr.fvtt-party-sheet-header-group + tr:hover {
+      background: rgba(248, 249, 250, 0.9) !important;
+    }
   }
 }
 
@@ -163,6 +183,13 @@
       &:hover {
         background: rgba(13, 110, 253, 0.2) !important;
       }
+    }
+
+    tr.fvtt-party-sheet-header-group,
+    tr.fvtt-party-sheet-header-group + tr,
+    tr.fvtt-party-sheet-header-group:hover,
+    tr.fvtt-party-sheet-header-group + tr:hover {
+      background: rgba(73, 80, 87, 0.6) !important;
     }
   }
 

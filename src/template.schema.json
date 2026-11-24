@@ -118,6 +118,10 @@
               "description": "Controls the column span of the cells in the column.",
               "type": "number"
             },
+            "headerGroup": {
+              "description": "Shared title shown above the headers. Consecutive columns with the same headerGroup are merged into one header cell.",
+              "type": "string"
+            },
             "showTotal": {
               "description": "Shows a total sum for this column in a footer row if values are numeric.",
               "type": "boolean"
