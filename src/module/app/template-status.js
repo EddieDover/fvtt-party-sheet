@@ -10,7 +10,7 @@ export class TemplateStatusForm extends HandlebarsApplicationMixin(ApplicationV2
       closeOnSubmit: false,
     },
     window: {
-      title: "Party Sheet Template Status",
+      title: "fvtt-party-sheet.template-status.window-title",
       width: "auto",
       height: "auto",
     },

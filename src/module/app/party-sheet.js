@@ -13,6 +13,7 @@ import {
   updateSelectedTemplate,
 } from "../utils.js";
 import { HiddenCharactersSettings } from "./hidden-characters-settings.js";
+import { localizeOr } from "../i18n.js";
 import { ParserFactory } from "../parsing/parser-factory.js";
 import { TemplateEditor } from "./template-editor.js";
 // @ts-ignore
@@ -374,7 +375,11 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
         if (ex instanceof TemplateProcessError) {
           // @ts-ignore
           ui.notifications.error(
-            `There was an error processing the template for ${selectedTemplate.name} by ${selectedTemplate.author}.`,
+            localizeOr(
+              "fvtt-party-sheet.party-sheet.processing-error",
+              "There was an error processing the template for {name} by {author}.",
+              { name: selectedTemplate.name, author: selectedTemplate.author },
+            ),
           );
           selectedName = ex.data.name;
           selectedAuthor = ex.data.author;
@@ -814,7 +819,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
         try {
           // Show loading state
           buttonElement.disabled = true;
-          buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Installing...';
+          buttonElement.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${localizeOr("fvtt-party-sheet.template-installer.installing", "Installing...")}`;
           buttonElement.style.opacity = "0.7";
           buttonElement.style.cursor = "wait";
 
@@ -836,7 +841,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
           await this._postInstallCallback();
 
           // Show success state
-          buttonElement.innerHTML = '<i class="fas fa-check"></i> Installed';
+          buttonElement.innerHTML = `<i class="fas fa-check"></i> ${localizeOr("fvtt-party-sheet.template-installer.installed", "Installed")}`;
           buttonElement.style.backgroundColor = "#29b125";
 
           // Refresh the party sheet after a brief delay to show success
@@ -847,11 +852,15 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
           console.error("Error installing template:", error);
 
           // Show error state
-          buttonElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Failed';
+          buttonElement.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${localizeOr("fvtt-party-sheet.template-installer.failed", "Failed")}`;
           buttonElement.style.backgroundColor = "#ff6666";
 
           // @ts-ignore
-          ui.notifications.error(`Failed to install template: ${error.message}`);
+          ui.notifications.error(
+            localizeOr("fvtt-party-sheet.template-installer.install-failed", "Failed to install template: {error}", {
+              error: error.message,
+            }),
+          );
 
           // Reset button after delay
           setTimeout(() => {

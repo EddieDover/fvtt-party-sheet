@@ -3,6 +3,7 @@
 import { setPreviewMode, updatePreviewTemplate, validateTemplateJson, formatTemplateJson } from "../utils";
 
 import * as templateSchema from "../../template.schema.json";
+import { localizeOr } from "../i18n.js";
 
 // @ts-ignore
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -17,7 +18,7 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       closeOnSubmit: false,
     },
     window: {
-      title: "Template Editor",
+      title: "fvtt-party-sheet.template-editor.title",
       width: "auto",
       height: "auto",
       resizable: true,
@@ -546,10 +547,18 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
       this._updateTitle();
       // @ts-ignore
-      ui.notifications.info(`Template "${file.name}" loaded successfully.`);
+      ui.notifications.info(
+        localizeOr("fvtt-party-sheet.template-editor.loaded", 'Template "{name}" loaded successfully.', {
+          name: file.name,
+        }),
+      );
     } catch (error) {
       // @ts-ignore
-      ui.notifications.error(`Failed to load template: ${error.message}`);
+      ui.notifications.error(
+        localizeOr("fvtt-party-sheet.template-editor.load-failed", "Failed to load template: {error}", {
+          error: error.message,
+        }),
+      );
     }
   }
 
@@ -652,7 +661,7 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
     this._updateTitle();
     // @ts-ignore
-    ui.notifications.info("New template created.");
+    ui.notifications.info(localizeOr("fvtt-party-sheet.template-editor.created", "New template created."));
   }
 
   async copyToClipboard() {
@@ -670,7 +679,11 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       const validationResult = this.validateTemplate(false);
       if (!validationResult.isValid) {
         // @ts-ignore
-        ui.notifications.error(`Cannot copy template: ${validationResult.errors.join(", ")}`);
+        ui.notifications.error(
+          localizeOr("fvtt-party-sheet.template-editor.cannot-copy", "Cannot copy template: {errors}", {
+            errors: validationResult.errors.join(", "),
+          }),
+        );
         return;
       }
 
@@ -683,7 +696,12 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(jsonString);
         // @ts-ignore
-        ui.notifications.info("Template copied to clipboard! Paste into a text file and save as .json");
+        ui.notifications.info(
+          localizeOr(
+            "fvtt-party-sheet.template-editor.copied",
+            "Template copied to clipboard! Paste into a text file and save as .json",
+          ),
+        );
       } else {
         // Fallback for older browsers
         this._showCopyDialog(jsonString, "template.json");
@@ -693,7 +711,11 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     } catch (error) {
       console.error("TemplateEditor: Copy failed:", error);
       // @ts-ignore
-      ui.notifications.error(`Failed to copy template: ${error.message}`);
+      ui.notifications.error(
+        localizeOr("fvtt-party-sheet.template-editor.copy-failed", "Failed to copy template: {error}", {
+          error: error.message,
+        }),
+      );
     }
   }
 
@@ -707,10 +729,14 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     if (showNotifications) {
       if (!validationResult.isValid) {
         // @ts-ignore
-        ui.notifications.warn(`Template validation issues: ${validationResult.errors.join(", ")}`);
+        ui.notifications.warn(
+          localizeOr("fvtt-party-sheet.template-editor.validation-issues", "Template validation issues: {errors}", {
+            errors: validationResult.errors.join(", "),
+          }),
+        );
       } else {
         // @ts-ignore
-        ui.notifications.info("Template JSON is valid!");
+        ui.notifications.info(localizeOr("fvtt-party-sheet.template-editor.valid", "Template JSON is valid!"));
       }
     }
 
@@ -725,7 +751,7 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     if (result.success) {
       this.monacoEditor.setValue(result.formatted);
       // @ts-ignore
-      ui.notifications.info("JSON formatted successfully.");
+      ui.notifications.info(localizeOr("fvtt-party-sheet.template-editor.formatted", "JSON formatted successfully."));
     } else {
       // @ts-ignore
       ui.notifications.error(result.error);
@@ -736,26 +762,28 @@ export class TemplateEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     // @ts-ignore
     new Dialog(
       {
-        title: "Copy Template JSON",
+        title: localizeOr("fvtt-party-sheet.template-editor.copy-dialog-title", "Copy Template JSON"),
         content: `
         <div style="margin-bottom: 10px;">
-          <p>Copy the JSON below and save it manually as <strong>${filename}</strong>:</p>
+          <p>${localizeOr("fvtt-party-sheet.template-editor.copy-dialog-hint", "Copy the JSON below and save it manually as {filename}:", { filename: `<strong>${filename}</strong>` })}</p>
         </div>
         <textarea readonly style="width: 100%; height: 300px; font-family: monospace; font-size: 12px;">${jsonString}</textarea>
       `,
         buttons: {
           copy: {
-            label: "Copy to Clipboard",
+            label: localizeOr("fvtt-party-sheet.template-editor.copy-to-clipboard", "Copy to Clipboard"),
             callback: (html) => {
               const textarea = html.find("textarea")[0];
               textarea.select();
               document.execCommand("copy");
               // @ts-ignore
-              ui.notifications.info("Template JSON copied to clipboard!");
+              ui.notifications.info(
+                localizeOr("fvtt-party-sheet.template-editor.json-copied", "Template JSON copied to clipboard!"),
+              );
             },
           },
           close: {
-            label: "Close",
+            label: localizeOr("fvtt-party-sheet.close", "Close"),
             callback: () => {},
           },
         },

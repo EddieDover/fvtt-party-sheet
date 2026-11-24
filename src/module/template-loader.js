@@ -1,4 +1,5 @@
 import { GITHUB_TEMPLATES_URL, TEMPLATES_BASE_URL } from "./constants";
+import { localizeOr } from "./i18n.js";
 
 /**
  * @typedef {object} TemplateLoadResult
@@ -116,7 +117,11 @@ export async function loadModuleTemplates() {
         success: false,
         status: "error",
         templates: [],
-        error: `Unable to connect to template repository (${yamlResponse.status}). Please check your internet connection.`,
+        error: localizeOr(
+          "fvtt-party-sheet.template-installer.connection-error",
+          "Unable to connect to template repository ({status}). Please check your internet connection.",
+          { status: yamlResponse.status },
+        ),
       };
     }
 
@@ -147,14 +152,23 @@ export async function loadModuleTemplates() {
           success: true,
           status: "loaded",
           templates: includedTemplates,
-          error: failedCount > 0 ? `${failedCount} template(s) failed to load.` : undefined,
+          error:
+            failedCount > 0
+              ? localizeOr("fvtt-party-sheet.template-installer.failed-count", "{count} template(s) failed to load.", {
+                  count: failedCount,
+                })
+              : undefined,
         };
       } else {
         return {
           success: false,
           status: "empty",
           templates: [],
-          error: `No templates found for ${currentSystem} in the repository.`,
+          error: localizeOr(
+            "fvtt-party-sheet.template-installer.none-found",
+            "No templates found for {system} in the repository.",
+            { system: currentSystem },
+          ),
         };
       }
     } else {
@@ -162,11 +176,17 @@ export async function loadModuleTemplates() {
         success: false,
         status: "not-found",
         templates: [],
-        error: `No templates available for ${currentSystem} in the repository yet. Consider contributing one!`,
+        error: localizeOr(
+          "fvtt-party-sheet.template-installer.not-available",
+          "No templates available for {system} in the repository yet. Consider contributing one!",
+          { system: currentSystem },
+        ),
       };
     }
   } catch (error) {
-    const errorMsg = `Error loading templates: ${error.message}`;
+    const errorMsg = localizeOr("fvtt-party-sheet.template-installer.load-error", "Error loading templates: {error}", {
+      error: error.message,
+    });
     console.error("Error loading module templates from GitHub:", error);
     return {
       success: false,

@@ -8,7 +8,8 @@
       "no-systems": "You do not have any json files for this system in your data/partysheets folder. Please add some to enable this feature.",
       "bugreport": "File a Bug Report",
       "feedback": "Send Feedback",
-      "discord": "Discord"
+      "discord": "Discord",
+      "processing-error": "There was an error processing the template for {name} by {author}."
     },
     "preview-mode": {
       "active": "Preview Mode Active",
@@ -62,10 +63,14 @@
       "no-system-information": "The following templates have no system information",
       "current-system-version": "Current System Version",
       "required-system-version": "Required System Version",
-      "maximum-system-version": "Maximum System Version"
+      "maximum-system-version": "Maximum System Version",
+      "window-title": "Party Sheet Template Status",
+      "valid-count": "{count} loaded templates are valid and have no issues.",
+      "none": "N/A"
     },
     "notifications": {
-      "template-update-available": "Template updates available! {count} installed template(s) have newer versions available. Check the Template Status dialog or use the Installer to update."
+      "template-update-available": "Template updates available! {count} installed template(s) have newer versions available. Check the Template Status dialog or use the Installer to update.",
+      "template-update-short": "Party Sheet: {count} template update(s) available. Open the template installer to update."
     },
     "template-editor": {
       "new": "New",
@@ -85,7 +90,40 @@
       "system": "System",
       "json-editor": "JSON Editor",
       "save-warnings": "This data is temporary. Use the Save button to copy the template to your clipboard before closing.",
-      "ready": "Ready"
+      "ready": "Ready",
+      "title": "Template Editor",
+      "loaded": "Template \"{name}\" loaded successfully.",
+      "load-failed": "Failed to load template: {error}",
+      "created": "New template created.",
+      "cannot-copy": "Cannot copy template: {errors}",
+      "copied": "Template copied to clipboard! Paste into a text file and save as .json",
+      "copy-failed": "Failed to copy template: {error}",
+      "validation-issues": "Template validation issues: {errors}",
+      "valid": "Template JSON is valid!",
+      "formatted": "JSON formatted successfully.",
+      "copy-dialog-title": "Copy Template JSON",
+      "copy-dialog-hint": "Copy the JSON below and save it manually as {filename}:",
+      "copy-to-clipboard": "Copy to Clipboard",
+      "json-copied": "Template JSON copied to clipboard!"
+    },
+    "template-installer": {
+      "loading": "Loading templates from repository...",
+      "loading-hint": "Please wait while we fetch available templates for your system.",
+      "error-title": "Error Loading Templates",
+      "error-hint": "Check your internet connection or try again later.",
+      "connection-error": "Unable to connect to template repository ({status}). Please check your internet connection.",
+      "failed-count": "{count} template(s) failed to load.",
+      "none-found": "No templates found for {system} in the repository.",
+      "not-available": "No templates available for {system} in the repository yet. Consider contributing one!",
+      "load-error": "Error loading templates: {error}",
+      "incompatible": "System version {current} is incompatible with this template (requires {min})",
+      "incompatible-range": "System version {current} is incompatible with this template (requires {min} - {max})",
+      "no-community-templates": "There are currently no community created templates available for your system.",
+      "visit-readme": "Visit {link} for more information on how to create your own.",
+      "installing": "Installing...",
+      "installed": "Installed",
+      "failed": "Failed",
+      "install-failed": "Failed to install template: {error}"
     },
     "template": "Template",
     "close": "Close",

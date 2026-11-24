@@ -1,0 +1,145 @@
+{
+  "fvtt-party-sheet": {
+    "party-sheet": {
+      "assigned-only": "Masquer les acteurs non attribués",
+      "assigned-only-tooltip": "Masquer tout acteur qui n'est attribué à aucun joueur.",
+      "invalid-template": "Le modèle utilisé n'est pas valide. <br/> Vérifiez le modèle et réessayez.",
+      "no-players": "Aucun joueur n'est connecté pour le moment.",
+      "no-systems": "Vous n'avez aucun fichier JSON pour ce système dans votre dossier data/partysheets. Ajoutez-en pour activer cette fonction.",
+      "bugreport": "Signaler un bogue",
+      "feedback": "Envoyer un avis",
+      "discord": "Discord",
+      "processing-error": "Une erreur s'est produite lors du traitement du modèle {name} de {author}."
+    },
+    "preview-mode": {
+      "active": "Aperçu actif",
+      "active-tooltip": "Vous prévisualisez un modèle depuis l'éditeur de modèles. Fermez l'éditeur pour revenir à l'affichage normal."
+    },
+    "hide-sheet": {
+      "button": "Choisir les acteurs masqués",
+      "hint": "Choisir les acteurs affichés lorsque l'option « acteurs en ligne seulement » est désactivée.",
+      "hide-all": "Tout masquer",
+      "tooltip": "Sélectionner les acteurs à masquer"
+    },
+    "settings": {
+      "refresh-rate": {
+        "name": "Fréquence d'actualisation",
+        "hint": "Intervalle d'actualisation de la fiche de groupe, en secondes. Une valeur trop basse peut ralentir Foundry. Par défaut : 0 (désactivé)."
+      },
+      "enable-minimal-view": {
+        "name": "Masquer les boutons d'assistance",
+        "hint": "Masquer les boutons de signalement de bogue et d'avis."
+      },
+      "enable-only-online": {
+        "name": "Acteurs en ligne seulement",
+        "hint": "N'afficher que les acteurs attribués aux joueurs connectés. Désactivé, tous les acteurs qui ne sont pas des PNJ sont affichés, et vous pouvez masquer ceux qui ne vous intéressent pas."
+      },
+      "enable-dark-mode": {
+        "name": "Activer le mode sombre",
+        "hint": "Activer le mode sombre pour la fiche de groupe."
+      },
+      "show-debug-info": {
+        "name": "Afficher les informations de débogage",
+        "hint": "Affiche dans la console les données de tous les acteurs analysés à l'ouverture de la fiche de groupe. Pratique pour retrouver le chemin d'une propriété à afficher."
+      },
+      "show-template-status-form": {
+        "name": "Afficher l'état des modèles",
+        "hint": "Indique quels modèles sont obsolètes, lesquels demandent une version plus récente du système, et lesquels n'ont pas d'information de version."
+      },
+      "show-version-notifications": {
+        "name": "Signaler les mises à jour de modèles",
+        "hint": "Afficher une notification quand une version plus récente d'un modèle installé est disponible parmi les modèles d'exemple du module."
+      }
+    },
+    "template-status": {
+      "template-status": "État des modèles",
+      "by": "par",
+      "out-of-date": "Les modèles suivants sont obsolètes",
+      "current-version": "Version actuelle",
+      "module-version": "Version du module",
+      "newer-required-system": "Les modèles suivants demandent une version plus récente du système",
+      "older-required-system": "Les modèles suivants demandent une version plus ancienne du système",
+      "no-version-information": "Les modèles suivants n'ont pas d'information de version",
+      "no-system-information": "Les modèles suivants n'ont pas d'information de système",
+      "current-system-version": "Version actuelle du système",
+      "required-system-version": "Version du système requise",
+      "maximum-system-version": "Version maximale du système",
+      "window-title": "État des modèles de la fiche de groupe",
+      "valid-count": "{count} modèle(s) chargé(s) valide(s), sans problème.",
+      "none": "Aucun"
+    },
+    "notifications": {
+      "template-update-available": "Mises à jour de modèles disponibles ! {count} modèle(s) installé(s) ont une version plus récente. Consultez l'état des modèles ou utilisez l'installateur pour les mettre à jour.",
+      "template-update-short": "Fiche de groupe : {count} mise(s) à jour de modèle disponible(s). Ouvrez l'installateur de modèles pour mettre à jour."
+    },
+    "template-editor": {
+      "new": "Nouveau",
+      "new-tooltip": "Nouveau modèle",
+      "load": "Charger",
+      "load-tooltip": "Charger un modèle",
+      "save": "Enregistrer",
+      "save-tooltip": "Copier le modèle dans le presse-papiers",
+      "validate": "Valider",
+      "validate-tooltip": "Valider le JSON",
+      "format": "Mettre en forme",
+      "format-tooltip": "Mettre en forme le JSON",
+      "close-tooltip": "Fermer l'éditeur",
+      "metadata": "Métadonnées du modèle",
+      "name-placeholder": "Nom du modèle…",
+      "author-placeholder": "Nom de l'auteur…",
+      "system": "Système",
+      "json-editor": "Éditeur JSON",
+      "save-warnings": "Ces données sont temporaires. Utilisez le bouton Enregistrer pour copier le modèle dans le presse-papiers avant de fermer.",
+      "ready": "Prêt",
+      "title": "Éditeur de modèles",
+      "loaded": "Modèle « {name} » chargé.",
+      "load-failed": "Échec du chargement du modèle : {error}",
+      "created": "Nouveau modèle créé.",
+      "cannot-copy": "Impossible de copier le modèle : {errors}",
+      "copied": "Modèle copié dans le presse-papiers ! Collez-le dans un fichier texte et enregistrez-le en .json",
+      "copy-failed": "Échec de la copie du modèle : {error}",
+      "validation-issues": "Problèmes de validation du modèle : {errors}",
+      "valid": "Le JSON du modèle est valide !",
+      "formatted": "JSON mis en forme.",
+      "copy-dialog-title": "Copier le JSON du modèle",
+      "copy-dialog-hint": "Copiez le JSON ci-dessous et enregistrez-le vous-même sous le nom {filename} :",
+      "copy-to-clipboard": "Copier dans le presse-papiers",
+      "json-copied": "JSON du modèle copié dans le presse-papiers !"
+    },
+    "template-installer": {
+      "loading": "Chargement des modèles depuis le dépôt…",
+      "loading-hint": "Patientez pendant la récupération des modèles disponibles pour votre système.",
+      "error-title": "Erreur de chargement des modèles",
+      "error-hint": "Vérifiez votre connexion Internet ou réessayez plus tard.",
+      "connection-error": "Impossible de joindre le dépôt de modèles ({status}). Vérifiez votre connexion Internet.",
+      "failed-count": "{count} modèle(s) n'ont pas pu être chargés.",
+      "none-found": "Aucun modèle trouvé pour {system} dans le dépôt.",
+      "not-available": "Aucun modèle disponible pour {system} dans le dépôt pour l'instant. Pourquoi ne pas en proposer un ?",
+      "load-error": "Erreur de chargement des modèles : {error}",
+      "incompatible": "La version {current} du système est incompatible avec ce modèle (requiert {min})",
+      "incompatible-range": "La version {current} du système est incompatible avec ce modèle (requiert {min} à {max})",
+      "no-community-templates": "Aucun modèle de la communauté n'est disponible pour votre système pour l'instant.",
+      "visit-readme": "Consultez {link} pour apprendre à créer le vôtre.",
+      "installing": "Installation…",
+      "installed": "Installé",
+      "failed": "Échec",
+      "install-failed": "Échec de l'installation du modèle : {error}"
+    },
+    "template": "Modèle",
+    "close": "Fermer",
+    "install": "Installer",
+    "reinstall": "Réinstaller",
+    "installer": "Installateur",
+    "update": "Mettre à jour",
+    "template-name": "Nom",
+    "preview": "Aperçu",
+    "author": "Auteur",
+    "version": "Version",
+    "section-title": "Fiche de groupe",
+    "show-section-title": "Afficher la fiche de groupe",
+    "section-title-tooltip": "Afficher la fiche de groupe",
+    "template-installed-version": "Version installée",
+    "template-system-version": "Version min. du système",
+    "template-max-system-version": "Version max. du système"
+  }
+}

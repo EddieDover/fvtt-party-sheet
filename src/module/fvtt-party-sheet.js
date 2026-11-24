@@ -16,6 +16,7 @@ import {
   validateSavedTemplate,
 } from "./utils.js";
 import { TemplateStatusForm } from "./app/template-status.js";
+import { localizeOr } from "./i18n.js";
 
 /** @type {PartySheetForm} */
 let currentPartySheet = null;
@@ -49,15 +50,15 @@ Handlebars.registerPartial(
   {{#if (eq templateLoadStatus 'loading')}}
     <div style="padding:20px;text-align:center;width:100%;">
       <i class="fas fa-spinner fa-spin" style="font-size:24px;margin-bottom:10px;"></i>
-      <div style="font-weight:bold;">Loading templates from repository...</div>
-      <div style="margin-top:5px;color:#888;">Please wait while we fetch available templates for your system.</div>
+      <div style="font-weight:bold;">{{localize "fvtt-party-sheet.template-installer.loading"}}</div>
+      <div style="margin-top:5px;color:#888;">{{localize "fvtt-party-sheet.template-installer.loading-hint"}}</div>
     </div>
   {{else if (eq templateLoadStatus 'error')}}
     <div style="padding:20px;text-align:center;width:100%;border:2px solid #ff6666;border-radius:5px;background-color:rgba(255,102,102,0.1);">
       <i class="fas fa-exclamation-triangle" style="font-size:24px;margin-bottom:10px;color:#ff6666;"></i>
-      <div style="font-weight:bold;color:#ff6666;margin-bottom:10px;">Error Loading Templates</div>
+      <div style="font-weight:bold;color:#ff6666;margin-bottom:10px;">{{localize "fvtt-party-sheet.template-installer.error-title"}}</div>
       <div style="margin-bottom:10px;">{{templateLoadError}}</div>
-      <div style="margin-top:10px;color:#888;">Check your internet connection or try again later.</div>
+      <div style="margin-top:10px;color:#888;">{{localize "fvtt-party-sheet.template-installer.error-hint"}}</div>
     </div>
   {{/if}}
 {{/if}}
@@ -118,7 +119,7 @@ Handlebars.registerPartial(
                   data-modulepath="{{template.path}}"
                   disabled
                   style="opacity:0.5;cursor:not-allowed;"
-                  title="System version {{../currentSystemVersion}} is incompatible with this template (requires {{template.minimumSystemVersion}}{{#if template.maximumSystemVersion}} - {{template.maximumSystemVersion}}{{/if}})"
+                  title="{{#if template.maximumSystemVersion}}{{localize "fvtt-party-sheet.template-installer.incompatible-range" current=../currentSystemVersion min=template.minimumSystemVersion max=template.maximumSystemVersion}}{{else}}{{localize "fvtt-party-sheet.template-installer.incompatible" current=../currentSystemVersion min=template.minimumSystemVersion}}{{/if}}"
               >
                   {{localize "fvtt-party-sheet.reinstall"}}
               </button>
@@ -140,7 +141,7 @@ Handlebars.registerPartial(
                   class="fvtt-party-sheet-module-install-button"
                   data-modulepath="{{template.path}}"
                   disabled
-                  title="System version {{../currentSystemVersion}} is incompatible with this template (requires {{template.minimumSystemVersion}}{{#if template.maximumSystemVersion}} - {{template.maximumSystemVersion}}{{/if}})"
+                  title="{{#if template.maximumSystemVersion}}{{localize "fvtt-party-sheet.template-installer.incompatible-range" current=../currentSystemVersion min=template.minimumSystemVersion max=template.maximumSystemVersion}}{{else}}{{localize "fvtt-party-sheet.template-installer.incompatible" current=../currentSystemVersion min=template.minimumSystemVersion}}{{/if}}"
               >
                 {{localize "fvtt-party-sheet.update"}}
               </button>
@@ -172,7 +173,7 @@ Handlebars.registerPartial(
                   class="fvtt-party-sheet-module-install-button"
                   data-modulepath="{{template.path}}"
                   disabled
-                  title="System version {{../currentSystemVersion}} is incompatible with this template (requires {{template.minimumSystemVersion}}{{#if template.maximumSystemVersion}} - {{template.maximumSystemVersion}}{{/if}})"
+                  title="{{#if template.maximumSystemVersion}}{{localize "fvtt-party-sheet.template-installer.incompatible-range" current=../currentSystemVersion min=template.minimumSystemVersion max=template.maximumSystemVersion}}{{else}}{{localize "fvtt-party-sheet.template-installer.incompatible" current=../currentSystemVersion min=template.minimumSystemVersion}}{{/if}}"
                 >
                 {{localize "fvtt-party-sheet.update"}}
               </button>
@@ -193,7 +194,7 @@ Handlebars.registerPartial(
                 data-modulepath="{{template.path}}"
                 disabled
                 style="opacity:0.5;cursor:not-allowed;"
-                title="System version {{../currentSystemVersion}} is incompatible with this template (requires {{template.minimumSystemVersion}}{{#if template.maximumSystemVersion}} - {{template.maximumSystemVersion}}{{/if}})"
+                title="{{#if template.maximumSystemVersion}}{{localize "fvtt-party-sheet.template-installer.incompatible-range" current=../currentSystemVersion min=template.minimumSystemVersion max=template.maximumSystemVersion}}{{else}}{{localize "fvtt-party-sheet.template-installer.incompatible" current=../currentSystemVersion min=template.minimumSystemVersion}}{{/if}}"
               >
               {{localize "fvtt-party-sheet.install"}}
             </button>
@@ -206,9 +207,9 @@ Handlebars.registerPartial(
 {{/each}}
 {{else}}
   <div>
-    There are currently no community created templates available for your system.
+    {{localize "fvtt-party-sheet.template-installer.no-community-templates"}}
     <br/>
-    Visit <a href='https://github.com/EddieDover/fvtt-party-sheet/blob/main/TEMPLATE_README.md'>TEMPLATE_README.md</a> for more information on how to create your own.
+    {{{localize "fvtt-party-sheet.template-installer.visit-readme" link="<a href='https://github.com/EddieDover/fvtt-party-sheet/blob/main/TEMPLATE_README.md'>TEMPLATE_README.md</a>"}}}
   </div>
 {{/ifCond}}
 </div>
@@ -826,7 +827,11 @@ const ReloadTemplates = async (fullReload = false) => {
       if (updateCheck.hasUpdates) {
         // @ts-ignore
         ui.notifications.info(
-          `Party Sheet: ${updateCheck.updateCount} template update(s) available. Open the template installer to update.`,
+          localizeOr(
+            "fvtt-party-sheet.notifications.template-update-short",
+            "Party Sheet: {count} template update(s) available. Open the template installer to update.",
+            { count: updateCheck.updateCount },
+          ),
           { permanent: false, console: false },
         );
         log(`${updateCheck.updateCount} template update(s) available`);
