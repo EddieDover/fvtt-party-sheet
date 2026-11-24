@@ -321,6 +321,60 @@ Handlebars.registerHelper("shouldSkipForColspan", function (row, currentKey, opt
   return options.inverse(this); // Don't skip this cell
 });
 
+/**
+ * Builds the header group cells of a row: consecutive visible columns sharing the same
+ * `headerGroup` are merged into one cell. Columns without a group are returned with their
+ * key, so their own header can span both header rows.
+ * Returns an empty array when no column of the row uses `headerGroup`.
+ * @param {object} row - The row data, keyed by column name.
+ * @returns {{text: string, colspan: number, key?: string}[]} The header group cells.
+ */
+function getHeaderGroups(row) {
+  const keys = Object.keys(row ?? {});
+  if (!keys.some((key) => row[key]?.options?.headerGroup)) {
+    return [];
+  }
+  const groups = [];
+  let covered = 0;
+  keys.forEach((key, index) => {
+    // Skip cells covered by a previous cell's colspan
+    if (index < covered) {
+      return;
+    }
+    const colspan = row[key]?.options?.colspan ?? 1;
+    covered = index + colspan;
+    const text = row[key]?.options?.headerGroup ?? "";
+    const last = groups[groups.length - 1];
+    if (!text) {
+      groups.push({ text: row[key]?.options?.header === "show" ? key : "", colspan, key });
+    } else if (last && !last.key && last.text === text) {
+      last.colspan += colspan;
+    } else {
+      groups.push({ text, colspan });
+    }
+  });
+  return groups;
+}
+
+/**
+ * Whether a column header is already drawn in the header group row, spanning both header rows.
+ * @param {object} row - The row data, keyed by column name.
+ * @param {string} key - The column name.
+ * @returns {boolean} True when the row uses header groups and this column has none.
+ */
+function isInHeaderGroupRow(row, key) {
+  const keys = Object.keys(row ?? {});
+  return keys.some((k) => row[k]?.options?.headerGroup) && !row[key]?.options?.headerGroup;
+}
+
+// @ts-ignore
+Handlebars.registerHelper("isInHeaderGroupRow", function (row, key, options) {
+  return isInHeaderGroupRow(row, key) ? options.fn(this) : options.inverse(this);
+});
+
+// @ts-ignore
+Handlebars.registerHelper("getHeaderGroups", getHeaderGroups);
+
 // @ts-ignore
 Handlebars.registerHelper("getRowSpan", function (row, key) {
   const myoptions = row[key]?.options ?? {};

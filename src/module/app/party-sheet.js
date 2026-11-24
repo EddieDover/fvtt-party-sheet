@@ -193,6 +193,7 @@ export class PartySheetForm extends HandlebarsApplicationMixin(ApplicationV2) {
                   align: colobj.align,
                   valign: colobj.valign,
                   headerAlign: colobj.headerAlign,
+                  headerGroup: colobj.headerGroup,
                   colspan: colobj.colspan,
                   rowspan: colobj.rowspan,
                   spanover: colobj.type === "span",
