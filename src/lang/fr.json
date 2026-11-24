@@ -8,7 +8,8 @@
       "no-systems": "Vous n'avez aucun fichier JSON pour ce système dans votre dossier data/partysheets. Ajoutez-en pour activer cette fonction.",
       "bugreport": "Signaler un bogue",
       "feedback": "Envoyer un avis",
-      "discord": "Discord"
+      "discord": "Discord",
+      "processing-error": "Une erreur s'est produite lors du traitement du modèle {name} de {author}."
     },
     "preview-mode": {
       "active": "Aperçu actif",
@@ -62,10 +63,12 @@
       "no-system-information": "Les modèles suivants n'ont pas d'information de système",
       "current-system-version": "Version actuelle du système",
       "required-system-version": "Version du système requise",
-      "maximum-system-version": "Version maximale du système"
+      "maximum-system-version": "Version maximale du système",
+      "window-title": "État des modèles de la fiche de groupe"
     },
     "notifications": {
-      "template-update-available": "Mises à jour de modèles disponibles ! {count} modèle(s) installé(s) ont une version plus récente. Consultez l'état des modèles ou utilisez l'installateur pour les mettre à jour."
+      "template-update-available": "Mises à jour de modèles disponibles ! {count} modèle(s) installé(s) ont une version plus récente. Consultez l'état des modèles ou utilisez l'installateur pour les mettre à jour.",
+      "template-update-short": "Fiche de groupe : {count} mise(s) à jour de modèle disponible(s). Ouvrez l'installateur de modèles pour mettre à jour."
     },
     "template-editor": {
       "new": "Nouveau",
@@ -85,7 +88,40 @@
       "system": "Système",
       "json-editor": "Éditeur JSON",
       "save-warnings": "Ces données sont temporaires. Utilisez le bouton Enregistrer pour copier le modèle dans le presse-papiers avant de fermer.",
-      "ready": "Prêt"
+      "ready": "Prêt",
+      "title": "Éditeur de modèles",
+      "loaded": "Modèle « {name} » chargé.",
+      "load-failed": "Échec du chargement du modèle : {error}",
+      "created": "Nouveau modèle créé.",
+      "cannot-copy": "Impossible de copier le modèle : {errors}",
+      "copied": "Modèle copié dans le presse-papiers ! Collez-le dans un fichier texte et enregistrez-le en .json",
+      "copy-failed": "Échec de la copie du modèle : {error}",
+      "validation-issues": "Problèmes de validation du modèle : {errors}",
+      "valid": "Le JSON du modèle est valide !",
+      "formatted": "JSON mis en forme.",
+      "copy-dialog-title": "Copier le JSON du modèle",
+      "copy-dialog-hint": "Copiez le JSON ci-dessous et enregistrez-le vous-même sous le nom {filename} :",
+      "copy-to-clipboard": "Copier dans le presse-papiers",
+      "json-copied": "JSON du modèle copié dans le presse-papiers !"
+    },
+    "template-installer": {
+      "loading": "Chargement des modèles depuis le dépôt…",
+      "loading-hint": "Patientez pendant la récupération des modèles disponibles pour votre système.",
+      "error-title": "Erreur de chargement des modèles",
+      "error-hint": "Vérifiez votre connexion Internet ou réessayez plus tard.",
+      "connection-error": "Impossible de joindre le dépôt de modèles ({status}). Vérifiez votre connexion Internet.",
+      "failed-count": "{count} modèle(s) n'ont pas pu être chargés.",
+      "none-found": "Aucun modèle trouvé pour {system} dans le dépôt.",
+      "not-available": "Aucun modèle disponible pour {system} dans le dépôt pour l'instant. Pourquoi ne pas en proposer un ?",
+      "load-error": "Erreur de chargement des modèles : {error}",
+      "incompatible": "La version {current} du système est incompatible avec ce modèle (requiert {min})",
+      "incompatible-range": "La version {current} du système est incompatible avec ce modèle (requiert {min} à {max})",
+      "no-community-templates": "Aucun modèle de la communauté n'est disponible pour votre système pour l'instant.",
+      "visit-readme": "Consultez {link} pour apprendre à créer le vôtre.",
+      "installing": "Installation…",
+      "installed": "Installé",
+      "failed": "Échec",
+      "install-failed": "Échec de l'installation du modèle : {error}"
     },
     "template": "Modèle",
     "close": "Fermer",

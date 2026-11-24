@@ -9,7 +9,7 @@
       <button data-action="onInstaller"  type="button" class="btn btn--primary" style="max-width:50px" name="installer" title="{{localize "fvtt-party-sheet.installer"}}">
         <i class="fas fa-download"></i>
       </button>
-      <button data-action="onOpenEditor"  type="button" class="btn btn--primary" style="max-width:50px" name="template-editor" title="Template Editor">
+      <button data-action="onOpenEditor"  type="button" class="btn btn--primary" style="max-width:50px" name="template-editor" title="{{localize 'fvtt-party-sheet.template-editor.title'}}">
         <i class="fas fa-edit"></i>
       </button>
     {{else}}
@@ -157,5 +157,5 @@
       </div>
     {{/if}}
   {{/if}}
-  <button type="button" data-action="onCloseWindow" name="fvtt-party-sheet-close" class="fvtt-party-sheet-close"><i class="fas fa-times"></i>Close</button>
+  <button type="button" data-action="onCloseWindow" name="fvtt-party-sheet-close" class="fvtt-party-sheet-close"><i class="fas fa-times"></i>{{localize "fvtt-party-sheet.close"}}</button>
 </form>
